@@ -16,32 +16,76 @@
  *  limitations under the License.
  */
 
-var fs = require('fs');
-var mpath = require('path');
+let classes = {};
+let packages = {};
 
-function json_parse(content)
+function get_package_name(module_name)
 {
-	var obj = null;
-	if (content == null) return null;
-	try{ obj = JSON.parse(content); } catch(e) {}
-	return obj;
+	module_name = module_name.replace(".", "-").toLowerCase() + "-nodejs";
+	if (module_name.substr(0, 7) == "runtime") module_name = "bayrell-" + module_name;
+	return module_name;
 }
-function read_file(path)
+function load_package(package_name)
 {
-	var content = null;
-	try{ content = fs.readFileSync(path, "utf8"); } catch(e) {} 
-	return content; 
-}
-function is_dir(path)
-{
-	return fs.lstatSync(path).isDirectory(); 
-}
-function read_dir(path)
-{
-	if (!fs.existsSync(path)) return [];
-	return fs.readdirSync(path).map( (s) => path + "/" + s );
+	if (packages[package_name] != undefined)
+	{
+		return ;
+	}
+	
+	let package_path = null;
+	packages[package_name] = 0;
+	
+	try
+	{
+		package_path = require.resolve(package_name);
+	}
+	catch(e)
+	{
+	}
+	
+	if (package_path != null)
+	{
+		require(package_path);
+		packages[package_name] = 1;
+	}
 }
 
-module.exports.use = function (class_name)
+module.exports = function (class_name)
 {
+	if (classes[class_name] != undefined)
+	{
+		return classes[class_name];
+	}
+	
+	let class_name_arr = class_name.split(".");
+	for (var i=class_name_arr.length-1; i>0; i--)
+	{
+		let package_name = class_name_arr.slice(0, i).join(".");
+		package_name = get_package_name(package_name);
+		
+		load_package(package_name);
+		
+		if (classes[class_name] != undefined)
+		{
+			return classes[class_name];
+		}
+	}
+	
+	return null;
+}
+module.exports.add = function (cls)
+{
+	if (cls == null || cls == undefined) return ;
+	if (cls.getClassName == null || cls.getClassName == undefined) return ;
+	
+	let class_name = cls.getClassName();
+	if (class_name == null || class_name == undefined) return ;
+	
+	classes[class_name] = cls;
+	
+	return null;
+}
+module.exports.get_classes = function ()
+{
+	return Object.assign({}, classes);
 }

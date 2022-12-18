@@ -18,8 +18,7 @@
  *  limitations under the License.
  */
 
-let use = require("./use.js");
-
+let use = require('bay-lang').use;
 
 async function create_context()
 {
@@ -44,3 +43,9 @@ async function create_context()
 	return ctx;
 }
 
+let Context = use("Runtime.Context");
+
+//let classes = use.get_classes();
+//console.log( Object.keys(classes) );
+
+//console.log( Context );

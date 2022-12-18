@@ -11,7 +11,7 @@
     "*.js"
   ],
   "main": "index.js",
-  "name": "bayrell",
+  "name": "bay-lang",
   "version": "0.11.0-alpha",
   "dependencies": {
   }
