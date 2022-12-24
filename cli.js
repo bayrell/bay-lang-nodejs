@@ -19,15 +19,79 @@
  */
 
 let use = require('bay-lang').use;
+let Collection = use("Runtime.Collection");
+let Dict = use("Runtime.Dict");
+let Context = use("Runtime.Context");
+let rtl = use("Runtime.rtl");
+const m_path = require('path');
 const fs = require('fs');
 const { resolve } = require('path');
 
+function is_dir(dir_path)
+{
+	let stat = fs.lstatSync(dir_path);
+	return stat.isDirectory();
+}
+
+function read_dir_recursive(ctx, folder_path, relative_path)
+{
+	if (!relative_path) relative_path = "";
+	
+	let res = [];
+	let files = fs.readdirSync(folder_path);
+	files = files.filter( (s) => s != "." && s != ".." ).sort();
+	
+	for (let i=0; i<files.length; i++)
+	{
+		let file_path = files[i];
+		let file_path_relative = m_path.join(relative_path, file_path);
+		let file_path_full = m_path.join(folder_path, file_path);
+		if (is_dir(file_path_full))
+		{
+			res = res.concat( read_dir_recursive(ctx, file_path_full, file_path_relative) );
+		}
+		else
+		{
+			res.push(file_path_relative);
+		}
+	}
+	
+	return res;
+}
+
+function read_modules(ctx)
+{
+	let modules = [];
+	let modules_names = [];
+	let folders = rtl.attr(ctx, ctx, ["settings", "config", "modules"]);
+	
+	for (let i=0; i<folders.length; i++)
+	{
+		let folder_name = folders[i];
+		let modules_path = m_path.join(ctx.base_path, folder_name);
+		
+		let lib_modules = fs.readdirSync(modules_path);
+		lib_modules = lib_modules.filter( (s) => s != "." && s != ".." ).sort();
+		
+		for (let lib_modules_index=0; lib_modules_index<lib_modules.length; lib_modules_index++)
+		{
+			let module_name = lib_modules[lib_modules_index];
+			if (modules_names.indexOf(module_name) == -1)
+			{
+				modules_names.push(module_name);
+				modules.push({
+					"name": module_name,
+					"path": m_path.join(modules_path, module_name),
+				});
+			}
+		}
+	}
+	
+	return modules;
+}
+
 async function create_context()
 {
-	var Collection = use("Runtime.Collection");
-	let Context = use("Runtime.Context");
-	let rtl = use("Runtime.rtl");
-	
 	/* Create global context */
 	let ctx = new Context(null, {
 		"start_time": Date.now(),
@@ -43,27 +107,196 @@ async function create_context()
 	ctx = await Context.init(ctx, ctx);
 	
 	/* Read config */
-	let file_path = ctx.base_path + "/" + "project.json";
+	let file_path = m_path.join(ctx.base_path, "project.json");
 	let config = fs.readFileSync(resolve(file_path), { "encoding": "utf8" });
 	config = rtl.json_decode(ctx, config);
 	ctx = ctx.copy(ctx, {
 		"settings": ctx.settings.setIm(ctx, "config", config),
-	})
+	});
 	
 	/* Setup global context */
 	rtl.setContext(ctx);
 	
+	/* Read modules */
+	let modules = read_modules(ctx);
+	ctx = ctx.copy(ctx, {
+		"settings": ctx.settings.setIm(ctx, "modules", modules),
+	});
+	
 	return ctx;
 }
 
+function create_parser(ctx)
+{
+	let cls = use("Bayrell.Lang.LangBay.ParserBay");
+	return new cls
+	(
+		ctx,
+		{
+		}
+	)
+}
+
+function create_translator(ctx, lang)
+{
+	let cls;
+	if (lang == "php")
+	{
+		cls = use("Bayrell.Lang.LangPHP.TranslatorPHP");
+		return new cls(ctx,
+		{
+			"enable_context": false,
+		});
+	}
+	if (lang == "es6")
+	{
+		cls = use("Bayrell.Lang.LangES6.TranslatorES6");
+		return new cls(ctx,
+		{
+			"enable_context": false,
+		});
+	}
+	if (lang == "nodejs")
+	{
+		cls = use("Bayrell.Lang.LangNode.TranslatorNode");
+		return new cls(ctx,
+		{
+			"enable_context": true,
+		});
+	}
+	return null;
+}
+
+function find_module(ctx, module_name)
+{
+	let modules = rtl.attr(ctx, ctx, ["settings", "modules"], []);
+	let module = modules.find((item)=>{
+		return item.name == module_name;
+	});
+	return module;
+}
+
+function translate_file(ctx, module_path, file_name, lang)
+{
+	let parser = create_parser(ctx);
+	let translator = create_translator(ctx, lang);
+	if (!parser || !translator) return;
+	
+	let LangUtils = use("Bayrell.Lang.LangUtils");
+	let file_path = resolve( m_path.join(module_path, "bay", file_name) );
+	let file_content = fs.readFileSync(file_path, { "encoding": "utf8" });
+	
+	let re = use("Runtime.re");
+	let rs = use("Runtime.rs");
+	let op_code = LangUtils.parse(ctx, parser, file_content);
+	let dest_content = LangUtils.translate(ctx, translator, op_code);
+	let dest_name = file_name;
+	let dest_path = "";
+	
+	if (lang == "php")
+	{
+		dest_name = re.replace(ctx, "\\.bay$", ".php", dest_name);
+		dest_name = re.replace(ctx, "\\.ui$", ".php", dest_name);
+		dest_path = m_path.join(module_path, "php", dest_name);
+	}
+	else if (lang == "es6")
+	{
+		dest_name = re.replace(ctx, "\\.bay$", ".js", dest_name);
+		dest_name = re.replace(ctx, "\\.ui$", ".js", dest_name);
+		dest_path = m_path.join(module_path, "es6", dest_name);
+	}
+	else if (lang == "nodejs")
+	{
+		dest_name = re.replace(ctx, "\\.bay$", ".js", dest_name);
+		dest_name = re.replace(ctx, "\\.ui$", ".js", dest_name);
+		dest_path = m_path.join(module_path, "nodejs", dest_name);
+	}
+	
+	dest_path = resolve(dest_path);
+	let path_info = rs.pathinfo(ctx, dest_path);
+	let dest_dir_name = path_info.get(ctx, "dirname");
+	
+	console.log(file_path);
+	fs.mkdirSync(dest_dir_name, { recursive: true });
+	fs.writeFileSync(dest_path, dest_content, { "encoding": "utf8" });
+}
+
+function make_module(ctx, module_name, lang)
+{
+	let module = find_module(ctx, module_name);
+	if (!module) return;
+	
+	let files = read_dir_recursive( ctx, m_path.join(module.path, "bay") );
+	for (let i in files)
+	{
+		let file_name = files[i];
+		translate_file(ctx, module.path, file_name, lang);
+	}
+}
 
 async function main()
 {
+	let ctx = await create_context();
 	
-	let context = await create_context();
+	let cmd = ctx.cli_args[1];
 	
-	console.log(context);
+	if (cmd == undefined)
+	{
+		console.log("Methods:");
+		console.log("  watch");
+		console.log("  make");
+		console.log("  modules");
+		console.log("  version");
+		return;
+	}
 	
+	/* Show version */
+	if (cmd == "version")
+	{
+		let lang_module = use("Bayrell.Lang.ModuleDescription");
+		let runtime_module = use("Runtime.ModuleDescription");
+		console.log("Lang version: " + lang_module.getModuleVersion());
+		console.log("Runtime version: " + runtime_module.getModuleVersion());
+		return;
+	}
+	
+	/* Show modules */
+	if (cmd == "modules")
+	{
+		let modules = rtl.attr(ctx, ctx, ["settings", "modules"], []);
+		for (let i=0; i<modules.length; i++)
+		{
+			console.log(modules[i].name);
+		}
+		return;
+	}
+	
+	/* Make module */
+	if (cmd == "make")
+	{
+		let module_name = ctx.cli_args[2];
+		let lang = ctx.cli_args[3];
+		
+		if (module_name == undefined)
+		{
+			let modules = rtl.attr(ctx, ctx, ["settings", "modules"], []);
+			for (let i=0; i<modules.length; i++)
+			{
+				console.log(modules[i].name);
+			}
+			return;
+		}
+		
+		make_module(ctx, module_name, lang);
+		
+		return;
+	}
+	
+	/* Watch module */
+	if (cmd == "watch")
+	{
+		return;
+	}
 }
 
 main();
