@@ -19,6 +19,8 @@
  */
 
 let use = require('bay-lang').use;
+const fs = require('fs');
+const { resolve } = require('path');
 
 async function create_context()
 {
@@ -28,14 +30,25 @@ async function create_context()
 	
 	/* Create global context */
 	let ctx = new Context(null, {
+		"start_time": Date.now(),
+		"cli_args": Collection.from(process.argv.slice(1)),
+		"base_path": process.cwd(),
 		"modules": Collection.from([
 			"Runtime",
 			"Bayrell.Lang"
 		]),
 	});
-
+	
 	/* Init context */
 	ctx = await Context.init(ctx, ctx);
+	
+	/* Read config */
+	let file_path = ctx.base_path + "/" + "project.json";
+	let config = fs.readFileSync(resolve(file_path), { "encoding": "utf8" });
+	config = rtl.json_decode(ctx, config);
+	ctx = ctx.copy(ctx, {
+		"settings": ctx.settings.setIm(ctx, "config", config),
+	})
 	
 	/* Setup global context */
 	rtl.setContext(ctx);
@@ -43,9 +56,14 @@ async function create_context()
 	return ctx;
 }
 
-let Context = use("Runtime.Context");
 
-//let classes = use.get_classes();
-//console.log( Object.keys(classes) );
+async function main()
+{
+	
+	let context = await create_context();
+	
+	console.log(context);
+	
+}
 
-//console.log( Context );
+main();
