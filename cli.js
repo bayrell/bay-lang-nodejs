@@ -59,6 +59,18 @@ function read_dir_recursive(ctx, folder_path, relative_path)
 	return res;
 }
 
+function file_save(ctx, path, content)
+{
+	let rs = use("Runtime.rs");
+	
+	path = resolve(path);
+	let path_info = rs.pathinfo(ctx, path);
+	let dir_name = path_info.get(ctx, "dirname");
+	
+	fs.mkdirSync(dir_name, { recursive: true });
+	fs.writeFileSync(path, content, { "encoding": "utf8" });
+}
+
 function read_modules(ctx)
 {
 	let modules = [];
@@ -146,6 +158,7 @@ function create_translator(ctx, lang)
 		return new cls(ctx,
 		{
 			"enable_context": false,
+			"enable_introspection": true,
 		});
 	}
 	if (lang == "es6")
@@ -154,6 +167,7 @@ function create_translator(ctx, lang)
 		return new cls(ctx,
 		{
 			"enable_context": false,
+			"enable_introspection": true,
 		});
 	}
 	if (lang == "nodejs")
@@ -162,6 +176,7 @@ function create_translator(ctx, lang)
 		return new cls(ctx,
 		{
 			"enable_context": true,
+			"enable_introspection": true,
 		});
 	}
 	return null;
@@ -176,19 +191,16 @@ function find_module(ctx, module_name)
 	return module;
 }
 
-function translate_file(ctx, module_path, file_name, lang)
+function translate_file(ctx, module_path, file_name, op_code, lang)
 {
-	let parser = create_parser(ctx);
 	let translator = create_translator(ctx, lang);
-	if (!parser || !translator) return;
-	
-	let LangUtils = use("Bayrell.Lang.LangUtils");
-	let file_path = resolve( m_path.join(module_path, "bay", file_name) );
-	let file_content = fs.readFileSync(file_path, { "encoding": "utf8" });
+	if (!translator)
+	{
+		throw new Error("Lang " + lang + " does not supported");
+	}
 	
 	let re = use("Runtime.re");
-	let rs = use("Runtime.rs");
-	let op_code = LangUtils.parse(ctx, parser, file_content);
+	let LangUtils = use("Bayrell.Lang.LangUtils");
 	let dest_content = LangUtils.translate(ctx, translator, op_code);
 	let dest_name = file_name;
 	let dest_path = "";
@@ -212,13 +224,23 @@ function translate_file(ctx, module_path, file_name, lang)
 		dest_path = m_path.join(module_path, "nodejs", dest_name);
 	}
 	
-	dest_path = resolve(dest_path);
-	let path_info = rs.pathinfo(ctx, dest_path);
-	let dest_dir_name = path_info.get(ctx, "dirname");
+	file_save(ctx, dest_path, dest_content);
+}
+
+function parse_file(ctx, module_path, file_name)
+{
+	let parser = create_parser(ctx);
+	let op_code = null;
 	
-	console.log(file_path);
-	fs.mkdirSync(dest_dir_name, { recursive: true });
-	fs.writeFileSync(dest_path, dest_content, { "encoding": "utf8" });
+	if (!parser) return op_code;
+	
+	let file_path = resolve( m_path.join(module_path, "bay", file_name) );
+	let file_content = fs.readFileSync(file_path, { "encoding": "utf8" });
+	
+	let LangUtils = use("Bayrell.Lang.LangUtils");
+	op_code = LangUtils.parse(ctx, parser, file_content);
+	
+	return op_code;
 }
 
 function make_module(ctx, module_name, lang)
@@ -230,7 +252,75 @@ function make_module(ctx, module_name, lang)
 	for (let i in files)
 	{
 		let file_name = files[i];
-		translate_file(ctx, module.path, file_name, lang);
+		
+		let file_path = resolve( m_path.join(module.path, "bay", file_name) );
+		console.log(file_path);
+		
+		let op_code = parse_file(ctx, module.path, file_name);
+		
+		if (lang == undefined)
+		{
+			let languages = rtl.attr(ctx, ctx, ["settings", "config", "languages"]);
+			for (let j=0; j<languages.length; j++)
+			{
+				let lang = languages[j];
+				translate_file(ctx, module.path, file_name, op_code, lang);
+			}
+		}
+		else
+		{
+			translate_file(ctx, module.path, file_name, op_code, lang);
+		}
+	}
+	make_bundle_by_module_name(ctx, module_name);
+}
+
+function make_bundle(ctx, bundle)
+{
+	let dest_path = bundle.get(ctx, "dest");
+	let bundle_path = m_path.join(ctx.base_path, dest_path);
+	let modules = bundle.get(ctx, "modules");
+	
+	let bundle_content = "";
+	for (let i=0; i<modules.length; i++)
+	{
+		let module_name = modules[i];
+		let module = find_module(ctx, module_name);
+		if (!module) continue;
+		
+		let module_json_path = resolve(m_path.join(module.path, "module.json"));
+		let module_config = fs.readFileSync(module_json_path, { "encoding": "utf8" });
+		module_config = rtl.json_decode(ctx, module_config);
+		if (!module_config) continue;
+		
+		let assets = module_config.get(ctx, "assets");
+		for (let j=0; j<assets.length; j++)
+		{
+			let asset_name = assets[j];
+			let asset_path = resolve(m_path.join(module.path, "es6", asset_name + ".js"));
+			let asset_content = fs.readFileSync(asset_path, { "encoding": "utf8" });
+			bundle_content += asset_content + "\n";
+		}
+	}
+	
+	console.log("Bundle to => " + dest_path);
+	file_save(ctx, bundle_path, bundle_content);
+}
+
+function make_bundle_by_module_name(ctx, module_name)
+{
+	let bundles = rtl.attr(ctx, ctx, ["settings", "config", "bundles"]);
+	for (let i=0; i<bundles.length; i++)
+	{
+		let bundle = bundles[i];
+		let lang = bundle.get(ctx, "lang");
+		if (lang != "es6") continue;
+		
+		let modules = bundle.get(ctx, "modules");
+		let is_module = modules.indexOf(ctx, module_name);
+		if (is_module == -1) continue;
+		
+		make_bundle(ctx, bundle);
 	}
 }
 
@@ -245,6 +335,7 @@ async function main()
 		console.log("Methods:");
 		console.log("  watch");
 		console.log("  make");
+		console.log("  bundle");
 		console.log("  modules");
 		console.log("  version");
 		return;
@@ -268,6 +359,23 @@ async function main()
 		{
 			console.log(modules[i].name);
 		}
+		return;
+	}
+	
+	/* Make module */
+	if (cmd == "bundle")
+	{
+		let module_name = ctx.cli_args[2];
+		if (module_name == undefined)
+		{
+			let modules = rtl.attr(ctx, ctx, ["settings", "modules"], []);
+			for (let i=0; i<modules.length; i++)
+			{
+				console.log(modules[i].name);
+			}
+			return;
+		}
+		make_bundle_by_module_name(ctx, module_name);
 		return;
 	}
 	
