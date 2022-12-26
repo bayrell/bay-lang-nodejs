@@ -158,7 +158,6 @@ function create_translator(ctx, lang)
 		return new cls(ctx,
 		{
 			"enable_context": false,
-			"enable_introspection": true,
 		});
 	}
 	if (lang == "es6")
@@ -167,7 +166,6 @@ function create_translator(ctx, lang)
 		return new cls(ctx,
 		{
 			"enable_context": false,
-			"enable_introspection": true,
 		});
 	}
 	if (lang == "nodejs")
@@ -176,7 +174,6 @@ function create_translator(ctx, lang)
 		return new cls(ctx,
 		{
 			"enable_context": true,
-			"enable_introspection": true,
 		});
 	}
 	return null;
@@ -191,7 +188,7 @@ function find_module(ctx, module_name)
 	return module;
 }
 
-function translate_file(ctx, module_path, file_name, op_code, lang)
+function translate_file(ctx, module_path, file_name, op_code, lang, log_out)
 {
 	let translator = create_translator(ctx, lang);
 	if (!translator)
@@ -222,6 +219,11 @@ function translate_file(ctx, module_path, file_name, op_code, lang)
 		dest_name = re.replace(ctx, "\\.bay$", ".js", dest_name);
 		dest_name = re.replace(ctx, "\\.ui$", ".js", dest_name);
 		dest_path = m_path.join(module_path, "nodejs", dest_name);
+	}
+	
+	if (log_out)
+	{
+		console.log("=>" + dest_path);
 	}
 	
 	file_save(ctx, dest_path, dest_content);
@@ -264,15 +266,18 @@ function make_module(ctx, module_name, lang)
 			for (let j=0; j<languages.length; j++)
 			{
 				let lang = languages[j];
-				translate_file(ctx, module.path, file_name, op_code, lang);
+				translate_file(ctx, module.path, file_name, op_code, lang, false);
 			}
 		}
 		else
 		{
-			translate_file(ctx, module.path, file_name, op_code, lang);
+			translate_file(ctx, module.path, file_name, op_code, lang, false);
 		}
 	}
-	make_bundle_by_module_name(ctx, module_name);
+	if (lang == "es6")
+	{
+		make_bundle_by_module_name(ctx, module_name);
+	}
 }
 
 function make_bundle(ctx, bundle)
@@ -322,6 +327,66 @@ function make_bundle_by_module_name(ctx, module_name)
 		
 		make_bundle(ctx, bundle);
 	}
+}
+
+function find_module_by_name(ctx, file_path)
+{
+	let file_path_relative = "";
+	
+	let modules = rtl.attr(ctx, ctx, ["settings", "modules"], []);
+	let module = modules.find((item)=>{
+		let path = m_path.join(item.path, "bay");
+		return file_path.indexOf(path) == 0;
+	});
+	
+	if (module)
+	{
+		let path = m_path.join(module.path, "bay");
+		file_path_relative = file_path.substr( path.length );
+		file_path_relative = file_path_relative.replace(new RegExp("^\/+", "g"), "");
+	}
+	
+	return { module, file_path_relative };
+}
+
+async function on_change_file(ctx, changed_file_path)
+{
+	let { module, file_path_relative } = find_module_by_name(ctx, changed_file_path);
+	
+	// console.log( changed_file_path, module, file_path_relative );
+	
+	if (!module) return;
+	
+	let languages = rtl.attr(ctx, ctx, ["settings", "config", "languages"]);
+	let file_path = resolve( m_path.join(module.path, "bay", file_path_relative) );
+	
+	console.log(file_path);
+	
+	let op_code = parse_file(ctx, module.path, file_path_relative);
+	for (let j=0; j<languages.length; j++)
+	{
+		let lang = languages[j];
+		translate_file(ctx, module.path, file_path_relative, op_code, lang, true);
+	}
+	
+	console.log("Ok");
+	
+	make_bundle_by_module_name(ctx, module.name );
+}
+
+async function watch_dir(ctx)
+{
+	
+	//on_change_file(ctx, m_path.join(ctx.base_path, "lib/Bayrell.Lang/bay/Caret.bay") );
+	//return;
+	
+	const chokidar = require('chokidar');
+	console.log("Start watch");
+	chokidar.watch('.').on('change', (path, stat) => {
+		path = m_path.join(ctx.base_path, path);
+		on_change_file(ctx, path);
+	});
+	
 }
 
 async function main()
@@ -403,6 +468,8 @@ async function main()
 	/* Watch module */
 	if (cmd == "watch")
 	{
+		await watch_dir(ctx);
+		
 		return;
 	}
 }
