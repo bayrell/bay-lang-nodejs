@@ -11,12 +11,12 @@
     "*.js"
   ],
   "bin": {
-		"bay-lang-nodejs": "./cli.js",
-		"bayrell-lang-nodejs": "./cli.js"
-	},
+    "bay-lang-nodejs": "./cli.js",
+    "bayrell-lang-nodejs": "./cli.js"
+  },
   "main": "index.js",
   "name": "bay-lang",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "dependencies": {
     "bayrell-runtime-nodejs": "^0.11.0",
     "bayrell-lang-nodejs": "^0.11.0",
