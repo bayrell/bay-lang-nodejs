@@ -21,4 +21,4 @@
 let use = require('bay-lang').use;
 let rtl = use("Runtime.rtl");
 
-rtl.runApp("Bayrell.Lang.Compiler.CLI");
+rtl.runApp("Bayrell.Lang", "Bayrell.Lang.Compiler.CLI");
