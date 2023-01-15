@@ -16,10 +16,10 @@
   },
   "main": "index.js",
   "name": "bay-lang",
-  "version": "0.11.2",
+  "version": "0.11.2-1",
   "dependencies": {
-    "bayrell-runtime-nodejs": "^0.11.2",
-    "bayrell-lang-nodejs": "^0.11.2",
+    "bayrell-runtime-nodejs": "0.11.2-1",
+    "bayrell-lang-nodejs": "0.11.2",
     "chokidar": "^3.5.3"
   }
 }
