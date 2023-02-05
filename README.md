@@ -2,13 +2,13 @@
 
 Install as root:
 ```
-npm install -g bay-lang@0.11.2-1
+npm install -g bay-lang
 ```
 
 Install in code server:
 ```
 cd ~
-npm install --save bay-lang@0.11.2-1
+npm install --save bay-lang
 ```
 
 Check version:
