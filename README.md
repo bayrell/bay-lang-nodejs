@@ -1,4 +1,4 @@
-# Bayrell Language
+# Bay Lang for Node.js
 
 Install as root:
 ```
