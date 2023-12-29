@@ -17,7 +17,7 @@
   "name": "bay-lang",
   "version": "0.12.0",
   "dependencies": {
-    "bayrell-runtime-nodejs": "0.11.8",
+    "bayrell-runtime-nodejs": "0.11.8-0",
     "bayrell-lang-nodejs": "0.12.0",
     "chokidar": "^3.5.3"
   }
