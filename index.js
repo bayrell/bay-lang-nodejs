@@ -1,5 +1,5 @@
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -20,6 +20,6 @@ let use = require("./use.js");
 
 module.exports = 
 {
-	VERSION: "0.12.0",
+	VERSION: "0.12.1",
 	"use": use,
 };

@@ -1,5 +1,5 @@
 {
-  "description": "Bay Lang",
+  "description": "BayLang Technology",
   "license": "Apache-2.0",
   "contributors": [
     {
@@ -15,10 +15,10 @@
   },
   "main": "index.js",
   "name": "bay-lang",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "dependencies": {
     "bayrell-runtime-nodejs": "0.11.8-0",
-    "bayrell-lang-nodejs": "0.12.0",
+    "bayrell-lang-nodejs": "0.12.1",
     "chokidar": "^3.5.3"
   }
 }

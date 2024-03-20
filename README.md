@@ -1,4 +1,4 @@
-# Bay Lang
+# BayLang Technology
 
 Install as root:
 ```

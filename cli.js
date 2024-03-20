@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
  *
