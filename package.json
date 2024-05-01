@@ -8,6 +8,7 @@
     }
   ],
   "files": [
+    "src/**/*.js",
     "*.js"
   ],
   "bin": {
@@ -15,10 +16,8 @@
   },
   "main": "index.js",
   "name": "bay-lang",
-  "version": "0.12.1",
+  "version": "0.12.2",
   "dependencies": {
-    "bayrell-runtime-nodejs": "0.11.8-0",
-    "bayrell-lang-nodejs": "0.12.1",
     "chokidar": "^3.5.3"
   }
 }

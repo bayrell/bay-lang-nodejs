@@ -21,7 +21,7 @@ let packages = {};
 
 function get_package_name(module_name)
 {
-	module_name = module_name.replace(".", "-").toLowerCase() + "-nodejs";
+	module_name = module_name.replace(".", "-").toLowerCase();
 	if (module_name.substr(0, 7) == "runtime") module_name = "bayrell-" + module_name;
 	return module_name;
 }

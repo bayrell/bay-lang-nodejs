@@ -19,7 +19,30 @@
  */
 
 let use = require('bay-lang').use;
+
+/* Load modules */
+require(__dirname + "/src/Runtime/index.js");
+require(__dirname + "/src/Runtime.Console/index.js");
+require(__dirname + "/src/Runtime.Unit/index.js");
+require(__dirname + "/src/BayLang/index.js");
+
+/* Get classes */
 let rtl = use("Runtime.rtl");
 let Vector = use("Runtime.Vector");
 
-rtl.runApp("Bayrell.Lang.Compiler.CLI", Vector.from(["Bayrell.Lang"]));
+rtl.runApp(null, "Bayrell.Lang.Compiler.ConsoleApp", Vector.from(["Bayrell.Lang.Compiler"]));
+
+/*
+let main = async () => {
+    let context = await rtl.createContext(
+        null,
+        Runtime.Map.from({
+            "entry_point": "Bayrell.Lang.Compiler.ConsoleApp",
+            "modules": Vector.from(["Bayrell.Lang.Compiler"]),
+        })
+    );
+
+    console.log( Runtime.io.color(context, "yellow", "test") );
+};
+main();
+*/
