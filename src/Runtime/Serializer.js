@@ -433,7 +433,7 @@ Object.assign(Runtime.Serializer.prototype,
 	_init: function(ctx)
 	{
 		use("Runtime.BaseObject").prototype._init.call(this,ctx);
-		this.flags = 1;
+		this.flags = 0;
 		this.callback_name = "";
 	},
 });

@@ -95,9 +95,10 @@ Object.assign(Runtime.Dict.prototype,
 		new_obj._map = Object.assign({}, this._map);
 		return new_obj;
 	},
-	copy: function(ctx)
+	copy: function(ctx, obj)
 	{
-		return this.cp(ctx);
+		if (obj == undefined) obj = null;
+		return (obj == null) ? (this.cp(ctx)) : (this.clone(ctx, obj));
 	},
 	/**
 	 * Clone Dict

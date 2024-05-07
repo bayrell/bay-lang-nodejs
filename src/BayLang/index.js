@@ -138,6 +138,10 @@ add("Bayrell.Lang.OpCodes.OpWhile");
 add("Bayrell.Lang.OpCodes.OpWidget");
 add("Bayrell.Lang.OpCodes.OpWidgetData");
 
+/* Test */
+add("Bayrell.Lang.Test.LangBay.Main");
+add("Bayrell.Lang.Test.ModuleDescription");
+
 var use = require('bay-lang').use;
 exports["VERSION"] = use("Bayrell.Lang.ModuleDescription").getModuleVersion();
 

@@ -47,6 +47,7 @@ Object.assign(Runtime.Callback.prototype,
 	 */
 	apply: function(ctx, args)
 	{
+		if (args == undefined) args = null;
 		var __v0 = use("Runtime.rtl");
 		return __v0.apply(ctx, this, args);
 	},

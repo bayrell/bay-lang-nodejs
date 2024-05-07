@@ -33,9 +33,9 @@ Bayrell.Lang.Exceptions.ParserError.prototype = Object.create(use("Bayrell.Lang.
 Bayrell.Lang.Exceptions.ParserError.prototype.constructor = Bayrell.Lang.Exceptions.ParserError;
 Object.assign(Bayrell.Lang.Exceptions.ParserError.prototype,
 {
-	buildMessage: function(ctx)
+	buildErrorMessage: function(ctx)
 	{
-		var error_str = this.error_str;
+		var error_str = this.getErrorMessage(ctx);
 		var file = this.getFileName(ctx);
 		var line = this.getErrorLine(ctx);
 		var pos = this.getErrorPos(ctx);

@@ -71,6 +71,10 @@ Object.assign(Runtime.rtl,
 	ERROR_HTTP_OK: -200,
 	ERROR_HTTP_BAD_GATEWAY: -502,
 	ERROR_USER: -10000,
+	ALLOW_CLASS_NAME: 1,
+	EXPORT: 2,
+	IMPORT: 4,
+	JSON_PRETTY: 8,
 	_memorize_cache: null,
 	_memorize_not_found: null,
 	_memorize_hkey: null,
@@ -950,12 +954,12 @@ Object.assign(Runtime.rtl,
 	 * @param SerializeContainer container
 	 * @return string 
 	 */
-	json_encode: function(ctx, value)
+	json_encode: function(ctx, value, flags)
 	{
+		if (flags == undefined) flags = 0;
 		var __v0 = use("Runtime.Serializer");
 		var serializer = new __v0(ctx);
-		var __v1 = use("Runtime.Serializer");
-		serializer.setFlag(ctx, __v1.ALLOW_CLASS_NAME);
+		serializer.flags = flags;
 		return serializer.json_encode(ctx, value);
 	},
 	/**
@@ -963,12 +967,12 @@ Object.assign(Runtime.rtl,
 	 * @param string s Encoded string
 	 * @return var 
 	 */
-	json_decode: function(ctx, obj)
+	json_decode: function(ctx, obj, flags)
 	{
+		if (flags == undefined) flags = 0;
 		var __v0 = use("Runtime.Serializer");
 		var serializer = new __v0(ctx);
-		var __v1 = use("Runtime.Serializer");
-		serializer.removeFlag(ctx, __v1.ALLOW_CLASS_NAME);
+		serializer.flags = flags;
 		return serializer.json_decode(ctx, obj);
 	},
 	/**

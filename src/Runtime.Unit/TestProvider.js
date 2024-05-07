@@ -67,34 +67,14 @@ Object.assign(Runtime.Unit.TestProvider.prototype,
 		if (arr.count(ctx) == 1)
 		{
 			/* Run all test in class */
-			error_code = await this.runTestClass(ctx, Runtime.rtl.attr(ctx, arr, 0));
+			error_code = await this.runTestClass(ctx, arr.get(ctx, 0));
 		}
 		else
 		{
 			/* Run specific test */
-			error_code = await this.runTestMethod(ctx, Runtime.rtl.attr(ctx, arr, 0), Runtime.rtl.attr(ctx, arr, 1));
+			error_code = await this.runTestMethod(ctx, arr.get(ctx, 0), arr.get(ctx, 1));
 		}
 		return Promise.resolve(error_code);
-	},
-	/**
-	 * Returns true if TestMethod
-	 */
-	isTestMethod: function(ctx, method_info)
-	{
-		var annotations = Runtime.rtl.attr(ctx, method_info, "annotations");
-		if (annotations)
-		{
-			for (var j = 0; j < annotations.count(ctx); j++)
-			{
-				var annotation = Runtime.rtl.attr(ctx, annotations, j);
-				var __v0 = use("Runtime.Unit.Test");
-				if (annotation instanceof __v0)
-				{
-					return true;
-				}
-			}
-		}
-		return false;
 	},
 	/**
 	 * Returns all test methods
@@ -125,7 +105,7 @@ Object.assign(Runtime.Unit.TestProvider.prototype,
 		for (var i = 0; i < methods.count(ctx); i++)
 		{
 			var method_name = methods.get(ctx, i);
-			var result = this.runTestMethod(ctx, class_name, method_name);
+			var result = await this.runTestMethod(ctx, class_name, method_name);
 			if (result != 1)
 			{
 				error_code = -1;
@@ -179,6 +159,49 @@ Object.assign(Runtime.Unit.TestProvider.prototype,
 Object.assign(Runtime.Unit.TestProvider, use("Runtime.BaseProvider"));
 Object.assign(Runtime.Unit.TestProvider,
 {
+	/**
+	 * Run
+	 */
+	run: async function(ctx, test_name)
+	{
+		if (test_name == undefined) test_name = "";
+		var __v0 = use("Runtime.Unit.TestProvider");
+		var provider = new __v0(ctx);
+		await provider.start(ctx);
+		if (test_name == "")
+		{
+			var __v1 = use("Runtime.io");
+			__v1.print(ctx, "List of all tests:");
+			for (var i = 0; i < provider.count(ctx); i++)
+			{
+				var test = provider.get(ctx, i);
+				var __v2 = use("Runtime.io");
+				__v2.print(ctx, i + 1 + use("Runtime.rtl").toStr(") ") + use("Runtime.rtl").toStr(test.name));
+			}
+			return Promise.resolve();
+		}
+		await provider.runTestByName(ctx, test_name);
+	},
+	/**
+	 * Returns true if TestMethod
+	 */
+	isTestMethod: function(ctx, method_info)
+	{
+		var annotations = Runtime.rtl.attr(ctx, method_info, "annotations");
+		if (annotations)
+		{
+			for (var j = 0; j < annotations.count(ctx); j++)
+			{
+				var annotation = annotations.get(ctx, j);
+				var __v0 = use("Runtime.Unit.Test");
+				if (annotation instanceof __v0)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{

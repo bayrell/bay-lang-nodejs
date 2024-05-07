@@ -65,6 +65,13 @@ Object.assign(Runtime.Exceptions.AbstractException.prototype,
 		return this.prev;
 	},
 	/**
+	 * Build error message
+	 */
+	buildErrorMessage: function(ctx)
+	{
+		return this.error_message;
+	},
+	/**
 	 * Returns error message
 	 */
 	getErrorMessage: function(ctx)
@@ -104,7 +111,7 @@ Object.assign(Runtime.Exceptions.AbstractException.prototype,
 	 */
 	toString: function(ctx)
 	{
-		return this.getErrorMessage(ctx);
+		return this.buildErrorMessage(ctx);
 	},
 	/**
 	 * Returns trace

@@ -51,14 +51,14 @@ Object.assign(Bayrell.Lang.Compiler.Commands.Watch.prototype,
 			}
 			var module = file_info.get(ctx, "module");
 			var assets = module.config.get(ctx, "assets");
-			var module_file_name = file_info.get(ctx, "module_file_name");
-			if (file_info.get(ctx, "file") == "/module.json")
+			var src_file_name = file_info.get(ctx, "src_file_name");
+			if (file_info.get(ctx, "file_name") == "/module.json")
 			{
 				var __v0 = use("Runtime.io");
 				__v0.print(ctx, "Reload module.json");
 				await this.settings.reload(ctx);
 			}
-			else if (assets.indexOf(ctx, module_file_name) >= 0)
+			else if (assets.indexOf(ctx, src_file_name) >= 0)
 			{
 				await this.settings.updateModule(ctx, module.name);
 			}

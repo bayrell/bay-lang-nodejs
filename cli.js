@@ -31,18 +31,3 @@ let rtl = use("Runtime.rtl");
 let Vector = use("Runtime.Vector");
 
 rtl.runApp(null, "Bayrell.Lang.Compiler.ConsoleApp", Vector.from(["Bayrell.Lang.Compiler"]));
-
-/*
-let main = async () => {
-    let context = await rtl.createContext(
-        null,
-        Runtime.Map.from({
-            "entry_point": "Bayrell.Lang.Compiler.ConsoleApp",
-            "modules": Vector.from(["Bayrell.Lang.Compiler"]),
-        })
-    );
-
-    console.log( Runtime.io.color(context, "yellow", "test") );
-};
-main();
-*/
