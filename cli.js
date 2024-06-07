@@ -30,4 +30,4 @@ require(__dirname + "/src/BayLang/index.js");
 let rtl = use("Runtime.rtl");
 let Vector = use("Runtime.Vector");
 
-rtl.runApp(null, "Bayrell.Lang.Compiler.ConsoleApp", Vector.from(["Bayrell.Lang.Compiler"]));
+rtl.runApp(null, "BayLang.Compiler.ConsoleApp", Vector.from(["BayLang.Compiler"]));

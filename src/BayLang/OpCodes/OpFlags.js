@@ -1,7 +1,7 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2018 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -17,28 +17,51 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.OpCodes == 'undefined') Bayrell.Lang.OpCodes = {};
-Bayrell.Lang.OpCodes.OpFlags = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
+BayLang.OpCodes.OpFlags = function(ctx)
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
-Bayrell.Lang.OpCodes.OpFlags.prototype = Object.create(use("Runtime.BaseStruct").prototype);
-Bayrell.Lang.OpCodes.OpFlags.prototype.constructor = Bayrell.Lang.OpCodes.OpFlags;
-Object.assign(Bayrell.Lang.OpCodes.OpFlags.prototype,
+BayLang.OpCodes.OpFlags.prototype = Object.create(use("Runtime.BaseStruct").prototype);
+BayLang.OpCodes.OpFlags.prototype.constructor = BayLang.OpCodes.OpFlags;
+Object.assign(BayLang.OpCodes.OpFlags.prototype,
 {
+	/**
+	 * Serialize object
+	 */
+	serialize: function(ctx, serializer, data)
+	{
+		use("Runtime.BaseStruct").prototype.serialize.call(this, ctx, serializer, data);
+		serializer.process(ctx, this, "p_assignable", data);
+		serializer.process(ctx, this, "p_async", data);
+		serializer.process(ctx, this, "p_cloneable", data);
+		serializer.process(ctx, this, "p_const", data);
+		serializer.process(ctx, this, "p_declare", data);
+		serializer.process(ctx, this, "p_export", data);
+		serializer.process(ctx, this, "p_lambda", data);
+		serializer.process(ctx, this, "p_memorize", data);
+		serializer.process(ctx, this, "p_multiblock", data);
+		serializer.process(ctx, this, "p_private", data);
+		serializer.process(ctx, this, "p_props", data);
+		serializer.process(ctx, this, "p_protected", data);
+		serializer.process(ctx, this, "p_public", data);
+		serializer.process(ctx, this, "p_pure", data);
+		serializer.process(ctx, this, "p_serializable", data);
+		serializer.process(ctx, this, "p_static", data);
+	},
 	/**
 	 * Read is Flag
 	 */
 	isFlag: function(ctx, name)
 	{
-		var __v0 = use("Bayrell.Lang.OpCodes.OpFlags");
+		var __v0 = use("BayLang.OpCodes.OpFlags");
 		if (!__v0.hasFlag(ctx, name))
 		{
 			return false;
 		}
-		return this.takeValue(ctx, "p_" + use("Runtime.rtl").toStr(name));
+		var __v0 = use("Runtime.rtl");
+		return __v0.attr(ctx, this, "p_" + use("Runtime.rtl").toStr(name));
 	},
 	_init: function(ctx)
 	{
@@ -60,30 +83,9 @@ Object.assign(Bayrell.Lang.OpCodes.OpFlags.prototype,
 		this.p_pure = false;
 		this.p_props = false;
 	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "p_async")return this.p_async;
-		else if (k == "p_export")return this.p_export;
-		else if (k == "p_static")return this.p_static;
-		else if (k == "p_const")return this.p_const;
-		else if (k == "p_public")return this.p_public;
-		else if (k == "p_private")return this.p_private;
-		else if (k == "p_protected")return this.p_protected;
-		else if (k == "p_declare")return this.p_declare;
-		else if (k == "p_serializable")return this.p_serializable;
-		else if (k == "p_cloneable")return this.p_cloneable;
-		else if (k == "p_assignable")return this.p_assignable;
-		else if (k == "p_memorize")return this.p_memorize;
-		else if (k == "p_multiblock")return this.p_multiblock;
-		else if (k == "p_lambda")return this.p_lambda;
-		else if (k == "p_pure")return this.p_pure;
-		else if (k == "p_props")return this.p_props;
-		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
-	},
 });
-Object.assign(Bayrell.Lang.OpCodes.OpFlags, use("Runtime.BaseStruct"));
-Object.assign(Bayrell.Lang.OpCodes.OpFlags,
+Object.assign(BayLang.OpCodes.OpFlags, use("Runtime.BaseStruct"));
+Object.assign(BayLang.OpCodes.OpFlags,
 {
 	/**
 	 * Get flags
@@ -106,11 +108,11 @@ Object.assign(Bayrell.Lang.OpCodes.OpFlags,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.OpCodes";
+		return "BayLang.OpCodes";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.OpCodes.OpFlags";
+		return "BayLang.OpCodes.OpFlags";
 	},
 	getParentClassName: function()
 	{
@@ -128,22 +130,6 @@ Object.assign(Bayrell.Lang.OpCodes.OpFlags,
 	getFieldsList: function(ctx)
 	{
 		var a = [];
-		a.push("p_async");
-		a.push("p_export");
-		a.push("p_static");
-		a.push("p_const");
-		a.push("p_public");
-		a.push("p_private");
-		a.push("p_protected");
-		a.push("p_declare");
-		a.push("p_serializable");
-		a.push("p_cloneable");
-		a.push("p_assignable");
-		a.push("p_memorize");
-		a.push("p_multiblock");
-		a.push("p_lambda");
-		a.push("p_pure");
-		a.push("p_props");
 		return use("Runtime.Vector").from(a);
 	},
 	getFieldInfoByName: function(ctx,field_name)
@@ -162,5 +148,5 @@ Object.assign(Bayrell.Lang.OpCodes.OpFlags,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.OpCodes.OpFlags);
-module.exports = Bayrell.Lang.OpCodes.OpFlags;
+});use.add(BayLang.OpCodes.OpFlags);
+module.exports = BayLang.OpCodes.OpFlags;

@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-Bayrell.Lang.LangUtils = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+BayLang.LangUtils = function(ctx)
 {
 };
-Object.assign(Bayrell.Lang.LangUtils.prototype,
+Object.assign(BayLang.LangUtils.prototype,
 {
 });
-Object.assign(Bayrell.Lang.LangUtils,
+Object.assign(BayLang.LangUtils,
 {
 	/**
 	 * Parse file and convert to BaseOpCode
@@ -50,31 +49,40 @@ Object.assign(Bayrell.Lang.LangUtils,
 	{
 		if (lang == undefined) lang = "";
 		var t = null;
-		if (lang == "php")
+		if (lang == "bay")
 		{
-			var __v0 = use("Bayrell.Lang.LangPHP.TranslatorPHP");
+			var __v0 = use("BayLang.LangBay.TranslatorBay");
 			t = new __v0(ctx);
+			t.reset(ctx);
 		}
-		if (lang == "es6")
+		else if (lang == "es6")
 		{
-			var __v0 = use("Bayrell.Lang.LangES6.TranslatorES6");
-			t = new __v0(ctx);
+			var __v1 = use("BayLang.LangES6.TranslatorES6");
+			t = new __v1(ctx);
+			t = t.constructor.reset(ctx, t);
 		}
-		if (lang == "nodejs")
+		else if (lang == "nodejs")
 		{
-			var __v0 = use("Bayrell.Lang.LangNode.TranslatorNode");
-			t = new __v0(ctx);
+			var __v2 = use("BayLang.LangNode.TranslatorNode");
+			t = new __v2(ctx);
+			t = t.constructor.reset(ctx, t);
+		}
+		else if (lang == "php")
+		{
+			var __v3 = use("BayLang.LangPHP.TranslatorPHP");
+			t = new __v3(ctx);
+			t = t.constructor.reset(ctx, t);
 		}
 		return t;
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang";
+		return "BayLang";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.LangUtils";
+		return "BayLang.LangUtils";
 	},
 	getParentClassName: function()
 	{
@@ -110,5 +118,5 @@ Object.assign(Bayrell.Lang.LangUtils,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.LangUtils);
-module.exports = Bayrell.Lang.LangUtils;
+});use.add(BayLang.LangUtils);
+module.exports = BayLang.LangUtils;

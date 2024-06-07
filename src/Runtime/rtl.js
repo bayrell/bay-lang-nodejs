@@ -71,9 +71,7 @@ Object.assign(Runtime.rtl,
 	ERROR_HTTP_OK: -200,
 	ERROR_HTTP_BAD_GATEWAY: -502,
 	ERROR_USER: -10000,
-	ALLOW_CLASS_NAME: 1,
-	EXPORT: 2,
-	IMPORT: 4,
+	ALLOW_OBJECTS: 1,
 	JSON_PRETTY: 8,
 	_memorize_cache: null,
 	_memorize_not_found: null,
@@ -120,10 +118,10 @@ Object.assign(Runtime.rtl,
 		{
 			return false;
 		}
-		var t = this.getType(ctx, obj);
-		if (t == "object" || t == "collection" || t == "dict")
+		var obj_class_name = this.get_class_name(ctx, obj);
+		if (obj_class_name != "")
 		{
-			obj = obj.constructor.getClassName(ctx);
+			obj = obj_class_name;
 		}
 		if (this.isString(ctx, obj))
 		{
@@ -150,12 +148,7 @@ Object.assign(Runtime.rtl,
 		{
 			return false;
 		}
-		var t = this.getType(ctx, obj);
-		if (t != "object" && t != "collection" && t != "dict")
-		{
-			return false;
-		}
-		return this.class_implements(ctx, obj.constructor.getClassName(ctx), interface_name);
+		return this.class_implements(ctx, this.get_class_name(ctx, obj), interface_name);
 	},
 	/**
 	 * Returns true if class exists
@@ -206,6 +199,12 @@ Object.assign(Runtime.rtl,
 		{
 			return obj;
 		}
+		var t = this.getType(ctx, obj);
+		if (t != "object" && t != "collection" && t != "dict")
+		{
+			return "";
+		}
+		if (obj.constructor.getClassName == undefined) return "";
 		return obj.constructor.getClassName(ctx);
 	},
 	/**
@@ -363,7 +362,7 @@ Object.assign(Runtime.rtl,
 		var Vector = use("Runtime.Vector");
 		if (typeof attrs == "string") attrs = Vector.from([attrs]);
 		else if (Array.isArray(attrs) && attrs.count == undefined) attrs = Vector.from(attrs);
-		var f = (ctx, attrs, data, new_value, f) => 
+		var f = (ctx, attrs, data, new_value, f) =>
 		{
 			if (attrs.count(ctx) == 0)
 			{
@@ -392,7 +391,7 @@ Object.assign(Runtime.rtl,
 			}
 			else if (data instanceof __v2)
 			{
-				var attr_data = data.takeValue(ctx, attr_name, null);
+				var attr_data = this.attr(ctx, data, attr_name, null);
 				var res = f(ctx, attrs, attr_data, new_value, f);
 				new_data = data;
 				data[attr_name] = res;
@@ -434,7 +433,7 @@ Object.assign(Runtime.rtl,
 	m_to: function(ctx, type_value, def_value)
 	{
 		if (def_value == undefined) def_value = null;
-		return (ctx, m) => 
+		return (ctx, m) =>
 		{
 			var __v0 = use("Runtime.Monad");
 			return new __v0(ctx, (m.err == null) ? (this.convert(ctx, m.val, type_value, def_value)) : (def_value));
@@ -446,7 +445,7 @@ Object.assign(Runtime.rtl,
 	m_def: function(ctx, def_value)
 	{
 		if (def_value == undefined) def_value = null;
-		return (ctx, m) => 
+		return (ctx, m) =>
 		{
 			var __v0 = use("Runtime.Monad");
 			return (m.err != null || m.val === null) ? (new __v0(ctx, def_value)) : (m);
@@ -575,6 +574,7 @@ Object.assign(Runtime.rtl,
 		{
 			return "object";
 		}
+		if (typeof value == "object") return "object";
 		return "unknown";
 	},
 	/**
@@ -802,7 +802,7 @@ Object.assign(Runtime.rtl,
 		if (flag == undefined) flag = 255;
 		var __v0 = use("Runtime.Vector");
 		var names = new __v0(ctx);
-		var appendFields = (ctx, parent_class_name) => 
+		var appendFields = (ctx, parent_class_name) =>
 		{
 			var __v1 = use("Runtime.Callback");
 			var getFieldsList = new __v1(ctx, parent_class_name, "getFieldsList");
@@ -914,6 +914,25 @@ Object.assign(Runtime.rtl,
 	},
 	/* ================ Dirty functions ================ */
 	/**
+	 * Trace
+	 */
+	getTrace: function(ctx)
+	{
+		var res = use("Runtime.Vector").from([]);
+		return res;
+	},
+	/**
+	 * Print trace
+	 */
+	printTrace: function(ctx, ch)
+	{
+		if (ch == undefined) ch = "\n";
+		var __v0 = use("Runtime.rs");
+		var __v1 = use("Runtime.rtl");
+		var s = __v0.join(ctx, ch, __v1.getTrace(ctx));
+		console.log(s);
+	},
+	/**
 	 * Sleep in ms
 	 */
 	sleep: async function(ctx, time)
@@ -957,10 +976,10 @@ Object.assign(Runtime.rtl,
 	json_encode: function(ctx, value, flags)
 	{
 		if (flags == undefined) flags = 0;
-		var __v0 = use("Runtime.Serializer");
+		var __v0 = use("Runtime.SerializerJson");
 		var serializer = new __v0(ctx);
 		serializer.flags = flags;
-		return serializer.json_encode(ctx, value);
+		return serializer.encode(ctx, value);
 	},
 	/**
 	 * Json decode to primitive values
@@ -970,10 +989,10 @@ Object.assign(Runtime.rtl,
 	json_decode: function(ctx, obj, flags)
 	{
 		if (flags == undefined) flags = 0;
-		var __v0 = use("Runtime.Serializer");
+		var __v0 = use("Runtime.SerializerJson");
 		var serializer = new __v0(ctx);
 		serializer.flags = flags;
-		return serializer.json_decode(ctx, obj);
+		return serializer.decode(ctx, obj);
 	},
 	/**
 	 * Returns global context

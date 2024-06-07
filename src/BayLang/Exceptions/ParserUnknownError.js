@@ -17,39 +17,38 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.Exceptions == 'undefined') Bayrell.Lang.Exceptions = {};
-Bayrell.Lang.Exceptions.ParserUnknownError = function(ctx, s, code, context, prev)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.Exceptions == 'undefined') BayLang.Exceptions = {};
+BayLang.Exceptions.ParserUnknownError = function(ctx, s, code, prev)
 {
 	if (prev == undefined) prev = null;
 	if (code == -1)
 	{
-		var __v0 = use("Bayrell.Lang.LangConstant");
+		var __v0 = use("BayLang.LangConstant");
 		code = __v0.ERROR_PARSER;
 	}
-	use("Runtime.Exceptions.RuntimeException").call(this, ctx, s, code, context, prev);
+	use("Runtime.Exceptions.AbstractException").call(this, ctx, s, code, prev);
 };
-Bayrell.Lang.Exceptions.ParserUnknownError.prototype = Object.create(use("Runtime.Exceptions.RuntimeException").prototype);
-Bayrell.Lang.Exceptions.ParserUnknownError.prototype.constructor = Bayrell.Lang.Exceptions.ParserUnknownError;
-Object.assign(Bayrell.Lang.Exceptions.ParserUnknownError.prototype,
+BayLang.Exceptions.ParserUnknownError.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
+BayLang.Exceptions.ParserUnknownError.prototype.constructor = BayLang.Exceptions.ParserUnknownError;
+Object.assign(BayLang.Exceptions.ParserUnknownError.prototype,
 {
 });
-Object.assign(Bayrell.Lang.Exceptions.ParserUnknownError, use("Runtime.Exceptions.RuntimeException"));
-Object.assign(Bayrell.Lang.Exceptions.ParserUnknownError,
+Object.assign(BayLang.Exceptions.ParserUnknownError, use("Runtime.Exceptions.AbstractException"));
+Object.assign(BayLang.Exceptions.ParserUnknownError,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.Exceptions";
+		return "BayLang.Exceptions";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.Exceptions.ParserUnknownError";
+		return "BayLang.Exceptions.ParserUnknownError";
 	},
 	getParentClassName: function()
 	{
-		return "Runtime.Exceptions.RuntimeException";
+		return "Runtime.Exceptions.AbstractException";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -81,5 +80,5 @@ Object.assign(Bayrell.Lang.Exceptions.ParserUnknownError,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.Exceptions.ParserUnknownError);
-module.exports = Bayrell.Lang.Exceptions.ParserUnknownError;
+});use.add(BayLang.Exceptions.ParserUnknownError);
+module.exports = BayLang.Exceptions.ParserUnknownError;

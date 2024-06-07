@@ -345,7 +345,7 @@ Object.assign(Runtime.Dict.prototype,
 		}
 		var __v0 = use("Runtime.Map");
 		var obj = new __v0(ctx);
-		fields.each(ctx, (ctx, field_name) => 
+		fields.each(ctx, (ctx, field_name) =>
 		{
 			if (!this.has(ctx, field_name) && skip_empty)
 			{

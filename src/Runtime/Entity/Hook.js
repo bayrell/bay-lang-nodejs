@@ -28,6 +28,14 @@ Runtime.Entity.Hook.prototype = Object.create(use("Runtime.Entity.Entity").proto
 Runtime.Entity.Hook.prototype.constructor = Runtime.Entity.Hook;
 Object.assign(Runtime.Entity.Hook.prototype,
 {
+	/**
+	 * Create hook instance
+	 */
+	createHook: function(ctx)
+	{
+		var __v0 = use("Runtime.rtl");
+		return __v0.newInstance(ctx, this.name, use("Runtime.Vector").from([this.params]));
+	},
 	_init: function(ctx)
 	{
 		use("Runtime.Entity.Entity").prototype._init.call(this,ctx);

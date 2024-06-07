@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-Bayrell.Lang.SaveOpCode = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+BayLang.SaveOpCode = function(ctx)
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
-Bayrell.Lang.SaveOpCode.prototype = Object.create(use("Runtime.BaseStruct").prototype);
-Bayrell.Lang.SaveOpCode.prototype.constructor = Bayrell.Lang.SaveOpCode;
-Object.assign(Bayrell.Lang.SaveOpCode.prototype,
+BayLang.SaveOpCode.prototype = Object.create(use("Runtime.BaseStruct").prototype);
+BayLang.SaveOpCode.prototype.constructor = BayLang.SaveOpCode;
+Object.assign(BayLang.SaveOpCode.prototype,
 {
 	_init: function(ctx)
 	{
@@ -45,17 +44,17 @@ Object.assign(Bayrell.Lang.SaveOpCode.prototype,
 		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
 	},
 });
-Object.assign(Bayrell.Lang.SaveOpCode, use("Runtime.BaseStruct"));
-Object.assign(Bayrell.Lang.SaveOpCode,
+Object.assign(BayLang.SaveOpCode, use("Runtime.BaseStruct"));
+Object.assign(BayLang.SaveOpCode,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang";
+		return "BayLang";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.SaveOpCode";
+		return "BayLang.SaveOpCode";
 	},
 	getParentClassName: function()
 	{
@@ -95,5 +94,5 @@ Object.assign(Bayrell.Lang.SaveOpCode,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.SaveOpCode);
-module.exports = Bayrell.Lang.SaveOpCode;
+});use.add(BayLang.SaveOpCode);
+module.exports = BayLang.SaveOpCode;

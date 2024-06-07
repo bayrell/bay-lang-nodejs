@@ -17,35 +17,34 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.Exceptions == 'undefined') Bayrell.Lang.Exceptions = {};
-Bayrell.Lang.Exceptions.ParserEOF = function(ctx, context, prev)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.Exceptions == 'undefined') BayLang.Exceptions = {};
+BayLang.Exceptions.ParserEOF = function(ctx, prev)
 {
 	if (prev == undefined) prev = null;
-	var __v0 = use("Bayrell.Lang.LangConstant");
-	use("Bayrell.Lang.Exceptions.ParserUnknownError").call(this, ctx, "ERROR_PARSER_EOF", __v0.ERROR_PARSER_EOF, context, prev);
+	var __v0 = use("BayLang.LangConstant");
+	use("BayLang.Exceptions.ParserUnknownError").call(this, ctx, "ERROR_PARSER_EOF", __v0.ERROR_PARSER_EOF, prev);
 };
-Bayrell.Lang.Exceptions.ParserEOF.prototype = Object.create(use("Bayrell.Lang.Exceptions.ParserUnknownError").prototype);
-Bayrell.Lang.Exceptions.ParserEOF.prototype.constructor = Bayrell.Lang.Exceptions.ParserEOF;
-Object.assign(Bayrell.Lang.Exceptions.ParserEOF.prototype,
+BayLang.Exceptions.ParserEOF.prototype = Object.create(use("BayLang.Exceptions.ParserUnknownError").prototype);
+BayLang.Exceptions.ParserEOF.prototype.constructor = BayLang.Exceptions.ParserEOF;
+Object.assign(BayLang.Exceptions.ParserEOF.prototype,
 {
 });
-Object.assign(Bayrell.Lang.Exceptions.ParserEOF, use("Bayrell.Lang.Exceptions.ParserUnknownError"));
-Object.assign(Bayrell.Lang.Exceptions.ParserEOF,
+Object.assign(BayLang.Exceptions.ParserEOF, use("BayLang.Exceptions.ParserUnknownError"));
+Object.assign(BayLang.Exceptions.ParserEOF,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.Exceptions";
+		return "BayLang.Exceptions";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.Exceptions.ParserEOF";
+		return "BayLang.Exceptions.ParserEOF";
 	},
 	getParentClassName: function()
 	{
-		return "Bayrell.Lang.Exceptions.ParserUnknownError";
+		return "BayLang.Exceptions.ParserUnknownError";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -77,5 +76,5 @@ Object.assign(Bayrell.Lang.Exceptions.ParserEOF,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.Exceptions.ParserEOF);
-module.exports = Bayrell.Lang.Exceptions.ParserEOF;
+});use.add(BayLang.Exceptions.ParserEOF);
+module.exports = BayLang.Exceptions.ParserEOF;

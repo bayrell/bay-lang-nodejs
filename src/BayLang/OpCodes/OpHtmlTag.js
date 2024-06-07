@@ -1,7 +1,7 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2018 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -17,20 +17,31 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.OpCodes == 'undefined') Bayrell.Lang.OpCodes = {};
-Bayrell.Lang.OpCodes.OpHtmlTag = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
+BayLang.OpCodes.OpHtmlTag = function(ctx)
 {
-	use("Bayrell.Lang.OpCodes.BaseOpCode").apply(this, arguments);
+	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
 };
-Bayrell.Lang.OpCodes.OpHtmlTag.prototype = Object.create(use("Bayrell.Lang.OpCodes.BaseOpCode").prototype);
-Bayrell.Lang.OpCodes.OpHtmlTag.prototype.constructor = Bayrell.Lang.OpCodes.OpHtmlTag;
-Object.assign(Bayrell.Lang.OpCodes.OpHtmlTag.prototype,
+BayLang.OpCodes.OpHtmlTag.prototype = Object.create(use("BayLang.OpCodes.BaseOpCode").prototype);
+BayLang.OpCodes.OpHtmlTag.prototype.constructor = BayLang.OpCodes.OpHtmlTag;
+Object.assign(BayLang.OpCodes.OpHtmlTag.prototype,
 {
+	/**
+	 * Serialize object
+	 */
+	serialize: function(ctx, serializer, data)
+	{
+		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
+		serializer.process(ctx, this, "attrs", data);
+		serializer.process(ctx, this, "items", data);
+		serializer.process(ctx, this, "op_code_name", data);
+		serializer.process(ctx, this, "spreads", data);
+		serializer.process(ctx, this, "tag_name", data);
+	},
 	_init: function(ctx)
 	{
-		use("Bayrell.Lang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.op = "op_html_tag";
 		this.tag_name = "";
 		this.op_code_name = null;
@@ -38,33 +49,22 @@ Object.assign(Bayrell.Lang.OpCodes.OpHtmlTag.prototype,
 		this.spreads = null;
 		this.items = null;
 	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "op")return this.op;
-		else if (k == "tag_name")return this.tag_name;
-		else if (k == "op_code_name")return this.op_code_name;
-		else if (k == "attrs")return this.attrs;
-		else if (k == "spreads")return this.spreads;
-		else if (k == "items")return this.items;
-		return use("Bayrell.Lang.OpCodes.BaseOpCode").prototype.takeValue.call(this,ctx,k,d);
-	},
 });
-Object.assign(Bayrell.Lang.OpCodes.OpHtmlTag, use("Bayrell.Lang.OpCodes.BaseOpCode"));
-Object.assign(Bayrell.Lang.OpCodes.OpHtmlTag,
+Object.assign(BayLang.OpCodes.OpHtmlTag, use("BayLang.OpCodes.BaseOpCode"));
+Object.assign(BayLang.OpCodes.OpHtmlTag,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.OpCodes";
+		return "BayLang.OpCodes";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.OpCodes.OpHtmlTag";
+		return "BayLang.OpCodes.OpHtmlTag";
 	},
 	getParentClassName: function()
 	{
-		return "Bayrell.Lang.OpCodes.BaseOpCode";
+		return "BayLang.OpCodes.BaseOpCode";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -78,12 +78,6 @@ Object.assign(Bayrell.Lang.OpCodes.OpHtmlTag,
 	getFieldsList: function(ctx)
 	{
 		var a = [];
-		a.push("op");
-		a.push("tag_name");
-		a.push("op_code_name");
-		a.push("attrs");
-		a.push("spreads");
-		a.push("items");
 		return use("Runtime.Vector").from(a);
 	},
 	getFieldInfoByName: function(ctx,field_name)
@@ -102,5 +96,5 @@ Object.assign(Bayrell.Lang.OpCodes.OpHtmlTag,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.OpCodes.OpHtmlTag);
-module.exports = Bayrell.Lang.OpCodes.OpHtmlTag;
+});use.add(BayLang.OpCodes.OpHtmlTag);
+module.exports = BayLang.OpCodes.OpHtmlTag;

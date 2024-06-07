@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,21 +17,20 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.Compiler == 'undefined') Bayrell.Lang.Compiler = {};
-if (typeof Bayrell.Lang.Compiler.Commands == 'undefined') Bayrell.Lang.Compiler.Commands = {};
-Bayrell.Lang.Compiler.Commands.Modules = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
+if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
+BayLang.Compiler.Commands.Modules = function(ctx)
 {
 	use("Runtime.Console.BaseCommand").apply(this, arguments);
 };
-Bayrell.Lang.Compiler.Commands.Modules.prototype = Object.create(use("Runtime.Console.BaseCommand").prototype);
-Bayrell.Lang.Compiler.Commands.Modules.prototype.constructor = Bayrell.Lang.Compiler.Commands.Modules;
-Object.assign(Bayrell.Lang.Compiler.Commands.Modules.prototype,
+BayLang.Compiler.Commands.Modules.prototype = Object.create(use("Runtime.Console.BaseCommand").prototype);
+BayLang.Compiler.Commands.Modules.prototype.constructor = BayLang.Compiler.Commands.Modules;
+Object.assign(BayLang.Compiler.Commands.Modules.prototype,
 {
 });
-Object.assign(Bayrell.Lang.Compiler.Commands.Modules, use("Runtime.Console.BaseCommand"));
-Object.assign(Bayrell.Lang.Compiler.Commands.Modules,
+Object.assign(BayLang.Compiler.Commands.Modules, use("Runtime.Console.BaseCommand"));
+Object.assign(BayLang.Compiler.Commands.Modules,
 {
 	/**
 	 * Returns name
@@ -60,7 +59,7 @@ Object.assign(Bayrell.Lang.Compiler.Commands.Modules,
 	 */
 	getModules: function(ctx)
 	{
-		var settings = ctx.provider(ctx, "Bayrell.Lang.Compiler.SettingsProvider");
+		var settings = ctx.provider(ctx, "BayLang.Compiler.SettingsProvider");
 		return settings.modules;
 	},
 	/**
@@ -90,11 +89,11 @@ Object.assign(Bayrell.Lang.Compiler.Commands.Modules,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.Compiler.Commands";
+		return "BayLang.Compiler.Commands";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.Compiler.Commands.Modules";
+		return "BayLang.Compiler.Commands.Modules";
 	},
 	getParentClassName: function()
 	{
@@ -130,5 +129,5 @@ Object.assign(Bayrell.Lang.Compiler.Commands.Modules,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.Compiler.Commands.Modules);
-module.exports = Bayrell.Lang.Compiler.Commands.Modules;
+});use.add(BayLang.Compiler.Commands.Modules);
+module.exports = BayLang.Compiler.Commands.Modules;

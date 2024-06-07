@@ -31,6 +31,45 @@ Object.assign(Runtime.BaseObject.prototype,
 	_init: function(ctx)
 	{
 	},
+	/**
+	 * Init struct data
+	 */
+	_changes: function(ctx, changes)
+	{
+	},
+	/**
+	 * Assign new values
+	 */
+	_assign_values: function(ctx, changes)
+	{
+		if (changes == undefined) changes = null;
+		if (typeof changes == 'object' && !(changes instanceof Runtime.Dict))
+		{
+			changes = new Runtime.Map(ctx, changes);
+		}
+		if (changes == null)
+		{
+			return ;
+		}
+		if (changes.keys(ctx).count(ctx) == 0)
+		{
+			return ;
+		}
+		var __v0 = use("Runtime.Map");
+		if (!(changes instanceof __v0))
+		{
+			changes = changes.toMap(ctx);
+		}
+		this._changes(ctx, changes);
+		var _Dict = use("Runtime.Dict");
+		var rtl = use("Runtime.rtl");
+		if (changes instanceof _Dict) changes = changes.toObject();
+		for (var key in changes)
+		{
+			var value = changes[key];
+			this[key] = value;
+		}
+	},
 });
 Object.assign(Runtime.BaseObject,
 {

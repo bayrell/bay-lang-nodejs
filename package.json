@@ -16,7 +16,7 @@
   },
   "main": "index.js",
   "name": "bay-lang",
-  "version": "0.12.2",
+  "version": "0.12.2-5",
   "dependencies": {
     "chokidar": "^3.5.3"
   }

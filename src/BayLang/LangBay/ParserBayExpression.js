@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,16 +17,15 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.LangBay == 'undefined') Bayrell.Lang.LangBay = {};
-Bayrell.Lang.LangBay.ParserBayExpression = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
+BayLang.LangBay.ParserBayExpression = function(ctx)
 {
 };
-Object.assign(Bayrell.Lang.LangBay.ParserBayExpression.prototype,
+Object.assign(BayLang.LangBay.ParserBayExpression.prototype,
 {
 });
-Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
+Object.assign(BayLang.LangBay.ParserBayExpression,
 {
 	/**
 	 * Read negative
@@ -45,7 +44,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 			var res = parser.parser_base.constructor.readDynamic(ctx, look);
 			parser = Runtime.rtl.attr(ctx, res, 0);
 			op_code = Runtime.rtl.attr(ctx, res, 1);
-			var __v0 = use("Bayrell.Lang.OpCodes.OpNegative");
+			var __v0 = use("BayLang.OpCodes.OpNegative");
 			return use("Runtime.Vector").from([parser,new __v0(ctx, use("Runtime.Map").from({"value":op_code,"caret_start":caret_start,"caret_end":parser.caret}))]);
 		}
 		return parser.parser_base.constructor.readDynamic(ctx, parser);
@@ -67,7 +66,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 			var res = this.readNegative(ctx, look);
 			parser = Runtime.rtl.attr(ctx, res, 0);
 			op_code = Runtime.rtl.attr(ctx, res, 1);
-			var __v0 = use("Bayrell.Lang.OpCodes.OpMath");
+			var __v0 = use("BayLang.OpCodes.OpMath");
 			return use("Runtime.Vector").from([parser,new __v0(ctx, use("Runtime.Map").from({"value1":op_code,"math":"!","caret_start":caret_start,"caret_end":parser.caret}))]);
 		}
 		return this.readNegative(ctx, parser);
@@ -95,7 +94,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 			var res = this.readBitNot(ctx, look);
 			look = Runtime.rtl.attr(ctx, res, 0);
 			look_value = Runtime.rtl.attr(ctx, res, 1);
-			var __v0 = use("Bayrell.Lang.OpCodes.OpMath");
+			var __v0 = use("BayLang.OpCodes.OpMath");
 			op_code = new __v0(ctx, use("Runtime.Map").from({"value1":op_code,"value2":look_value,"math":math,"caret_start":caret_start,"caret_end":look.caret}));
 			parser = look;
 			var res = parser.parser_base.constructor.readToken(ctx, parser);
@@ -127,7 +126,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 			var res = this.readBitShift(ctx, look);
 			look = Runtime.rtl.attr(ctx, res, 0);
 			look_value = Runtime.rtl.attr(ctx, res, 1);
-			var __v0 = use("Bayrell.Lang.OpCodes.OpMath");
+			var __v0 = use("BayLang.OpCodes.OpMath");
 			op_code = new __v0(ctx, use("Runtime.Map").from({"value1":op_code,"value2":look_value,"math":math,"caret_start":caret_start,"caret_end":look.caret}));
 			parser = look;
 			var res = parser.parser_base.constructor.readToken(ctx, parser);
@@ -159,7 +158,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 			var res = this.readBitAnd(ctx, look);
 			look = Runtime.rtl.attr(ctx, res, 0);
 			look_value = Runtime.rtl.attr(ctx, res, 1);
-			var __v0 = use("Bayrell.Lang.OpCodes.OpMath");
+			var __v0 = use("BayLang.OpCodes.OpMath");
 			op_code = new __v0(ctx, use("Runtime.Map").from({"value1":op_code,"value2":look_value,"math":math,"caret_start":caret_start,"caret_end":look.caret}));
 			parser = look;
 			var res = parser.parser_base.constructor.readToken(ctx, parser);
@@ -191,7 +190,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 			var res = this.readBitOr(ctx, look);
 			look = Runtime.rtl.attr(ctx, res, 0);
 			look_value = Runtime.rtl.attr(ctx, res, 1);
-			var __v0 = use("Bayrell.Lang.OpCodes.OpMath");
+			var __v0 = use("BayLang.OpCodes.OpMath");
 			op_code = new __v0(ctx, use("Runtime.Map").from({"value1":op_code,"value2":look_value,"math":math,"caret_start":caret_start,"caret_end":look.caret}));
 			parser = look;
 			var res = parser.parser_base.constructor.readToken(ctx, parser);
@@ -223,7 +222,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 			var res = this.readFactor(ctx, look);
 			look = Runtime.rtl.attr(ctx, res, 0);
 			look_value = Runtime.rtl.attr(ctx, res, 1);
-			var __v0 = use("Bayrell.Lang.OpCodes.OpMath");
+			var __v0 = use("BayLang.OpCodes.OpMath");
 			op_code = new __v0(ctx, use("Runtime.Map").from({"value1":op_code,"value2":look_value,"math":math,"caret_start":caret_start,"caret_end":look.caret}));
 			parser = look;
 			var res = parser.parser_base.constructor.readToken(ctx, parser);
@@ -255,7 +254,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 			var res = this.readArithmetic(ctx, look);
 			look = Runtime.rtl.attr(ctx, res, 0);
 			look_value = Runtime.rtl.attr(ctx, res, 1);
-			var __v0 = use("Bayrell.Lang.OpCodes.OpMath");
+			var __v0 = use("BayLang.OpCodes.OpMath");
 			op_code = new __v0(ctx, use("Runtime.Map").from({"value1":op_code,"value2":look_value,"math":math,"caret_start":caret_start,"caret_end":look.caret}));
 			parser = look;
 			var res = parser.parser_base.constructor.readToken(ctx, parser);
@@ -287,7 +286,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 			var res = this.readConcat(ctx, look);
 			look = Runtime.rtl.attr(ctx, res, 0);
 			look_value = Runtime.rtl.attr(ctx, res, 1);
-			var __v0 = use("Bayrell.Lang.OpCodes.OpMath");
+			var __v0 = use("BayLang.OpCodes.OpMath");
 			op_code = new __v0(ctx, use("Runtime.Map").from({"value1":op_code,"value2":look_value,"math":math,"caret_start":caret_start,"caret_end":parser.caret}));
 			parser = look;
 		}
@@ -297,7 +296,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 			var res = parser.parser_base.constructor.readTypeIdentifier(ctx, look);
 			look = Runtime.rtl.attr(ctx, res, 0);
 			look_value = Runtime.rtl.attr(ctx, res, 1);
-			var __v1 = use("Bayrell.Lang.OpCodes.OpMath");
+			var __v1 = use("BayLang.OpCodes.OpMath");
 			op_code = new __v1(ctx, use("Runtime.Map").from({"value1":op_code,"value2":look_value,"math":math,"caret_start":caret_start,"caret_end":parser.caret}));
 			parser = look;
 		}
@@ -321,7 +320,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 			var res = this.readCompare(ctx, look);
 			parser = Runtime.rtl.attr(ctx, res, 0);
 			op_code = Runtime.rtl.attr(ctx, res, 1);
-			var __v0 = use("Bayrell.Lang.OpCodes.OpMath");
+			var __v0 = use("BayLang.OpCodes.OpMath");
 			return use("Runtime.Vector").from([parser,new __v0(ctx, use("Runtime.Map").from({"value1":op_code,"math":"not","caret_start":caret_start,"caret_end":parser.caret}))]);
 		}
 		return this.readCompare(ctx, parser);
@@ -349,7 +348,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 			var res = this.readNot(ctx, look);
 			look = Runtime.rtl.attr(ctx, res, 0);
 			look_value = Runtime.rtl.attr(ctx, res, 1);
-			var __v0 = use("Bayrell.Lang.OpCodes.OpMath");
+			var __v0 = use("BayLang.OpCodes.OpMath");
 			op_code = new __v0(ctx, use("Runtime.Map").from({"value1":op_code,"value2":look_value,"math":"and","caret_start":caret_start,"caret_end":look.caret}));
 			parser = look;
 			var res = parser.parser_base.constructor.readToken(ctx, parser);
@@ -381,7 +380,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 			var res = this.readAnd(ctx, look);
 			look = Runtime.rtl.attr(ctx, res, 0);
 			look_value = Runtime.rtl.attr(ctx, res, 1);
-			var __v0 = use("Bayrell.Lang.OpCodes.OpMath");
+			var __v0 = use("BayLang.OpCodes.OpMath");
 			op_code = new __v0(ctx, use("Runtime.Map").from({"value1":op_code,"value2":look_value,"math":"or","caret_start":caret_start,"caret_end":look.caret}));
 			parser = look;
 			var res = parser.parser_base.constructor.readToken(ctx, parser);
@@ -435,7 +434,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 				parser = Runtime.rtl.attr(ctx, res, 0);
 				if_false = Runtime.rtl.attr(ctx, res, 1);
 			}
-			var __v0 = use("Bayrell.Lang.OpCodes.OpTernary");
+			var __v0 = use("BayLang.OpCodes.OpTernary");
 			op_code = new __v0(ctx, use("Runtime.Map").from({"condition":condition,"if_true":if_true,"if_false":if_false,"caret_start":caret_start,"caret_end":parser.caret}));
 		}
 		return use("Runtime.Vector").from([parser,op_code]);
@@ -497,7 +496,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 					var res = this.readTernary(ctx, parser);
 					parser = Runtime.rtl.attr(ctx, res, 0);
 					value = Runtime.rtl.attr(ctx, res, 1);
-					var __v0 = use("Bayrell.Lang.OpCodes.OpPipe");
+					var __v0 = use("BayLang.OpCodes.OpPipe");
 					kind = __v0.KIND_ATTR;
 				}
 				else if (look_token.content == "\"" || look_token.content == "'")
@@ -505,7 +504,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 					var res = this.readTernary(ctx, parser);
 					parser = Runtime.rtl.attr(ctx, res, 0);
 					value = Runtime.rtl.attr(ctx, res, 1);
-					var __v1 = use("Bayrell.Lang.OpCodes.OpPipe");
+					var __v1 = use("BayLang.OpCodes.OpPipe");
 					kind = __v1.KIND_ATTR;
 				}
 				else if (look_token.content == "{")
@@ -514,24 +513,24 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 					var res = this.readTernary(ctx, parser);
 					parser = Runtime.rtl.attr(ctx, res, 0);
 					value = Runtime.rtl.attr(ctx, res, 1);
-					var __v2 = use("Bayrell.Lang.OpCodes.OpPipe");
+					var __v2 = use("BayLang.OpCodes.OpPipe");
 					kind = __v2.KIND_ATTR;
 					var res = parser.parser_base.constructor.matchToken(ctx, parser, "}");
 					parser = Runtime.rtl.attr(ctx, res, 0);
 				}
 				else if (is_next_attr)
 				{
-					var __v3 = use("Bayrell.Lang.Exceptions.ParserExpected");
+					var __v3 = use("BayLang.Exceptions.ParserExpected");
 					throw new __v3(ctx, "|>", parser.caret, parser.file_name)
 				}
 				else if (look_token.content == "default")
 				{
 					var arg1;
 					var arg2;
-					var __v4 = use("Bayrell.Lang.OpCodes.OpPipe");
+					var __v4 = use("BayLang.OpCodes.OpPipe");
 					kind = __v4.KIND_CALL;
 					is_monad = true;
-					var __v12 = use("Bayrell.Lang.Exceptions.ParserError");
+					var __v12 = use("BayLang.Exceptions.ParserError");
 					try
 					{
 						var res = parser.parser_base.constructor.readIdentifier(ctx, look);
@@ -540,14 +539,14 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 						var res = this.readTernary(ctx, parser);
 						parser = Runtime.rtl.attr(ctx, res, 0);
 						arg2 = Runtime.rtl.attr(ctx, res, 1);
-						var __v5 = use("Bayrell.Lang.OpCodes.OpString");
+						var __v5 = use("BayLang.OpCodes.OpString");
 						arg1 = new __v5(ctx, use("Runtime.Map").from({"value":parser.constructor.findModuleName(ctx, parser, arg1.value),"caret_start":arg1.caret_start,"caret_end":arg1.caret_end}));
-						var __v6 = use("Bayrell.Lang.OpCodes.OpCall");
-						var __v7 = use("Bayrell.Lang.OpCodes.OpAttr");
-						var __v8 = use("Bayrell.Lang.OpCodes.OpAttr");
-						var __v9 = use("Bayrell.Lang.OpCodes.OpIdentifier");
-						var __v10 = use("Bayrell.Lang.OpCodes.OpIdentifier");
-						var __v11 = use("Bayrell.Lang.OpCodes.OpIdentifier");
+						var __v6 = use("BayLang.OpCodes.OpCall");
+						var __v7 = use("BayLang.OpCodes.OpAttr");
+						var __v8 = use("BayLang.OpCodes.OpAttr");
+						var __v9 = use("BayLang.OpCodes.OpIdentifier");
+						var __v10 = use("BayLang.OpCodes.OpIdentifier");
+						var __v11 = use("BayLang.OpCodes.OpIdentifier");
 						value = new __v6(ctx, use("Runtime.Map").from({"args":use("Runtime.Vector").from([arg1,arg2]),"obj":new __v7(ctx, use("Runtime.Map").from({"kind":__v8.KIND_STATIC,"obj":new __v9(ctx, use("Runtime.Map").from({"kind":__v10.KIND_SYS_TYPE,"caret_start":caret_start,"caret_end":parser.caret,"value":"rtl"})),"value":new __v11(ctx, use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.caret,"value":"m_to"})),"caret_start":caret_start,"caret_end":parser.caret})),"caret_start":caret_start,"caret_end":parser.caret}));
 					}
 					catch (_ex)
@@ -568,19 +567,19 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 						var res = this.readTernary(ctx, look);
 						parser = Runtime.rtl.attr(ctx, res, 0);
 						arg2 = Runtime.rtl.attr(ctx, res, 1);
-						var __v5 = use("Bayrell.Lang.OpCodes.OpCall");
-						var __v6 = use("Bayrell.Lang.OpCodes.OpAttr");
-						var __v7 = use("Bayrell.Lang.OpCodes.OpAttr");
-						var __v8 = use("Bayrell.Lang.OpCodes.OpIdentifier");
-						var __v9 = use("Bayrell.Lang.OpCodes.OpIdentifier");
-						var __v10 = use("Bayrell.Lang.OpCodes.OpIdentifier");
+						var __v5 = use("BayLang.OpCodes.OpCall");
+						var __v6 = use("BayLang.OpCodes.OpAttr");
+						var __v7 = use("BayLang.OpCodes.OpAttr");
+						var __v8 = use("BayLang.OpCodes.OpIdentifier");
+						var __v9 = use("BayLang.OpCodes.OpIdentifier");
+						var __v10 = use("BayLang.OpCodes.OpIdentifier");
 						value = new __v5(ctx, use("Runtime.Map").from({"args":use("Runtime.Vector").from([arg2]),"obj":new __v6(ctx, use("Runtime.Map").from({"kind":__v7.KIND_STATIC,"obj":new __v8(ctx, use("Runtime.Map").from({"kind":__v9.KIND_SYS_TYPE,"caret_start":caret_start,"caret_end":parser.caret,"value":"rtl"})),"value":new __v10(ctx, use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.caret,"value":"m_def"})),"caret_start":caret_start,"caret_end":parser.caret})),"caret_start":caret_start,"caret_end":parser.caret}));
 					}
 				}
 				else if (look_token.content == "method" || look_token.content == "." || look_token.content == ":" || look_token.content == "::")
 				{
 					parser = look;
-					var __v5 = use("Bayrell.Lang.OpCodes.OpPipe");
+					var __v5 = use("BayLang.OpCodes.OpPipe");
 					kind = __v5.KIND_CALL;
 					/* Set pipe */
 					var save_find_ident = parser.find_ident;
@@ -588,14 +587,14 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 					parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["is_pipe"]), true);
 					if (look_token.content == ".")
 					{
-						var __v6 = use("Bayrell.Lang.OpCodes.OpPipe");
+						var __v6 = use("BayLang.OpCodes.OpPipe");
 						kind = __v6.KIND_METHOD;
-						var __v7 = use("Bayrell.Lang.OpCodes.OpAttr");
+						var __v7 = use("BayLang.OpCodes.OpAttr");
 						parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["pipe_kind"]), __v7.KIND_ATTR);
 					}
 					else
 					{
-						var __v8 = use("Bayrell.Lang.OpCodes.OpAttr");
+						var __v8 = use("BayLang.OpCodes.OpAttr");
 						parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["pipe_kind"]), __v8.KIND_STATIC);
 					}
 					var res = parser.parser_base.constructor.readDynamic(ctx, parser);
@@ -607,7 +606,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 				}
 				else if (look_token.content == "curry")
 				{
-					var __v6 = use("Bayrell.Lang.OpCodes.OpPipe");
+					var __v6 = use("BayLang.OpCodes.OpPipe");
 					kind = __v6.KIND_CALL;
 					var res = parser.parser_base.constructor.readCurry(ctx, parser);
 					parser = Runtime.rtl.attr(ctx, res, 0);
@@ -615,13 +614,13 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 				}
 				else
 				{
-					var __v7 = use("Bayrell.Lang.OpCodes.OpPipe");
+					var __v7 = use("BayLang.OpCodes.OpPipe");
 					kind = __v7.KIND_CALL;
 					var res = parser.parser_base.constructor.readDynamic(ctx, parser);
 					parser = Runtime.rtl.attr(ctx, res, 0);
 					value = Runtime.rtl.attr(ctx, res, 1);
 				}
-				var __v0 = use("Bayrell.Lang.OpCodes.OpPipe");
+				var __v0 = use("BayLang.OpCodes.OpPipe");
 				op_code = new __v0(ctx, use("Runtime.Map").from({"obj":op_code,"kind":kind,"value":value,"is_async":is_async,"is_monad":is_monad,"caret_start":caret_start,"caret_end":parser.caret}));
 				var res = parser.parser_base.constructor.readToken(ctx, parser);
 				look = Runtime.rtl.attr(ctx, res, 0);
@@ -658,11 +657,11 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.LangBay";
+		return "BayLang.LangBay";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.LangBay.ParserBayExpression";
+		return "BayLang.LangBay.ParserBayExpression";
 	},
 	getParentClassName: function()
 	{
@@ -698,5 +697,5 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayExpression,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.LangBay.ParserBayExpression);
-module.exports = Bayrell.Lang.LangBay.ParserBayExpression;
+});use.add(BayLang.LangBay.ParserBayExpression);
+module.exports = BayLang.LangBay.ParserBayExpression;

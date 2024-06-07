@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-Bayrell.Lang.ModuleDescription = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+BayLang.ModuleDescription = function(ctx)
 {
 };
-Object.assign(Bayrell.Lang.ModuleDescription.prototype,
+Object.assign(BayLang.ModuleDescription.prototype,
 {
 });
-Object.assign(Bayrell.Lang.ModuleDescription,
+Object.assign(BayLang.ModuleDescription,
 {
 	/**
 	 * Returns module name
@@ -33,7 +32,7 @@ Object.assign(Bayrell.Lang.ModuleDescription,
 	 */
 	getModuleName: function(ctx)
 	{
-		return "Bayrell.Lang";
+		return "BayLang";
 	},
 	/**
 	 * Returns module name
@@ -61,11 +60,11 @@ Object.assign(Bayrell.Lang.ModuleDescription,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang";
+		return "BayLang";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.ModuleDescription";
+		return "BayLang.ModuleDescription";
 	},
 	getParentClassName: function()
 	{
@@ -101,5 +100,5 @@ Object.assign(Bayrell.Lang.ModuleDescription,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.ModuleDescription);
-module.exports = Bayrell.Lang.ModuleDescription;
+});use.add(BayLang.ModuleDescription);
+module.exports = BayLang.ModuleDescription;

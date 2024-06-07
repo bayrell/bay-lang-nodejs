@@ -1,7 +1,7 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2018 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -17,20 +17,55 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.OpCodes == 'undefined') Bayrell.Lang.OpCodes = {};
-Bayrell.Lang.OpCodes.OpDeclareClass = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
+BayLang.OpCodes.OpDeclareClass = function(ctx)
 {
-	use("Bayrell.Lang.OpCodes.BaseOpCode").apply(this, arguments);
+	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
 };
-Bayrell.Lang.OpCodes.OpDeclareClass.prototype = Object.create(use("Bayrell.Lang.OpCodes.BaseOpCode").prototype);
-Bayrell.Lang.OpCodes.OpDeclareClass.prototype.constructor = Bayrell.Lang.OpCodes.OpDeclareClass;
-Object.assign(Bayrell.Lang.OpCodes.OpDeclareClass.prototype,
+BayLang.OpCodes.OpDeclareClass.prototype = Object.create(use("BayLang.OpCodes.BaseOpCode").prototype);
+BayLang.OpCodes.OpDeclareClass.prototype.constructor = BayLang.OpCodes.OpDeclareClass;
+Object.assign(BayLang.OpCodes.OpDeclareClass.prototype,
 {
+	/**
+	 * Serialize object
+	 */
+	serialize: function(ctx, serializer, data)
+	{
+		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
+		serializer.process(ctx, this, "annotations", data);
+		serializer.process(ctx, this, "class_extends", data);
+		serializer.process(ctx, this, "class_implements", data);
+		serializer.process(ctx, this, "comments", data);
+		serializer.process(ctx, this, "extend_name", data);
+		serializer.process(ctx, this, "flags", data);
+		serializer.process(ctx, this, "fn_create", data);
+		serializer.process(ctx, this, "fn_destroy", data);
+		serializer.process(ctx, this, "functions", data);
+		serializer.process(ctx, this, "is_abstract", data);
+		serializer.process(ctx, this, "is_component", data);
+		serializer.process(ctx, this, "is_declare", data);
+		serializer.process(ctx, this, "is_model", data);
+		serializer.process(ctx, this, "items", data);
+		serializer.process(ctx, this, "kind", data);
+		serializer.process(ctx, this, "name", data);
+		serializer.process(ctx, this, "template", data);
+		serializer.process(ctx, this, "vars", data);
+	},
+	/**
+	 * Find function
+	 */
+	findFunction: function(ctx, name)
+	{
+		return this.items.findItem(ctx, (ctx, op_code) =>
+		{
+			var __v0 = use("BayLang.OpCodes.OpDeclareFunction");
+			return op_code instanceof __v0 && op_code.name == name;
+		});
+	},
 	_init: function(ctx)
 	{
-		use("Bayrell.Lang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.op = "op_class";
 		this.kind = "";
 		this.name = "";
@@ -52,34 +87,9 @@ Object.assign(Bayrell.Lang.OpCodes.OpDeclareClass.prototype,
 		this.is_component = false;
 		this.is_model = false;
 	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "op")return this.op;
-		else if (k == "kind")return this.kind;
-		else if (k == "name")return this.name;
-		else if (k == "extend_name")return this.extend_name;
-		else if (k == "annotations")return this.annotations;
-		else if (k == "comments")return this.comments;
-		else if (k == "template")return this.template;
-		else if (k == "flags")return this.flags;
-		else if (k == "fn_create")return this.fn_create;
-		else if (k == "fn_destroy")return this.fn_destroy;
-		else if (k == "class_extends")return this.class_extends;
-		else if (k == "class_implements")return this.class_implements;
-		else if (k == "vars")return this.vars;
-		else if (k == "functions")return this.functions;
-		else if (k == "items")return this.items;
-		else if (k == "is_abstract")return this.is_abstract;
-		else if (k == "is_static")return this.is_static;
-		else if (k == "is_declare")return this.is_declare;
-		else if (k == "is_component")return this.is_component;
-		else if (k == "is_model")return this.is_model;
-		return use("Bayrell.Lang.OpCodes.BaseOpCode").prototype.takeValue.call(this,ctx,k,d);
-	},
 });
-Object.assign(Bayrell.Lang.OpCodes.OpDeclareClass, use("Bayrell.Lang.OpCodes.BaseOpCode"));
-Object.assign(Bayrell.Lang.OpCodes.OpDeclareClass,
+Object.assign(BayLang.OpCodes.OpDeclareClass, use("BayLang.OpCodes.BaseOpCode"));
+Object.assign(BayLang.OpCodes.OpDeclareClass,
 {
 	KIND_CLASS: "class",
 	KIND_STRUCT: "struct",
@@ -87,15 +97,15 @@ Object.assign(Bayrell.Lang.OpCodes.OpDeclareClass,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.OpCodes";
+		return "BayLang.OpCodes";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.OpCodes.OpDeclareClass";
+		return "BayLang.OpCodes.OpDeclareClass";
 	},
 	getParentClassName: function()
 	{
-		return "Bayrell.Lang.OpCodes.BaseOpCode";
+		return "BayLang.OpCodes.BaseOpCode";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -109,26 +119,6 @@ Object.assign(Bayrell.Lang.OpCodes.OpDeclareClass,
 	getFieldsList: function(ctx)
 	{
 		var a = [];
-		a.push("op");
-		a.push("kind");
-		a.push("name");
-		a.push("extend_name");
-		a.push("annotations");
-		a.push("comments");
-		a.push("template");
-		a.push("flags");
-		a.push("fn_create");
-		a.push("fn_destroy");
-		a.push("class_extends");
-		a.push("class_implements");
-		a.push("vars");
-		a.push("functions");
-		a.push("items");
-		a.push("is_abstract");
-		a.push("is_static");
-		a.push("is_declare");
-		a.push("is_component");
-		a.push("is_model");
 		return use("Runtime.Vector").from(a);
 	},
 	getFieldInfoByName: function(ctx,field_name)
@@ -147,5 +137,5 @@ Object.assign(Bayrell.Lang.OpCodes.OpDeclareClass,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.OpCodes.OpDeclareClass);
-module.exports = Bayrell.Lang.OpCodes.OpDeclareClass;
+});use.add(BayLang.OpCodes.OpDeclareClass);
+module.exports = BayLang.OpCodes.OpDeclareClass;

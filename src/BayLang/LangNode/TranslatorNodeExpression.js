@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,20 +17,19 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.LangNode == 'undefined') Bayrell.Lang.LangNode = {};
-Bayrell.Lang.LangNode.TranslatorNodeExpression = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.LangNode == 'undefined') BayLang.LangNode = {};
+BayLang.LangNode.TranslatorNodeExpression = function(ctx)
 {
-	use("Bayrell.Lang.LangES6.TranslatorES6Expression").apply(this, arguments);
+	use("BayLang.LangES6.TranslatorES6Expression").apply(this, arguments);
 };
-Bayrell.Lang.LangNode.TranslatorNodeExpression.prototype = Object.create(use("Bayrell.Lang.LangES6.TranslatorES6Expression").prototype);
-Bayrell.Lang.LangNode.TranslatorNodeExpression.prototype.constructor = Bayrell.Lang.LangNode.TranslatorNodeExpression;
-Object.assign(Bayrell.Lang.LangNode.TranslatorNodeExpression.prototype,
+BayLang.LangNode.TranslatorNodeExpression.prototype = Object.create(use("BayLang.LangES6.TranslatorES6Expression").prototype);
+BayLang.LangNode.TranslatorNodeExpression.prototype.constructor = BayLang.LangNode.TranslatorNodeExpression;
+Object.assign(BayLang.LangNode.TranslatorNodeExpression.prototype,
 {
 });
-Object.assign(Bayrell.Lang.LangNode.TranslatorNodeExpression, use("Bayrell.Lang.LangES6.TranslatorES6Expression"));
-Object.assign(Bayrell.Lang.LangNode.TranslatorNodeExpression,
+Object.assign(BayLang.LangNode.TranslatorNodeExpression, use("BayLang.LangES6.TranslatorES6Expression"));
+Object.assign(BayLang.LangNode.TranslatorNodeExpression,
 {
 	/**
 	 * OpIdentifier
@@ -49,7 +48,7 @@ Object.assign(Bayrell.Lang.LangNode.TranslatorNodeExpression,
 		{
 			return use("Runtime.Vector").from([t,"console.log"]);
 		}
-		var __v0 = use("Bayrell.Lang.OpCodes.OpIdentifier");
+		var __v0 = use("BayLang.OpCodes.OpIdentifier");
 		if (t.modules.has(ctx, op_code.value) || op_code.kind == __v0.KIND_SYS_TYPE)
 		{
 			var module_name = op_code.value;
@@ -91,15 +90,15 @@ Object.assign(Bayrell.Lang.LangNode.TranslatorNodeExpression,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.LangNode";
+		return "BayLang.LangNode";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.LangNode.TranslatorNodeExpression";
+		return "BayLang.LangNode.TranslatorNodeExpression";
 	},
 	getParentClassName: function()
 	{
-		return "Bayrell.Lang.LangES6.TranslatorES6Expression";
+		return "BayLang.LangES6.TranslatorES6Expression";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -131,5 +130,5 @@ Object.assign(Bayrell.Lang.LangNode.TranslatorNodeExpression,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.LangNode.TranslatorNodeExpression);
-module.exports = Bayrell.Lang.LangNode.TranslatorNodeExpression;
+});use.add(BayLang.LangNode.TranslatorNodeExpression);
+module.exports = BayLang.LangNode.TranslatorNodeExpression;

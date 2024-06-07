@@ -17,15 +17,14 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-Bayrell.Lang.LangConstant = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+BayLang.LangConstant = function(ctx)
 {
 };
-Object.assign(Bayrell.Lang.LangConstant.prototype,
+Object.assign(BayLang.LangConstant.prototype,
 {
 });
-Object.assign(Bayrell.Lang.LangConstant,
+Object.assign(BayLang.LangConstant,
 {
 	ERROR_PARSER: -1000,
 	ERROR_PARSER_EOF: -1001,
@@ -33,11 +32,11 @@ Object.assign(Bayrell.Lang.LangConstant,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang";
+		return "BayLang";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.LangConstant";
+		return "BayLang.LangConstant";
 	},
 	getParentClassName: function()
 	{
@@ -73,5 +72,5 @@ Object.assign(Bayrell.Lang.LangConstant,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.LangConstant);
-module.exports = Bayrell.Lang.LangConstant;
+});use.add(BayLang.LangConstant);
+module.exports = BayLang.LangConstant;

@@ -32,7 +32,7 @@ Object.assign(Runtime.lib,
 	 */
 	isInstance: function(ctx, class_name)
 	{
-		return (ctx, item) => 
+		return (ctx, item) =>
 		{
 			var __v0 = use("Runtime.rtl");
 			return __v0.is_instanceof(ctx, item, class_name);
@@ -43,7 +43,7 @@ Object.assign(Runtime.lib,
 	 */
 	isImplements: function(ctx, class_name)
 	{
-		return (ctx, item) => 
+		return (ctx, item) =>
 		{
 			var __v0 = use("Runtime.rtl");
 			return __v0.is_implements(ctx, item, class_name);
@@ -54,7 +54,7 @@ Object.assign(Runtime.lib,
 	 */
 	classImplements: function(ctx, class_name)
 	{
-		return (ctx, item) => 
+		return (ctx, item) =>
 		{
 			var __v0 = use("Runtime.rtl");
 			return __v0.class_implements(ctx, item, class_name);
@@ -65,7 +65,7 @@ Object.assign(Runtime.lib,
 	 */
 	createStruct: function(ctx, class_name)
 	{
-		return (ctx, data) => 
+		return (ctx, data) =>
 		{
 			var __v0 = use("Runtime.rtl");
 			return __v0.newInstance(ctx, class_name, use("Runtime.Vector").from([data]));
@@ -76,7 +76,7 @@ Object.assign(Runtime.lib,
 	 */
 	equal: function(ctx, value)
 	{
-		return (ctx, item) => 
+		return (ctx, item) =>
 		{
 			return item == value;
 		};
@@ -86,7 +86,7 @@ Object.assign(Runtime.lib,
 	 */
 	equalNot: function(ctx, value)
 	{
-		return (ctx, item) => 
+		return (ctx, item) =>
 		{
 			return item != value;
 		};
@@ -96,7 +96,7 @@ Object.assign(Runtime.lib,
 	 */
 	equalAttr: function(ctx, key, value)
 	{
-		return (ctx, item1) => 
+		return (ctx, item1) =>
 		{
 			var __v0 = use("Runtime.rtl");
 			return (item1 != null) ? (__v0.attr(ctx, item1, key) == value) : (false);
@@ -107,7 +107,7 @@ Object.assign(Runtime.lib,
 	 */
 	equalNotAttr: function(ctx, key, value)
 	{
-		return (ctx, item1) => 
+		return (ctx, item1) =>
 		{
 			var __v0 = use("Runtime.rtl");
 			return (item1 != null) ? (__v0.attr(ctx, item1, key) != value) : (false);
@@ -122,7 +122,7 @@ Object.assign(Runtime.lib,
 	 */
 	equalAttrs: function(ctx, search)
 	{
-		return (ctx, item) => 
+		return (ctx, item) =>
 		{
 			var fields = search.keys(ctx);
 			for (var i = 0; i < fields.count(ctx); i++)
@@ -141,7 +141,7 @@ Object.assign(Runtime.lib,
 	 */
 	equalMethod: function(ctx, method_name, value)
 	{
-		return (ctx, item1) => 
+		return (ctx, item1) =>
 		{
 			if (item1 == null)
 			{
@@ -157,7 +157,7 @@ Object.assign(Runtime.lib,
 	 */
 	get: function(ctx, key, def_value)
 	{
-		return (ctx, obj) => 
+		return (ctx, obj) =>
 		{
 			var __v0 = use("Runtime.rtl");
 			return __v0.attr(ctx, obj, use("Runtime.Vector").from([key]), def_value);
@@ -168,7 +168,7 @@ Object.assign(Runtime.lib,
 	 */
 	set: function(ctx, key, value)
 	{
-		return (ctx, obj) => 
+		return (ctx, obj) =>
 		{
 			var __v0 = use("Runtime.rtl");
 			return __v0.setAttr(ctx, obj, use("Runtime.Vector").from([key]), value);
@@ -180,7 +180,7 @@ Object.assign(Runtime.lib,
 	attr: function(ctx, path, def_value)
 	{
 		if (def_value == undefined) def_value = null;
-		return (ctx, obj) => 
+		return (ctx, obj) =>
 		{
 			var __v0 = use("Runtime.rtl");
 			return __v0.attr(ctx, obj, path, def_value);
@@ -191,7 +191,7 @@ Object.assign(Runtime.lib,
 	 */
 	setAttr: function(ctx, path, value)
 	{
-		return (ctx, obj) => 
+		return (ctx, obj) =>
 		{
 			var __v0 = use("Runtime.rtl");
 			return __v0.setAttr(ctx, obj, path, value);
@@ -203,7 +203,7 @@ Object.assign(Runtime.lib,
 	getMaxIdFromItems: function(ctx, items, start)
 	{
 		if (start == undefined) start = 0;
-		return items.reduce(ctx, (ctx, value, item) => 
+		return items.reduce(ctx, (ctx, value, item) =>
 		{
 			return (item.id > value) ? (item.id) : (value);
 		}, start);
@@ -213,7 +213,7 @@ Object.assign(Runtime.lib,
 	 */
 	copy: function(ctx, d)
 	{
-		return (ctx, item) => 
+		return (ctx, item) =>
 		{
 			return item.copy(ctx, d);
 		};
@@ -223,7 +223,7 @@ Object.assign(Runtime.lib,
 	 */
 	takeDict: function(ctx, fields)
 	{
-		return (ctx, item) => 
+		return (ctx, item) =>
 		{
 			return item.takeDict(ctx, fields);
 		};
@@ -233,7 +233,7 @@ Object.assign(Runtime.lib,
 	 */
 	map: function(ctx, f)
 	{
-		return (ctx, m) => 
+		return (ctx, m) =>
 		{
 			return m.map(ctx, f);
 		};
@@ -243,7 +243,7 @@ Object.assign(Runtime.lib,
 	 */
 	filter: function(ctx, f)
 	{
-		return (ctx, m) => 
+		return (ctx, m) =>
 		{
 			return m.filter(ctx, f);
 		};
@@ -253,7 +253,7 @@ Object.assign(Runtime.lib,
 	 */
 	intersect: function(ctx, arr)
 	{
-		return (ctx, m) => 
+		return (ctx, m) =>
 		{
 			return m.intersect(ctx, arr);
 		};
@@ -263,7 +263,7 @@ Object.assign(Runtime.lib,
 	 */
 	sort: function(ctx, f)
 	{
-		return (ctx, m) => 
+		return (ctx, m) =>
 		{
 			return m.sortIm(ctx, f);
 		};
@@ -273,7 +273,7 @@ Object.assign(Runtime.lib,
 	 */
 	transition: function(ctx, f)
 	{
-		return (ctx, m) => 
+		return (ctx, m) =>
 		{
 			return m.transition(ctx, f);
 		};
@@ -283,7 +283,7 @@ Object.assign(Runtime.lib,
 	 */
 	concat: function(ctx, arr)
 	{
-		return (ctx, m) => 
+		return (ctx, m) =>
 		{
 			return m.concat(ctx, arr);
 		};
@@ -307,7 +307,7 @@ Object.assign(Runtime.lib,
 	 */
 	sortAttr: function(ctx, field_name, f)
 	{
-		return (ctx, a, b) => 
+		return (ctx, a, b) =>
 		{
 			var a = Runtime.rtl.attr(ctx, a, field_name);
 			var b = Runtime.rtl.attr(ctx, b, field_name);
@@ -328,7 +328,7 @@ Object.assign(Runtime.lib,
 	to: function(ctx, type_value, def_value)
 	{
 		if (def_value == undefined) def_value = null;
-		return (ctx, m) => 
+		return (ctx, m) =>
 		{
 			var __v0 = use("Runtime.Monad");
 			var __v1 = use("Runtime.rtl");
@@ -341,7 +341,7 @@ Object.assign(Runtime.lib,
 	default: function(ctx, def_value)
 	{
 		if (def_value == undefined) def_value = null;
-		return (ctx, m) => 
+		return (ctx, m) =>
 		{
 			var __v0 = use("Runtime.Monad");
 			return (m.err != null || m.val === null) ? (new __v0(ctx, def_value)) : (m);
@@ -354,7 +354,7 @@ Object.assign(Runtime.lib,
 	{
 		if (value == undefined) value = null;
 		if (clear_error == undefined) clear_error = false;
-		return (ctx, m) => 
+		return (ctx, m) =>
 		{
 			var __v0 = use("Runtime.Monad");
 			var __v1 = use("Runtime.Monad");
@@ -366,7 +366,7 @@ Object.assign(Runtime.lib,
 	 */
 	clearError: function(ctx)
 	{
-		return (ctx, m) => 
+		return (ctx, m) =>
 		{
 			var __v0 = use("Runtime.Monad");
 			return new __v0(ctx, m.val);
@@ -385,7 +385,7 @@ Object.assign(Runtime.lib,
 	 */
 	method: function(ctx, method_name)
 	{
-		return (ctx, class_name) => 
+		return (ctx, class_name) =>
 		{
 			var __v0 = use("Runtime.rtl");
 			return __v0.method(ctx, class_name, method_name);
@@ -398,7 +398,7 @@ Object.assign(Runtime.lib,
 	applyMethod: function(ctx, method_name, args)
 	{
 		if (args == undefined) args = null;
-		return (ctx, class_name) => 
+		return (ctx, class_name) =>
 		{
 			var __v0 = use("Runtime.rtl");
 			var f = __v0.method(ctx, class_name, method_name);
@@ -413,7 +413,7 @@ Object.assign(Runtime.lib,
 	applyMethodAsync: function(ctx, method_name, args)
 	{
 		if (args == undefined) args = null;
-		return async (ctx, class_name) => 
+		return async (ctx, class_name) =>
 		{
 			var __v0 = use("Runtime.rtl");
 			var f = __v0.method(ctx, class_name, method_name);
@@ -427,7 +427,7 @@ Object.assign(Runtime.lib,
 	 */
 	apply: function(ctx, f)
 	{
-		return (ctx, value) => 
+		return (ctx, value) =>
 		{
 			return f(ctx, value);
 		};
@@ -438,7 +438,7 @@ Object.assign(Runtime.lib,
 	 */
 	applyAsync: function(ctx, f)
 	{
-		return async (ctx, value) => 
+		return async (ctx, value) =>
 		{
 			return await f(ctx, value);
 		};
@@ -450,7 +450,7 @@ Object.assign(Runtime.lib,
 	log: function(ctx, message)
 	{
 		if (message == undefined) message = "";
-		return (ctx, value) => 
+		return (ctx, value) =>
 		{
 			if (message == "")
 			{
@@ -468,7 +468,7 @@ Object.assign(Runtime.lib,
 	 */
 	or: function(ctx, arr)
 	{
-		return (ctx, item) => 
+		return (ctx, item) =>
 		{
 			for (var i = 0; i < arr.count(ctx); i++)
 			{
@@ -487,7 +487,7 @@ Object.assign(Runtime.lib,
 	 */
 	and: function(ctx, arr)
 	{
-		return (ctx, item) => 
+		return (ctx, item) =>
 		{
 			for (var i = 0; i < arr.count(ctx); i++)
 			{
@@ -506,7 +506,7 @@ Object.assign(Runtime.lib,
 	 */
 	join: function(ctx, ch)
 	{
-		return (ctx, items) => 
+		return (ctx, items) =>
 		{
 			var __v0 = use("Runtime.rs");
 			return __v0.join(ctx, ch, items);

@@ -1,7 +1,7 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2018 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -17,47 +17,79 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.OpCodes == 'undefined') Bayrell.Lang.OpCodes = {};
-Bayrell.Lang.OpCodes.BaseOpCode = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
+BayLang.OpCodes.BaseOpCode = function(ctx, params)
 {
-	use("Runtime.BaseStruct").apply(this, arguments);
+	if (params == undefined) params = null;
+	use("Runtime.BaseObject").call(this, ctx);
+	this._assign_values(ctx, params);
 };
-Bayrell.Lang.OpCodes.BaseOpCode.prototype = Object.create(use("Runtime.BaseStruct").prototype);
-Bayrell.Lang.OpCodes.BaseOpCode.prototype.constructor = Bayrell.Lang.OpCodes.BaseOpCode;
-Object.assign(Bayrell.Lang.OpCodes.BaseOpCode.prototype,
+BayLang.OpCodes.BaseOpCode.prototype = Object.create(use("Runtime.BaseObject").prototype);
+BayLang.OpCodes.BaseOpCode.prototype.constructor = BayLang.OpCodes.BaseOpCode;
+Object.assign(BayLang.OpCodes.BaseOpCode.prototype,
 {
+	/**
+	 * Serialize object
+	 */
+	serialize: function(ctx, serializer, data)
+	{
+		serializer.process(ctx, this, "caret_start", data);
+		serializer.process(ctx, this, "caret_end", data);
+	},
+	/**
+	 * Clone this struct with new values
+	 * @param Map obj = null
+	 * @return BaseStruct
+	 */
+	clone: function(ctx, obj)
+	{
+		if (obj == undefined) obj = null;
+		if (obj == null)
+		{
+			return this;
+		}
+		var proto = Object.getPrototypeOf(this);
+		var item = Object.create(proto);
+		item = Object.assign(item, this);
+		item._assign_values(ctx, obj);
+		
+		return item;
+		return this;
+	},
+	/**
+	 * Copy this struct with new values
+	 * @param Map obj = null
+	 * @return BaseStruct
+	 */
+	copy: function(ctx, obj)
+	{
+		if (obj == undefined) obj = null;
+		return this.clone(ctx, obj);
+	},
 	_init: function(ctx)
 	{
-		use("Runtime.BaseStruct").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this,ctx);
 		this.caret_start = null;
 		this.caret_end = null;
 	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "caret_start")return this.caret_start;
-		else if (k == "caret_end")return this.caret_end;
-		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
-	},
 });
-Object.assign(Bayrell.Lang.OpCodes.BaseOpCode, use("Runtime.BaseStruct"));
-Object.assign(Bayrell.Lang.OpCodes.BaseOpCode,
+Object.assign(BayLang.OpCodes.BaseOpCode, use("Runtime.BaseObject"));
+Object.assign(BayLang.OpCodes.BaseOpCode,
 {
 	op: "",
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.OpCodes";
+		return "BayLang.OpCodes";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.OpCodes.BaseOpCode";
+		return "BayLang.OpCodes.BaseOpCode";
 	},
 	getParentClassName: function()
 	{
-		return "Runtime.BaseStruct";
+		return "Runtime.BaseObject";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -71,8 +103,6 @@ Object.assign(Bayrell.Lang.OpCodes.BaseOpCode,
 	getFieldsList: function(ctx)
 	{
 		var a = [];
-		a.push("caret_start");
-		a.push("caret_end");
 		return use("Runtime.Vector").from(a);
 	},
 	getFieldInfoByName: function(ctx,field_name)
@@ -91,5 +121,9 @@ Object.assign(Bayrell.Lang.OpCodes.BaseOpCode,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.OpCodes.BaseOpCode);
-module.exports = Bayrell.Lang.OpCodes.BaseOpCode;
+	__implements__:
+	[
+		use("Runtime.SerializeInterface"),
+	],
+});use.add(BayLang.OpCodes.BaseOpCode);
+module.exports = BayLang.OpCodes.BaseOpCode;

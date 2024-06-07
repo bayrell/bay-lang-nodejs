@@ -17,36 +17,35 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.Exceptions == 'undefined') Bayrell.Lang.Exceptions = {};
-Bayrell.Lang.Exceptions.ParserExpected = function(ctx, s, caret, file, context, prev)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.Exceptions == 'undefined') BayLang.Exceptions = {};
+BayLang.Exceptions.ParserExpected = function(ctx, s, caret, file, prev)
 {
 	if (file == undefined) file = "";
 	if (prev == undefined) prev = null;
-	var __v0 = use("Bayrell.Lang.LangConstant");
-	use("Bayrell.Lang.Exceptions.ParserError").call(this, ctx, s + use("Runtime.rtl").toStr(" expected"), caret, file, __v0.ERROR_PARSER_EXPECTED, context, prev);
+	var __v0 = use("BayLang.LangConstant");
+	use("BayLang.Exceptions.ParserError").call(this, ctx, s + use("Runtime.rtl").toStr(" expected"), caret, file, __v0.ERROR_PARSER_EXPECTED, prev);
 };
-Bayrell.Lang.Exceptions.ParserExpected.prototype = Object.create(use("Bayrell.Lang.Exceptions.ParserError").prototype);
-Bayrell.Lang.Exceptions.ParserExpected.prototype.constructor = Bayrell.Lang.Exceptions.ParserExpected;
-Object.assign(Bayrell.Lang.Exceptions.ParserExpected.prototype,
+BayLang.Exceptions.ParserExpected.prototype = Object.create(use("BayLang.Exceptions.ParserError").prototype);
+BayLang.Exceptions.ParserExpected.prototype.constructor = BayLang.Exceptions.ParserExpected;
+Object.assign(BayLang.Exceptions.ParserExpected.prototype,
 {
 });
-Object.assign(Bayrell.Lang.Exceptions.ParserExpected, use("Bayrell.Lang.Exceptions.ParserError"));
-Object.assign(Bayrell.Lang.Exceptions.ParserExpected,
+Object.assign(BayLang.Exceptions.ParserExpected, use("BayLang.Exceptions.ParserError"));
+Object.assign(BayLang.Exceptions.ParserExpected,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.Exceptions";
+		return "BayLang.Exceptions";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.Exceptions.ParserExpected";
+		return "BayLang.Exceptions.ParserExpected";
 	},
 	getParentClassName: function()
 	{
-		return "Bayrell.Lang.Exceptions.ParserError";
+		return "BayLang.Exceptions.ParserError";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -78,5 +77,5 @@ Object.assign(Bayrell.Lang.Exceptions.ParserExpected,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.Exceptions.ParserExpected);
-module.exports = Bayrell.Lang.Exceptions.ParserExpected;
+});use.add(BayLang.Exceptions.ParserExpected);
+module.exports = BayLang.Exceptions.ParserExpected;

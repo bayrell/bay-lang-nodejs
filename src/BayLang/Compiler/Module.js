@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,16 +17,15 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.Compiler == 'undefined') Bayrell.Lang.Compiler = {};
-Bayrell.Lang.Compiler.Module = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
+BayLang.Compiler.Module = function(ctx)
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
-Bayrell.Lang.Compiler.Module.prototype = Object.create(use("Runtime.BaseStruct").prototype);
-Bayrell.Lang.Compiler.Module.prototype.constructor = Bayrell.Lang.Compiler.Module;
-Object.assign(Bayrell.Lang.Compiler.Module.prototype,
+BayLang.Compiler.Module.prototype = Object.create(use("Runtime.BaseStruct").prototype);
+BayLang.Compiler.Module.prototype.constructor = BayLang.Compiler.Module;
+Object.assign(BayLang.Compiler.Module.prototype,
 {
 	/**
 	 * Returns module path
@@ -47,7 +46,50 @@ Object.assign(Bayrell.Lang.Compiler.Module.prototype,
 		var module_src = __v1.value(ctx);
 		var __v3 = use("Runtime.fs");
 		var module_src_path = __v3.join(ctx, use("Runtime.Vector").from([this.path,module_src]));
-		return module_src_path;
+		var __v4 = use("Runtime.rs");
+		return __v4.removeLastSlash(ctx, module_src_path);
+	},
+	/**
+	 * Has group
+	 */
+	hasGroup: function(ctx, group_name)
+	{
+		var __v0 = use("Runtime.rs");
+		if (__v0.substr(ctx, group_name, 0, 1) != "@")
+		{
+			return false;
+		}
+		var __v0 = use("Runtime.rs");
+		group_name = __v0.substr(ctx, group_name, 1);
+		var groups = this.config.get(ctx, "groups");
+		if (groups == null)
+		{
+			return false;
+		}
+		if (groups.indexOf(ctx, group_name) == -1)
+		{
+			return false;
+		}
+		return true;
+	},
+	/**
+	 * Returns true if this module contains in module list include groups
+	 */
+	inModuleList: function(ctx, module_names)
+	{
+		for (var i = 0; i < module_names.count(ctx); i++)
+		{
+			var module_name = module_names.get(ctx, i);
+			if (this.name == module_name)
+			{
+				return true;
+			}
+			if (this.hasGroup(ctx, module_name))
+			{
+				return true;
+			}
+		}
+		return false;
 	},
 	/**
 	 * Returns full source file.
@@ -71,6 +113,14 @@ Object.assign(Bayrell.Lang.Compiler.Module.prototype,
 	 */
 	resolveDestFile: function(ctx, project_path, relative_file_name, lang)
 	{
+		if (!this.config.has(ctx, "dest"))
+		{
+			return "";
+		}
+		if (!this.config.get(ctx, "dest").has(ctx, lang))
+		{
+			return "";
+		}
 		var __v0 = use("Runtime.Monad");
 		var __v1 = new __v0(ctx, Runtime.rtl.attr(ctx, this.config, ["dest", lang]));
 		var __v2 = use("Runtime.rtl");
@@ -193,17 +243,17 @@ Object.assign(Bayrell.Lang.Compiler.Module.prototype,
 		this.config = use("Runtime.Map").from({});
 	},
 });
-Object.assign(Bayrell.Lang.Compiler.Module, use("Runtime.BaseStruct"));
-Object.assign(Bayrell.Lang.Compiler.Module,
+Object.assign(BayLang.Compiler.Module, use("Runtime.BaseStruct"));
+Object.assign(BayLang.Compiler.Module,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.Compiler";
+		return "BayLang.Compiler";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.Compiler.Module";
+		return "BayLang.Compiler.Module";
 	},
 	getParentClassName: function()
 	{
@@ -239,5 +289,5 @@ Object.assign(Bayrell.Lang.Compiler.Module,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.Compiler.Module);
-module.exports = Bayrell.Lang.Compiler.Module;
+});use.add(BayLang.Compiler.Module);
+module.exports = BayLang.Compiler.Module;

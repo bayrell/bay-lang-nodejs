@@ -103,6 +103,15 @@ Object.assign(Runtime.rs,
 		return use("Runtime.rtl").toStr(s).toUpperCase();
 	},
 	/**
+	 * Compare strings
+	 */
+	compare: function(ctx, a, b)
+	{
+		if (a == b) return 0;
+		if (a < b) return -1;
+		if (a > b) return 1;
+	},
+	/**
 	 * Заменяет одну строку на другую
 	 */
 	replace: function(ctx, search, item, s)
@@ -212,6 +221,31 @@ Object.assign(Runtime.rs,
 		return s.replace(new RegExp("^[" + ch + "]+", "g"),"")
 			.replace(new RegExp("[" + ch + "]+$", "g"),"")
 		;
+	},
+	/**
+	 * Remove first slash
+	 */
+	removeFirstSlash: function(ctx, path)
+	{
+		var i = 0;
+		var sz = this.strlen(ctx, path);
+		while (i < sz && this.substr(ctx, path, i, 1) == "/")
+		{
+			i++;
+		}
+		return this.substr(ctx, path, i);
+	},
+	/**
+	 * Remove last slash
+	 */
+	removeLastSlash: function(ctx, path)
+	{
+		var i = this.strlen(ctx, path) - 1;
+		while (i >= 0 && this.substr(ctx, path, i, 1) == "/")
+		{
+			i--;
+		}
+		return this.substr(ctx, path, 0, i + 1);
 	},
 	/**
 	 * Разбивает путь файла на составляющие
@@ -413,10 +447,10 @@ Object.assign(Runtime.rs,
 		uri = (pos >= 0) ? (this.substr(ctx, s, 0, pos)) : (s);
 		query = (pos >= 0) ? (this.substr(ctx, s, pos + 1)) : ("");
 		var arr = this.split(ctx, "&", query);
-		var arr2 = arr.filter(ctx, (ctx, s) => 
+		var arr2 = arr.filter(ctx, (ctx, s) =>
 		{
 			return s != "";
-		}).transition(ctx, (ctx, item) => 
+		}).transition(ctx, (ctx, item) =>
 		{
 			var arr = this.split(ctx, "=", item);
 			return use("Runtime.Vector").from([Runtime.rtl.attr(ctx, arr, 1),Runtime.rtl.attr(ctx, arr, 0)]);
@@ -435,7 +469,7 @@ Object.assign(Runtime.rs,
 		var s2 = Runtime.rtl.attr(ctx, r, "query");
 		var find = false;
 		var arr = this.split(ctx, "&", s2);
-		arr = arr.map(ctx, (ctx, s) => 
+		arr = arr.map(ctx, (ctx, s) =>
 		{
 			var arr = this.split(ctx, "=", s);
 			if (Runtime.rtl.attr(ctx, arr, 0) == key)
@@ -448,7 +482,7 @@ Object.assign(Runtime.rs,
 				return "";
 			}
 			return s;
-		}).filter(ctx, (ctx, s) => 
+		}).filter(ctx, (ctx, s) =>
 		{
 			return s != "";
 		});
@@ -627,7 +661,7 @@ Object.assign(Runtime.rs,
 		{
 			return s;
 		}
-		params.each(ctx, (ctx, value, key) => 
+		params.each(ctx, (ctx, value, key) =>
 		{
 			var __v0 = use("Runtime.rs");
 			s = __v0.replace(ctx, "%" + use("Runtime.rtl").toStr(key) + use("Runtime.rtl").toStr("%"), value, s);

@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,16 +17,15 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.Compiler == 'undefined') Bayrell.Lang.Compiler = {};
-Bayrell.Lang.Compiler.ConsoleApp = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
+BayLang.Compiler.ConsoleApp = function(ctx)
 {
 	use("Runtime.Console.App").apply(this, arguments);
 };
-Bayrell.Lang.Compiler.ConsoleApp.prototype = Object.create(use("Runtime.Console.App").prototype);
-Bayrell.Lang.Compiler.ConsoleApp.prototype.constructor = Bayrell.Lang.Compiler.ConsoleApp;
-Object.assign(Bayrell.Lang.Compiler.ConsoleApp.prototype,
+BayLang.Compiler.ConsoleApp.prototype = Object.create(use("Runtime.Console.App").prototype);
+BayLang.Compiler.ConsoleApp.prototype.constructor = BayLang.Compiler.ConsoleApp;
+Object.assign(BayLang.Compiler.ConsoleApp.prototype,
 {
 	/**
 	 * Init
@@ -36,17 +35,17 @@ Object.assign(Bayrell.Lang.Compiler.ConsoleApp.prototype,
 		/*new SettingsProvider();*/
 	},
 });
-Object.assign(Bayrell.Lang.Compiler.ConsoleApp, use("Runtime.Console.App"));
-Object.assign(Bayrell.Lang.Compiler.ConsoleApp,
+Object.assign(BayLang.Compiler.ConsoleApp, use("Runtime.Console.App"));
+Object.assign(BayLang.Compiler.ConsoleApp,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.Compiler";
+		return "BayLang.Compiler";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.Compiler.ConsoleApp";
+		return "BayLang.Compiler.ConsoleApp";
 	},
 	getParentClassName: function()
 	{
@@ -82,5 +81,5 @@ Object.assign(Bayrell.Lang.Compiler.ConsoleApp,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.Compiler.ConsoleApp);
-module.exports = Bayrell.Lang.Compiler.ConsoleApp;
+});use.add(BayLang.Compiler.ConsoleApp);
+module.exports = BayLang.Compiler.ConsoleApp;

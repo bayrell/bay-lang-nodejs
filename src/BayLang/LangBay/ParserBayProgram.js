@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,16 +17,15 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.LangBay == 'undefined') Bayrell.Lang.LangBay = {};
-Bayrell.Lang.LangBay.ParserBayProgram = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
+BayLang.LangBay.ParserBayProgram = function(ctx)
 {
 };
-Object.assign(Bayrell.Lang.LangBay.ParserBayProgram.prototype,
+Object.assign(BayLang.LangBay.ParserBayProgram.prototype,
 {
 });
-Object.assign(Bayrell.Lang.LangBay.ParserBayProgram,
+Object.assign(BayLang.LangBay.ParserBayProgram,
 {
 	/**
 	 * Read namespace
@@ -44,7 +43,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayProgram,
 		name = Runtime.rtl.attr(ctx, res, 1);
 		var __v0 = use("Runtime.rs");
 		var current_namespace_name = __v0.join(ctx, ".", name.names);
-		var __v1 = use("Bayrell.Lang.OpCodes.OpNamespace");
+		var __v1 = use("BayLang.OpCodes.OpNamespace");
 		var current_namespace = new __v1(ctx, use("Runtime.Map").from({"name":current_namespace_name,"caret_start":caret_start,"caret_end":parser.caret}));
 		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["current_namespace"]), current_namespace);
 		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["current_namespace_name"]), current_namespace_name);
@@ -78,7 +77,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayProgram,
 			parser_value = Runtime.rtl.attr(ctx, res, 1);
 			alias = parser_value.value;
 		}
-		var __v0 = use("Bayrell.Lang.OpCodes.OpUse");
+		var __v0 = use("BayLang.OpCodes.OpUse");
 		var __v1 = use("Runtime.rs");
 		return use("Runtime.Vector").from([parser,new __v0(ctx, use("Runtime.Map").from({"name":__v1.join(ctx, ".", name.names),"alias":alias,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
@@ -129,7 +128,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayProgram,
 			}
 			else if (token.content == "#ifdef")
 			{
-				var __v1 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfDef");
+				var __v1 = use("BayLang.OpCodes.OpPreprocessorIfDef");
 				var res = parser.parser_preprocessor.constructor.readPreprocessorIfDef(ctx, parser, __v1.KIND_CLASS_BODY);
 				parser = Runtime.rtl.attr(ctx, res, 0);
 				item = Runtime.rtl.attr(ctx, res, 1);
@@ -216,11 +215,11 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayProgram,
 		for (var i = 0; i < arr.count(ctx); i++)
 		{
 			var item = arr.item(ctx, i);
-			var __v6 = use("Bayrell.Lang.OpCodes.OpAnnotation");
-			var __v7 = use("Bayrell.Lang.OpCodes.OpComment");
-			var __v8 = use("Bayrell.Lang.OpCodes.OpAssign");
-			var __v9 = use("Bayrell.Lang.OpCodes.OpDeclareFunction");
-			var __v10 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfDef");
+			var __v6 = use("BayLang.OpCodes.OpAnnotation");
+			var __v7 = use("BayLang.OpCodes.OpComment");
+			var __v8 = use("BayLang.OpCodes.OpAssign");
+			var __v9 = use("BayLang.OpCodes.OpDeclareFunction");
+			var __v10 = use("BayLang.OpCodes.OpPreprocessorIfDef");
 			if (item instanceof __v6)
 			{
 				annotations.push(ctx, item);
@@ -237,7 +236,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayProgram,
 					var value_name = assign_value.var_name;
 					if (names.has(ctx, value_name))
 					{
-						var __v9 = use("Bayrell.Lang.Exceptions.ParserError");
+						var __v9 = use("BayLang.Exceptions.ParserError");
 						throw new __v9(ctx, "Dublicate identifier " + use("Runtime.rtl").toStr(value_name), assign_value.caret_start, parser.file_name)
 					}
 					names.set(ctx, value_name, true);
@@ -252,7 +251,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayProgram,
 				item = item.copy(ctx, use("Runtime.Map").from({"annotations":annotations.toCollection(ctx),"comments":comments.toCollection(ctx)}));
 				if (names.has(ctx, item.name))
 				{
-					var __v10 = use("Bayrell.Lang.Exceptions.ParserError");
+					var __v10 = use("BayLang.Exceptions.ParserError");
 					throw new __v10(ctx, "Dublicate identifier " + use("Runtime.rtl").toStr(item.name), item.caret_start, parser.file_name)
 				}
 				names.set(ctx, item.name, true);
@@ -275,7 +274,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayProgram,
 			{
 				var d = this.classBodyAnalyze(ctx, parser, item.items);
 				var d_vars = Runtime.rtl.attr(ctx, d, "vars");
-				d_vars = d_vars.map(ctx, (ctx, v) => 
+				d_vars = d_vars.map(ctx, (ctx, v) =>
 				{
 					v = Runtime.rtl.setAttr(ctx, v, Runtime.Collection.from(["condition"]), item.condition);
 					return v;
@@ -336,21 +335,21 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayProgram,
 		{
 			var res = parser.parser_base.constructor.matchToken(ctx, parser, "class");
 			parser = Runtime.rtl.attr(ctx, res, 0);
-			var __v0 = use("Bayrell.Lang.OpCodes.OpDeclareClass");
+			var __v0 = use("BayLang.OpCodes.OpDeclareClass");
 			class_kind = __v0.KIND_CLASS;
 		}
 		else if (token.content == "struct")
 		{
 			var res = parser.parser_base.constructor.matchToken(ctx, parser, "struct");
 			parser = Runtime.rtl.attr(ctx, res, 0);
-			var __v1 = use("Bayrell.Lang.OpCodes.OpDeclareClass");
+			var __v1 = use("BayLang.OpCodes.OpDeclareClass");
 			class_kind = __v1.KIND_STRUCT;
 		}
 		else if (token.content == "interface")
 		{
 			var res = parser.parser_base.constructor.matchToken(ctx, parser, "interface");
 			parser = Runtime.rtl.attr(ctx, res, 0);
-			var __v2 = use("Bayrell.Lang.OpCodes.OpDeclareClass");
+			var __v2 = use("BayLang.OpCodes.OpDeclareClass");
 			class_kind = __v2.KIND_INTERFACE;
 		}
 		else
@@ -450,7 +449,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayProgram,
 		var d = this.classBodyAnalyze(ctx, parser, arr);
 		var res = parser.parser_base.constructor.matchToken(ctx, parser, "}");
 		parser = Runtime.rtl.attr(ctx, res, 0);
-		var __v0 = use("Bayrell.Lang.OpCodes.OpDeclareClass");
+		var __v0 = use("BayLang.OpCodes.OpDeclareClass");
 		var current_class = new __v0(ctx, use("Runtime.Map").from({"kind":class_kind,"name":class_name,"is_abstract":is_abstract,"is_static":is_static,"is_declare":is_declare,"class_extends":class_extends,"class_implements":(class_implements != null) ? (class_implements.toCollection(ctx)) : (null),"template":(template != null) ? (template.toCollection(ctx)) : (null),"vars":d.item(ctx, "vars"),"functions":d.item(ctx, "functions"),"fn_create":d.item(ctx, "fn_create"),"fn_destroy":d.item(ctx, "fn_destroy"),"items":arr,"caret_start":caret_start,"caret_end":parser.caret}));
 		/* Restore uses */
 		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["uses"]), save_uses);
@@ -523,7 +522,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayProgram,
 				/* Append comments */
 				items.appendItems(ctx, comments);
 				comments.clear(ctx);
-				var __v3 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfDef");
+				var __v3 = use("BayLang.OpCodes.OpPreprocessorIfDef");
 				var res = parser.parser_preprocessor.constructor.readPreprocessorIfDef(ctx, parser, __v3.KIND_PROGRAM);
 				parser = Runtime.rtl.attr(ctx, res, 0);
 				op_code = Runtime.rtl.attr(ctx, res, 1);
@@ -592,17 +591,17 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayProgram,
 			parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["skip_comments"]), true);
 		}
 		items.appendItems(ctx, comments);
-		var __v3 = use("Bayrell.Lang.OpCodes.OpModule");
+		var __v3 = use("BayLang.OpCodes.OpModule");
 		return use("Runtime.Vector").from([parser,new __v3(ctx, use("Runtime.Map").from({"uses":parser.uses.toDict(ctx),"items":items.toCollection(ctx),"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.LangBay";
+		return "BayLang.LangBay";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.LangBay.ParserBayProgram";
+		return "BayLang.LangBay.ParserBayProgram";
 	},
 	getParentClassName: function()
 	{
@@ -638,5 +637,5 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayProgram,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.LangBay.ParserBayProgram);
-module.exports = Bayrell.Lang.LangBay.ParserBayProgram;
+});use.add(BayLang.LangBay.ParserBayProgram);
+module.exports = BayLang.LangBay.ParserBayProgram;

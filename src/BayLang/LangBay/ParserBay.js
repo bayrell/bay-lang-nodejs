@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,20 +17,19 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.LangBay == 'undefined') Bayrell.Lang.LangBay = {};
-Bayrell.Lang.LangBay.ParserBay = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
+BayLang.LangBay.ParserBay = function(ctx)
 {
-	use("Bayrell.Lang.CoreParser").apply(this, arguments);
+	use("BayLang.CoreParser").apply(this, arguments);
 };
-Bayrell.Lang.LangBay.ParserBay.prototype = Object.create(use("Bayrell.Lang.CoreParser").prototype);
-Bayrell.Lang.LangBay.ParserBay.prototype.constructor = Bayrell.Lang.LangBay.ParserBay;
-Object.assign(Bayrell.Lang.LangBay.ParserBay.prototype,
+BayLang.LangBay.ParserBay.prototype = Object.create(use("BayLang.CoreParser").prototype);
+BayLang.LangBay.ParserBay.prototype.constructor = BayLang.LangBay.ParserBay;
+Object.assign(BayLang.LangBay.ParserBay.prototype,
 {
 	_init: function(ctx)
 	{
-		use("Bayrell.Lang.CoreParser").prototype._init.call(this,ctx);
+		use("BayLang.CoreParser").prototype._init.call(this,ctx);
 		this.vars = null;
 		this.uses = null;
 		this.current_namespace = null;
@@ -53,9 +52,35 @@ Object.assign(Bayrell.Lang.LangBay.ParserBay.prototype,
 		this.parser_preprocessor = null;
 		this.parser_program = null;
 	},
+	takeValue: function(ctx,k,d)
+	{
+		if (d == undefined) d = null;
+		if (k == "vars")return this.vars;
+		else if (k == "uses")return this.uses;
+		else if (k == "current_namespace")return this.current_namespace;
+		else if (k == "current_class")return this.current_class;
+		else if (k == "current_namespace_name")return this.current_namespace_name;
+		else if (k == "current_class_name")return this.current_class_name;
+		else if (k == "current_class_kind")return this.current_class_kind;
+		else if (k == "current_class_abstract")return this.current_class_abstract;
+		else if (k == "current_class_declare")return this.current_class_declare;
+		else if (k == "find_identifier")return this.find_identifier;
+		else if (k == "skip_comments")return this.skip_comments;
+		else if (k == "pipe_kind")return this.pipe_kind;
+		else if (k == "is_pipe")return this.is_pipe;
+		else if (k == "is_html")return this.is_html;
+		else if (k == "is_local_css")return this.is_local_css;
+		else if (k == "parser_base")return this.parser_base;
+		else if (k == "parser_expression")return this.parser_expression;
+		else if (k == "parser_html")return this.parser_html;
+		else if (k == "parser_operator")return this.parser_operator;
+		else if (k == "parser_preprocessor")return this.parser_preprocessor;
+		else if (k == "parser_program")return this.parser_program;
+		return use("BayLang.CoreParser").prototype.takeValue.call(this,ctx,k,d);
+	},
 });
-Object.assign(Bayrell.Lang.LangBay.ParserBay, use("Bayrell.Lang.CoreParser"));
-Object.assign(Bayrell.Lang.LangBay.ParserBay,
+Object.assign(BayLang.LangBay.ParserBay, use("BayLang.CoreParser"));
+Object.assign(BayLang.LangBay.ParserBay,
 {
 	/**
 	 * Reset parser
@@ -64,13 +89,13 @@ Object.assign(Bayrell.Lang.LangBay.ParserBay,
 	{
 		var __v0 = use("Runtime.Dict");
 		var __v1 = use("Runtime.Dict");
-		var __v2 = use("Bayrell.Lang.Caret");
-		var __v3 = use("Bayrell.Lang.LangBay.ParserBayBase");
-		var __v4 = use("Bayrell.Lang.LangBay.ParserBayExpression");
-		var __v5 = use("Bayrell.Lang.LangBay.ParserBayHtml");
-		var __v6 = use("Bayrell.Lang.LangBay.ParserBayOperator");
-		var __v7 = use("Bayrell.Lang.LangBay.ParserBayPreprocessor");
-		var __v8 = use("Bayrell.Lang.LangBay.ParserBayProgram");
+		var __v2 = use("BayLang.Caret");
+		var __v3 = use("BayLang.LangBay.ParserBayBase");
+		var __v4 = use("BayLang.LangBay.ParserBayExpression");
+		var __v5 = use("BayLang.LangBay.ParserBayHtml");
+		var __v6 = use("BayLang.LangBay.ParserBayOperator");
+		var __v7 = use("BayLang.LangBay.ParserBayPreprocessor");
+		var __v8 = use("BayLang.LangBay.ParserBayProgram");
 		return parser.copy(ctx, use("Runtime.Map").from({"vars":new __v0(ctx),"uses":new __v1(ctx),"caret":new __v2(ctx, use("Runtime.Map").from({})),"token":null,"parser_base":new __v3(ctx),"parser_expression":new __v4(ctx),"parser_html":new __v5(ctx),"parser_operator":new __v6(ctx),"parser_preprocessor":new __v7(ctx),"parser_program":new __v8(ctx)}));
 	},
 	/**
@@ -124,15 +149,15 @@ Object.assign(Bayrell.Lang.LangBay.ParserBay,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.LangBay";
+		return "BayLang.LangBay";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.LangBay.ParserBay";
+		return "BayLang.LangBay.ParserBay";
 	},
 	getParentClassName: function()
 	{
-		return "Bayrell.Lang.CoreParser";
+		return "BayLang.CoreParser";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -146,6 +171,27 @@ Object.assign(Bayrell.Lang.LangBay.ParserBay,
 	getFieldsList: function(ctx)
 	{
 		var a = [];
+		a.push("vars");
+		a.push("uses");
+		a.push("current_namespace");
+		a.push("current_class");
+		a.push("current_namespace_name");
+		a.push("current_class_name");
+		a.push("current_class_kind");
+		a.push("current_class_abstract");
+		a.push("current_class_declare");
+		a.push("find_identifier");
+		a.push("skip_comments");
+		a.push("pipe_kind");
+		a.push("is_pipe");
+		a.push("is_html");
+		a.push("is_local_css");
+		a.push("parser_base");
+		a.push("parser_expression");
+		a.push("parser_html");
+		a.push("parser_operator");
+		a.push("parser_preprocessor");
+		a.push("parser_program");
 		return use("Runtime.Vector").from(a);
 	},
 	getFieldInfoByName: function(ctx,field_name)
@@ -164,5 +210,5 @@ Object.assign(Bayrell.Lang.LangBay.ParserBay,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.LangBay.ParserBay);
-module.exports = Bayrell.Lang.LangBay.ParserBay;
+});use.add(BayLang.LangBay.ParserBay);
+module.exports = BayLang.LangBay.ParserBay;

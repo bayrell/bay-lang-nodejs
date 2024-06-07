@@ -87,7 +87,7 @@ Object.assign(Runtime.Unit.TestProvider.prototype,
 		var getMethodInfoByName = new __v1(ctx, class_name, "getMethodInfoByName");
 		var __v2 = use("Runtime.rtl");
 		var methods = __v2.apply(ctx, getMethodsList);
-		methods = methods.filter(ctx, (ctx, method_name) => 
+		methods = methods.filter(ctx, (ctx, method_name) =>
 		{
 			var __v3 = use("Runtime.rtl");
 			var method_info = __v3.apply(ctx, getMethodInfoByName, use("Runtime.Vector").from([method_name]));
@@ -112,6 +112,12 @@ Object.assign(Runtime.Unit.TestProvider.prototype,
 				break;
 			}
 		}
+		if (error_code == 1)
+		{
+			var __v0 = use("Runtime.io");
+			var __v1 = use("Runtime.io");
+			__v0.print(ctx, __v1.color(ctx, "green", "Success"));
+		}
 		return Promise.resolve(error_code);
 	},
 	/**
@@ -120,27 +126,42 @@ Object.assign(Runtime.Unit.TestProvider.prototype,
 	runTestMethod: async function(ctx, class_name, method_name)
 	{
 		var error_code = 0;
-		var __v4 = use("Runtime.Exceptions.AssertException");
+		var __v1 = use("Runtime.Exceptions.AssertException");
 		try
 		{
 			var __v0 = use("Runtime.Callback");
 			var callback = new __v0(ctx, class_name, method_name);
-			var __v1 = use("Runtime.rtl");
-			await __v1.apply(ctx, callback);
-			error_code = 1;
-			var __v2 = use("Runtime.io");
-			var __v3 = use("Runtime.io");
-			__v2.print(ctx, class_name + use("Runtime.rtl").toStr("::") + use("Runtime.rtl").toStr(method_name) + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(__v3.color(ctx, "green", "Ok")));
+			if (!callback.exists(ctx))
+			{
+				var __v1 = use("Runtime.rtl");
+				var obj = __v1.newInstance(ctx, class_name);
+				var __v2 = use("Runtime.Callback");
+				callback = new __v2(ctx, obj, method_name);
+			}
+			if (callback.exists(ctx))
+			{
+				var __v1 = use("Runtime.rtl");
+				await __v1.apply(ctx, callback);
+				error_code = 1;
+				var __v2 = use("Runtime.io");
+				var __v3 = use("Runtime.io");
+				__v2.print(ctx, class_name + use("Runtime.rtl").toStr("::") + use("Runtime.rtl").toStr(method_name) + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(__v3.color(ctx, "green", "Ok")));
+			}
+			else
+			{
+				var __v4 = use("Runtime.Exceptions.ItemNotFound");
+				throw new __v4(ctx, class_name + use("Runtime.rtl").toStr("::") + use("Runtime.rtl").toStr(method_name), "Method")
+			}
 		}
 		catch (_ex)
 		{
-			if (_ex instanceof __v4)
+			if (_ex instanceof __v1)
 			{
 				var e = _ex;
 				
-				var __v5 = use("Runtime.io");
-				var __v6 = use("Runtime.io");
-				__v5.print(ctx, class_name + use("Runtime.rtl").toStr("::") + use("Runtime.rtl").toStr(method_name) + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(__v6.color(ctx, "red", "Error: " + use("Runtime.rtl").toStr(e.getErrorMessage(ctx)))));
+				var __v2 = use("Runtime.io");
+				var __v3 = use("Runtime.io");
+				__v2.print(ctx, class_name + use("Runtime.rtl").toStr("::") + use("Runtime.rtl").toStr(method_name) + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(__v3.color(ctx, "red", "Error: " + use("Runtime.rtl").toStr(e.getErrorMessage(ctx)))));
 				error_code = e.getErrorCode(ctx);
 			}
 			else

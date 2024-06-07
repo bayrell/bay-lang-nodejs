@@ -67,7 +67,7 @@ Object.assign(Runtime.BaseHook.prototype,
 		{
 			return ;
 		}
-		this.hook.register(ctx, hook_name, this, method_name, priority);
+		this.provider.register(ctx, hook_name, this, method_name, priority);
 	},
 	/**
 	 * Register hooks
@@ -79,6 +79,7 @@ Object.assign(Runtime.BaseHook.prototype,
 	{
 		use("Runtime.BaseObject").prototype._init.call(this,ctx);
 		this.hook = null;
+		this.provider = null;
 	},
 });
 Object.assign(Runtime.BaseHook, use("Runtime.BaseObject"));

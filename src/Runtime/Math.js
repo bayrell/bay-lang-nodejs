@@ -121,7 +121,7 @@ Object.assign(Runtime.Math,
 	 */
 	random: function(ctx, a, b)
 	{
-		return this.round(ctx, this.urandom(ctx) * (b - a + 1) + a);
+		return this.round(ctx, this.urandom(ctx) * (b - a) + a);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()

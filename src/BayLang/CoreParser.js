@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-Bayrell.Lang.CoreParser = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+BayLang.CoreParser = function(ctx)
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
-Bayrell.Lang.CoreParser.prototype = Object.create(use("Runtime.BaseStruct").prototype);
-Bayrell.Lang.CoreParser.prototype.constructor = Bayrell.Lang.CoreParser;
-Object.assign(Bayrell.Lang.CoreParser.prototype,
+BayLang.CoreParser.prototype = Object.create(use("Runtime.BaseStruct").prototype);
+BayLang.CoreParser.prototype.constructor = BayLang.CoreParser;
+Object.assign(BayLang.CoreParser.prototype,
 {
 	/**
 	 * Returns true if eof
@@ -51,16 +50,27 @@ Object.assign(Bayrell.Lang.CoreParser.prototype,
 		this.caret = null;
 		this.find_ident = true;
 	},
+	takeValue: function(ctx,k,d)
+	{
+		if (d == undefined) d = null;
+		if (k == "tab_size")return this.tab_size;
+		else if (k == "file_name")return this.file_name;
+		else if (k == "content")return this.content;
+		else if (k == "content_sz")return this.content_sz;
+		else if (k == "caret")return this.caret;
+		else if (k == "find_ident")return this.find_ident;
+		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
+	},
 });
-Object.assign(Bayrell.Lang.CoreParser, use("Runtime.BaseStruct"));
-Object.assign(Bayrell.Lang.CoreParser,
+Object.assign(BayLang.CoreParser, use("Runtime.BaseStruct"));
+Object.assign(BayLang.CoreParser,
 {
 	/**
 	 * Reset parser
 	 */
 	reset: function(ctx, parser)
 	{
-		var __v0 = use("Bayrell.Lang.Caret");
+		var __v0 = use("BayLang.Caret");
 		return parser.copy(ctx, use("Runtime.Map").from({"caret":new __v0(ctx, use("Runtime.Map").from({})),"token":null}));
 	},
 	/**
@@ -88,11 +98,11 @@ Object.assign(Bayrell.Lang.CoreParser,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang";
+		return "BayLang";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.CoreParser";
+		return "BayLang.CoreParser";
 	},
 	getParentClassName: function()
 	{
@@ -110,6 +120,12 @@ Object.assign(Bayrell.Lang.CoreParser,
 	getFieldsList: function(ctx)
 	{
 		var a = [];
+		a.push("tab_size");
+		a.push("file_name");
+		a.push("content");
+		a.push("content_sz");
+		a.push("caret");
+		a.push("find_ident");
 		return use("Runtime.Vector").from(a);
 	},
 	getFieldInfoByName: function(ctx,field_name)
@@ -128,5 +144,5 @@ Object.assign(Bayrell.Lang.CoreParser,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.CoreParser);
-module.exports = Bayrell.Lang.CoreParser;
+});use.add(BayLang.CoreParser);
+module.exports = BayLang.CoreParser;

@@ -1,7 +1,7 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2018 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -17,37 +17,37 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.OpCodes == 'undefined') Bayrell.Lang.OpCodes = {};
-Bayrell.Lang.OpCodes.OpMethod = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
+BayLang.OpCodes.OpMethod = function(ctx)
 {
-	use("Bayrell.Lang.OpCodes.BaseOpCode").apply(this, arguments);
+	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
 };
-Bayrell.Lang.OpCodes.OpMethod.prototype = Object.create(use("Bayrell.Lang.OpCodes.BaseOpCode").prototype);
-Bayrell.Lang.OpCodes.OpMethod.prototype.constructor = Bayrell.Lang.OpCodes.OpMethod;
-Object.assign(Bayrell.Lang.OpCodes.OpMethod.prototype,
+BayLang.OpCodes.OpMethod.prototype = Object.create(use("BayLang.OpCodes.BaseOpCode").prototype);
+BayLang.OpCodes.OpMethod.prototype.constructor = BayLang.OpCodes.OpMethod;
+Object.assign(BayLang.OpCodes.OpMethod.prototype,
 {
+	/**
+	 * Serialize object
+	 */
+	serialize: function(ctx, serializer, data)
+	{
+		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
+		serializer.process(ctx, this, "kind", data);
+		serializer.process(ctx, this, "value1", data);
+		serializer.process(ctx, this, "value2", data);
+	},
 	_init: function(ctx)
 	{
-		use("Bayrell.Lang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.op = "op_method";
 		this.value1 = null;
 		this.value2 = null;
 		this.kind = "";
 	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "op")return this.op;
-		else if (k == "value1")return this.value1;
-		else if (k == "value2")return this.value2;
-		else if (k == "kind")return this.kind;
-		return use("Bayrell.Lang.OpCodes.BaseOpCode").prototype.takeValue.call(this,ctx,k,d);
-	},
 });
-Object.assign(Bayrell.Lang.OpCodes.OpMethod, use("Bayrell.Lang.OpCodes.BaseOpCode"));
-Object.assign(Bayrell.Lang.OpCodes.OpMethod,
+Object.assign(BayLang.OpCodes.OpMethod, use("BayLang.OpCodes.BaseOpCode"));
+Object.assign(BayLang.OpCodes.OpMethod,
 {
 	KIND_ATTR: "attr",
 	KIND_STATIC: "static",
@@ -55,15 +55,15 @@ Object.assign(Bayrell.Lang.OpCodes.OpMethod,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.OpCodes";
+		return "BayLang.OpCodes";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.OpCodes.OpMethod";
+		return "BayLang.OpCodes.OpMethod";
 	},
 	getParentClassName: function()
 	{
-		return "Bayrell.Lang.OpCodes.BaseOpCode";
+		return "BayLang.OpCodes.BaseOpCode";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -77,10 +77,6 @@ Object.assign(Bayrell.Lang.OpCodes.OpMethod,
 	getFieldsList: function(ctx)
 	{
 		var a = [];
-		a.push("op");
-		a.push("value1");
-		a.push("value2");
-		a.push("kind");
 		return use("Runtime.Vector").from(a);
 	},
 	getFieldInfoByName: function(ctx,field_name)
@@ -99,5 +95,5 @@ Object.assign(Bayrell.Lang.OpCodes.OpMethod,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.OpCodes.OpMethod);
-module.exports = Bayrell.Lang.OpCodes.OpMethod;
+});use.add(BayLang.OpCodes.OpMethod);
+module.exports = BayLang.OpCodes.OpMethod;

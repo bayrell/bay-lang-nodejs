@@ -39,16 +39,6 @@ Object.assign(Runtime.fs.prototype,
 Object.assign(Runtime.fs,
 {
 	DIRECTORY_SEPARATOR: "/",
-	removeFirstSlash: function(ctx, path)
-	{
-		var __v0 = use("Runtime.re");
-		return __v0.replace(ctx, "^/+", "", path);
-	},
-	removeLastSlash: function(ctx, path)
-	{
-		var __v0 = use("Runtime.re");
-		return __v0.replace(ctx, "/+$", "", path);
-	},
 	/**
 	 * Join
 	 */
@@ -80,6 +70,20 @@ Object.assign(Runtime.fs,
 	},
 	/**
 	 * Return true if path is folder
+	 * @param string path
+	 * @param boolean
+	 */
+	isFolder: async function(ctx, filepath)
+	{
+		var is_exists = await fileExists(filepath);
+		if (!is_exists) return Promise.resolve( false );
+		
+		filepath = resolve(filepath);
+		var stat = await lstat(filepath);
+		return Promise.resolve( stat.isDirectory() );
+	},
+	/**
+	 * Return true if path is file
 	 * @param string path
 	 * @param boolean
 	 */
@@ -118,10 +122,10 @@ Object.assign(Runtime.fs,
 	listDir: async function(ctx, dirpath)
 	{
 		dirpath = resolve(dirpath);
-		var Collection = use("Runtime.Collection");
+		var Vector = use("Runtime.Vector");
 		var arr = await readdir(dirpath);
 		arr = arr.filter( (s) => s != "." && s != ".." ).sort();
-		arr = Collection.from(arr);
+		arr = Vector.from(arr);
 		return Promise.resolve(arr);
 		return Promise.resolve(null);
 	},
@@ -143,7 +147,8 @@ Object.assign(Runtime.fs,
 			{
 				continue;
 			}
-			item_name2 = this.removeFirstSlash(ctx, item_name2);
+			var __v1 = use("Runtime.rs");
+			item_name2 = __v1.removeFirstSlash(ctx, item_name2);
 			res.push(ctx, item_name2);
 			var is_dir = await this.isDir(ctx, item_path);
 			if (is_dir)
@@ -152,7 +157,7 @@ Object.assign(Runtime.fs,
 				res.appendItems(ctx, sub_items);
 			}
 		}
-		return Promise.resolve(res.toCollection(ctx));
+		return Promise.resolve(res);
 	},
 	/**
 	 * Make dir recursive

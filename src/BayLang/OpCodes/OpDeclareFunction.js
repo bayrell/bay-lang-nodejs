@@ -1,7 +1,7 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2018 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -17,17 +17,35 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.OpCodes == 'undefined') Bayrell.Lang.OpCodes = {};
-Bayrell.Lang.OpCodes.OpDeclareFunction = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
+BayLang.OpCodes.OpDeclareFunction = function(ctx)
 {
-	use("Bayrell.Lang.OpCodes.BaseOpCode").apply(this, arguments);
+	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
 };
-Bayrell.Lang.OpCodes.OpDeclareFunction.prototype = Object.create(use("Bayrell.Lang.OpCodes.BaseOpCode").prototype);
-Bayrell.Lang.OpCodes.OpDeclareFunction.prototype.constructor = Bayrell.Lang.OpCodes.OpDeclareFunction;
-Object.assign(Bayrell.Lang.OpCodes.OpDeclareFunction.prototype,
+BayLang.OpCodes.OpDeclareFunction.prototype = Object.create(use("BayLang.OpCodes.BaseOpCode").prototype);
+BayLang.OpCodes.OpDeclareFunction.prototype.constructor = BayLang.OpCodes.OpDeclareFunction;
+Object.assign(BayLang.OpCodes.OpDeclareFunction.prototype,
 {
+	/**
+	 * Serialize object
+	 */
+	serialize: function(ctx, serializer, data)
+	{
+		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
+		serializer.process(ctx, this, "annotations", data);
+		serializer.process(ctx, this, "args", data);
+		serializer.process(ctx, this, "comments", data);
+		serializer.process(ctx, this, "expression", data);
+		serializer.process(ctx, this, "flags", data);
+		serializer.process(ctx, this, "is_context", data);
+		serializer.process(ctx, this, "is_html", data);
+		serializer.process(ctx, this, "is_html_default_args", data);
+		serializer.process(ctx, this, "items", data);
+		serializer.process(ctx, this, "name", data);
+		serializer.process(ctx, this, "result_type", data);
+		serializer.process(ctx, this, "vars", data);
+	},
 	/**
 	 * Returns true if static function
 	 */
@@ -42,9 +60,31 @@ Object.assign(Bayrell.Lang.OpCodes.OpDeclareFunction.prototype,
 	{
 		return this.flags != null && this.flags.isFlag(ctx, flag_name);
 	},
+	/**
+	 * Returns function expression
+	 */
+	getExpression: function(ctx)
+	{
+		if (this.expression != null)
+		{
+			return this.expression;
+		}
+		var __v0 = use("BayLang.OpCodes.OpItems");
+		if (!(this.items instanceof __v0))
+		{
+			return null;
+		}
+		var op_code_item = this.items.items.get(ctx, 0);
+		var __v0 = use("BayLang.OpCodes.OpReturn");
+		if (!(op_code_item instanceof __v0))
+		{
+			return null;
+		}
+		return op_code_item.expression;
+	},
 	_init: function(ctx)
 	{
-		use("Bayrell.Lang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.op = "op_function";
 		this.name = "";
 		this.annotations = null;
@@ -59,40 +99,22 @@ Object.assign(Bayrell.Lang.OpCodes.OpDeclareFunction.prototype,
 		this.is_html = false;
 		this.is_html_default_args = false;
 	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "op")return this.op;
-		else if (k == "name")return this.name;
-		else if (k == "annotations")return this.annotations;
-		else if (k == "comments")return this.comments;
-		else if (k == "args")return this.args;
-		else if (k == "vars")return this.vars;
-		else if (k == "result_type")return this.result_type;
-		else if (k == "expression")return this.expression;
-		else if (k == "items")return this.items;
-		else if (k == "flags")return this.flags;
-		else if (k == "is_context")return this.is_context;
-		else if (k == "is_html")return this.is_html;
-		else if (k == "is_html_default_args")return this.is_html_default_args;
-		return use("Bayrell.Lang.OpCodes.BaseOpCode").prototype.takeValue.call(this,ctx,k,d);
-	},
 });
-Object.assign(Bayrell.Lang.OpCodes.OpDeclareFunction, use("Bayrell.Lang.OpCodes.BaseOpCode"));
-Object.assign(Bayrell.Lang.OpCodes.OpDeclareFunction,
+Object.assign(BayLang.OpCodes.OpDeclareFunction, use("BayLang.OpCodes.BaseOpCode"));
+Object.assign(BayLang.OpCodes.OpDeclareFunction,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.OpCodes";
+		return "BayLang.OpCodes";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.OpCodes.OpDeclareFunction";
+		return "BayLang.OpCodes.OpDeclareFunction";
 	},
 	getParentClassName: function()
 	{
-		return "Bayrell.Lang.OpCodes.BaseOpCode";
+		return "BayLang.OpCodes.BaseOpCode";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -106,19 +128,6 @@ Object.assign(Bayrell.Lang.OpCodes.OpDeclareFunction,
 	getFieldsList: function(ctx)
 	{
 		var a = [];
-		a.push("op");
-		a.push("name");
-		a.push("annotations");
-		a.push("comments");
-		a.push("args");
-		a.push("vars");
-		a.push("result_type");
-		a.push("expression");
-		a.push("items");
-		a.push("flags");
-		a.push("is_context");
-		a.push("is_html");
-		a.push("is_html_default_args");
 		return use("Runtime.Vector").from(a);
 	},
 	getFieldInfoByName: function(ctx,field_name)
@@ -137,5 +146,5 @@ Object.assign(Bayrell.Lang.OpCodes.OpDeclareFunction,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.OpCodes.OpDeclareFunction);
-module.exports = Bayrell.Lang.OpCodes.OpDeclareFunction;
+});use.add(BayLang.OpCodes.OpDeclareFunction);
+module.exports = BayLang.OpCodes.OpDeclareFunction;

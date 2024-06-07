@@ -1,7 +1,7 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2018 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -17,48 +17,48 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.OpCodes == 'undefined') Bayrell.Lang.OpCodes = {};
-Bayrell.Lang.OpCodes.OpTryCatch = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
+BayLang.OpCodes.OpTryCatch = function(ctx)
 {
-	use("Bayrell.Lang.OpCodes.BaseOpCode").apply(this, arguments);
+	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
 };
-Bayrell.Lang.OpCodes.OpTryCatch.prototype = Object.create(use("Bayrell.Lang.OpCodes.BaseOpCode").prototype);
-Bayrell.Lang.OpCodes.OpTryCatch.prototype.constructor = Bayrell.Lang.OpCodes.OpTryCatch;
-Object.assign(Bayrell.Lang.OpCodes.OpTryCatch.prototype,
+BayLang.OpCodes.OpTryCatch.prototype = Object.create(use("BayLang.OpCodes.BaseOpCode").prototype);
+BayLang.OpCodes.OpTryCatch.prototype.constructor = BayLang.OpCodes.OpTryCatch;
+Object.assign(BayLang.OpCodes.OpTryCatch.prototype,
 {
+	/**
+	 * Serialize object
+	 */
+	serialize: function(ctx, serializer, data)
+	{
+		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
+		serializer.process(ctx, this, "items", data);
+		serializer.process(ctx, this, "op_try", data);
+	},
 	_init: function(ctx)
 	{
-		use("Bayrell.Lang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.op = "op_try_catch";
 		this.op_try = null;
 		this.items = null;
 	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "op")return this.op;
-		else if (k == "op_try")return this.op_try;
-		else if (k == "items")return this.items;
-		return use("Bayrell.Lang.OpCodes.BaseOpCode").prototype.takeValue.call(this,ctx,k,d);
-	},
 });
-Object.assign(Bayrell.Lang.OpCodes.OpTryCatch, use("Bayrell.Lang.OpCodes.BaseOpCode"));
-Object.assign(Bayrell.Lang.OpCodes.OpTryCatch,
+Object.assign(BayLang.OpCodes.OpTryCatch, use("BayLang.OpCodes.BaseOpCode"));
+Object.assign(BayLang.OpCodes.OpTryCatch,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.OpCodes";
+		return "BayLang.OpCodes";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.OpCodes.OpTryCatch";
+		return "BayLang.OpCodes.OpTryCatch";
 	},
 	getParentClassName: function()
 	{
-		return "Bayrell.Lang.OpCodes.BaseOpCode";
+		return "BayLang.OpCodes.BaseOpCode";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -72,9 +72,6 @@ Object.assign(Bayrell.Lang.OpCodes.OpTryCatch,
 	getFieldsList: function(ctx)
 	{
 		var a = [];
-		a.push("op");
-		a.push("op_try");
-		a.push("items");
 		return use("Runtime.Vector").from(a);
 	},
 	getFieldInfoByName: function(ctx,field_name)
@@ -93,5 +90,5 @@ Object.assign(Bayrell.Lang.OpCodes.OpTryCatch,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.OpCodes.OpTryCatch);
-module.exports = Bayrell.Lang.OpCodes.OpTryCatch;
+});use.add(BayLang.OpCodes.OpTryCatch);
+module.exports = BayLang.OpCodes.OpTryCatch;

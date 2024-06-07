@@ -331,6 +331,18 @@ Object.assign(Runtime.Collection.prototype,
 		return d;
 	},
 	/**
+	 * Flatten Collection
+	 */
+	flatten: function(ctx)
+	{
+		var res = use("Runtime.Vector").from([]);
+		for (var i = 0; i < this.count(ctx); i++)
+		{
+			res.appendItems(ctx, this.get(ctx, i));
+		}
+		return res;
+	},
+	/**
 	 * Reduce
 	 * @param fn f
 	 * @param var init_value
@@ -434,7 +446,7 @@ Object.assign(Runtime.Collection.prototype,
 	{
 		for (var i=0; i<this.length; i++)
 		{
-			var flag = f(this[i]);
+			var flag = f(ctx, this[i]);
 			if (flag) return i;
 		}
 		return -1;

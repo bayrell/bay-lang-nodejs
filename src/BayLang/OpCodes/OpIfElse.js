@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,42 +17,43 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.OpCodes == 'undefined') Bayrell.Lang.OpCodes = {};
-Bayrell.Lang.OpCodes.OpIfElse = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
+BayLang.OpCodes.OpIfElse = function(ctx)
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
-Bayrell.Lang.OpCodes.OpIfElse.prototype = Object.create(use("Runtime.BaseStruct").prototype);
-Bayrell.Lang.OpCodes.OpIfElse.prototype.constructor = Bayrell.Lang.OpCodes.OpIfElse;
-Object.assign(Bayrell.Lang.OpCodes.OpIfElse.prototype,
+BayLang.OpCodes.OpIfElse.prototype = Object.create(use("Runtime.BaseStruct").prototype);
+BayLang.OpCodes.OpIfElse.prototype.constructor = BayLang.OpCodes.OpIfElse;
+Object.assign(BayLang.OpCodes.OpIfElse.prototype,
 {
+	/**
+	 * Serialize object
+	 */
+	serialize: function(ctx, serializer, data)
+	{
+		use("Runtime.BaseStruct").prototype.serialize.call(this, ctx, serializer, data);
+		serializer.process(ctx, this, "condition", data);
+		serializer.process(ctx, this, "if_true", data);
+	},
 	_init: function(ctx)
 	{
 		use("Runtime.BaseStruct").prototype._init.call(this,ctx);
 		this.condition = null;
 		this.if_true = null;
 	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "condition")return this.condition;
-		else if (k == "if_true")return this.if_true;
-		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
-	},
 });
-Object.assign(Bayrell.Lang.OpCodes.OpIfElse, use("Runtime.BaseStruct"));
-Object.assign(Bayrell.Lang.OpCodes.OpIfElse,
+Object.assign(BayLang.OpCodes.OpIfElse, use("Runtime.BaseStruct"));
+Object.assign(BayLang.OpCodes.OpIfElse,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.OpCodes";
+		return "BayLang.OpCodes";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.OpCodes.OpIfElse";
+		return "BayLang.OpCodes.OpIfElse";
 	},
 	getParentClassName: function()
 	{
@@ -70,8 +71,6 @@ Object.assign(Bayrell.Lang.OpCodes.OpIfElse,
 	getFieldsList: function(ctx)
 	{
 		var a = [];
-		a.push("condition");
-		a.push("if_true");
 		return use("Runtime.Vector").from(a);
 	},
 	getFieldInfoByName: function(ctx,field_name)
@@ -90,5 +89,5 @@ Object.assign(Bayrell.Lang.OpCodes.OpIfElse,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.OpCodes.OpIfElse);
-module.exports = Bayrell.Lang.OpCodes.OpIfElse;
+});use.add(BayLang.OpCodes.OpIfElse);
+module.exports = BayLang.OpCodes.OpIfElse;

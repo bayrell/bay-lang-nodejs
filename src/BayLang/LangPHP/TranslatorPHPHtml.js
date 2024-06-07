@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,16 +17,15 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.LangPHP == 'undefined') Bayrell.Lang.LangPHP = {};
-Bayrell.Lang.LangPHP.TranslatorPHPHtml = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.LangPHP == 'undefined') BayLang.LangPHP = {};
+BayLang.LangPHP.TranslatorPHPHtml = function(ctx)
 {
 };
-Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml.prototype,
+Object.assign(BayLang.LangPHP.TranslatorPHPHtml.prototype,
 {
 });
-Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
+Object.assign(BayLang.LangPHP.TranslatorPHPHtml,
 {
 	/**
 	 * Is component
@@ -57,16 +56,16 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 	OpHtmlAttr: function(ctx, t, attr)
 	{
 		var op_code = attr.value;
-		var __v0 = use("Bayrell.Lang.OpCodes.OpString");
+		var __v0 = use("BayLang.OpCodes.OpString");
 		if (op_code instanceof __v0)
 		{
 			return use("Runtime.Vector").from([t,t.expression.constructor.toString(ctx, op_code.value)]);
 		}
-		var __v0 = use("Bayrell.Lang.OpCodes.OpHtmlValue");
+		var __v0 = use("BayLang.OpCodes.OpHtmlValue");
 		if (op_code instanceof __v0)
 		{
-			var __v1 = use("Bayrell.Lang.OpCodes.OpHtmlValue");
-			var __v2 = use("Bayrell.Lang.OpCodes.OpHtmlValue");
+			var __v1 = use("BayLang.OpCodes.OpHtmlValue");
+			var __v2 = use("BayLang.OpCodes.OpHtmlValue");
 			if (op_code.kind == __v1.KIND_RAW)
 			{
 				var res = t.expression.constructor.Expression(ctx, t, op_code.value);
@@ -122,7 +121,7 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 			if (attr_key == "class")
 			{
 				attr_class.push(ctx, attr_value);
-				var __v3 = use("Bayrell.Lang.OpCodes.OpString");
+				var __v3 = use("BayLang.OpCodes.OpString");
 				if (attr_elem_name == "" && attr.value instanceof __v3)
 				{
 					var __v4 = use("Runtime.rs");
@@ -143,7 +142,7 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 			}
 			res_attrs.push(ctx, t.expression.constructor.toString(ctx, attr_key) + use("Runtime.rtl").toStr(" => ") + use("Runtime.rtl").toStr(attr_value));
 		}
-		res_attrs = res_attrs.filter(ctx, (ctx, s) => 
+		res_attrs = res_attrs.filter(ctx, (ctx, s) =>
 		{
 			return s != "";
 		});
@@ -178,9 +177,9 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 	OpHtmlTag: function(ctx, t, op_code, var_name)
 	{
 		var content = "";
-		var __v0 = use("Bayrell.Lang.OpCodes.OpHtmlContent");
-		var __v1 = use("Bayrell.Lang.OpCodes.OpHtmlValue");
-		var __v2 = use("Bayrell.Lang.OpCodes.OpHtmlTag");
+		var __v0 = use("BayLang.OpCodes.OpHtmlContent");
+		var __v1 = use("BayLang.OpCodes.OpHtmlValue");
+		var __v2 = use("BayLang.OpCodes.OpHtmlTag");
 		if (op_code instanceof __v0)
 		{
 			var item_value = t.expression.constructor.toString(ctx, op_code.value);
@@ -198,8 +197,8 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 			/* Restore op codes */
 			t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["save_op_codes"]), save_op_codes);
 			/*t <= save_op_code_inc <= save_op_code_inc;*/
-			var __v2 = use("Bayrell.Lang.OpCodes.OpHtmlValue");
-			var __v3 = use("Bayrell.Lang.OpCodes.OpHtmlValue");
+			var __v2 = use("BayLang.OpCodes.OpHtmlValue");
+			var __v3 = use("BayLang.OpCodes.OpHtmlValue");
 			if (op_code.kind == __v2.KIND_RAW)
 			{
 				content += use("Runtime.rtl").toStr(t.s(ctx, "/* Raw */"));
@@ -220,7 +219,7 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 			new_var_name = Runtime.rtl.attr(ctx, res, 1);
 			var has_childs = op_code.items != null && op_code.items.items != null && op_code.items.items.count(ctx) > 0;
 			var is_component = this.isComponent(ctx, op_code.tag_name);
-			var op_code_attrs = op_code.attrs.filter(ctx, (ctx, attr) => 
+			var op_code_attrs = op_code.attrs.filter(ctx, (ctx, attr) =>
 			{
 				return attr.key != "@render";
 			});
@@ -301,7 +300,7 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 			var save_op_codes = t.save_op_codes;
 			/*int save_op_code_inc = t.save_op_code_inc;*/
 			var item_value = "";
-			var __v3 = use("Bayrell.Lang.OpCodes.OpCall");
+			var __v3 = use("BayLang.OpCodes.OpCall");
 			if (op_code instanceof __v3)
 			{
 				var res = t.expression.constructor.OpCall(ctx, t, op_code);
@@ -347,17 +346,47 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 		content += use("Runtime.rtl").toStr(t.s2(ctx, ""));
 		var res = t.constructor.addSaveOpCode(ctx, t, use("Runtime.Map").from({"content":content}));
 		t = Runtime.rtl.attr(ctx, res, 0);
-		if (detect_multiblock && t.current_function.flags.isFlag(ctx, "multiblock") && op_code.items.count(ctx) > 1)
+		if (detect_multiblock && (t.current_function.flags.isFlag(ctx, "multiblock") || t.current_function.name == "render"))
 		{
 			return use("Runtime.Vector").from([t,"$this->_flatten($__v)"]);
 		}
-		return use("Runtime.Vector").from([t,"$__v->join(\"\")"]);
+		return use("Runtime.Vector").from([t,"$__v"]);
+	},
+	/**
+	 * Translator html slot
+	 */
+	OpHtmlSlot: function(ctx, t, op_code)
+	{
+		var content = "\\Runtime\\Dict::from([";
+		t = t.levelInc(ctx);
+		for (var i = 0; i < op_code.items.count(ctx); i++)
+		{
+			var item = op_code.items.item(ctx, i);
+			var __v0 = use("BayLang.OpCodes.OpHtmlSlot");
+			if (!(item instanceof __v0))
+			{
+				continue;
+			}
+			content += use("Runtime.rtl").toStr(t.s(ctx, t.expression.constructor.toString(ctx, item.name) + use("Runtime.rtl").toStr(" => ")));
+			var res = this.OpHtmlItemsAsFunction(ctx, t, item.items);
+			t = res.get(ctx, 0);
+			content += use("Runtime.rtl").toStr(res.get(ctx, 1) + use("Runtime.rtl").toStr(","));
+		}
+		t = t.levelDec(ctx);
+		content += use("Runtime.rtl").toStr(t.s(ctx, "])"));
+		return use("Runtime.Vector").from([t,content]);
 	},
 	/**
 	 * Translator html items as function
 	 */
 	OpHtmlItemsAsFunction: function(ctx, t, op_code)
 	{
+		/* If slot */
+		var __v0 = use("BayLang.OpCodes.OpHtmlSlot");
+		if (op_code.items.get(ctx, 0) instanceof __v0)
+		{
+			return this.OpHtmlSlot(ctx, t, op_code);
+		}
 		var save_op_codes = t.save_op_codes;
 		var save_op_code_inc = t.save_op_code_inc;
 		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["save_op_code_inc"]), 0);
@@ -367,7 +396,7 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 		this.exportUsedVars(ctx, used_vars, op_code);
 		if (used_vars.count(ctx) > 0)
 		{
-			used_vars = used_vars.map(ctx, (ctx, s) => 
+			used_vars = used_vars.map(ctx, (ctx, s) =>
 			{
 				return "$" + use("Runtime.rtl").toStr(s);
 			});
@@ -406,7 +435,7 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["html_var_name"]), var_name);
 		var content = "";
 		var next_space = true;
-		var add_space = (ctx, i) => 
+		var add_space = (ctx, i) =>
 		{
 			if (i > 0 && next_space)
 			{
@@ -429,11 +458,12 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 			/* Save op codes */
 			var save_op_codes = t.save_op_codes;
 			var save_op_code_inc = t.save_op_code_inc;
-			var __v0 = use("Bayrell.Lang.OpCodes.OpAssign");
-			var __v1 = use("Bayrell.Lang.OpCodes.OpComment");
-			var __v2 = use("Bayrell.Lang.OpCodes.OpFor");
-			var __v3 = use("Bayrell.Lang.OpCodes.OpIf");
-			var __v4 = use("Bayrell.Lang.OpCodes.OpWhile");
+			var __v0 = use("BayLang.OpCodes.OpAssign");
+			var __v1 = use("BayLang.OpCodes.OpComment");
+			var __v2 = use("BayLang.OpCodes.OpFor");
+			var __v3 = use("BayLang.OpCodes.OpIf");
+			var __v4 = use("BayLang.OpCodes.OpWhile");
+			var __v5 = use("BayLang.OpCodes.OpHtmlSlot");
 			if (item instanceof __v0)
 			{
 				var res = t.operator.constructor.OpAssign(ctx, t, item);
@@ -469,6 +499,10 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 				t = Runtime.rtl.attr(ctx, res, 0);
 				op_content += use("Runtime.rtl").toStr(Runtime.rtl.attr(ctx, res, 1));
 			}
+			else if (item instanceof __v5)
+			{
+				continue;
+			}
 			else
 			{
 				add_space(ctx, i);
@@ -498,10 +532,10 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 	 */
 	exportUsedVars: function(ctx, used_vars, op_code)
 	{
-		var __v0 = use("Bayrell.Lang.OpCodes.OpHtmlItems");
-		var __v1 = use("Bayrell.Lang.OpCodes.OpCall");
-		var __v2 = use("Bayrell.Lang.OpCodes.OpAttr");
-		var __v3 = use("Bayrell.Lang.OpCodes.OpIdentifier");
+		var __v0 = use("BayLang.OpCodes.OpHtmlItems");
+		var __v1 = use("BayLang.OpCodes.OpCall");
+		var __v2 = use("BayLang.OpCodes.OpAttr");
+		var __v3 = use("BayLang.OpCodes.OpIdentifier");
 		if (op_code instanceof __v0)
 		{
 			for (var i = 0; i < op_code.items.count(ctx); i++)
@@ -526,7 +560,7 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 		}
 		else if (op_code instanceof __v3)
 		{
-			var __v4 = use("Bayrell.Lang.OpCodes.OpIdentifier");
+			var __v4 = use("BayLang.OpCodes.OpIdentifier");
 			if (op_code.kind == __v4.KIND_VARIABLE)
 			{
 				used_vars.push(ctx, op_code.value);
@@ -536,11 +570,11 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.LangPHP";
+		return "BayLang.LangPHP";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.LangPHP.TranslatorPHPHtml";
+		return "BayLang.LangPHP.TranslatorPHPHtml";
 	},
 	getParentClassName: function()
 	{
@@ -576,5 +610,5 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHPHtml,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.LangPHP.TranslatorPHPHtml);
-module.exports = Bayrell.Lang.LangPHP.TranslatorPHPHtml;
+});use.add(BayLang.LangPHP.TranslatorPHPHtml);
+module.exports = BayLang.LangPHP.TranslatorPHPHtml;

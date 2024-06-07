@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,16 +17,15 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.LangES6 == 'undefined') Bayrell.Lang.LangES6 = {};
-Bayrell.Lang.LangES6.AsyncAwait = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
+BayLang.LangES6.AsyncAwait = function(ctx)
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
-Bayrell.Lang.LangES6.AsyncAwait.prototype = Object.create(use("Runtime.BaseStruct").prototype);
-Bayrell.Lang.LangES6.AsyncAwait.prototype.constructor = Bayrell.Lang.LangES6.AsyncAwait;
-Object.assign(Bayrell.Lang.LangES6.AsyncAwait.prototype,
+BayLang.LangES6.AsyncAwait.prototype = Object.create(use("Runtime.BaseStruct").prototype);
+BayLang.LangES6.AsyncAwait.prototype.constructor = BayLang.LangES6.AsyncAwait;
+Object.assign(BayLang.LangES6.AsyncAwait.prototype,
 {
 	_init: function(ctx)
 	{
@@ -42,17 +41,17 @@ Object.assign(Bayrell.Lang.LangES6.AsyncAwait.prototype,
 		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
 	},
 });
-Object.assign(Bayrell.Lang.LangES6.AsyncAwait, use("Runtime.BaseStruct"));
-Object.assign(Bayrell.Lang.LangES6.AsyncAwait,
+Object.assign(BayLang.LangES6.AsyncAwait, use("Runtime.BaseStruct"));
+Object.assign(BayLang.LangES6.AsyncAwait,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.LangES6";
+		return "BayLang.LangES6";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.LangES6.AsyncAwait";
+		return "BayLang.LangES6.AsyncAwait";
 	},
 	getParentClassName: function()
 	{
@@ -90,5 +89,5 @@ Object.assign(Bayrell.Lang.LangES6.AsyncAwait,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.LangES6.AsyncAwait);
-module.exports = Bayrell.Lang.LangES6.AsyncAwait;
+});use.add(BayLang.LangES6.AsyncAwait);
+module.exports = BayLang.LangES6.AsyncAwait;

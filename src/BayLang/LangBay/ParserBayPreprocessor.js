@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,16 +17,15 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.LangBay == 'undefined') Bayrell.Lang.LangBay = {};
-Bayrell.Lang.LangBay.ParserBayPreprocessor = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
+BayLang.LangBay.ParserBayPreprocessor = function(ctx)
 {
 };
-Object.assign(Bayrell.Lang.LangBay.ParserBayPreprocessor.prototype,
+Object.assign(BayLang.LangBay.ParserBayPreprocessor.prototype,
 {
 });
-Object.assign(Bayrell.Lang.LangBay.ParserBayPreprocessor,
+Object.assign(BayLang.LangBay.ParserBayPreprocessor,
 {
 	/**
 	 * Read namespace
@@ -101,7 +100,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayPreprocessor,
 			var res = parser.parser_base.constructor.readToken(ctx, parser);
 			look = Runtime.rtl.attr(ctx, res, 0);
 			token = Runtime.rtl.attr(ctx, res, 1);
-			var __v1 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfCode");
+			var __v1 = use("BayLang.OpCodes.OpPreprocessorIfCode");
 			var ifcode = new __v1(ctx, use("Runtime.Map").from({"condition":condition,"content":content,"caret_start":caret_content,"caret_end":parser.caret}));
 			items.push(ctx, ifcode);
 		}
@@ -110,7 +109,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayPreprocessor,
 		/* read endswitch */
 		var res = parser.parser_base.constructor.matchToken(ctx, parser, "#endswitch");
 		parser = Runtime.rtl.attr(ctx, res, 0);
-		var __v1 = use("Bayrell.Lang.OpCodes.OpPreprocessorSwitch");
+		var __v1 = use("BayLang.OpCodes.OpPreprocessorSwitch");
 		return use("Runtime.Vector").from([parser,new __v1(ctx, use("Runtime.Map").from({"items":items.toCollection(ctx),"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/**
@@ -145,7 +144,7 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayPreprocessor,
 		var res = parser.parser_base.constructor.matchToken(ctx, parser, "#endif");
 		parser = Runtime.rtl.attr(ctx, res, 0);
 		token = Runtime.rtl.attr(ctx, res, 1);
-		var __v0 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfCode");
+		var __v0 = use("BayLang.OpCodes.OpPreprocessorIfCode");
 		var ifcode = new __v0(ctx, use("Runtime.Map").from({"condition":condition,"content":content,"caret_start":caret_content,"caret_end":parser.caret}));
 		return use("Runtime.Vector").from([parser,ifcode]);
 	},
@@ -172,10 +171,10 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayPreprocessor,
 		var res = parser.parser_base.constructor.matchToken(ctx, parser, "then");
 		parser = Runtime.rtl.attr(ctx, res, 0);
 		token = Runtime.rtl.attr(ctx, res, 1);
-		var __v0 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfDef");
-		var __v1 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfDef");
-		var __v2 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfDef");
-		var __v3 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfDef");
+		var __v0 = use("BayLang.OpCodes.OpPreprocessorIfDef");
+		var __v1 = use("BayLang.OpCodes.OpPreprocessorIfDef");
+		var __v2 = use("BayLang.OpCodes.OpPreprocessorIfDef");
+		var __v3 = use("BayLang.OpCodes.OpPreprocessorIfDef");
 		if (kind == __v0.KIND_PROGRAM)
 		{
 			var res = parser.parser_program.constructor.readProgram(ctx, parser, "#endif");
@@ -210,17 +209,17 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayPreprocessor,
 			var res = parser.parser_base.constructor.matchToken(ctx, parser, "#endif");
 			parser = Runtime.rtl.attr(ctx, res, 0);
 		}
-		var __v0 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfDef");
+		var __v0 = use("BayLang.OpCodes.OpPreprocessorIfDef");
 		return use("Runtime.Vector").from([parser,new __v0(ctx, use("Runtime.Map").from({"items":items,"condition":condition,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.LangBay";
+		return "BayLang.LangBay";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.LangBay.ParserBayPreprocessor";
+		return "BayLang.LangBay.ParserBayPreprocessor";
 	},
 	getParentClassName: function()
 	{
@@ -256,5 +255,5 @@ Object.assign(Bayrell.Lang.LangBay.ParserBayPreprocessor,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.LangBay.ParserBayPreprocessor);
-module.exports = Bayrell.Lang.LangBay.ParserBayPreprocessor;
+});use.add(BayLang.LangBay.ParserBayPreprocessor);
+module.exports = BayLang.LangBay.ParserBayPreprocessor;

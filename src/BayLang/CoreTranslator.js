@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,16 +17,24 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-Bayrell.Lang.CoreTranslator = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+BayLang.CoreTranslator = function(ctx)
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
-Bayrell.Lang.CoreTranslator.prototype = Object.create(use("Runtime.BaseStruct").prototype);
-Bayrell.Lang.CoreTranslator.prototype.constructor = Bayrell.Lang.CoreTranslator;
-Object.assign(Bayrell.Lang.CoreTranslator.prototype,
+BayLang.CoreTranslator.prototype = Object.create(use("Runtime.BaseStruct").prototype);
+BayLang.CoreTranslator.prototype.constructor = BayLang.CoreTranslator;
+Object.assign(BayLang.CoreTranslator.prototype,
 {
+	/**
+	 * Set preprocessor flag
+	 */
+	setFlag: function(ctx, flag_name, value)
+	{
+		var t = this;
+		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["preprocessor_flags", flag_name]), value);
+		return t;
+	},
 	/**
 	 * Find save op code
 	 */
@@ -133,8 +141,8 @@ Object.assign(Bayrell.Lang.CoreTranslator.prototype,
 		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
 	},
 });
-Object.assign(Bayrell.Lang.CoreTranslator, use("Runtime.BaseStruct"));
-Object.assign(Bayrell.Lang.CoreTranslator,
+Object.assign(BayLang.CoreTranslator, use("Runtime.BaseStruct"));
+Object.assign(BayLang.CoreTranslator,
 {
 	/**
 	 * Translate BaseOpCode
@@ -175,7 +183,7 @@ Object.assign(Bayrell.Lang.CoreTranslator,
 			data = data.setIm(ctx, "var_name", var_name);
 			save_op_code_inc += 1;
 		}
-		var __v0 = use("Bayrell.Lang.SaveOpCode");
+		var __v0 = use("BayLang.SaveOpCode");
 		var s = new __v0(ctx, data);
 		t = t.copy(ctx, use("Runtime.Map").from({"save_op_codes":t.save_op_codes.pushIm(ctx, s),"save_op_code_inc":save_op_code_inc}));
 		return use("Runtime.Vector").from([t,var_name]);
@@ -220,11 +228,11 @@ Object.assign(Bayrell.Lang.CoreTranslator,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang";
+		return "BayLang";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.CoreTranslator";
+		return "BayLang.CoreTranslator";
 	},
 	getParentClassName: function()
 	{
@@ -279,5 +287,5 @@ Object.assign(Bayrell.Lang.CoreTranslator,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.CoreTranslator);
-module.exports = Bayrell.Lang.CoreTranslator;
+});use.add(BayLang.CoreTranslator);
+module.exports = BayLang.CoreTranslator;

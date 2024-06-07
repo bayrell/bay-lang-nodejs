@@ -17,34 +17,33 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.Exceptions == 'undefined') Bayrell.Lang.Exceptions = {};
-Bayrell.Lang.Exceptions.DeclaredClass = function(ctx, prev)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.Exceptions == 'undefined') BayLang.Exceptions = {};
+BayLang.Exceptions.DeclaredClass = function(ctx, prev)
 {
 	if (prev == undefined) prev = null;
-	use("Runtime.Exceptions.RuntimeException").call(this, ctx, "Declared class", -1, prev);
+	use("Runtime.Exceptions.AbstractException").call(this, ctx, "Declared class", -1, prev);
 };
-Bayrell.Lang.Exceptions.DeclaredClass.prototype = Object.create(use("Runtime.Exceptions.RuntimeException").prototype);
-Bayrell.Lang.Exceptions.DeclaredClass.prototype.constructor = Bayrell.Lang.Exceptions.DeclaredClass;
-Object.assign(Bayrell.Lang.Exceptions.DeclaredClass.prototype,
+BayLang.Exceptions.DeclaredClass.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
+BayLang.Exceptions.DeclaredClass.prototype.constructor = BayLang.Exceptions.DeclaredClass;
+Object.assign(BayLang.Exceptions.DeclaredClass.prototype,
 {
 });
-Object.assign(Bayrell.Lang.Exceptions.DeclaredClass, use("Runtime.Exceptions.RuntimeException"));
-Object.assign(Bayrell.Lang.Exceptions.DeclaredClass,
+Object.assign(BayLang.Exceptions.DeclaredClass, use("Runtime.Exceptions.AbstractException"));
+Object.assign(BayLang.Exceptions.DeclaredClass,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.Exceptions";
+		return "BayLang.Exceptions";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.Exceptions.DeclaredClass";
+		return "BayLang.Exceptions.DeclaredClass";
 	},
 	getParentClassName: function()
 	{
-		return "Runtime.Exceptions.RuntimeException";
+		return "Runtime.Exceptions.AbstractException";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -76,5 +75,5 @@ Object.assign(Bayrell.Lang.Exceptions.DeclaredClass,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.Exceptions.DeclaredClass);
-module.exports = Bayrell.Lang.Exceptions.DeclaredClass;
+});use.add(BayLang.Exceptions.DeclaredClass);
+module.exports = BayLang.Exceptions.DeclaredClass;

@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,19 +26,74 @@ Bayrell.Lang.Test.LangBay.Main = function(ctx)
 };
 Object.assign(Bayrell.Lang.Test.LangBay.Main.prototype,
 {
+	/**
+	 * Reset
+	 */
+	reset: function(ctx)
+	{
+		var __v0 = use("Bayrell.Lang.LangBay.ParserBay");
+		this.parser = new __v0(ctx);
+		this.parser = this.parser.constructor.reset(ctx, this.parser);
+		var __v1 = use("Bayrell.Lang.LangBay.TranslatorBay");
+		this.translator = new __v1(ctx);
+		this.translator.reset(ctx);
+	},
+	/**
+	 * Set content
+	 */
+	setContent: function(ctx, content)
+	{
+		this.parser = this.parser.constructor.setContent(ctx, this.parser, content);
+	},
+	/**
+	 * Add variable
+	 */
+	addVar: function(ctx, var_name)
+	{
+		var parser = this.parser;
+		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["vars"]), parser.vars.setIm(ctx, var_name, true));
+		this.parser = parser;
+	},
+	/**
+	 * Translate
+	 */
+	translate: function(ctx, content)
+	{
+		var result = use("Runtime.Vector").from([]);
+		this.setContent(ctx, content);
+		/* Parse */
+		var res = this.parser.parser_expression.constructor.readExpression(ctx, this.parser);
+		var op_code = res.get(ctx, 1);
+		/* Translate */
+		this.translator.expression.translate(ctx, op_code, result);
+		var __v0 = use("Runtime.rs");
+		return use("Runtime.Vector").from([op_code,__v0.join(ctx, "", result)]);
+	},
+	testNumber: function(ctx)
+	{
+		this.reset(ctx);
+		var content = "1";
+		var res = this.translate(ctx, content);
+		var __v0 = use("Runtime.Unit.AssertHelper");
+		__v0.equalValue(ctx, content, res.get(ctx, 1), content);
+	},
+	testIdentifier: function(ctx)
+	{
+		this.reset(ctx);
+		this.addVar(ctx, "a");
+		var content = "a";
+		var res = this.translate(ctx, content);
+		var __v0 = use("Runtime.Unit.AssertHelper");
+		__v0.equalValue(ctx, content, res.get(ctx, 1), content);
+	},
+	_init: function(ctx)
+	{
+		this.parser = null;
+		this.translator = null;
+	},
 });
 Object.assign(Bayrell.Lang.Test.LangBay.Main,
 {
-	test1: function(ctx)
-	{
-		var __v0 = use("Runtime.Unit.AssertHelper");
-		__v0.equalValue(ctx, 1, 1, "Test");
-	},
-	test2: function(ctx)
-	{
-		var __v0 = use("Runtime.Unit.AssertHelper");
-		__v0.equalValue(ctx, 1, 1, "Test");
-	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
@@ -75,14 +130,14 @@ Object.assign(Bayrell.Lang.Test.LangBay.Main,
 	getMethodsList: function(ctx)
 	{
 		var a=[
-			"test1",
-			"test2",
+			"testNumber",
+			"testIdentifier",
 		];
 		return use("Runtime.Vector").from(a);
 	},
 	getMethodInfoByName: function(ctx,field_name)
 	{
-		if (field_name == "test1")
+		if (field_name == "testNumber")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -94,7 +149,7 @@ Object.assign(Bayrell.Lang.Test.LangBay.Main,
 				]),
 			});
 		}
-		if (field_name == "test2")
+		if (field_name == "testIdentifier")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");

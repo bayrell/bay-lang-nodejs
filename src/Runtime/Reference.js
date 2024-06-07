@@ -28,6 +28,20 @@ Runtime.Reference.prototype = Object.create(use("Runtime.BaseObject").prototype)
 Runtime.Reference.prototype.constructor = Runtime.Reference;
 Object.assign(Runtime.Reference.prototype,
 {
+	/**
+	 * Returns value
+	 */
+	setValue: function(ctx, new_value)
+	{
+		this.ref = new_value;
+	},
+	/**
+	 * Returns value
+	 */
+	value: function(ctx)
+	{
+		return this.ref;
+	},
 	_init: function(ctx)
 	{
 		use("Runtime.BaseObject").prototype._init.call(this,ctx);

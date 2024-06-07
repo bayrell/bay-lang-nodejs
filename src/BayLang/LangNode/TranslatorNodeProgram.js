@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,20 +17,19 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.LangNode == 'undefined') Bayrell.Lang.LangNode = {};
-Bayrell.Lang.LangNode.TranslatorNodeProgram = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.LangNode == 'undefined') BayLang.LangNode = {};
+BayLang.LangNode.TranslatorNodeProgram = function(ctx)
 {
-	use("Bayrell.Lang.LangES6.TranslatorES6Program").apply(this, arguments);
+	use("BayLang.LangES6.TranslatorES6Program").apply(this, arguments);
 };
-Bayrell.Lang.LangNode.TranslatorNodeProgram.prototype = Object.create(use("Bayrell.Lang.LangES6.TranslatorES6Program").prototype);
-Bayrell.Lang.LangNode.TranslatorNodeProgram.prototype.constructor = Bayrell.Lang.LangNode.TranslatorNodeProgram;
-Object.assign(Bayrell.Lang.LangNode.TranslatorNodeProgram.prototype,
+BayLang.LangNode.TranslatorNodeProgram.prototype = Object.create(use("BayLang.LangES6.TranslatorES6Program").prototype);
+BayLang.LangNode.TranslatorNodeProgram.prototype.constructor = BayLang.LangNode.TranslatorNodeProgram;
+Object.assign(BayLang.LangNode.TranslatorNodeProgram.prototype,
 {
 });
-Object.assign(Bayrell.Lang.LangNode.TranslatorNodeProgram, use("Bayrell.Lang.LangES6.TranslatorES6Program"));
-Object.assign(Bayrell.Lang.LangNode.TranslatorNodeProgram,
+Object.assign(BayLang.LangNode.TranslatorNodeProgram, use("BayLang.LangES6.TranslatorES6Program"));
+Object.assign(BayLang.LangNode.TranslatorNodeProgram,
 {
 	/**
 	 * Translate program
@@ -68,15 +67,15 @@ Object.assign(Bayrell.Lang.LangNode.TranslatorNodeProgram,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.LangNode";
+		return "BayLang.LangNode";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.LangNode.TranslatorNodeProgram";
+		return "BayLang.LangNode.TranslatorNodeProgram";
 	},
 	getParentClassName: function()
 	{
-		return "Bayrell.Lang.LangES6.TranslatorES6Program";
+		return "BayLang.LangES6.TranslatorES6Program";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -108,5 +107,5 @@ Object.assign(Bayrell.Lang.LangNode.TranslatorNodeProgram,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.LangNode.TranslatorNodeProgram);
-module.exports = Bayrell.Lang.LangNode.TranslatorNodeProgram;
+});use.add(BayLang.LangNode.TranslatorNodeProgram);
+module.exports = BayLang.LangNode.TranslatorNodeProgram;

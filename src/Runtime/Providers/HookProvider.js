@@ -38,9 +38,9 @@ Object.assign(Runtime.Providers.HookProvider.prototype,
 		for (var i = 0; i < hooks.count(ctx); i++)
 		{
 			var hook = Runtime.rtl.attr(ctx, hooks, i);
-			var __v1 = use("Runtime.rtl");
-			var base_hook = __v1.newInstance(ctx, hook.name, use("Runtime.Vector").from([hook.params]));
-			base_hook.hook = this;
+			var base_hook = hook.createHook(ctx);
+			base_hook.hook = hook;
+			base_hook.provider = this;
 			base_hook.register_hooks(ctx);
 			this.base_hooks.push(ctx, base_hook);
 		}
@@ -91,7 +91,7 @@ Object.assign(Runtime.Providers.HookProvider.prototype,
 			priorities.setValue(ctx, priority, new __v0(ctx));
 		}
 		var methods_list = priorities.get(ctx, priority);
-		var index = methods_list.find(ctx, (ctx, info) => 
+		var index = methods_list.find(ctx, (ctx, info) =>
 		{
 			return info.obj == obj && info.name == method_name;
 		});

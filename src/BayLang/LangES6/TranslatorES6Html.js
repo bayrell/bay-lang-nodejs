@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,16 +17,15 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.LangES6 == 'undefined') Bayrell.Lang.LangES6 = {};
-Bayrell.Lang.LangES6.TranslatorES6Html = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
+BayLang.LangES6.TranslatorES6Html = function(ctx)
 {
 };
-Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html.prototype,
+Object.assign(BayLang.LangES6.TranslatorES6Html.prototype,
 {
 });
-Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
+Object.assign(BayLang.LangES6.TranslatorES6Html,
 {
 	/**
 	 * Is component
@@ -53,16 +52,16 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 	OpHtmlAttr: function(ctx, t, attr, item_pos)
 	{
 		var op_code = attr.value;
-		var __v0 = use("Bayrell.Lang.OpCodes.OpString");
+		var __v0 = use("BayLang.OpCodes.OpString");
 		if (op_code instanceof __v0)
 		{
 			return use("Runtime.Vector").from([t,t.expression.constructor.toString(ctx, op_code.value)]);
 		}
-		var __v0 = use("Bayrell.Lang.OpCodes.OpHtmlValue");
+		var __v0 = use("BayLang.OpCodes.OpHtmlValue");
 		if (op_code instanceof __v0)
 		{
-			var __v1 = use("Bayrell.Lang.OpCodes.OpHtmlValue");
-			var __v2 = use("Bayrell.Lang.OpCodes.OpHtmlValue");
+			var __v1 = use("BayLang.OpCodes.OpHtmlValue");
+			var __v2 = use("BayLang.OpCodes.OpHtmlValue");
 			if (op_code.kind == __v1.KIND_RAW)
 			{
 				var res = t.expression.constructor.Expression(ctx, t, op_code.value);
@@ -88,8 +87,9 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 	/**
 	 * Translator html template
 	 */
-	OpHtmlAttrs: function(ctx, t, attrs)
+	OpHtmlAttrs: function(ctx, t, attrs, is_component)
 	{
+		if (is_component == undefined) is_component = false;
 		var __v0 = use("Runtime.Vector");
 		var attr_class = new __v0(ctx);
 		var attr_s = "null";
@@ -116,7 +116,7 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 			if (attr_key == "class")
 			{
 				attr_class.push(ctx, attr_value);
-				var __v4 = use("Bayrell.Lang.OpCodes.OpString");
+				var __v4 = use("BayLang.OpCodes.OpString");
 				if (attr_elem_name == "" && attr.value instanceof __v4)
 				{
 					var __v5 = use("Runtime.rs");
@@ -178,10 +178,16 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 			*/
 			res_attrs.push(ctx, t.expression.constructor.toString(ctx, attr_key) + use("Runtime.rtl").toStr(":") + use("Runtime.rtl").toStr(attr_value));
 		}
-		res_attrs = res_attrs.filter(ctx, (ctx, s) => 
+		res_attrs = res_attrs.filter(ctx, (ctx, s) =>
 		{
 			return s != "";
 		});
+		/* Add debug component */
+		if (t.preprocessor_flags.get(ctx, "DEBUG_COMPONENT") && !is_component)
+		{
+			attr_class.push(ctx, "\"debug_component\"");
+		}
+		/* Attrs */
 		if (attr_class.count(ctx) > 0)
 		{
 			res_attrs.push(ctx, "\"class\":" + use("Runtime.rtl").toStr("this._class_name([") + use("Runtime.rtl").toStr(attr_class) + use("Runtime.rtl").toStr("])"));
@@ -193,6 +199,20 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 		else if (attr_elem_name != "")
 		{
 			res_attrs.push(ctx, "\"key\":" + use("Runtime.rtl").toStr(attr_elem_name));
+		}
+		/* Add debug component */
+		if (t.preprocessor_flags.get(ctx, "DEBUG_COMPONENT"))
+		{
+			if (is_component)
+			{
+				var __v2 = use("Runtime.rs");
+				res_attrs.push(ctx, "\"data_widget_path\": \"" + use("Runtime.rtl").toStr(__v2.join(ctx, ".", t.debug_component)) + use("Runtime.rtl").toStr("\""));
+			}
+			else
+			{
+				var __v3 = use("Runtime.rs");
+				res_attrs.push(ctx, "\"data-widget-path\": \"" + use("Runtime.rtl").toStr(__v3.join(ctx, ".", t.debug_component)) + use("Runtime.rtl").toStr("\""));
+			}
 		}
 		if (res_attrs.count(ctx) > 0)
 		{
@@ -216,32 +236,6 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 		return use("Runtime.Vector").from([t,attr_s]);
 	},
 	/**
-	 * Returns class name
-	 */
-	getOpHtmlAttrsClassName: function(ctx, attrs)
-	{
-		var __v0 = use("Runtime.Vector");
-		var class_names = new __v0(ctx);
-		if (attrs != "")
-		{
-			for (var attrs_i = 0; attrs_i < attrs.count(ctx); attrs_i++)
-			{
-				var attr = Runtime.rtl.attr(ctx, attrs, attrs_i);
-				var attr_key = attr.key;
-				if (attr_key == "class")
-				{
-					var __v1 = use("Bayrell.Lang.OpCodes.OpString");
-					if (attr.value instanceof __v1)
-					{
-						class_names.push(ctx, attr.value.value);
-					}
-				}
-			}
-		}
-		var __v1 = use("Runtime.rs");
-		return __v1.join(ctx, " ", class_names);
-	},
-	/**
 	 * Translator html template
 	 */
 	OpHtmlTag: function(ctx, t, op_code, var_name)
@@ -249,9 +243,9 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 		var content = "";
 		var content2 = "";
 		var str_var_name = t.expression.constructor.toString(ctx, var_name);
-		var __v0 = use("Bayrell.Lang.OpCodes.OpHtmlContent");
-		var __v1 = use("Bayrell.Lang.OpCodes.OpHtmlValue");
-		var __v2 = use("Bayrell.Lang.OpCodes.OpHtmlTag");
+		var __v0 = use("BayLang.OpCodes.OpHtmlContent");
+		var __v1 = use("BayLang.OpCodes.OpHtmlValue");
+		var __v2 = use("BayLang.OpCodes.OpHtmlTag");
 		if (op_code instanceof __v0)
 		{
 			var item_value = t.expression.constructor.toString(ctx, op_code.value);
@@ -275,8 +269,8 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 			/* Restore op codes */
 			t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["save_op_codes"]), save_op_codes);
 			/*t <= save_op_code_inc <= save_op_code_inc;*/
-			var __v2 = use("Bayrell.Lang.OpCodes.OpHtmlValue");
-			var __v3 = use("Bayrell.Lang.OpCodes.OpHtmlValue");
+			var __v2 = use("BayLang.OpCodes.OpHtmlValue");
+			var __v3 = use("BayLang.OpCodes.OpHtmlValue");
 			if (op_code.kind == __v2.KIND_RAW)
 			{
 				content += use("Runtime.rtl").toStr(t.s(ctx, "/* Raw */"));
@@ -297,11 +291,11 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 			new_var_name = Runtime.rtl.attr(ctx, res, 1);
 			var has_childs = op_code.items != null && op_code.items.items != null && op_code.items.items.count(ctx) > 0;
 			var is_component = this.isComponent(ctx, op_code.tag_name);
-			var op_code_attrs = op_code.attrs.filter(ctx, (ctx, attr) => 
+			var op_code_attrs = op_code.attrs.filter(ctx, (ctx, attr) =>
 			{
 				return attr.key != "@render";
 			});
-			var res = this.OpHtmlAttrs(ctx, t, op_code_attrs);
+			var res = this.OpHtmlAttrs(ctx, t, op_code_attrs, is_component);
 			t = Runtime.rtl.attr(ctx, res, 0);
 			var attrs = Runtime.rtl.attr(ctx, res, 1);
 			if (op_code.tag_name == "")
@@ -362,7 +356,7 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 			var save_op_codes = t.save_op_codes;
 			/*int save_op_code_inc = t.save_op_code_inc;*/
 			var item_value = "";
-			var __v3 = use("Bayrell.Lang.OpCodes.OpCall");
+			var __v3 = use("BayLang.OpCodes.OpCall");
 			if (op_code instanceof __v3)
 			{
 				var res = t.expression.constructor.OpCall(ctx, t, op_code);
@@ -405,10 +399,42 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 		return use("Runtime.Vector").from([t,"this._flatten(__v)"]);
 	},
 	/**
+	 * Translator html slot
+	 */
+	OpHtmlSlot: function(ctx, t, op_code)
+	{
+		var content = "{";
+		t = t.levelInc(ctx);
+		var debug_component = t.debug_component.slice(ctx);
+		for (var i = 0; i < op_code.items.count(ctx); i++)
+		{
+			var item = op_code.items.item(ctx, i);
+			var __v0 = use("BayLang.OpCodes.OpHtmlSlot");
+			if (!(item instanceof __v0))
+			{
+				continue;
+			}
+			t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["debug_component"]), debug_component.pushIm(ctx, i));
+			content += use("Runtime.rtl").toStr(t.s(ctx, t.expression.constructor.toString(ctx, item.name) + use("Runtime.rtl").toStr(": ")));
+			var res = this.OpHtmlItemsAsFunction(ctx, t, item.items);
+			t = res.get(ctx, 0);
+			content += use("Runtime.rtl").toStr(res.get(ctx, 1) + use("Runtime.rtl").toStr(","));
+		}
+		t = t.levelDec(ctx);
+		content += use("Runtime.rtl").toStr(t.s(ctx, "}"));
+		return use("Runtime.Vector").from([t,content]);
+	},
+	/**
 	 * Translator html items as function
 	 */
 	OpHtmlItemsAsFunction: function(ctx, t, op_code)
 	{
+		/* If slot */
+		var __v0 = use("BayLang.OpCodes.OpHtmlSlot");
+		if (op_code.items.get(ctx, 0) instanceof __v0)
+		{
+			return this.OpHtmlSlot(ctx, t, op_code);
+		}
 		var save_op_codes = t.save_op_codes;
 		var save_op_code_inc = t.save_op_code_inc;
 		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["save_op_code_inc"]), 0);
@@ -441,11 +467,12 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 		{
 			return use("Runtime.Vector").from([t,""]);
 		}
+		var debug_component = t.debug_component.slice(ctx);
 		var save_var_name = t.html_var_name;
 		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["html_var_name"]), var_name);
 		var content = "";
 		var next_space = true;
-		var add_space = (ctx, i) => 
+		var add_space = (ctx, i) =>
 		{
 			if (i > 0 && next_space)
 			{
@@ -467,11 +494,12 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 			var save_op_codes = t.save_op_codes;
 			/*int save_op_code_inc = t.save_op_code_inc;*/
 			var op_content = "";
-			var __v0 = use("Bayrell.Lang.OpCodes.OpAssign");
-			var __v1 = use("Bayrell.Lang.OpCodes.OpComment");
-			var __v2 = use("Bayrell.Lang.OpCodes.OpFor");
-			var __v3 = use("Bayrell.Lang.OpCodes.OpIf");
-			var __v4 = use("Bayrell.Lang.OpCodes.OpWhile");
+			var __v0 = use("BayLang.OpCodes.OpAssign");
+			var __v1 = use("BayLang.OpCodes.OpComment");
+			var __v2 = use("BayLang.OpCodes.OpFor");
+			var __v3 = use("BayLang.OpCodes.OpIf");
+			var __v4 = use("BayLang.OpCodes.OpWhile");
+			var __v5 = use("BayLang.OpCodes.OpHtmlSlot");
 			if (item instanceof __v0)
 			{
 				var res = t.operator.constructor.OpAssign(ctx, t, item);
@@ -507,9 +535,14 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 				t = Runtime.rtl.attr(ctx, res, 0);
 				op_content += use("Runtime.rtl").toStr(Runtime.rtl.attr(ctx, res, 1));
 			}
+			else if (item instanceof __v5)
+			{
+				continue;
+			}
 			else
 			{
 				add_space(ctx, i);
+				t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["debug_component"]), debug_component.pushIm(ctx, i));
 				var res = this.OpHtmlTag(ctx, t, item, var_name);
 				t = Runtime.rtl.attr(ctx, res, 0);
 				op_content += use("Runtime.rtl").toStr(Runtime.rtl.attr(ctx, res, 1));
@@ -540,11 +573,11 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.LangES6";
+		return "BayLang.LangES6";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.LangES6.TranslatorES6Html";
+		return "BayLang.LangES6.TranslatorES6Html";
 	},
 	getParentClassName: function()
 	{
@@ -580,5 +613,5 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Html,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.LangES6.TranslatorES6Html);
-module.exports = Bayrell.Lang.LangES6.TranslatorES6Html;
+});use.add(BayLang.LangES6.TranslatorES6Html);
+module.exports = BayLang.LangES6.TranslatorES6Html;

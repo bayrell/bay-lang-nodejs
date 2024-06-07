@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,15 +17,14 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-Bayrell.Lang.CoreToken = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+BayLang.CoreToken = function(ctx)
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
-Bayrell.Lang.CoreToken.prototype = Object.create(use("Runtime.BaseStruct").prototype);
-Bayrell.Lang.CoreToken.prototype.constructor = Bayrell.Lang.CoreToken;
-Object.assign(Bayrell.Lang.CoreToken.prototype,
+BayLang.CoreToken.prototype = Object.create(use("Runtime.BaseStruct").prototype);
+BayLang.CoreToken.prototype.constructor = BayLang.CoreToken;
+Object.assign(BayLang.CoreToken.prototype,
 {
 	_init: function(ctx)
 	{
@@ -47,17 +46,17 @@ Object.assign(Bayrell.Lang.CoreToken.prototype,
 		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
 	},
 });
-Object.assign(Bayrell.Lang.CoreToken, use("Runtime.BaseStruct"));
-Object.assign(Bayrell.Lang.CoreToken,
+Object.assign(BayLang.CoreToken, use("Runtime.BaseStruct"));
+Object.assign(BayLang.CoreToken,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang";
+		return "BayLang";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.CoreToken";
+		return "BayLang.CoreToken";
 	},
 	getParentClassName: function()
 	{
@@ -98,5 +97,5 @@ Object.assign(Bayrell.Lang.CoreToken,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.CoreToken);
-module.exports = Bayrell.Lang.CoreToken;
+});use.add(BayLang.CoreToken);
+module.exports = BayLang.CoreToken;

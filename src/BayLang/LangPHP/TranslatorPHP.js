@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,20 +17,19 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.LangPHP == 'undefined') Bayrell.Lang.LangPHP = {};
-Bayrell.Lang.LangPHP.TranslatorPHP = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.LangPHP == 'undefined') BayLang.LangPHP = {};
+BayLang.LangPHP.TranslatorPHP = function(ctx)
 {
-	use("Bayrell.Lang.CoreTranslator").apply(this, arguments);
+	use("BayLang.CoreTranslator").apply(this, arguments);
 };
-Bayrell.Lang.LangPHP.TranslatorPHP.prototype = Object.create(use("Bayrell.Lang.CoreTranslator").prototype);
-Bayrell.Lang.LangPHP.TranslatorPHP.prototype.constructor = Bayrell.Lang.LangPHP.TranslatorPHP;
-Object.assign(Bayrell.Lang.LangPHP.TranslatorPHP.prototype,
+BayLang.LangPHP.TranslatorPHP.prototype = Object.create(use("BayLang.CoreTranslator").prototype);
+BayLang.LangPHP.TranslatorPHP.prototype.constructor = BayLang.LangPHP.TranslatorPHP;
+Object.assign(BayLang.LangPHP.TranslatorPHP.prototype,
 {
 	_init: function(ctx)
 	{
-		use("Bayrell.Lang.CoreTranslator").prototype._init.call(this,ctx);
+		use("BayLang.CoreTranslator").prototype._init.call(this,ctx);
 		this.is_pipe = false;
 		this.pipe_var_name = "";
 		this.html_var_name = "";
@@ -61,11 +60,11 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHP.prototype,
 		else if (k == "enable_context")return this.enable_context;
 		else if (k == "enable_check_types")return this.enable_check_types;
 		else if (k == "enable_introspection")return this.enable_introspection;
-		return use("Bayrell.Lang.CoreTranslator").prototype.takeValue.call(this,ctx,k,d);
+		return use("BayLang.CoreTranslator").prototype.takeValue.call(this,ctx,k,d);
 	},
 });
-Object.assign(Bayrell.Lang.LangPHP.TranslatorPHP, use("Bayrell.Lang.CoreTranslator"));
-Object.assign(Bayrell.Lang.LangPHP.TranslatorPHP,
+Object.assign(BayLang.LangPHP.TranslatorPHP, use("BayLang.CoreTranslator"));
+Object.assign(BayLang.LangPHP.TranslatorPHP,
 {
 	/**
 	 * Reset translator
@@ -73,10 +72,10 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHP,
 	reset: function(ctx, t)
 	{
 		var __v0 = use("Runtime.Dict");
-		var __v1 = use("Bayrell.Lang.LangPHP.TranslatorPHPExpression");
-		var __v2 = use("Bayrell.Lang.LangPHP.TranslatorPHPHtml");
-		var __v3 = use("Bayrell.Lang.LangPHP.TranslatorPHPOperator");
-		var __v4 = use("Bayrell.Lang.LangPHP.TranslatorPHPProgram");
+		var __v1 = use("BayLang.LangPHP.TranslatorPHPExpression");
+		var __v2 = use("BayLang.LangPHP.TranslatorPHPHtml");
+		var __v3 = use("BayLang.LangPHP.TranslatorPHPOperator");
+		var __v4 = use("BayLang.LangPHP.TranslatorPHPProgram");
 		var __v5 = use("Runtime.Collection");
 		var __v6 = use("Runtime.Collection");
 		return t.copy(ctx, use("Runtime.Map").from({"value":"","current_namespace_name":"","modules":new __v0(ctx),"expression":new __v1(ctx),"html":new __v2(ctx),"operator":new __v3(ctx),"program":new __v4(ctx),"save_vars":new __v5(ctx),"save_op_codes":new __v6(ctx),"save_op_code_inc":0,"preprocessor_flags":use("Runtime.Map").from({"PHP":true,"FRONTEND":t.frontend,"BACKEND":t.backend,"ENABLE_CONTEXT":t.enable_context,"ENABLE_CHECK_TYPES":t.enable_check_types})}));
@@ -118,15 +117,15 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHP,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.LangPHP";
+		return "BayLang.LangPHP";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.LangPHP.TranslatorPHP";
+		return "BayLang.LangPHP.TranslatorPHP";
 	},
 	getParentClassName: function()
 	{
-		return "Bayrell.Lang.CoreTranslator";
+		return "BayLang.CoreTranslator";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -171,5 +170,5 @@ Object.assign(Bayrell.Lang.LangPHP.TranslatorPHP,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.LangPHP.TranslatorPHP);
-module.exports = Bayrell.Lang.LangPHP.TranslatorPHP;
+});use.add(BayLang.LangPHP.TranslatorPHP);
+module.exports = BayLang.LangPHP.TranslatorPHP;

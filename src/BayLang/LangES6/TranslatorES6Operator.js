@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,16 +17,15 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-if (typeof Bayrell.Lang.LangES6 == 'undefined') Bayrell.Lang.LangES6 = {};
-Bayrell.Lang.LangES6.TranslatorES6Operator = function(ctx)
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
+BayLang.LangES6.TranslatorES6Operator = function(ctx)
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
-Bayrell.Lang.LangES6.TranslatorES6Operator.prototype = Object.create(use("Runtime.BaseStruct").prototype);
-Bayrell.Lang.LangES6.TranslatorES6Operator.prototype.constructor = Bayrell.Lang.LangES6.TranslatorES6Operator;
-Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator.prototype,
+BayLang.LangES6.TranslatorES6Operator.prototype = Object.create(use("Runtime.BaseStruct").prototype);
+BayLang.LangES6.TranslatorES6Operator.prototype.constructor = BayLang.LangES6.TranslatorES6Operator;
+Object.assign(BayLang.LangES6.TranslatorES6Operator.prototype,
 {
 	takeValue: function(ctx,k,d)
 	{
@@ -34,39 +33,39 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator.prototype,
 		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
 	},
 });
-Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator, use("Runtime.BaseStruct"));
-Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
+Object.assign(BayLang.LangES6.TranslatorES6Operator, use("Runtime.BaseStruct"));
+Object.assign(BayLang.LangES6.TranslatorES6Operator,
 {
 	/**
 	 * Returns true if op_code contains await
 	 */
 	isAwait: function(ctx, op_code)
 	{
-		var __memorize_value = use("Runtime.rtl")._memorizeValue("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments);
+		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments);
 		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		if (op_code == null)
 		{
 			var __memorize_value = false;
-			use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+			use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 			return __memorize_value;
 		}
-		var __v0 = use("Bayrell.Lang.OpCodes.OpAssign");
-		var __v1 = use("Bayrell.Lang.OpCodes.OpAssignStruct");
-		var __v2 = use("Bayrell.Lang.OpCodes.OpAttr");
-		var __v3 = use("Bayrell.Lang.OpCodes.OpCall");
-		var __v4 = use("Bayrell.Lang.OpCodes.OpPipe");
-		var __v5 = use("Bayrell.Lang.OpCodes.OpFor");
-		var __v6 = use("Bayrell.Lang.OpCodes.OpIf");
-		var __v7 = use("Bayrell.Lang.OpCodes.OpItems");
-		var __v8 = use("Bayrell.Lang.OpCodes.OpMath");
-		var __v9 = use("Bayrell.Lang.OpCodes.OpReturn");
-		var __v10 = use("Bayrell.Lang.OpCodes.OpTryCatch");
-		var __v11 = use("Bayrell.Lang.OpCodes.OpWhile");
+		var __v0 = use("BayLang.OpCodes.OpAssign");
+		var __v1 = use("BayLang.OpCodes.OpAssignStruct");
+		var __v2 = use("BayLang.OpCodes.OpAttr");
+		var __v3 = use("BayLang.OpCodes.OpCall");
+		var __v4 = use("BayLang.OpCodes.OpPipe");
+		var __v5 = use("BayLang.OpCodes.OpFor");
+		var __v6 = use("BayLang.OpCodes.OpIf");
+		var __v7 = use("BayLang.OpCodes.OpItems");
+		var __v8 = use("BayLang.OpCodes.OpMath");
+		var __v9 = use("BayLang.OpCodes.OpReturn");
+		var __v10 = use("BayLang.OpCodes.OpTryCatch");
+		var __v11 = use("BayLang.OpCodes.OpWhile");
 		if (op_code instanceof __v0)
 		{
-			var __v1 = use("Bayrell.Lang.OpCodes.OpAssign");
-			var __v2 = use("Bayrell.Lang.OpCodes.OpAssign");
-			var __v3 = use("Bayrell.Lang.OpCodes.OpAssign");
+			var __v1 = use("BayLang.OpCodes.OpAssign");
+			var __v2 = use("BayLang.OpCodes.OpAssign");
+			var __v3 = use("BayLang.OpCodes.OpAssign");
 			if (op_code.kind == __v1.KIND_ASSIGN || op_code.kind == __v2.KIND_DECLARE)
 			{
 				for (var i = 0; i < op_code.values.count(ctx); i++)
@@ -76,7 +75,7 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 					if (flag)
 					{
 						var __memorize_value = true;
-						use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+						use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 						return __memorize_value;
 					}
 				}
@@ -87,7 +86,7 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 				if (flag)
 				{
 					var __memorize_value = true;
-					use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+					use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 					return __memorize_value;
 				}
 			}
@@ -98,26 +97,26 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 			if (flag)
 			{
 				var __memorize_value = true;
-				use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+				use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 				return __memorize_value;
 			}
 		}
 		else if (op_code instanceof __v2)
 		{
 			var op_code_next = op_code;
-			var __v3 = use("Bayrell.Lang.OpCodes.OpAttr");
+			var __v3 = use("BayLang.OpCodes.OpAttr");
 			while (op_code_next instanceof __v3)
 			{
 				op_code_next = op_code_next.obj;
 			}
 			var __memorize_value = this.isAwait(ctx, op_code_next);
-			use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+			use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 			return __memorize_value;
 		}
 		else if (op_code instanceof __v3)
 		{
 			var __memorize_value = op_code.is_await;
-			use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+			use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 			return __memorize_value;
 		}
 		else if (op_code instanceof __v4)
@@ -125,17 +124,17 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 			if (op_code.is_async)
 			{
 				var __memorize_value = true;
-				use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+				use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 				return __memorize_value;
 			}
 			var __memorize_value = this.isAwait(ctx, op_code.value);
-			use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+			use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 			return __memorize_value;
 		}
 		else if (op_code instanceof __v5)
 		{
 			var __memorize_value = this.isAwait(ctx, op_code.expr2) || this.isAwait(ctx, op_code.value);
-			use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+			use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 			return __memorize_value;
 		}
 		else if (op_code instanceof __v6)
@@ -145,21 +144,21 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 			if (flag)
 			{
 				var __memorize_value = true;
-				use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+				use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 				return __memorize_value;
 			}
 			flag = this.isAwait(ctx, op_code.if_true);
 			if (flag)
 			{
 				var __memorize_value = true;
-				use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+				use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 				return __memorize_value;
 			}
 			flag = this.isAwait(ctx, op_code.if_false);
 			if (flag)
 			{
 				var __memorize_value = true;
-				use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+				use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 				return __memorize_value;
 			}
 			for (var i = 0; i < op_code.if_else.count(ctx); i++)
@@ -169,14 +168,14 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 				if (flag)
 				{
 					var __memorize_value = true;
-					use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+					use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 					return __memorize_value;
 				}
 				flag = this.isAwait(ctx, if_else.if_true);
 				if (flag)
 				{
 					var __memorize_value = true;
-					use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+					use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 					return __memorize_value;
 				}
 			}
@@ -190,7 +189,7 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 				if (flag)
 				{
 					var __memorize_value = true;
-					use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+					use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 					return __memorize_value;
 				}
 			}
@@ -200,13 +199,13 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 			if (op_code.math == "!" || op_code.math == "not")
 			{
 				var __memorize_value = this.isAwait(ctx, op_code.value1);
-				use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+				use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 				return __memorize_value;
 			}
 			else
 			{
 				var __memorize_value = this.isAwait(ctx, op_code.value1) || this.isAwait(ctx, op_code.value2);
-				use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+				use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 				return __memorize_value;
 			}
 		}
@@ -216,24 +215,24 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 			if (flag)
 			{
 				var __memorize_value = true;
-				use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+				use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 				return __memorize_value;
 			}
 		}
 		else if (op_code instanceof __v10)
 		{
 			var __memorize_value = this.isAwait(ctx, op_code.op_try);
-			use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+			use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 			return __memorize_value;
 		}
 		else if (op_code instanceof __v11)
 		{
 			var __memorize_value = this.isAwait(ctx, op_code.condition) || this.isAwait(ctx, op_code.value);
-			use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+			use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 			return __memorize_value;
 		}
 		var __memorize_value = false;
-		use("Runtime.rtl")._memorizeSave("Bayrell.Lang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
+		use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 		return __memorize_value;
 	},
 	/**
@@ -247,9 +246,9 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 		var res = t.expression.constructor.Expression(ctx, t, op_code.expression);
 		t = Runtime.rtl.attr(ctx, res, 0);
 		var expr = Runtime.rtl.attr(ctx, res, 1);
-		var names = op_code.names.map(ctx, (ctx, item) => 
+		var names = op_code.names.map(ctx, (ctx, item) =>
 		{
-			var __v0 = use("Bayrell.Lang.OpCodes.BaseOpCode");
+			var __v0 = use("BayLang.OpCodes.BaseOpCode");
 			if (item instanceof __v0)
 			{
 				var res = t.expression.constructor.Expression(ctx, t, item);
@@ -269,9 +268,9 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 	{
 		if (flag_indent == undefined) flag_indent = true;
 		var content = "";
-		var __v0 = use("Bayrell.Lang.OpCodes.OpAssign");
-		var __v1 = use("Bayrell.Lang.OpCodes.OpAssign");
-		var __v2 = use("Bayrell.Lang.OpCodes.OpAssign");
+		var __v0 = use("BayLang.OpCodes.OpAssign");
+		var __v1 = use("BayLang.OpCodes.OpAssign");
+		var __v2 = use("BayLang.OpCodes.OpAssign");
 		if (op_code.kind == __v0.KIND_ASSIGN || op_code.kind == __v1.KIND_DECLARE)
 		{
 			for (var i = 0; i < op_code.values.count(ctx); i++)
@@ -297,7 +296,7 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 						item_expression = Runtime.rtl.attr(ctx, res, 1);
 					}
 				}
-				var __v2 = use("Bayrell.Lang.OpCodes.OpAttr");
+				var __v2 = use("BayLang.OpCodes.OpAttr");
 				if (item.op_code instanceof __v2)
 				{
 					var __v3 = use("Runtime.Vector");
@@ -305,7 +304,7 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 					var __v4 = use("Runtime.Vector");
 					var items2 = new __v4(ctx);
 					var op_code_next = item.op_code;
-					var __v5 = use("Bayrell.Lang.OpCodes.OpAttr");
+					var __v5 = use("BayLang.OpCodes.OpAttr");
 					while (op_code_next instanceof __v5)
 					{
 						items.push(ctx, op_code_next);
@@ -318,9 +317,9 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 					for (var j = 0; j < items.count(ctx); j++)
 					{
 						var item_attr = Runtime.rtl.attr(ctx, items, j);
-						var __v5 = use("Bayrell.Lang.OpCodes.OpAttr");
-						var __v6 = use("Bayrell.Lang.OpCodes.OpAttr");
-						var __v7 = use("Bayrell.Lang.OpCodes.OpAttr");
+						var __v5 = use("BayLang.OpCodes.OpAttr");
+						var __v6 = use("BayLang.OpCodes.OpAttr");
+						var __v7 = use("BayLang.OpCodes.OpAttr");
 						if (item_attr.kind == __v5.KIND_ATTR)
 						{
 							obj_s += use("Runtime.rtl").toStr("." + use("Runtime.rtl").toStr(item_attr.value.value));
@@ -371,7 +370,7 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 					}
 					else
 					{
-						var __v5 = use("Bayrell.Lang.OpCodes.OpAssign");
+						var __v5 = use("BayLang.OpCodes.OpAssign");
 						if (op_code.kind == __v5.KIND_DECLARE)
 						{
 							if (t.current_function.isFlag(ctx, "async") && t.isEmulateAsyncAwait(ctx))
@@ -408,7 +407,7 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 				}
 				if (t.current_function.isFlag(ctx, "async") && t.isEmulateAsyncAwait(ctx))
 				{
-					var __v2 = use("Bayrell.Lang.OpCodes.OpAssign");
+					var __v2 = use("BayLang.OpCodes.OpAssign");
 					if (item.expression == null)
 					{
 						s = "";
@@ -465,7 +464,7 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 		var s1 = "";
 		var s2 = "";
 		var s3 = "";
-		var __v0 = use("Bayrell.Lang.OpCodes.OpAssign");
+		var __v0 = use("BayLang.OpCodes.OpAssign");
 		if (op_code.expr1 instanceof __v0)
 		{
 			var res = this.OpAssign(ctx, t, op_code.expr1, false);
@@ -702,8 +701,8 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 		{
 			return use("Runtime.Vector").from([t,""]);
 		}
-		var __v0 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfDef");
-		var __v1 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfDef");
+		var __v0 = use("BayLang.OpCodes.OpPreprocessorIfDef");
+		var __v1 = use("BayLang.OpCodes.OpPreprocessorIfDef");
 		if (kind == __v0.KIND_OPERATOR)
 		{
 			return this.Operators(ctx, t, op_code.items);
@@ -716,8 +715,8 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 		for (var i = 0; i < op_code.items.count(ctx); i++)
 		{
 			var item = op_code.items.item(ctx, i);
-			var __v0 = use("Bayrell.Lang.OpCodes.OpComment");
-			var __v1 = use("Bayrell.Lang.OpCodes.OpDeclareFunction");
+			var __v0 = use("BayLang.OpCodes.OpComment");
+			var __v1 = use("BayLang.OpCodes.OpDeclareFunction");
 			if (item instanceof __v0)
 			{
 				var res = t.operator.constructor.OpComment(ctx, t, item);
@@ -779,25 +778,25 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 		/* Save op codes */
 		var save_op_codes = t.save_op_codes;
 		var save_op_code_inc = t.save_op_code_inc;
-		var __v0 = use("Bayrell.Lang.OpCodes.OpAssign");
-		var __v1 = use("Bayrell.Lang.OpCodes.OpAssignStruct");
-		var __v2 = use("Bayrell.Lang.OpCodes.OpBreak");
-		var __v3 = use("Bayrell.Lang.OpCodes.OpCall");
-		var __v4 = use("Bayrell.Lang.OpCodes.OpContinue");
-		var __v5 = use("Bayrell.Lang.OpCodes.OpDelete");
-		var __v6 = use("Bayrell.Lang.OpCodes.OpFor");
-		var __v7 = use("Bayrell.Lang.OpCodes.OpIf");
-		var __v8 = use("Bayrell.Lang.OpCodes.OpPipe");
-		var __v9 = use("Bayrell.Lang.OpCodes.OpReturn");
-		var __v10 = use("Bayrell.Lang.OpCodes.OpThrow");
-		var __v11 = use("Bayrell.Lang.OpCodes.OpTryCatch");
-		var __v12 = use("Bayrell.Lang.OpCodes.OpWhile");
-		var __v13 = use("Bayrell.Lang.OpCodes.OpInc");
-		var __v14 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfCode");
-		var __v15 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfDef");
-		var __v17 = use("Bayrell.Lang.OpCodes.OpPreprocessorSwitch");
-		var __v18 = use("Bayrell.Lang.OpCodes.OpComment");
-		var __v19 = use("Bayrell.Lang.OpCodes.OpSafe");
+		var __v0 = use("BayLang.OpCodes.OpAssign");
+		var __v1 = use("BayLang.OpCodes.OpAssignStruct");
+		var __v2 = use("BayLang.OpCodes.OpBreak");
+		var __v3 = use("BayLang.OpCodes.OpCall");
+		var __v4 = use("BayLang.OpCodes.OpContinue");
+		var __v5 = use("BayLang.OpCodes.OpDelete");
+		var __v6 = use("BayLang.OpCodes.OpFor");
+		var __v7 = use("BayLang.OpCodes.OpIf");
+		var __v8 = use("BayLang.OpCodes.OpPipe");
+		var __v9 = use("BayLang.OpCodes.OpReturn");
+		var __v10 = use("BayLang.OpCodes.OpThrow");
+		var __v11 = use("BayLang.OpCodes.OpTryCatch");
+		var __v12 = use("BayLang.OpCodes.OpWhile");
+		var __v13 = use("BayLang.OpCodes.OpInc");
+		var __v14 = use("BayLang.OpCodes.OpPreprocessorIfCode");
+		var __v15 = use("BayLang.OpCodes.OpPreprocessorIfDef");
+		var __v17 = use("BayLang.OpCodes.OpPreprocessorSwitch");
+		var __v18 = use("BayLang.OpCodes.OpComment");
+		var __v19 = use("BayLang.OpCodes.OpSafe");
 		if (op_code instanceof __v0)
 		{
 			var res = this.OpAssign(ctx, t, op_code);
@@ -912,7 +911,7 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 		}
 		else if (op_code instanceof __v15)
 		{
-			var __v16 = use("Bayrell.Lang.OpCodes.OpPreprocessorIfDef");
+			var __v16 = use("BayLang.OpCodes.OpPreprocessorIfDef");
 			var res = this.OpPreprocessorIfDef(ctx, t, op_code, __v16.KIND_OPERATOR);
 			t = Runtime.rtl.attr(ctx, res, 0);
 			content = Runtime.rtl.attr(ctx, res, 1);
@@ -959,8 +958,8 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 	Operators: function(ctx, t, op_code)
 	{
 		var content = "";
-		var __v0 = use("Bayrell.Lang.OpCodes.OpItems");
-		var __v1 = use("Bayrell.Lang.OpCodes.OpHtmlItems");
+		var __v0 = use("BayLang.OpCodes.OpItems");
+		var __v1 = use("BayLang.OpCodes.OpHtmlItems");
 		if (op_code instanceof __v0)
 		{
 			for (var i = 0; i < op_code.items.count(ctx); i++)
@@ -975,6 +974,7 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 		{
 			var save_html_var_name = t.html_var_name;
 			var save_is_html = t.is_html;
+			t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["debug_component"]), use("Runtime.Vector").from([]));
 			t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["is_html"]), true);
 			var res = t.html.constructor.OpHtmlItems(ctx, t, op_code, save_html_var_name, false);
 			t = Runtime.rtl.attr(ctx, res, 0);
@@ -1102,11 +1102,11 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang.LangES6";
+		return "BayLang.LangES6";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.LangES6.TranslatorES6Operator";
+		return "BayLang.LangES6.TranslatorES6Operator";
 	},
 	getParentClassName: function()
 	{
@@ -1142,5 +1142,5 @@ Object.assign(Bayrell.Lang.LangES6.TranslatorES6Operator,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.LangES6.TranslatorES6Operator);
-module.exports = Bayrell.Lang.LangES6.TranslatorES6Operator;
+});use.add(BayLang.LangES6.TranslatorES6Operator);
+module.exports = BayLang.LangES6.TranslatorES6Operator;

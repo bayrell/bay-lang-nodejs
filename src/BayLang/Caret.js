@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,9 +17,8 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Bayrell == 'undefined') Bayrell = {};
-if (typeof Bayrell.Lang == 'undefined') Bayrell.Lang = {};
-Bayrell.Lang.Caret = function(ctx, items)
+if (typeof BayLang == 'undefined') BayLang = {};
+BayLang.Caret = function(ctx, items)
 {
 	if (items == undefined) items = null;
 	use("Runtime.BaseObject").call(this, ctx);
@@ -36,6 +35,11 @@ Bayrell.Lang.Caret = function(ctx, items)
 		if (items.has(ctx, "content_sz"))
 		{
 			this.content_sz = items.get(ctx, "content_sz");
+		}
+		if (items.has(ctx, "content") && !items.has(ctx, "content_sz"))
+		{
+			var __v0 = use("Runtime.rs");
+			this.content_sz = __v0.strlen(ctx, this.content.ref);
 		}
 		if (items.has(ctx, "tab_size"))
 		{
@@ -55,9 +59,9 @@ Bayrell.Lang.Caret = function(ctx, items)
 		}
 	}
 };
-Bayrell.Lang.Caret.prototype = Object.create(use("Runtime.BaseObject").prototype);
-Bayrell.Lang.Caret.prototype.constructor = Bayrell.Lang.Caret;
-Object.assign(Bayrell.Lang.Caret.prototype,
+BayLang.Caret.prototype = Object.create(use("Runtime.BaseObject").prototype);
+BayLang.Caret.prototype.constructor = BayLang.Caret;
+Object.assign(BayLang.Caret.prototype,
 {
 	/**
 	 * Clone
@@ -65,8 +69,34 @@ Object.assign(Bayrell.Lang.Caret.prototype,
 	clone: function(ctx, items)
 	{
 		if (items == undefined) items = null;
-		var __v0 = use("Bayrell.Lang.Caret");
+		var __v0 = use("BayLang.Caret");
 		return new __v0(ctx, use("Runtime.Map").from({"file_name":(items) ? (items.get(ctx, "file_name", this.file_name)) : (this.file_name),"content":(items) ? (items.get(ctx, "content", this.content)) : (this.content),"content_sz":(items) ? (items.get(ctx, "content_sz", this.content_sz)) : (this.content_sz),"tab_size":(items) ? (items.get(ctx, "tab_size", this.tab_size)) : (this.tab_size),"pos":(items) ? (items.get(ctx, "pos", this.pos)) : (this.pos),"x":(items) ? (items.get(ctx, "x", this.x)) : (this.x),"y":(items) ? (items.get(ctx, "y", this.y)) : (this.y)}));
+	},
+	/**
+	 * Copy caret
+	 */
+	copy: function(ctx, items)
+	{
+		if (items == undefined) items = null;
+		return this.clone(ctx, items);
+	},
+	/**
+	 * Serialize object
+	 */
+	serialize: function(ctx, serializer, data)
+	{
+		serializer.process(ctx, this, "pos", data);
+		serializer.process(ctx, this, "x", data);
+		serializer.process(ctx, this, "y", data);
+	},
+	/**
+	 * Seek caret
+	 */
+	seek: function(ctx, caret)
+	{
+		this.pos = caret.pos;
+		this.x = caret.x;
+		this.y = caret.y;
 	},
 	/**
 	 * Returns true if eof
@@ -185,7 +215,7 @@ Object.assign(Bayrell.Lang.Caret.prototype,
 		var next = this.nextChar(ctx);
 		if (next != ch)
 		{
-			var __v0 = use("Bayrell.Lang.Exceptions.ParserExpected");
+			var __v0 = use("BayLang.Exceptions.ParserExpected");
 			throw new __v0(ctx, ch, this, this.file_name)
 		}
 		this.readChar(ctx);
@@ -201,14 +231,45 @@ Object.assign(Bayrell.Lang.Caret.prototype,
 		}
 	},
 	/**
-	 * Skip null chars
+	 * Skip space
 	 */
-	skipNullChar: function(ctx)
+	skipSpace: function(ctx)
 	{
 		while (!this.eof(ctx) && this.constructor.isSkipChar(ctx, this.nextChar(ctx)))
 		{
 			this.readChar(ctx);
 		}
+	},
+	/**
+	 * Returns true if token char
+	 */
+	isTokenChar: function(ctx, ch)
+	{
+		var __v0 = use("Runtime.rs");
+		var __v1 = use("Runtime.rs");
+		return __v0.indexOf(ctx, "qazwsxedcrfvtgbyhnujmikolp0123456789_", __v1.lower(ctx, ch)) !== -1;
+	},
+	/**
+	 * Read next token
+	 */
+	readToken: function(ctx)
+	{
+		var items = use("Runtime.Vector").from([]);
+		this.skipSpace(ctx);
+		if (this.eof(ctx))
+		{
+			return "";
+		}
+		if (!this.isTokenChar(ctx, this.nextChar(ctx)))
+		{
+			return this.readChar(ctx);
+		}
+		while (!this.eof(ctx) && this.isTokenChar(ctx, this.nextChar(ctx)))
+		{
+			items.push(ctx, this.readChar(ctx));
+		}
+		var __v0 = use("Runtime.rs");
+		return __v0.join(ctx, "", items);
 	},
 	_init: function(ctx)
 	{
@@ -222,8 +283,8 @@ Object.assign(Bayrell.Lang.Caret.prototype,
 		this.tab_size = 4;
 	},
 });
-Object.assign(Bayrell.Lang.Caret, use("Runtime.BaseObject"));
-Object.assign(Bayrell.Lang.Caret,
+Object.assign(BayLang.Caret, use("Runtime.BaseObject"));
+Object.assign(BayLang.Caret,
 {
 	/**
 	 * Return true if is char
@@ -232,12 +293,12 @@ Object.assign(Bayrell.Lang.Caret,
 	 */
 	isChar: function(ctx, ch)
 	{
-		var __memorize_value = use("Runtime.rtl")._memorizeValue("Bayrell.Lang.Caret.isChar", arguments);
+		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isChar", arguments);
 		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
 		var __v1 = use("Runtime.rs");
 		var __memorize_value = __v0.indexOf(ctx, "qazwsxedcrfvtgbyhnujmikolp", __v1.lower(ctx, ch)) !== -1;
-		use("Runtime.rtl")._memorizeSave("Bayrell.Lang.Caret.isChar", arguments, __memorize_value);
+		use("Runtime.rtl")._memorizeSave("BayLang.Caret.isChar", arguments, __memorize_value);
 		return __memorize_value;
 	},
 	/**
@@ -247,11 +308,11 @@ Object.assign(Bayrell.Lang.Caret,
 	 */
 	isNumber: function(ctx, ch)
 	{
-		var __memorize_value = use("Runtime.rtl")._memorizeValue("Bayrell.Lang.Caret.isNumber", arguments);
+		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isNumber", arguments);
 		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
 		var __memorize_value = __v0.indexOf(ctx, "0123456789", ch) !== -1;
-		use("Runtime.rtl")._memorizeSave("Bayrell.Lang.Caret.isNumber", arguments, __memorize_value);
+		use("Runtime.rtl")._memorizeSave("BayLang.Caret.isNumber", arguments, __memorize_value);
 		return __memorize_value;
 	},
 	/**
@@ -261,12 +322,12 @@ Object.assign(Bayrell.Lang.Caret,
 	 */
 	isHexChar: function(ctx, ch)
 	{
-		var __memorize_value = use("Runtime.rtl")._memorizeValue("Bayrell.Lang.Caret.isHexChar", arguments);
+		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isHexChar", arguments);
 		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
 		var __v1 = use("Runtime.rs");
 		var __memorize_value = __v0.indexOf(ctx, "0123456789abcdef", __v1.lower(ctx, ch)) !== -1;
-		use("Runtime.rtl")._memorizeSave("Bayrell.Lang.Caret.isHexChar", arguments, __memorize_value);
+		use("Runtime.rtl")._memorizeSave("BayLang.Caret.isHexChar", arguments, __memorize_value);
 		return __memorize_value;
 	},
 	/**
@@ -276,7 +337,7 @@ Object.assign(Bayrell.Lang.Caret,
 	 */
 	isStringOfNumbers: function(ctx, s)
 	{
-		var __memorize_value = use("Runtime.rtl")._memorizeValue("Bayrell.Lang.Caret.isStringOfNumbers", arguments);
+		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isStringOfNumbers", arguments);
 		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
 		var sz = __v0.strlen(ctx, s);
@@ -286,12 +347,12 @@ Object.assign(Bayrell.Lang.Caret,
 			if (!this.isNumber(ctx, __v1.charAt(ctx, s, i)))
 			{
 				var __memorize_value = false;
-				use("Runtime.rtl")._memorizeSave("Bayrell.Lang.Caret.isStringOfNumbers", arguments, __memorize_value);
+				use("Runtime.rtl")._memorizeSave("BayLang.Caret.isStringOfNumbers", arguments, __memorize_value);
 				return __memorize_value;
 			}
 		}
 		var __memorize_value = true;
-		use("Runtime.rtl")._memorizeSave("Bayrell.Lang.Caret.isStringOfNumbers", arguments, __memorize_value);
+		use("Runtime.rtl")._memorizeSave("BayLang.Caret.isStringOfNumbers", arguments, __memorize_value);
 		return __memorize_value;
 	},
 	/**
@@ -301,27 +362,27 @@ Object.assign(Bayrell.Lang.Caret,
 	 */
 	isSkipChar: function(ctx, ch)
 	{
-		var __memorize_value = use("Runtime.rtl")._memorizeValue("Bayrell.Lang.Caret.isSkipChar", arguments);
+		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isSkipChar", arguments);
 		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
 		if (__v0.ord(ctx, ch) <= 32)
 		{
 			var __memorize_value = true;
-			use("Runtime.rtl")._memorizeSave("Bayrell.Lang.Caret.isSkipChar", arguments, __memorize_value);
+			use("Runtime.rtl")._memorizeSave("BayLang.Caret.isSkipChar", arguments, __memorize_value);
 			return __memorize_value;
 		}
 		var __memorize_value = false;
-		use("Runtime.rtl")._memorizeSave("Bayrell.Lang.Caret.isSkipChar", arguments, __memorize_value);
+		use("Runtime.rtl")._memorizeSave("BayLang.Caret.isSkipChar", arguments, __memorize_value);
 		return __memorize_value;
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Bayrell.Lang";
+		return "BayLang";
 	},
 	getClassName: function()
 	{
-		return "Bayrell.Lang.Caret";
+		return "BayLang.Caret";
 	},
 	getParentClassName: function()
 	{
@@ -357,5 +418,9 @@ Object.assign(Bayrell.Lang.Caret,
 	{
 		return null;
 	},
-});use.add(Bayrell.Lang.Caret);
-module.exports = Bayrell.Lang.Caret;
+	__implements__:
+	[
+		use("Runtime.SerializeInterface"),
+	],
+});use.add(BayLang.Caret);
+module.exports = BayLang.Caret;

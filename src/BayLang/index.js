@@ -1,7 +1,7 @@
 /*!
- *  Bayrell Language
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
  */
 
 var exports = {
-	MODULE_NAME: 'Bayrell.Lang',
+	MODULE_NAME: 'BayLang',
 }
 
 function add(name)
@@ -33,116 +33,126 @@ function add(name)
 	return require(path);
 }
 
-add("Bayrell.Lang.Exceptions.ParserUnknownError");
-add("Bayrell.Lang.OpCodes.BaseOpCode");
-add("Bayrell.Lang.Caret");
-add("Bayrell.Lang.CoreParser");
-add("Bayrell.Lang.CoreToken");
-add("Bayrell.Lang.CoreTranslator");
-add("Bayrell.Lang.LangConstant");
-add("Bayrell.Lang.LangUtils");
-add("Bayrell.Lang.ModuleDescription");
-add("Bayrell.Lang.SaveOpCode");
-add("Bayrell.Lang.Compiler.CLI");
-add("Bayrell.Lang.Compiler.Commands.Make");
-add("Bayrell.Lang.Compiler.Commands.MakeAll");
-add("Bayrell.Lang.Compiler.Commands.Modules");
-add("Bayrell.Lang.Compiler.Commands.Version");
-add("Bayrell.Lang.Compiler.Commands.Watch");
-add("Bayrell.Lang.Compiler.ConsoleApp");
-add("Bayrell.Lang.Compiler.Module");
-add("Bayrell.Lang.Compiler.ModuleDescription");
-add("Bayrell.Lang.Compiler.SettingsProvider");
-add("Bayrell.Lang.Exceptions.ParserEOF");
-add("Bayrell.Lang.Exceptions.ParserError");
-add("Bayrell.Lang.Exceptions.ParserExpected");
-add("Bayrell.Lang.Exceptions.DeclaredClass");
-add("Bayrell.Lang.LangBay.ParserBay");
-add("Bayrell.Lang.LangBay.ParserBayBase");
-add("Bayrell.Lang.LangBay.ParserBayExpression");
-add("Bayrell.Lang.LangBay.ParserBayHtml");
-add("Bayrell.Lang.LangBay.ParserBayOperator");
-add("Bayrell.Lang.LangBay.ParserBayPreprocessor");
-add("Bayrell.Lang.LangBay.ParserBayProgram");
-add("Bayrell.Lang.LangES6.AsyncAwait");
-add("Bayrell.Lang.LangES6.TranslatorES6");
-add("Bayrell.Lang.LangES6.TranslatorES6AsyncAwait");
-add("Bayrell.Lang.LangES6.TranslatorES6Expression");
-add("Bayrell.Lang.LangES6.TranslatorES6Html");
-add("Bayrell.Lang.LangES6.TranslatorES6Operator");
-add("Bayrell.Lang.LangES6.TranslatorES6Program");
-add("Bayrell.Lang.LangNode.TranslatorNode");
-add("Bayrell.Lang.LangNode.TranslatorNodeExpression");
-add("Bayrell.Lang.LangNode.TranslatorNodeProgram");
-add("Bayrell.Lang.LangPHP.TranslatorPHP");
-add("Bayrell.Lang.LangPHP.TranslatorPHPExpression");
-add("Bayrell.Lang.LangPHP.TranslatorPHPHtml");
-add("Bayrell.Lang.LangPHP.TranslatorPHPOperator");
-add("Bayrell.Lang.LangPHP.TranslatorPHPProgram");
-add("Bayrell.Lang.OpCodes.OpAnnotation");
-add("Bayrell.Lang.OpCodes.OpAssign");
-add("Bayrell.Lang.OpCodes.OpAssignStruct");
-add("Bayrell.Lang.OpCodes.OpAssignValue");
-add("Bayrell.Lang.OpCodes.OpAttr");
-add("Bayrell.Lang.OpCodes.OpBreak");
-add("Bayrell.Lang.OpCodes.OpCall");
-add("Bayrell.Lang.OpCodes.OpClassOf");
-add("Bayrell.Lang.OpCodes.OpClassRef");
-add("Bayrell.Lang.OpCodes.OpCollection");
-add("Bayrell.Lang.OpCodes.OpComment");
-add("Bayrell.Lang.OpCodes.OpContinue");
-add("Bayrell.Lang.OpCodes.OpCurry");
-add("Bayrell.Lang.OpCodes.OpCurryArg");
-add("Bayrell.Lang.OpCodes.OpDeclareClass");
-add("Bayrell.Lang.OpCodes.OpDeclareFunction");
-add("Bayrell.Lang.OpCodes.OpDeclareFunctionArg");
-add("Bayrell.Lang.OpCodes.OpDelete");
-add("Bayrell.Lang.OpCodes.OpDict");
-add("Bayrell.Lang.OpCodes.OpDictPair");
-add("Bayrell.Lang.OpCodes.OpEntityName");
-add("Bayrell.Lang.OpCodes.OpFlags");
-add("Bayrell.Lang.OpCodes.OpFor");
-add("Bayrell.Lang.OpCodes.OpHtmlAttribute");
-add("Bayrell.Lang.OpCodes.OpHtmlContent");
-add("Bayrell.Lang.OpCodes.OpHtmlItems");
-add("Bayrell.Lang.OpCodes.OpHtmlStyle");
-add("Bayrell.Lang.OpCodes.OpHtmlTag");
-add("Bayrell.Lang.OpCodes.OpHtmlValue");
-add("Bayrell.Lang.OpCodes.OpIdentifier");
-add("Bayrell.Lang.OpCodes.OpIf");
-add("Bayrell.Lang.OpCodes.OpIfElse");
-add("Bayrell.Lang.OpCodes.OpInc");
-add("Bayrell.Lang.OpCodes.OpItems");
-add("Bayrell.Lang.OpCodes.OpMath");
-add("Bayrell.Lang.OpCodes.OpMethod");
-add("Bayrell.Lang.OpCodes.OpModule");
-add("Bayrell.Lang.OpCodes.OpNamespace");
-add("Bayrell.Lang.OpCodes.OpNegative");
-add("Bayrell.Lang.OpCodes.OpNew");
-add("Bayrell.Lang.OpCodes.OpNumber");
-add("Bayrell.Lang.OpCodes.OpPipe");
-add("Bayrell.Lang.OpCodes.OpPreprocessorIfCode");
-add("Bayrell.Lang.OpCodes.OpPreprocessorIfDef");
-add("Bayrell.Lang.OpCodes.OpPreprocessorSwitch");
-add("Bayrell.Lang.OpCodes.OpReturn");
-add("Bayrell.Lang.OpCodes.OpSafe");
-add("Bayrell.Lang.OpCodes.OpString");
-add("Bayrell.Lang.OpCodes.OpTernary");
-add("Bayrell.Lang.OpCodes.OpTryCatch");
-add("Bayrell.Lang.OpCodes.OpTryCatchItem");
-add("Bayrell.Lang.OpCodes.OpThrow");
-add("Bayrell.Lang.OpCodes.OpTypeConvert");
-add("Bayrell.Lang.OpCodes.OpTypeIdentifier");
-add("Bayrell.Lang.OpCodes.OpUse");
-add("Bayrell.Lang.OpCodes.OpWhile");
-add("Bayrell.Lang.OpCodes.OpWidget");
-add("Bayrell.Lang.OpCodes.OpWidgetData");
+add("BayLang.Exceptions.ParserUnknownError");
+add("BayLang.OpCodes.BaseOpCode");
+add("BayLang.Caret");
+add("BayLang.CoreParser");
+add("BayLang.CoreToken");
+add("BayLang.CoreTranslator");
+add("BayLang.LangConstant");
+add("BayLang.LangUtils");
+add("BayLang.ModuleDescription");
+add("BayLang.SaveOpCode");
+add("BayLang.Compiler.CLI");
+add("BayLang.Compiler.Commands.Make");
+add("BayLang.Compiler.Commands.MakeAll");
+add("BayLang.Compiler.Commands.Modules");
+add("BayLang.Compiler.Commands.Version");
+add("BayLang.Compiler.Commands.Watch");
+add("BayLang.Compiler.ConsoleApp");
+add("BayLang.Compiler.Module");
+add("BayLang.Compiler.ModuleDescription");
+add("BayLang.Compiler.SettingsProvider");
+add("BayLang.Exceptions.ParserEOF");
+add("BayLang.Exceptions.ParserError");
+add("BayLang.Exceptions.ParserExpected");
+add("BayLang.Exceptions.DeclaredClass");
+add("BayLang.LangBay.ParserBay");
+add("BayLang.LangBay.ParserBayBase");
+add("BayLang.LangBay.ParserBayExpression");
+add("BayLang.LangBay.ParserBayHtml");
+add("BayLang.LangBay.ParserBayOperator");
+add("BayLang.LangBay.ParserBayPreprocessor");
+add("BayLang.LangBay.ParserBayProgram");
+add("BayLang.LangBay.TranslatorBay");
+add("BayLang.LangBay.TranslatorBayExpression");
+add("BayLang.LangBay.TranslatorBayHtml");
+add("BayLang.LangBay.TranslatorBayOperator");
+add("BayLang.LangBay.TranslatorBayProgram");
+add("BayLang.LangES6.AsyncAwait");
+add("BayLang.LangES6.TranslatorES6");
+add("BayLang.LangES6.TranslatorES6AsyncAwait");
+add("BayLang.LangES6.TranslatorES6Expression");
+add("BayLang.LangES6.TranslatorES6Html");
+add("BayLang.LangES6.TranslatorES6Operator");
+add("BayLang.LangES6.TranslatorES6Program");
+add("BayLang.LangNode.TranslatorNode");
+add("BayLang.LangNode.TranslatorNodeExpression");
+add("BayLang.LangNode.TranslatorNodeProgram");
+add("BayLang.LangPHP.TranslatorPHP");
+add("BayLang.LangPHP.TranslatorPHPExpression");
+add("BayLang.LangPHP.TranslatorPHPHtml");
+add("BayLang.LangPHP.TranslatorPHPOperator");
+add("BayLang.LangPHP.TranslatorPHPProgram");
+add("BayLang.OpCodes.OpAnnotation");
+add("BayLang.OpCodes.OpAssign");
+add("BayLang.OpCodes.OpAssignStruct");
+add("BayLang.OpCodes.OpAssignValue");
+add("BayLang.OpCodes.OpAttr");
+add("BayLang.OpCodes.OpBreak");
+add("BayLang.OpCodes.OpCall");
+add("BayLang.OpCodes.OpClassOf");
+add("BayLang.OpCodes.OpClassRef");
+add("BayLang.OpCodes.OpCollection");
+add("BayLang.OpCodes.OpComment");
+add("BayLang.OpCodes.OpContinue");
+add("BayLang.OpCodes.OpCurry");
+add("BayLang.OpCodes.OpCurryArg");
+add("BayLang.OpCodes.OpDeclareClass");
+add("BayLang.OpCodes.OpDeclareFunction");
+add("BayLang.OpCodes.OpDeclareFunctionArg");
+add("BayLang.OpCodes.OpDelete");
+add("BayLang.OpCodes.OpDict");
+add("BayLang.OpCodes.OpDictPair");
+add("BayLang.OpCodes.OpEntityName");
+add("BayLang.OpCodes.OpFlags");
+add("BayLang.OpCodes.OpFor");
+add("BayLang.OpCodes.OpHtmlAttribute");
+add("BayLang.OpCodes.OpHtmlContent");
+add("BayLang.OpCodes.OpHtmlItems");
+add("BayLang.OpCodes.OpHtmlSlot");
+add("BayLang.OpCodes.OpHtmlStyle");
+add("BayLang.OpCodes.OpHtmlTag");
+add("BayLang.OpCodes.OpHtmlValue");
+add("BayLang.OpCodes.OpIdentifier");
+add("BayLang.OpCodes.OpIf");
+add("BayLang.OpCodes.OpIfElse");
+add("BayLang.OpCodes.OpInc");
+add("BayLang.OpCodes.OpItems");
+add("BayLang.OpCodes.OpMath");
+add("BayLang.OpCodes.OpMethod");
+add("BayLang.OpCodes.OpModule");
+add("BayLang.OpCodes.OpNamespace");
+add("BayLang.OpCodes.OpNegative");
+add("BayLang.OpCodes.OpNew");
+add("BayLang.OpCodes.OpNumber");
+add("BayLang.OpCodes.OpPipe");
+add("BayLang.OpCodes.OpPreprocessorIfCode");
+add("BayLang.OpCodes.OpPreprocessorIfDef");
+add("BayLang.OpCodes.OpPreprocessorSwitch");
+add("BayLang.OpCodes.OpReturn");
+add("BayLang.OpCodes.OpSafe");
+add("BayLang.OpCodes.OpString");
+add("BayLang.OpCodes.OpTernary");
+add("BayLang.OpCodes.OpTryCatch");
+add("BayLang.OpCodes.OpTryCatchItem");
+add("BayLang.OpCodes.OpThrow");
+add("BayLang.OpCodes.OpTypeConvert");
+add("BayLang.OpCodes.OpTypeIdentifier");
+add("BayLang.OpCodes.OpUse");
+add("BayLang.OpCodes.OpWhile");
+add("BayLang.OpCodes.OpWidget");
+add("BayLang.OpCodes.OpWidgetData");
 
 /* Test */
-add("Bayrell.Lang.Test.LangBay.Main");
-add("Bayrell.Lang.Test.ModuleDescription");
+add("BayLang.Test.LangBay.Base");
+add("BayLang.Test.LangBay.Expression");
+add("BayLang.Test.LangBay.Html");
+add("BayLang.Test.LangBay.Operator");
+add("BayLang.Test.LangBay.Program");
+add("BayLang.Test.ModuleDescription");
 
 var use = require('bay-lang').use;
-exports["VERSION"] = use("Bayrell.Lang.ModuleDescription").getModuleVersion();
+exports["VERSION"] = use("BayLang.ModuleDescription").getModuleVersion();
 
 module.exports = exports;

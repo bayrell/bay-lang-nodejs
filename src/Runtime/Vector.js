@@ -159,7 +159,7 @@ Object.assign(Runtime.Vector.prototype,
 	 */
 	appendItems: function(ctx, items)
 	{
-		items.each(ctx, (ctx, item) => 
+		items.each(ctx, (ctx, item) =>
 		{
 			this.push(ctx, item);
 		});
@@ -170,7 +170,7 @@ Object.assign(Runtime.Vector.prototype,
 	 */
 	prependItems: function(ctx, items)
 	{
-		items.each(ctx, (ctx, item) => 
+		items.each(ctx, (ctx, item) =>
 		{
 			this.prepend(ctx, item);
 		});

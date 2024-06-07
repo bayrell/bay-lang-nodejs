@@ -61,7 +61,7 @@ Object.assign(Runtime.RawString,
 		}
 		else if (item instanceof __v2)
 		{
-			item = item.map(ctx, (ctx, item) => 
+			item = item.map(ctx, (ctx, item) =>
 			{
 				return this.normalize(ctx, item);
 			});
