@@ -1,5 +1,7 @@
 {
-  "description": "BayLang Technology",
+  "name": "bay-lang",
+  "description": "BayLang compiler for nodejs | BayLang Technology",
+  "version": "0.12.2-5",
   "license": "Apache-2.0",
   "contributors": [
     {
@@ -15,8 +17,6 @@
     "bay-lang-nodejs": "./cli.js"
   },
   "main": "index.js",
-  "name": "bay-lang",
-  "version": "0.12.2-5",
   "dependencies": {
     "chokidar": "^3.5.3"
   }
