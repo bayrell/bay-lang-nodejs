@@ -1,7 +1,7 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -116,7 +116,7 @@ Object.assign(Runtime.rs,
 	 */
 	replace: function(ctx, search, item, s)
 	{
-		return s.replace(new RegExp(search, "g"), item);
+		return s.replaceAll(search, item);
 	},
 	/**
 	 * Возвращает повторяющуюся строку
@@ -246,6 +246,31 @@ Object.assign(Runtime.rs,
 			i--;
 		}
 		return this.substr(ctx, path, 0, i + 1);
+	},
+	/**
+	 * Add first slash
+	 */
+	addFirstSlash: function(ctx, path)
+	{
+		var __v0 = use("Runtime.rs");
+		if (__v0.substr(ctx, path, 0, 1) == "/")
+		{
+			return path;
+		}
+		return "/" + use("Runtime.rtl").toStr(path);
+	},
+	/**
+	 * Add last slash
+	 */
+	addLastSlash: function(ctx, path)
+	{
+		var __v0 = use("Runtime.rs");
+		var __v1 = use("Runtime.rs");
+		if (__v0.substr(ctx, path, __v1.strlen(ctx, path) - 1, 1) == "/")
+		{
+			return path;
+		}
+		return path + use("Runtime.rtl").toStr("/");
 	},
 	/**
 	 * Разбивает путь файла на составляющие

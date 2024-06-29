@@ -110,7 +110,7 @@ Object.assign(BayLang.LangBay.ParserBayPreprocessor,
 		var res = parser.parser_base.constructor.matchToken(ctx, parser, "#endswitch");
 		parser = Runtime.rtl.attr(ctx, res, 0);
 		var __v1 = use("BayLang.OpCodes.OpPreprocessorSwitch");
-		return use("Runtime.Vector").from([parser,new __v1(ctx, use("Runtime.Map").from({"items":items.toCollection(ctx),"caret_start":caret_start,"caret_end":parser.caret}))]);
+		return use("Runtime.Vector").from([parser,new __v1(ctx, use("Runtime.Map").from({"items":items,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/**
 	 * Read preprocessor ifcode

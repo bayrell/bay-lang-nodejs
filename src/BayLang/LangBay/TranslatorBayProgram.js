@@ -48,6 +48,23 @@ Object.assign(BayLang.LangBay.TranslatorBayProgram.prototype,
 		result.push(ctx, ";");
 	},
 	/**
+	 * OpAnnotation
+	 */
+	OpAnnotation: function(ctx, op_code, result)
+	{
+		result.push(ctx, "@");
+		this.translator.expression.OpTypeIdentifier(ctx, op_code.name, result);
+		this.translator.expression.OpDict(ctx, op_code.params, result);
+	},
+	/**
+	 * OpAssign
+	 */
+	OpAssign: function(ctx, op_code, result)
+	{
+		this.translator.operator.OpAssign(ctx, op_code, result);
+		result.push(ctx, ";");
+	},
+	/**
 	 * OpDeclareFunctionArg
 	 */
 	OpDeclareFunctionArg: function(ctx, op_code, result)
@@ -85,6 +102,11 @@ Object.assign(BayLang.LangBay.TranslatorBayProgram.prototype,
 	 */
 	OpDeclareFunction: function(ctx, op_code, result)
 	{
+		var __v0 = use("BayLang.OpCodes.OpTypeIdentifier");
+		if (!(op_code.result_type instanceof __v0))
+		{
+			return ;
+		}
 		this.translator.expression.OpTypeIdentifier(ctx, op_code.result_type, result);
 		/* Function name */
 		result.push(ctx, " ");
@@ -105,11 +127,26 @@ Object.assign(BayLang.LangBay.TranslatorBayProgram.prototype,
 	 */
 	translateClassItem: function(ctx, op_code, result)
 	{
-		var __v0 = use("BayLang.OpCodes.OpDeclareFunction");
+		var __v0 = use("BayLang.OpCodes.OpAnnotation");
+		var __v1 = use("BayLang.OpCodes.OpAssign");
+		var __v2 = use("BayLang.OpCodes.OpDeclareFunction");
 		if (op_code instanceof __v0)
+		{
+			this.OpAnnotation(ctx, op_code, result);
+		}
+		else if (op_code instanceof __v1)
+		{
+			this.OpAssign(ctx, op_code, result);
+		}
+		else if (op_code instanceof __v2)
 		{
 			this.OpDeclareFunction(ctx, op_code, result);
 		}
+		else
+		{
+			return false;
+		}
+		return true;
 	},
 	/**
 	 * Translate class body
@@ -119,11 +156,16 @@ Object.assign(BayLang.LangBay.TranslatorBayProgram.prototype,
 		/* Begin bracket */
 		result.push(ctx, "{");
 		this.translator.levelInc(ctx);
+		/* Class body items */
+		var next_new_line = true;
 		for (var i = 0; i < op_code.items.count(ctx); i++)
 		{
-			result.push(ctx, this.translator.newLine(ctx));
+			if (next_new_line)
+			{
+				result.push(ctx, this.translator.newLine(ctx));
+			}
 			var op_code_item = op_code.items.get(ctx, i);
-			this.translateClassItem(ctx, op_code_item, result);
+			next_new_line = this.translateClassItem(ctx, op_code_item, result);
 		}
 		/* End bracket */
 		this.translator.levelDec(ctx);

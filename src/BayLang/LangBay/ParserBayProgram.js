@@ -191,7 +191,7 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 			token = Runtime.rtl.attr(ctx, res, 1);
 			parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["skip_comments"]), true);
 		}
-		return use("Runtime.Vector").from([parser,items.toCollection(ctx)]);
+		return use("Runtime.Vector").from([parser,items]);
 	},
 	/**
 	 * Class body analyze
@@ -241,14 +241,14 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 					}
 					names.set(ctx, value_name, true);
 				}
-				item = item.copy(ctx, use("Runtime.Map").from({"annotations":annotations.toCollection(ctx),"comments":comments.toCollection(ctx)}));
+				item = item.copy(ctx, use("Runtime.Map").from({"annotations":annotations.slice(ctx),"comments":comments.slice(ctx)}));
 				vars.push(ctx, item);
 				annotations.clear(ctx);
 				comments.clear(ctx);
 			}
 			else if (item instanceof __v9)
 			{
-				item = item.copy(ctx, use("Runtime.Map").from({"annotations":annotations.toCollection(ctx),"comments":comments.toCollection(ctx)}));
+				item = item.copy(ctx, use("Runtime.Map").from({"annotations":annotations.slice(ctx),"comments":comments.slice(ctx)}));
 				if (names.has(ctx, item.name))
 				{
 					var __v10 = use("BayLang.Exceptions.ParserError");
@@ -287,7 +287,7 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 			}
 		}
 		items.appendItems(ctx, comments);
-		return use("Runtime.Map").from({"annotations":annotations.toCollection(ctx),"comments":comments.toCollection(ctx),"functions":functions.toCollection(ctx),"items":items.toCollection(ctx),"vars":vars.toCollection(ctx),"fn_create":fn_create,"fn_destroy":fn_destroy});
+		return use("Runtime.Map").from({"annotations":annotations,"comments":comments,"functions":functions,"items":items,"vars":vars,"fn_create":fn_create,"fn_destroy":fn_destroy});
 	},
 	/**
 	 * Read class
@@ -450,7 +450,7 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 		var res = parser.parser_base.constructor.matchToken(ctx, parser, "}");
 		parser = Runtime.rtl.attr(ctx, res, 0);
 		var __v0 = use("BayLang.OpCodes.OpDeclareClass");
-		var current_class = new __v0(ctx, use("Runtime.Map").from({"kind":class_kind,"name":class_name,"is_abstract":is_abstract,"is_static":is_static,"is_declare":is_declare,"class_extends":class_extends,"class_implements":(class_implements != null) ? (class_implements.toCollection(ctx)) : (null),"template":(template != null) ? (template.toCollection(ctx)) : (null),"vars":d.item(ctx, "vars"),"functions":d.item(ctx, "functions"),"fn_create":d.item(ctx, "fn_create"),"fn_destroy":d.item(ctx, "fn_destroy"),"items":arr,"caret_start":caret_start,"caret_end":parser.caret}));
+		var current_class = new __v0(ctx, use("Runtime.Map").from({"kind":class_kind,"name":class_name,"is_abstract":is_abstract,"is_static":is_static,"is_declare":is_declare,"class_extends":class_extends,"class_implements":(class_implements != null) ? (class_implements) : (null),"template":(template != null) ? (template) : (null),"vars":d.item(ctx, "vars"),"functions":d.item(ctx, "functions"),"fn_create":d.item(ctx, "fn_create"),"fn_destroy":d.item(ctx, "fn_destroy"),"items":arr,"caret_start":caret_start,"caret_end":parser.caret}));
 		/* Restore uses */
 		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["uses"]), save_uses);
 		return use("Runtime.Vector").from([parser.copy(ctx, use("Runtime.Map").from({"current_class":current_class})),current_class]);
@@ -575,7 +575,7 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 				var res = this.readClass(ctx, parser);
 				parser = Runtime.rtl.attr(ctx, res, 0);
 				item = Runtime.rtl.attr(ctx, res, 1);
-				item = item.copy(ctx, use("Runtime.Map").from({"annotations":annotations.toCollection(ctx),"comments":comments.toCollection(ctx)}));
+				item = item.copy(ctx, use("Runtime.Map").from({"annotations":annotations,"comments":comments}));
 				items.push(ctx, item);
 				annotations.clear(ctx);
 				comments.clear(ctx);
@@ -592,7 +592,7 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 		}
 		items.appendItems(ctx, comments);
 		var __v3 = use("BayLang.OpCodes.OpModule");
-		return use("Runtime.Vector").from([parser,new __v3(ctx, use("Runtime.Map").from({"uses":parser.uses.toDict(ctx),"items":items.toCollection(ctx),"caret_start":caret_start,"caret_end":parser.caret}))]);
+		return use("Runtime.Vector").from([parser,new __v3(ctx, use("Runtime.Map").from({"uses":parser.uses.toDict(ctx),"items":items,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()

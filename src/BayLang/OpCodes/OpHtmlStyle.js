@@ -77,13 +77,22 @@ Object.assign(BayLang.OpCodes.OpHtmlStyle.prototype,
 		reader.matchToken(ctx, "{");
 		var caret = reader.main_caret;
 		caret.skipSpace(ctx);
+		var level = 0;
 		var items = use("Runtime.Vector").from([]);
-		while (!caret.eof(ctx) && caret.nextChar(ctx) != "}")
+		while (!caret.eof(ctx) && (caret.nextChar(ctx) != "}" && level == 0 || level > 0))
 		{
 			var ch = caret.readChar(ctx);
 			if (ch != "\t")
 			{
 				items.push(ctx, ch);
+			}
+			if (ch == "{")
+			{
+				level = level + 1;
+			}
+			if (ch == "}")
+			{
+				level = level - 1;
 			}
 		}
 		reader.init(ctx, caret);

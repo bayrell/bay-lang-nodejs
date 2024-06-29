@@ -34,7 +34,7 @@ Object.assign(BayLang.Helper.RouteProcessor.prototype,
 	getRoutesFilePath: function(ctx)
 	{
 		var __v0 = use("Runtime.fs");
-		return __v0.join(ctx, use("Runtime.Vector").from([this.module.getSourcePath(ctx),"Routes.bay"]));
+		return __v0.join(ctx, use("Runtime.Vector").from([this.module.getSourceFolderPath(ctx),"Routes.bay"]));
 	},
 	/**
 	 * Load routes
@@ -149,6 +149,11 @@ Object.assign(BayLang.Helper.RouteProcessor,
 	{
 		var expression = this.findExpression(ctx, op_code);
 		if (expression == null)
+		{
+			return use("Runtime.Vector").from([]);
+		}
+		var __v0 = use("BayLang.OpCodes.OpCollection");
+		if (!(expression instanceof __v0))
 		{
 			return use("Runtime.Vector").from([]);
 		}

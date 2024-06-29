@@ -42,12 +42,6 @@ Object.assign(BayLang.Helper.CacheInterface.prototype,
 	saveCache: async function(ctx)
 	{
 	},
-	/**
-	 * Load object from file system
-	 */
-	loadObject: async function(ctx)
-	{
-	},
 });
 Object.assign(BayLang.Helper.CacheInterface,
 {

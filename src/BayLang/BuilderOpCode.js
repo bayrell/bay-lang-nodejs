@@ -17,69 +17,53 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof Runtime == 'undefined') Runtime = {};
-if (typeof Runtime.Exceptions == 'undefined') Runtime.Exceptions = {};
-Runtime.Exceptions.ApiError = function(ctx, prev)
+if (typeof BayLang == 'undefined') BayLang = {};
+BayLang.BuilderOpCode = function(ctx)
 {
-	if (prev == undefined) prev = null;
-	var __v0 = use("Runtime.rtl");
-	use("Runtime.Exceptions.AbstractException").call(this, ctx, prev.getErrorMessage(ctx), __v0.ERROR_API_ERROR, prev);
+	use("Runtime.BaseObject").apply(this, arguments);
 };
-Runtime.Exceptions.ApiError.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
-Runtime.Exceptions.ApiError.prototype.constructor = Runtime.Exceptions.ApiError;
-Object.assign(Runtime.Exceptions.ApiError.prototype,
+BayLang.BuilderOpCode.prototype = Object.create(use("Runtime.BaseObject").prototype);
+BayLang.BuilderOpCode.prototype.constructor = BayLang.BuilderOpCode;
+Object.assign(BayLang.BuilderOpCode.prototype,
 {
 	/**
-	 * Returns error message
+	 * Add slot
 	 */
-	getErrorMessage: function(ctx)
+	addSlot: function(ctx, op_code, name)
 	{
-		return this.prev.getErrorMessage(ctx);
+		var __v0 = use("BayLang.OpCodes.OpHtmlSlot");
+		var __v1 = use("BayLang.OpCodes.OpHtmlItems");
+		var slot = new __v0(ctx, use("Runtime.Map").from({"name":name,"items":new __v1(ctx)}));
+		op_code.items.items.push(ctx, slot);
+		return slot;
 	},
 	/**
-	 * Returns error code
+	 * Add tag
 	 */
-	getErrorCode: function(ctx)
+	addTag: function(ctx, op_code, name)
 	{
-		return this.prev.getErrorCode(ctx);
-	},
-	/**
-	 * Returns error file name
-	 */
-	getFileName: function(ctx)
-	{
-		return this.prev.getFileName(ctx);
-	},
-	/**
-	 * Returns error line
-	 */
-	getErrorLine: function(ctx)
-	{
-		return this.prev.getErrorLine(ctx);
-	},
-	/**
-	 * Returns error position
-	 */
-	getErrorPos: function(ctx)
-	{
-		return this.prev.getErrorPos(ctx);
+		var __v0 = use("BayLang.OpCodes.OpHtmlTag");
+		var __v1 = use("BayLang.OpCodes.OpHtmlItems");
+		var tag = new __v0(ctx, use("Runtime.Map").from({"attrs":use("Runtime.Vector").from([]),"items":new __v1(ctx),"tag_name":name}));
+		op_code.items.items.push(ctx, tag);
+		return tag;
 	},
 });
-Object.assign(Runtime.Exceptions.ApiError, use("Runtime.Exceptions.AbstractException"));
-Object.assign(Runtime.Exceptions.ApiError,
+Object.assign(BayLang.BuilderOpCode, use("Runtime.BaseObject"));
+Object.assign(BayLang.BuilderOpCode,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Runtime.Exceptions";
+		return "BayLang";
 	},
 	getClassName: function()
 	{
-		return "Runtime.Exceptions.ApiError";
+		return "BayLang.BuilderOpCode";
 	},
 	getParentClassName: function()
 	{
-		return "Runtime.Exceptions.AbstractException";
+		return "Runtime.BaseObject";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -111,5 +95,5 @@ Object.assign(Runtime.Exceptions.ApiError,
 	{
 		return null;
 	},
-});use.add(Runtime.Exceptions.ApiError);
-module.exports = Runtime.Exceptions.ApiError;
+});use.add(BayLang.BuilderOpCode);
+module.exports = BayLang.BuilderOpCode;

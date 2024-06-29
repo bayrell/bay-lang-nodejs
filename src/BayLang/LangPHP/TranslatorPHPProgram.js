@@ -1041,13 +1041,13 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 		if (t.enable_context == false)
 		{
 			var __v1 = use("Runtime.rs");
-			content = __v1.replace(ctx, "\\(\\$ctx\\)", "()", content);
+			content = __v1.replace(ctx, "($ctx)", "()", content);
 			var __v2 = use("Runtime.rs");
-			content = __v2.replace(ctx, "\\(\\$ctx, ", "(", content);
+			content = __v2.replace(ctx, "($ctx, ", "(", content);
 			var __v3 = use("Runtime.rs");
-			content = __v3.replace(ctx, "\\(\\$ctx,", "(", content);
+			content = __v3.replace(ctx, "($ctx,", "(", content);
 			var __v4 = use("Runtime.rs");
-			content = __v4.replace(ctx, "\\,\\$ctx,", ",", content);
+			content = __v4.replace(ctx, ",$ctx,", ",", content);
 		}
 		return use("Runtime.Vector").from([t,content]);
 	},

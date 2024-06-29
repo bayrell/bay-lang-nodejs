@@ -40,19 +40,22 @@ Object.assign(BayLang.OpCodes.OpModule.prototype,
 	/**
 	 * Add module
 	 */
-	addModule: function(ctx, class_name, alias_name)
+	addModule: function(ctx, class_name, is_component, alias_name)
 	{
-		if (this.uses.has(ctx, alias_name))
+		if (is_component == undefined) is_component = true;
+		if (alias_name == undefined) alias_name = "";
+		if (alias_name == "")
 		{
-			var __v0 = use("Runtime.Exceptions.RuntimeException");
-			throw new __v0(ctx, alias_name + use("Runtime.rtl").toStr(" already exists"))
+			var __v0 = use("Runtime.rs");
+			var class_name_arr = __v0.split(ctx, ".", class_name);
+			alias_name = class_name_arr.last(ctx);
 		}
 		this.uses.set(ctx, alias_name, class_name);
 		/* Add op_code */
 		var __v0 = use("Runtime.lib");
 		var pos = this.items.find(ctx, __v0.isInstance(ctx, "BayLang.OpCodes.OpNamespace"));
 		var __v1 = use("BayLang.OpCodes.OpUse");
-		var op_code = new __v1(ctx, use("Runtime.Map").from({"alias":alias_name,"name":class_name}));
+		var op_code = new __v1(ctx, use("Runtime.Map").from({"alias":alias_name,"name":class_name,"is_component":is_component}));
 		if (pos != -1)
 		{
 			pos = pos + 1;

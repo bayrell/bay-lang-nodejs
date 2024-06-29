@@ -35,61 +35,6 @@ Object.assign(BayLang.OpCodes.OpHtmlItems.prototype,
 		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
 		serializer.process(ctx, this, "items", data);
 	},
-	/**
-	 * Find op_code position
-	 */
-	find: function(ctx, op_code)
-	{
-		return (op_code) ? (this.items.indexOf(ctx, op_code)) : (-1);
-	},
-	/**
-	 * Add op_code
-	 */
-	addItem: function(ctx, op_code, dest, kind)
-	{
-		if (dest == undefined) dest = null;
-		if (kind == undefined) kind = "after";
-		if (this.items == null)
-		{
-			this.items = use("Runtime.Vector").from([]);
-		}
-		var pos = -1;
-		if (dest != null)
-		{
-			pos = this.find(ctx, dest);
-		}
-		if (pos >= 0)
-		{
-			if (kind == "before")
-			{
-				this.items.insert(ctx, pos, op_code);
-			}
-			else
-			{
-				this.items.insert(ctx, pos + 1, op_code);
-			}
-		}
-		else
-		{
-			if (kind == "before")
-			{
-				this.items.prepend(ctx, op_code);
-			}
-			else
-			{
-				this.items.push(ctx, op_code);
-			}
-		}
-		return op_code;
-	},
-	/**
-	 * Remove op_code
-	 */
-	removeItem: function(ctx, op_code)
-	{
-		var pos = this.find(ctx, op_code);
-		this.items.remove(ctx, pos);
-	},
 	_init: function(ctx)
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);

@@ -35,6 +35,7 @@ Object.assign(BayLang.OpCodes.OpUse.prototype,
 		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
 		serializer.process(ctx, this, "alias", data);
 		serializer.process(ctx, this, "name", data);
+		serializer.process(ctx, this, "is_component", data);
 	},
 	_init: function(ctx)
 	{
@@ -42,6 +43,7 @@ Object.assign(BayLang.OpCodes.OpUse.prototype,
 		this.op = "op_use";
 		this.alias = "";
 		this.name = "";
+		this.is_component = false;
 	},
 });
 Object.assign(BayLang.OpCodes.OpUse, use("BayLang.OpCodes.BaseOpCode"));

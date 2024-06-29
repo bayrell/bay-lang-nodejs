@@ -62,7 +62,8 @@ Object.assign(BayLang.Test.ModuleDescription,
 		var __v2 = use("Runtime.Unit.UnitTest");
 		var __v3 = use("Runtime.Unit.UnitTest");
 		var __v4 = use("Runtime.Unit.UnitTest");
-		return use("Runtime.Vector").from([new __v0(ctx, "BayLang.Test.LangBay.Base"),new __v1(ctx, "BayLang.Test.LangBay.Expression"),new __v2(ctx, "BayLang.Test.LangBay.Html"),new __v3(ctx, "BayLang.Test.LangBay.Operator"),new __v4(ctx, "BayLang.Test.LangBay.Program")]);
+		var __v5 = use("Runtime.Unit.UnitTest");
+		return use("Runtime.Vector").from([new __v0(ctx, "BayLang.Test.LangBay.Base"),new __v1(ctx, "BayLang.Test.LangBay.Expression"),new __v2(ctx, "BayLang.Test.LangBay.Html"),new __v3(ctx, "BayLang.Test.LangBay.Operator"),new __v4(ctx, "BayLang.Test.LangBay.Program"),new __v5(ctx, "BayLang.Test.LangBay.Style")]);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()

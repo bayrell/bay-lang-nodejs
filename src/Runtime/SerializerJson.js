@@ -1,7 +1,7 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -66,7 +66,8 @@ Object.assign(Runtime.SerializerJson.prototype,
 			}
 			return res;
 		}
-		catch(e){
+		catch(e)
+		{
 			throw e;
 		}
 		return null;

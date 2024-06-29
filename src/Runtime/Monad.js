@@ -1,7 +1,7 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2020 "Ildar Bikmamatov" <support@bayrell.org>
  *

@@ -1449,11 +1449,11 @@ Object.assign(BayLang.LangES6.TranslatorES6Program,
 	removeContext: function(ctx, content)
 	{
 		var __v0 = use("Runtime.rs");
-		content = __v0.replace(ctx, "\\(" + use("Runtime.rtl").toStr("ctx\\)"), "()", content);
+		content = __v0.replace(ctx, "(" + use("Runtime.rtl").toStr("ctx)"), "()", content);
 		var __v1 = use("Runtime.rs");
-		content = __v1.replace(ctx, "\\(" + use("Runtime.rtl").toStr("ctx, "), "(", content);
+		content = __v1.replace(ctx, "(" + use("Runtime.rtl").toStr("ctx, "), "(", content);
 		var __v2 = use("Runtime.rs");
-		content = __v2.replace(ctx, "\\(" + use("Runtime.rtl").toStr("ctx,"), "(", content);
+		content = __v2.replace(ctx, "(" + use("Runtime.rtl").toStr("ctx,"), "(", content);
 		var __v3 = use("Runtime.rs");
 		content = __v3.replace(ctx, "," + use("Runtime.rtl").toStr("ctx,"), ",", content);
 		var __v4 = use("Runtime.rs");

@@ -38,6 +38,21 @@ Object.assign(BayLang.OpCodes.BaseOpCode.prototype,
 		serializer.process(ctx, this, "caret_end", data);
 	},
 	/**
+	 * Is multiline
+	 */
+	isMultiLine: function(ctx)
+	{
+		if (!this.caret_start)
+		{
+			return true;
+		}
+		if (!this.caret_end)
+		{
+			return true;
+		}
+		return this.caret_start.y != this.caret_end.y;
+	},
+	/**
 	 * Clone this struct with new values
 	 * @param Map obj = null
 	 * @return BaseStruct

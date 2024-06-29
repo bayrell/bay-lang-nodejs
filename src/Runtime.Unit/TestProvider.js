@@ -204,6 +204,26 @@ Object.assign(Runtime.Unit.TestProvider,
 		await provider.runTestByName(ctx, test_name);
 	},
 	/**
+	 * Run
+	 */
+	runAll: async function(ctx)
+	{
+		var __v0 = use("Runtime.Unit.TestProvider");
+		var provider = new __v0(ctx);
+		await provider.start(ctx);
+		for (var i = 0; i < provider.count(ctx); i++)
+		{
+			var test = provider.get(ctx, i);
+			var __v1 = use("Runtime.io");
+			__v1.print(ctx, "Run " + use("Runtime.rtl").toStr(test.name));
+			var error_code = await provider.runTestByName(ctx, test.name);
+			if (error_code != 1)
+			{
+				return Promise.resolve();
+			}
+		}
+	},
+	/**
 	 * Returns true if TestMethod
 	 */
 	isTestMethod: function(ctx, method_info)

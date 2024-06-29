@@ -95,16 +95,34 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 	 */
 	OpCollection: function(ctx, op_code, result)
 	{
+		var is_multiline = op_code.isMultiLine(ctx);
 		result.push(ctx, "[");
+		if (is_multiline)
+		{
+			this.translator.levelInc(ctx);
+		}
 		var values_count = op_code.values.count(ctx);
 		for (var i = 0; i < values_count; i++)
 		{
 			var op_code_item = op_code.values.get(ctx, i);
+			if (is_multiline)
+			{
+				result.push(ctx, this.translator.newLine(ctx));
+			}
 			this.translate(ctx, op_code_item, result);
-			if (i < values_count - 1)
+			if (is_multiline)
+			{
+				result.push(ctx, ",");
+			}
+			else if (i < values_count - 1)
 			{
 				result.push(ctx, ", ");
 			}
+		}
+		if (is_multiline)
+		{
+			this.translator.levelDec(ctx);
+			result.push(ctx, this.translator.newLine(ctx));
 		}
 		result.push(ctx, "]");
 	},
@@ -113,7 +131,8 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 	 */
 	OpDict: function(ctx, op_code, result)
 	{
-		if (op_code.values.count(ctx) == 0)
+		var is_multiline = op_code.isMultiLine(ctx);
+		if (op_code.values.count(ctx) == 0 && !is_multiline)
 		{
 			result.push(ctx, "{");
 			result.push(ctx, "}");
@@ -121,21 +140,37 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 		}
 		/* Begin bracket */
 		result.push(ctx, "{");
-		this.translator.levelInc(ctx);
+		if (is_multiline)
+		{
+			this.translator.levelInc(ctx);
+		}
 		/* Items */
 		var values_count = op_code.values.count(ctx);
 		for (var i = 0; i < values_count; i++)
 		{
 			var op_code_item = op_code.values.get(ctx, i);
-			result.push(ctx, this.translator.newLine(ctx));
+			if (is_multiline)
+			{
+				result.push(ctx, this.translator.newLine(ctx));
+			}
 			result.push(ctx, this.translator.toString(ctx, op_code_item.key));
 			result.push(ctx, ": ");
 			this.translate(ctx, op_code_item.value, result);
-			result.push(ctx, ",");
+			if (is_multiline)
+			{
+				result.push(ctx, ",");
+			}
+			else if (i < values_count - 1)
+			{
+				result.push(ctx, ", ");
+			}
 		}
 		/* End bracket */
-		this.translator.levelDec(ctx);
-		result.push(ctx, this.translator.newLine(ctx));
+		if (is_multiline)
+		{
+			this.translator.levelDec(ctx);
+			result.push(ctx, this.translator.newLine(ctx));
+		}
 		result.push(ctx, "}");
 	},
 	/**
@@ -196,6 +231,14 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 			}
 		}
 		this.opcode_level = 20;
+	},
+	/**
+	 * OpClassOf
+	 */
+	OpClassOf: function(ctx, op_code, result)
+	{
+		result.push(ctx, "classof ");
+		result.push(ctx, op_code.entity_name.names.last(ctx));
 	},
 	/**
 	 * OpCall
@@ -470,10 +513,11 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 		var __v0 = use("BayLang.OpCodes.OpString");
 		var __v1 = use("BayLang.OpCodes.OpIdentifier");
 		var __v2 = use("BayLang.OpCodes.OpAttr");
-		var __v3 = use("BayLang.OpCodes.OpCollection");
-		var __v4 = use("BayLang.OpCodes.OpDict");
-		var __v5 = use("BayLang.OpCodes.OpCall");
-		var __v6 = use("BayLang.OpCodes.OpNew");
+		var __v3 = use("BayLang.OpCodes.OpClassOf");
+		var __v4 = use("BayLang.OpCodes.OpCollection");
+		var __v5 = use("BayLang.OpCodes.OpDict");
+		var __v6 = use("BayLang.OpCodes.OpCall");
+		var __v7 = use("BayLang.OpCodes.OpNew");
 		if (op_code instanceof __v0)
 		{
 			this.OpString(ctx, op_code, result);
@@ -488,17 +532,21 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 		}
 		else if (op_code instanceof __v3)
 		{
-			this.OpCollection(ctx, op_code, result);
+			this.OpClassOf(ctx, op_code, result);
 		}
 		else if (op_code instanceof __v4)
 		{
-			this.OpDict(ctx, op_code, result);
+			this.OpCollection(ctx, op_code, result);
 		}
 		else if (op_code instanceof __v5)
 		{
-			this.OpCall(ctx, op_code, result);
+			this.OpDict(ctx, op_code, result);
 		}
 		else if (op_code instanceof __v6)
+		{
+			this.OpCall(ctx, op_code, result);
+		}
+		else if (op_code instanceof __v7)
 		{
 			this.OpNew(ctx, op_code, result);
 		}

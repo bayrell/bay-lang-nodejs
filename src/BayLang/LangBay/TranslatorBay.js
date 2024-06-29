@@ -34,6 +34,15 @@ Object.assign(BayLang.LangBay.TranslatorBay.prototype,
 	{
 		this.opcode_level = 0;
 		this.indent_level = 0;
+		this.preprocessor_flags = use("Runtime.Map").from({});
+	},
+	/**
+	 * Set flag
+	 */
+	setFlag: function(ctx, flag_name, value)
+	{
+		this.preprocessor_flags.set(ctx, flag_name, value);
+		return this;
 	},
 	/**
 	 * Increment indent level
@@ -85,6 +94,7 @@ Object.assign(BayLang.LangBay.TranslatorBay.prototype,
 		this.indent_level = 0;
 		this.indent = "\t";
 		this.crlf = "\n";
+		this.preprocessor_flags = use("Runtime.Map").from({});
 		this.expression = new __v0(ctx, this);
 		this.operator = new __v1(ctx, this);
 		this.program = new __v2(ctx, this);

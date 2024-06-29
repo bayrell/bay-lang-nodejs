@@ -21,9 +21,9 @@ if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
 BayLang.OpCodes.OpDictPair = function(ctx)
 {
-	use("Runtime.BaseStruct").apply(this, arguments);
+	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
 };
-BayLang.OpCodes.OpDictPair.prototype = Object.create(use("Runtime.BaseStruct").prototype);
+BayLang.OpCodes.OpDictPair.prototype = Object.create(use("BayLang.OpCodes.BaseOpCode").prototype);
 BayLang.OpCodes.OpDictPair.prototype.constructor = BayLang.OpCodes.OpDictPair;
 Object.assign(BayLang.OpCodes.OpDictPair.prototype,
 {
@@ -32,20 +32,20 @@ Object.assign(BayLang.OpCodes.OpDictPair.prototype,
 	 */
 	serialize: function(ctx, serializer, data)
 	{
-		use("Runtime.BaseStruct").prototype.serialize.call(this, ctx, serializer, data);
+		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
 		serializer.process(ctx, this, "condition", data);
 		serializer.process(ctx, this, "key", data);
 		serializer.process(ctx, this, "value", data);
 	},
 	_init: function(ctx)
 	{
-		use("Runtime.BaseStruct").prototype._init.call(this,ctx);
+		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.key = "";
 		this.value = null;
 		this.condition = null;
 	},
 });
-Object.assign(BayLang.OpCodes.OpDictPair, use("Runtime.BaseStruct"));
+Object.assign(BayLang.OpCodes.OpDictPair, use("BayLang.OpCodes.BaseOpCode"));
 Object.assign(BayLang.OpCodes.OpDictPair,
 {
 	/* ======================= Class Init Functions ======================= */
@@ -59,7 +59,7 @@ Object.assign(BayLang.OpCodes.OpDictPair,
 	},
 	getParentClassName: function()
 	{
-		return "Runtime.BaseStruct";
+		return "BayLang.OpCodes.BaseOpCode";
 	},
 	getClassInfo: function(ctx)
 	{

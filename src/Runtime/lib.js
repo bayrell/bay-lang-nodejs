@@ -1,7 +1,7 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -18,7 +18,6 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-/* Lambda Functions */
 Runtime.lib = function(ctx)
 {
 };

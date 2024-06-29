@@ -34,7 +34,7 @@ Object.assign(BayLang.Helper.WidgetProcessor.prototype,
 	getModuleDescriptionFilePath: function(ctx)
 	{
 		var __v0 = use("Runtime.fs");
-		return __v0.join(ctx, use("Runtime.Vector").from([this.module.getSourcePath(ctx),"ModuleDescription.bay"]));
+		return __v0.join(ctx, use("Runtime.Vector").from([this.module.getSourceFolderPath(ctx),"ModuleDescription.bay"]));
 	},
 	/**
 	 * Load widgets
@@ -118,6 +118,11 @@ Object.assign(BayLang.Helper.WidgetProcessor,
 	{
 		var expression = op_code.getExpression(ctx);
 		if (expression == null)
+		{
+			return use("Runtime.Vector").from([]);
+		}
+		var __v0 = use("BayLang.OpCodes.OpCollection");
+		if (!(expression instanceof __v0))
 		{
 			return use("Runtime.Vector").from([]);
 		}

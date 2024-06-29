@@ -53,12 +53,18 @@ Object.assign(BayLang.Helper.Widget.prototype,
 	/**
 	 * Load widget
 	 */
-	load: async function(ctx)
+	load: async function(ctx, is_force)
 	{
-		var is_loaded = await this.readCache(ctx);
+		if (is_force == undefined) is_force = false;
+		var is_loaded = false;
+		if (!is_force)
+		{
+			is_loaded = await this.readCache(ctx);
+		}
 		if (!is_loaded)
 		{
-			await this.loadObject(ctx);
+			/* Load widget */
+			await this.loadWidget(ctx);
 			/* Save to cache */
 			await this.saveCache(ctx);
 		}
@@ -84,9 +90,9 @@ Object.assign(BayLang.Helper.Widget.prototype,
 	{
 	},
 	/**
-	 * Load project from file system
+	 * Load widget from file system
 	 */
-	loadObject: async function(ctx)
+	loadWidget: async function(ctx)
 	{
 		if (this.isModelBased(ctx))
 		{
@@ -180,7 +186,7 @@ Object.assign(BayLang.Helper.Widget.prototype,
 	/**
 	 * Returns component name
 	 */
-	getComponetName: function(ctx)
+	getComponentName: function(ctx)
 	{
 		if (!this.isModelBased(ctx))
 		{
@@ -199,7 +205,7 @@ Object.assign(BayLang.Helper.Widget.prototype,
 	 */
 	getComponetPath: function(ctx)
 	{
-		return this.module.resolveClassName(ctx, this.getComponetName(ctx));
+		return this.module.resolveClassName(ctx, this.getComponentName(ctx));
 	},
 	/**
 	 * Returns component content

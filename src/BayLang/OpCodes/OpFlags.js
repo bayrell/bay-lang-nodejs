@@ -19,11 +19,13 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpFlags = function(ctx)
+BayLang.OpCodes.OpFlags = function(ctx, params)
 {
-	use("Runtime.BaseStruct").apply(this, arguments);
+	if (params == undefined) params = null;
+	use("Runtime.BaseObject").call(this, ctx);
+	this._assign_values(ctx, params);
 };
-BayLang.OpCodes.OpFlags.prototype = Object.create(use("Runtime.BaseStruct").prototype);
+BayLang.OpCodes.OpFlags.prototype = Object.create(use("Runtime.BaseObject").prototype);
 BayLang.OpCodes.OpFlags.prototype.constructor = BayLang.OpCodes.OpFlags;
 Object.assign(BayLang.OpCodes.OpFlags.prototype,
 {
@@ -32,7 +34,6 @@ Object.assign(BayLang.OpCodes.OpFlags.prototype,
 	 */
 	serialize: function(ctx, serializer, data)
 	{
-		use("Runtime.BaseStruct").prototype.serialize.call(this, ctx, serializer, data);
 		serializer.process(ctx, this, "p_assignable", data);
 		serializer.process(ctx, this, "p_async", data);
 		serializer.process(ctx, this, "p_cloneable", data);
@@ -65,7 +66,7 @@ Object.assign(BayLang.OpCodes.OpFlags.prototype,
 	},
 	_init: function(ctx)
 	{
-		use("Runtime.BaseStruct").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this,ctx);
 		this.p_async = false;
 		this.p_export = false;
 		this.p_static = false;
@@ -84,7 +85,7 @@ Object.assign(BayLang.OpCodes.OpFlags.prototype,
 		this.p_props = false;
 	},
 });
-Object.assign(BayLang.OpCodes.OpFlags, use("Runtime.BaseStruct"));
+Object.assign(BayLang.OpCodes.OpFlags, use("Runtime.BaseObject"));
 Object.assign(BayLang.OpCodes.OpFlags,
 {
 	/**
@@ -116,7 +117,7 @@ Object.assign(BayLang.OpCodes.OpFlags,
 	},
 	getParentClassName: function()
 	{
-		return "Runtime.BaseStruct";
+		return "Runtime.BaseObject";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -148,5 +149,9 @@ Object.assign(BayLang.OpCodes.OpFlags,
 	{
 		return null;
 	},
+	__implements__:
+	[
+		use("Runtime.SerializeInterface"),
+	],
 });use.add(BayLang.OpCodes.OpFlags);
 module.exports = BayLang.OpCodes.OpFlags;

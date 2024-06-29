@@ -132,7 +132,7 @@ Object.assign(BayLang.LangPHP.TranslatorPHPExpression,
 	getModuleName: function(ctx, t, module_name)
 	{
 		module_name = this.findModuleName(ctx, t, module_name);
-		var __v0 = use("Runtime.rs");
+		var __v0 = use("Runtime.re");
 		module_name = __v0.replace(ctx, "\\.", "\\", module_name);
 		return "\\" + use("Runtime.rtl").toStr(module_name);
 	},

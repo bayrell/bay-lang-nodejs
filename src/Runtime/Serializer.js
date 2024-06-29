@@ -1,7 +1,7 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -50,7 +50,7 @@ Object.assign(Runtime.Serializer.prototype,
 	 */
 	removeFlag: function(ctx, flag)
 	{
-		this.flags = this.flags & !flag;
+		this.flags = this.flags & ~flag;
 	},
 	/**
 	 * Check flag
@@ -79,7 +79,7 @@ Object.assign(Runtime.Serializer.prototype,
 			var new_value = this.decodeItem(ctx, value, object_value, create);
 			this.constructor.setAttr(ctx, object, field_name, new_value);
 		}
-		if (this.isEncode(ctx))
+		else if (this.isEncode(ctx))
 		{
 			var value = this.constructor.getAttr(ctx, object, field_name);
 			var new_value = this.encodeItem(ctx, value);
@@ -444,15 +444,19 @@ Object.assign(Runtime.Serializer.prototype,
 	encode: function(ctx, object)
 	{
 		this.setFlag(ctx, this.constructor.ENCODE);
-		return this.encodeItem(ctx, object);
+		var res = this.encodeItem(ctx, object);
+		this.removeFlag(ctx, this.constructor.ENCODE);
+		return res;
 	},
 	/**
-	 * Import from string
+	 * Import from object
 	 */
-	decode: function(ctx, s)
+	decode: function(ctx, object)
 	{
 		this.setFlag(ctx, this.constructor.DECODE);
-		return this.decodeItem(ctx, s);
+		var res = this.decodeItem(ctx, object);
+		this.removeFlag(ctx, this.constructor.DECODE);
+		return res;
 	},
 	_init: function(ctx)
 	{
@@ -494,7 +498,9 @@ Object.assign(Runtime.Serializer,
 	{
 		var __v0 = use("Runtime.rtl");
 		var serializer = __v0.newInstance(ctx, this.getClassName(ctx));
-		return serializer.decode(ctx, serializer.encode(ctx, obj));
+		serializer.setFlag(ctx, this.ALLOW_OBJECTS);
+		var encoded = serializer.encode(ctx, obj);
+		return serializer.decode(ctx, encoded);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()

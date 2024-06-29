@@ -1,7 +1,7 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -61,7 +61,10 @@ Object.assign(Runtime.Vector.prototype,
 		Array.prototype.splice.call(this, pos, 1);
 		return this;
 	},
-	/*public Vector<T> removeItem(int pos) => this.remove(pos);*/
+	removeItem: function(ctx, item)
+	{
+		return this.remove(ctx, this.indexOf(ctx, item));
+	},
 	/**
 	 * Append value to the end of array
 	 * @param T value
@@ -102,13 +105,54 @@ Object.assign(Runtime.Vector.prototype,
 	},
 	/**
 	 * Insert value to position
-	 * @param T value
 	 * @param int pos - position
+	 * @param T value
 	 */
 	insert: function(ctx, pos, value)
 	{
 		Array.prototype.splice.call(this, pos, 0, value);
 		return this;
+	},
+	/**
+	 * Add value to position
+	 * @param int pos - position
+	 * @param T value
+	 * @param string kind - after or before
+	 */
+	add: function(ctx, value, pos, kind)
+	{
+		if (kind == undefined) kind = "before";
+		if (pos == -1)
+		{
+			if (kind == "before")
+			{
+				this.prepend(ctx, value);
+				return 0;
+			}
+			else
+			{
+				this.append(ctx, value);
+				return this.count(ctx);
+			}
+		}
+		if (kind == "after")
+		{
+			pos = pos + 1;
+		}
+		this.insert(ctx, pos, value, kind);
+		return pos;
+	},
+	/**
+	 * Add value to position
+	 * @param int pos - position
+	 * @param T value
+	 * @param string kind - after or before
+	 */
+	addItem: function(ctx, value, dest_item, kind)
+	{
+		if (kind == undefined) kind = "before";
+		var pos = this.indexOf(ctx, dest_item);
+		return this.add(ctx, value, pos, kind);
 	},
 	/**
 	 * Set value size_to position

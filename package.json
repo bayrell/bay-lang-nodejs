@@ -1,7 +1,7 @@
 {
   "name": "bay-lang",
   "description": "BayLang compiler for nodejs | BayLang Technology",
-  "version": "0.12.2-5",
+  "version": "0.12.2",
   "license": "Apache-2.0",
   "contributors": [
     {

@@ -1,7 +1,7 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -382,12 +382,12 @@ Object.assign(Runtime.Collection.prototype,
 		if (offset <= 0) offset = 0;
 		if (length == undefined)
 		{
-			if (offset <= 0) return this;
+			if (offset <= 0) return this.cp();
 			var arr = Array.prototype.slice.call(this, offset);
 			Object.setPrototypeOf(arr, this.constructor.prototype);
 			return arr;
 		}
-		if (offset <= 0 && length == this.length) return this;
+		if (offset <= 0 && length == this.length) return this.cp();
 		if (length >= 0)
 		{
 			length = offset + length;

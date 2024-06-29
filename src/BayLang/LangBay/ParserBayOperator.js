@@ -143,7 +143,7 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 			token = Runtime.rtl.attr(ctx, res, 1);
 		}
 		var __v1 = use("BayLang.OpCodes.OpTryCatch");
-		return use("Runtime.Vector").from([parser,new __v1(ctx, use("Runtime.Map").from({"op_try":op_try,"items":items.toCollection(ctx),"caret_start":caret_start,"caret_end":parser.caret}))]);
+		return use("Runtime.Vector").from([parser,new __v1(ctx, use("Runtime.Map").from({"op_try":op_try,"items":items,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/**
 	 * Read then
@@ -266,7 +266,7 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 			token = Runtime.rtl.attr(ctx, res, 1);
 		}
 		var __v1 = use("BayLang.OpCodes.OpIf");
-		return use("Runtime.Vector").from([parser,new __v1(ctx, use("Runtime.Map").from({"condition":if_condition,"if_true":if_true,"if_false":if_false,"if_else":if_else.toCollection(ctx),"caret_start":caret_start,"caret_end":parser.caret}))]);
+		return use("Runtime.Vector").from([parser,new __v1(ctx, use("Runtime.Map").from({"condition":if_condition,"if_true":if_true,"if_false":if_false,"if_else":if_else,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/**
 	 * Read For
@@ -438,7 +438,7 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 					arr.push(ctx, name);
 				}
 			}
-			names = arr.toCollection(ctx);
+			names = arr.slice(ctx);
 			var res = parser.parser_expression.constructor.readExpression(ctx, parser);
 			parser = Runtime.rtl.attr(ctx, res, 0);
 			expression = Runtime.rtl.attr(ctx, res, 1);
@@ -541,7 +541,7 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 			expression = null;
 		}
 		var __v1 = use("BayLang.OpCodes.OpAssign");
-		return use("Runtime.Vector").from([parser,new __v1(ctx, use("Runtime.Map").from({"pattern":pattern,"values":(values != null) ? (values.toCollection(ctx)) : (null),"caret_start":caret_start,"caret_end":parser.caret,"expression":expression,"var_name":var_name,"names":names,"kind":kind}))]);
+		return use("Runtime.Vector").from([parser,new __v1(ctx, use("Runtime.Map").from({"pattern":pattern,"values":(values != null) ? (values) : (null),"caret_start":caret_start,"caret_end":parser.caret,"expression":expression,"var_name":var_name,"names":names,"kind":kind}))]);
 	},
 	/**
 	 * Read operator
@@ -749,7 +749,7 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 			}
 		}
 		var __v1 = use("BayLang.OpCodes.OpItems");
-		op_code = new __v1(ctx, use("Runtime.Map").from({"items":arr.toCollection(ctx),"caret_start":caret_start,"caret_end":parser.caret}));
+		op_code = new __v1(ctx, use("Runtime.Map").from({"items":arr,"caret_start":caret_start,"caret_end":parser.caret}));
 		return use("Runtime.Vector").from([parser,op_code]);
 	},
 	/**
@@ -906,7 +906,7 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 			res = parser.parser_base.constructor.matchToken(ctx, parser, ")");
 			parser = Runtime.rtl.attr(ctx, res, 0);
 		}
-		return use("Runtime.Vector").from([parser,items.toCollection(ctx)]);
+		return use("Runtime.Vector").from([parser,items]);
 	},
 	/**
 	 * Read function variables
@@ -960,7 +960,7 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 			var res = parser.parser_base.constructor.matchToken(ctx, parser, ")");
 			parser = Runtime.rtl.attr(ctx, res, 0);
 		}
-		return use("Runtime.Vector").from([parser,items.toCollection(ctx)]);
+		return use("Runtime.Vector").from([parser,items]);
 	},
 	/**
 	 * Read function

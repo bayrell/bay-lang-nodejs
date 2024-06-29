@@ -42,7 +42,7 @@ Object.assign(BayLang.OpCodes.OpHtmlAttribute.prototype,
 		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.op = "op_html_attr";
 		this.key = "";
-		this.value = "";
+		this.value = null;
 		this.is_spread = false;
 	},
 });

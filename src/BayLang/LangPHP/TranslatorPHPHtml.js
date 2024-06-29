@@ -148,7 +148,8 @@ Object.assign(BayLang.LangPHP.TranslatorPHPHtml,
 		});
 		if (attr_class.count(ctx) > 0)
 		{
-			res_attrs.push(ctx, "\"class\" => " + use("Runtime.rtl").toStr("$this->_class_name([") + use("Runtime.rtl").toStr(attr_class) + use("Runtime.rtl").toStr("])"));
+			var __v2 = use("Runtime.rs");
+			res_attrs.push(ctx, "\"class\" => " + use("Runtime.rtl").toStr("$this->_class_name([") + use("Runtime.rtl").toStr(__v2.join(ctx, ", ", attr_class)) + use("Runtime.rtl").toStr("])"));
 		}
 		if (res_attrs.count(ctx) > 0)
 		{
