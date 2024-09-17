@@ -150,6 +150,7 @@ add("BayLang.Test.LangBay.Expression");
 add("BayLang.Test.LangBay.Html");
 add("BayLang.Test.LangBay.Operator");
 add("BayLang.Test.LangBay.Program");
+add("BayLang.Test.LangBay.Style");
 add("BayLang.Test.ModuleDescription");
 
 var use = require('bay-lang').use;

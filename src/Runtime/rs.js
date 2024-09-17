@@ -53,7 +53,7 @@ Object.assign(Runtime.rs,
 		}
 		var end = start + length;
 		if (length < 0){
-			var sz = _rs.strlen(s);
+			var sz = _rs.strlen(ctx, s);
 			end = sz + length;
 		}
 		return _rtl.toStr(s).substring(start, end);
