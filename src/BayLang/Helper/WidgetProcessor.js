@@ -39,8 +39,13 @@ Object.assign(BayLang.Helper.WidgetProcessor.prototype,
 	/**
 	 * Load widgets
 	 */
-	load: async function(ctx)
+	load: async function(ctx, force)
 	{
+		if (force == undefined) force = false;
+		if (this.is_loaded && !force)
+		{
+			return Promise.resolve();
+		}
 		var file_path = this.getModuleDescriptionFilePath(ctx);
 		/* Read file */
 		var __v0 = use("Runtime.fs");
@@ -57,16 +62,7 @@ Object.assign(BayLang.Helper.WidgetProcessor.prototype,
 			var __v1 = use("BayLang.LangBay.ParserBay");
 			var parser = new __v1(ctx);
 			var res = parser.constructor.parse(ctx, parser, content);
-			var op_code = res.get(ctx, 1);
-			/* Get widgets */
-			var widgets = this.constructor.getWidgets(ctx, op_code);
-			this.module.widgets = widgets.map(ctx, (ctx, widget_name) =>
-			{
-				var __v2 = use("BayLang.Helper.Widget");
-				var widget = new __v2(ctx, this.module);
-				widget.name = widget_name;
-				return widget;
-			});
+			this.op_code = res.get(ctx, 1);
 		}
 		catch (_ex)
 		{
@@ -79,65 +75,132 @@ Object.assign(BayLang.Helper.WidgetProcessor.prototype,
 				throw _ex;
 			}
 		}
+		this.is_loaded = true;
 	},
-	_init: function(ctx)
-	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
-		this.module = null;
-	},
-});
-Object.assign(BayLang.Helper.WidgetProcessor, use("Runtime.BaseObject"));
-Object.assign(BayLang.Helper.WidgetProcessor,
-{
 	/**
-	 * Returns widgets
+	 * Save op_code
 	 */
-	getWidgets: function(ctx, op_code)
+	save: async function(ctx)
 	{
+		var file_path = this.getModuleDescriptionFilePath(ctx);
+		/* Translate */
+		var __v0 = use("BayLang.LangBay.TranslatorBay");
+		var translator = new __v0(ctx);
+		var res = translator.constructor.translate(ctx, translator, this.op_code);
+		var content = res.get(ctx, 1);
+		/* Save content */
+		var __v1 = use("Runtime.fs");
+		await __v1.saveFile(ctx, file_path, content);
+	},
+	/**
+	 * Add widget
+	 */
+	addWidget: async function(ctx, widget_name)
+	{
+		var expression = this.getEntityExpression(ctx);
+		if (!expression)
+		{
+			return Promise.resolve();
+		}
+		/* Create op_code */
+		var __v0 = use("BayLang.OpCodes.OpNew");
+		var __v1 = use("BayLang.OpCodes.OpString");
+		var __v2 = use("BayLang.OpCodes.OpTypeIdentifier");
+		var __v3 = use("BayLang.OpCodes.OpEntityName");
+		var op_code_widget = new __v0(ctx, use("Runtime.Map").from({"args":use("Runtime.Vector").from([new __v1(ctx, use("Runtime.Map").from({"value":widget_name}))]),"value":new __v2(ctx, use("Runtime.Map").from({"entity_name":new __v3(ctx, use("Runtime.Map").from({"names":use("Runtime.Vector").from(["Widget"])}))}))}));
+		/* Add widget */
+		expression.values.push(ctx, op_code_widget);
+	},
+	/**
+	 * Remove widget
+	 */
+	removeWidget: async function(ctx, widget_name)
+	{
+		var expression = this.getEntityExpression(ctx);
+		if (!expression)
+		{
+			return Promise.resolve();
+		}
+		for (var i = expression.values.count(ctx) - 1; i >= 0; i--)
+		{
+			var op_code = expression.values.get(ctx, i);
+			if (!this.constructor.isWidget(ctx, op_code))
+			{
+				continue;
+			}
+			if (op_code.args.get(ctx, 0).value != widget_name)
+			{
+				continue;
+			}
+			expression.values.remove(ctx, i);
+		}
+	},
+	/**
+	 * Get widgets
+	 */
+	getEntityExpression: function(ctx)
+	{
+		var op_code = this.op_code;
 		var __v0 = use("BayLang.OpCodes.OpModule");
 		if (!(op_code instanceof __v0))
 		{
-			return use("Runtime.Vector").from([]);
+			return null;
 		}
 		var class_op_code = op_code.findClass(ctx);
 		if (!class_op_code)
 		{
-			return use("Runtime.Vector").from([]);
+			return null;
 		}
 		var entities_op_code = class_op_code.findFunction(ctx, "entities");
 		if (!entities_op_code)
 		{
-			return use("Runtime.Vector").from([]);
+			return null;
 		}
-		return this.findWidgets(ctx, entities_op_code);
-	},
-	/**
-	 * Find widgets
-	 */
-	findWidgets: function(ctx, op_code)
-	{
-		var expression = op_code.getExpression(ctx);
+		var expression = entities_op_code.getExpression(ctx);
 		if (expression == null)
 		{
-			return use("Runtime.Vector").from([]);
+			return null;
 		}
 		var __v0 = use("BayLang.OpCodes.OpCollection");
 		if (!(expression instanceof __v0))
 		{
-			return use("Runtime.Vector").from([]);
+			return null;
 		}
 		if (expression.values == null)
+		{
+			return null;
+		}
+		return expression;
+	},
+	/**
+	 * Find widgets
+	 */
+	getWidgets: function(ctx)
+	{
+		var expression = this.getEntityExpression(ctx);
+		if (!expression)
 		{
 			return use("Runtime.Vector").from([]);
 		}
 		return expression.values.filter(ctx, (ctx, op_code) =>
 		{
-			return this.isWidget(ctx, op_code);
+			return this.constructor.isWidget(ctx, op_code);
 		}).map(ctx, (ctx, op_code) =>
 		{
 			return op_code.args.get(ctx, 0).value;
 		});
 	},
+	_init: function(ctx)
+	{
+		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		this.module = null;
+		this.op_code = null;
+		this.is_loaded = false;
+	},
+});
+Object.assign(BayLang.Helper.WidgetProcessor, use("Runtime.BaseObject"));
+Object.assign(BayLang.Helper.WidgetProcessor,
+{
 	/**
 	 * Returns true if op_code is widget
 	 */

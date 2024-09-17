@@ -24,6 +24,8 @@ BayLang.Helper.Module = function(ctx, project, module_path)
 	use("Runtime.BaseObject").call(this, ctx);
 	this.path = module_path;
 	this.project = project;
+	var __v0 = use("BayLang.Helper.WidgetProcessor");
+	this.widget_processor = new __v0(ctx, this);
 };
 BayLang.Helper.Module.prototype = Object.create(use("Runtime.BaseObject").prototype);
 BayLang.Helper.Module.prototype.constructor = BayLang.Helper.Module;
@@ -64,10 +66,12 @@ Object.assign(BayLang.Helper.Module.prototype,
 		this.name = module_info.get(ctx, "name");
 		this.dest_path = module_info.get(ctx, "dest");
 		this.src_path = module_info.get(ctx, "src");
+		this.allow = module_info.get(ctx, "allow");
 		this.assets = module_info.get(ctx, "assets");
 		this.groups = module_info.get(ctx, "groups");
 		this.required_modules = module_info.get(ctx, "require");
 		this.submodules = module_info.get(ctx, "modules");
+		this.exclude = module_info.get(ctx, "exclude");
 		return Promise.resolve(true);
 	},
 	/**
@@ -148,7 +152,7 @@ Object.assign(BayLang.Helper.Module.prototype,
 	getSourceFolderPath: function(ctx)
 	{
 		var __v0 = use("Runtime.fs");
-		return __v0.join(ctx, use("Runtime.Vector").from([this.getPath(ctx),this.src_path]));
+		return (this.src_path) ? (__v0.join(ctx, use("Runtime.Vector").from([this.getPath(ctx),this.src_path]))) : (null);
 	},
 	/**
 	 * Returns dest folder path
@@ -168,16 +172,93 @@ Object.assign(BayLang.Helper.Module.prototype,
 	getRelativeSourcePath: function(ctx, file_path)
 	{
 		var source_path = this.getSourceFolderPath(ctx);
+		if (!source_path)
+		{
+			return null;
+		}
 		var __v0 = use("Runtime.rs");
 		var source_path_sz = __v0.strlen(ctx, source_path);
 		var __v1 = use("Runtime.rs");
 		if (__v1.substr(ctx, file_path, 0, source_path_sz) != source_path)
 		{
-			return "";
+			return null;
 		}
 		var __v1 = use("Runtime.rs");
 		var __v2 = use("Runtime.rs");
 		return __v1.addFirstSlash(ctx, __v2.substr(ctx, file_path, source_path_sz));
+	},
+	/**
+	 * Returns true if module contains file
+	 */
+	checkFile: function(ctx, file_full_path)
+	{
+		var __v0 = use("Runtime.rs");
+		return __v0.indexOf(ctx, file_full_path, this.path) == 0;
+	},
+	/**
+	 * Check allow list
+	 */
+	checkAllow: function(ctx, file_name)
+	{
+		if (!this.allow)
+		{
+			return false;
+		}
+		var success = false;
+		for (var i = 0; i < this.allow.count(ctx); i++)
+		{
+			var file_match = this.allow.get(ctx, i);
+			if (file_match == "")
+			{
+				continue;
+			}
+			var __v0 = use("Runtime.re");
+			var res = __v0.match(ctx, file_match, file_name);
+			/* Ignore */
+			var __v1 = use("Runtime.rs");
+			if (__v1.charAt(ctx, file_match, 0) == "!")
+			{
+				if (res)
+				{
+					success = false;
+				}
+			}
+			else
+			{
+				if (res)
+				{
+					success = true;
+				}
+			}
+		}
+		return success;
+	},
+	/**
+	 * Check exclude
+	 */
+	checkExclude: function(ctx, relative_src_file_path)
+	{
+		if (!this.exclude)
+		{
+			return false;
+		}
+		for (var i = 0; i < this.exclude.count(ctx); i++)
+		{
+			var file_match = this.exclude.get(ctx, i);
+			if (file_match == "")
+			{
+				continue;
+			}
+			var __v0 = use("Runtime.re");
+			file_match = __v0.replace(ctx, "\\/", "\\/", file_match);
+			var __v1 = use("Runtime.re");
+			var res = __v1.match(ctx, file_match, relative_src_file_path);
+			if (res)
+			{
+				return true;
+			}
+		}
+		return false;
 	},
 	/**
 	 * Returns class name file path
@@ -317,22 +398,26 @@ Object.assign(BayLang.Helper.Module.prototype,
 	/**
 	 * Compile file
 	 */
-	compile: function(ctx, relative_src_file_path)
+	compile: async function(ctx, relative_src_file_path)
 	{
 		/* Get src file path */
 		var src_file_path = this.resolveSourceFilePath(ctx, relative_src_file_path);
 		if (src_file_path == "")
 		{
-			return false;
+			return Promise.resolve(false);
+		}
+		if (!this.checkFile(ctx, src_file_path))
+		{
+			return Promise.resolve(false);
 		}
 		/* Read file */
 		var __v0 = use("Runtime.fs");
-		if (!__v0.isFile(ctx, src_file_path))
+		if (!await __v0.isFile(ctx, src_file_path))
 		{
-			return false;
+			return Promise.resolve(false);
 		}
 		var __v0 = use("Runtime.fs");
-		var file_content = __v0.readFile(ctx, src_file_path);
+		var file_content = await __v0.readFile(ctx, src_file_path);
 		/* Parse file */
 		var __v1 = use("BayLang.LangBay.ParserBay");
 		var parser = new __v1(ctx);
@@ -340,8 +425,17 @@ Object.assign(BayLang.Helper.Module.prototype,
 		var file_op_code = res.get(ctx, 1);
 		if (!file_op_code)
 		{
-			return false;
+			return Promise.resolve(false);
 		}
+		/* Translate project languages */
+		this.translateLanguages(ctx, relative_src_file_path, file_op_code);
+		return Promise.resolve(true);
+	},
+	/**
+	 * Translate file
+	 */
+	translateLanguages: async function(ctx, relative_src_file_path, op_code)
+	{
 		/* Translate project languages */
 		var languages = this.project.getLanguages(ctx);
 		for (var i = 0; i < languages.count(ctx); i++)
@@ -351,27 +445,26 @@ Object.assign(BayLang.Helper.Module.prototype,
 			{
 				continue;
 			}
-			this.translate(ctx, relative_src_file_path, file_op_code, lang);
+			await this.translate(ctx, relative_src_file_path, op_code, lang);
 		}
-		return true;
 	},
 	/**
 	 * Translate file
 	 */
-	translate: function(ctx, relative_src_file_path, op_code, lang)
+	translate: async function(ctx, relative_src_file_path, op_code, lang)
 	{
 		/* Get dest file path */
 		var dest_file_path = this.resolveDestFilePath(ctx, relative_src_file_path, lang);
 		if (dest_file_path == "")
 		{
-			return false;
+			return Promise.resolve(false);
 		}
 		/* Create translator */
 		var __v0 = use("BayLang.LangUtils");
 		var translator = __v0.createTranslator(ctx, lang);
 		if (!translator)
 		{
-			return false;
+			return Promise.resolve(false);
 		}
 		/* Translate */
 		var res = translator.constructor.translate(ctx, translator, op_code);
@@ -380,15 +473,15 @@ Object.assign(BayLang.Helper.Module.prototype,
 		var __v1 = use("Runtime.rs");
 		var dest_dir_name = __v1.dirname(ctx, dest_file_path);
 		var __v2 = use("Runtime.fs");
-		if (!__v2.isFolder(ctx, dest_dir_name))
+		if (!await __v2.isFolder(ctx, dest_dir_name))
 		{
 			var __v3 = use("Runtime.fs");
-			__v3.mkdir(ctx, dest_dir_name);
+			await __v3.mkdir(ctx, dest_dir_name);
 		}
 		/* Save file */
 		var __v2 = use("Runtime.fs");
-		__v2.saveFile(ctx, dest_file_path, dest_file_content);
-		return true;
+		await __v2.saveFile(ctx, dest_file_path, dest_file_content);
+		return Promise.resolve(true);
 	},
 	/**
 	 * Returns projects assets
@@ -446,6 +539,7 @@ Object.assign(BayLang.Helper.Module.prototype,
 		var __v0 = use("BayLang.Helper.RouteProcessor");
 		var route_processor = new __v0(ctx, this);
 		await route_processor.load(ctx);
+		this.routes = route_processor.getRoutes(ctx);
 	},
 	/**
 	 * Load widgets
@@ -455,6 +549,104 @@ Object.assign(BayLang.Helper.Module.prototype,
 		var __v0 = use("BayLang.Helper.WidgetProcessor");
 		var widget_processor = new __v0(ctx, this);
 		await widget_processor.load(ctx);
+		this.widgets = widget_processor.getWidgets(ctx).map(ctx, (ctx, widget_name) =>
+		{
+			var __v1 = use("BayLang.Helper.Widget");
+			var widget = new __v1(ctx, this);
+			widget.name = widget_name;
+			return widget;
+		});
+	},
+	/**
+	 * Add widget
+	 */
+	addWidget: async function(ctx, widget)
+	{
+		/* Add widget */
+		this.widgets.push(ctx, widget);
+		/* Get path */
+		var __v0 = use("Runtime.rs");
+		var model_path = __v0.removeFirstSlash(ctx, this.getRelativeSourcePath(ctx, widget.getModelPath(ctx)));
+		var __v1 = use("Runtime.rs");
+		var component_path = __v1.removeFirstSlash(ctx, this.getRelativeSourcePath(ctx, widget.getComponentPath(ctx)));
+		/* Add assets to module.json */
+		var module_json_path = this.path + use("Runtime.rtl").toStr("/") + use("Runtime.rtl").toStr("module.json");
+		var __v2 = use("Runtime.fs");
+		var content = await __v2.readFile(ctx, module_json_path);
+		var __v3 = use("Runtime.rtl");
+		var module_info = __v3.json_decode(ctx, content);
+		if (module_info.get(ctx, "assets").indexOf(ctx, model_path) == -1)
+		{
+			module_info.get(ctx, "assets").push(ctx, model_path);
+		}
+		if (module_info.get(ctx, "assets").indexOf(ctx, component_path) == -1)
+		{
+			module_info.get(ctx, "assets").push(ctx, component_path);
+		}
+		var __v4 = use("Runtime.rtl");
+		var __v5 = use("Runtime.Serializer");
+		content = __v4.json_encode(ctx, module_info, __v5.JSON_PRETTY);
+		var __v6 = use("Runtime.fs");
+		await __v6.saveFile(ctx, module_json_path, content);
+		/* Add assets to cache */
+		if (this.assets.indexOf(ctx, model_path) == -1)
+		{
+			this.assets.push(ctx, model_path);
+		}
+		if (this.assets.indexOf(ctx, component_path) == -1)
+		{
+			this.assets.push(ctx, component_path);
+		}
+		/* Add to ModuleDescription */
+		await this.widget_processor.load(ctx);
+		await this.widget_processor.addWidget(ctx, widget.name);
+		await this.widget_processor.save(ctx);
+	},
+	/**
+	 * Remove widget
+	 */
+	removeWidget: async function(ctx, widget)
+	{
+		/* Remove item */
+		this.widgets.removeItem(ctx, widget);
+		/* Get path */
+		var __v0 = use("Runtime.rs");
+		var model_path = __v0.removeFirstSlash(ctx, this.getRelativeSourcePath(ctx, widget.getModelPath(ctx)));
+		var __v1 = use("Runtime.rs");
+		var component_path = __v1.removeFirstSlash(ctx, this.getRelativeSourcePath(ctx, widget.getComponentPath(ctx)));
+		/* Remove assets from module.json */
+		var module_json_path = this.path + use("Runtime.rtl").toStr("/") + use("Runtime.rtl").toStr("module.json");
+		var __v2 = use("Runtime.fs");
+		var content = await __v2.readFile(ctx, module_json_path);
+		var __v3 = use("Runtime.rtl");
+		var module_info = __v3.json_decode(ctx, content);
+		var assets = module_info.get(ctx, "assets");
+		for (var i = assets.count(ctx) - 1; i >= 0; i--)
+		{
+			var file_name = assets.get(ctx, i);
+			if (file_name == model_path || file_name == component_path)
+			{
+				assets.remove(ctx, i);
+			}
+		}
+		var __v4 = use("Runtime.rtl");
+		var __v5 = use("Runtime.Serializer");
+		content = __v4.json_encode(ctx, module_info, __v5.JSON_PRETTY);
+		var __v6 = use("Runtime.fs");
+		await __v6.saveFile(ctx, module_json_path, content);
+		/* Remove assets from cache */
+		for (var i = this.assets.count(ctx) - 1; i >= 0; i--)
+		{
+			var file_name = this.assets.get(ctx, i);
+			if (file_name == model_path || file_name == component_path)
+			{
+				this.assets.remove(ctx, i);
+			}
+		}
+		/* Remove from ModuleDescription */
+		await this.widget_processor.load(ctx);
+		await this.widget_processor.removeWidget(ctx, widget.name);
+		await this.widget_processor.save(ctx);
 	},
 	_init: function(ctx)
 	{
@@ -466,11 +658,14 @@ Object.assign(BayLang.Helper.Module.prototype,
 		this.dest_path = use("Runtime.Map").from({});
 		this.name = "";
 		this.submodules = null;
+		this.allow = null;
 		this.assets = null;
 		this.required_modules = null;
 		this.routes = null;
 		this.groups = null;
 		this.widgets = null;
+		this.exclude = null;
+		this.widget_processor = null;
 	},
 });
 Object.assign(BayLang.Helper.Module, use("Runtime.BaseObject"));

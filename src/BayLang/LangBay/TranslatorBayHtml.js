@@ -29,6 +29,15 @@ BayLang.LangBay.TranslatorBayHtml.prototype.constructor = BayLang.LangBay.Transl
 Object.assign(BayLang.LangBay.TranslatorBayHtml.prototype,
 {
 	/**
+	 * OpAssign
+	 */
+	OpAssign: function(ctx, op_code, result)
+	{
+		result.push(ctx, "%set ");
+		this.translator.operator.OpAssign(ctx, op_code, result);
+		result.push(ctx, ";");
+	},
+	/**
 	 * Translate html content
 	 */
 	OpHtmlContent: function(ctx, op_code, result)
@@ -120,6 +129,41 @@ Object.assign(BayLang.LangBay.TranslatorBayHtml.prototype,
 		/* Slot attrs */
 		var args_content = use("Runtime.Vector").from([]);
 		this.OpHtmlAttrs(ctx, op_code.attrs, args_content);
+		/* Add slot args */
+		if (op_code.args)
+		{
+			var args = op_code.args.map(ctx, (ctx, item) =>
+			{
+				var __v0 = use("Runtime.Vector");
+				var res = new __v0(ctx);
+				this.translator.expression.OpTypeIdentifier(ctx, item.pattern, res);
+				res.push(ctx, " ");
+				res.push(ctx, item.name);
+				var __v1 = use("Runtime.rs");
+				return __v1.join(ctx, "", res);
+			});
+			if (args_content.count(ctx) > 0)
+			{
+				args_content.push(ctx, " ");
+			}
+			var __v0 = use("Runtime.rs");
+			args_content.push(ctx, "args=\"" + use("Runtime.rtl").toStr(__v0.join(ctx, ",", args)) + use("Runtime.rtl").toStr("\""));
+		}
+		/* Add slot vars */
+		if (op_code.vars)
+		{
+			var vars = op_code.vars.map(ctx, (ctx, item) =>
+			{
+				return item.value;
+			});
+			if (args_content.count(ctx) > 0)
+			{
+				args_content.push(ctx, " ");
+			}
+			var __v0 = use("Runtime.rs");
+			args_content.push(ctx, "use=\"" + use("Runtime.rtl").toStr(__v0.join(ctx, ",", vars)) + use("Runtime.rtl").toStr("\""));
+		}
+		/* Slot args */
 		var __v0 = use("Runtime.rs");
 		var args = __v0.join(ctx, "", args_content);
 		if (args != "")
@@ -141,20 +185,32 @@ Object.assign(BayLang.LangBay.TranslatorBayHtml.prototype,
 	 */
 	OpHtmlItem: function(ctx, op_code, result)
 	{
-		var __v0 = use("BayLang.OpCodes.OpHtmlTag");
-		var __v1 = use("BayLang.OpCodes.OpHtmlContent");
-		var __v2 = use("BayLang.OpCodes.OpHtmlSlot");
+		var __v0 = use("BayLang.OpCodes.OpAssign");
+		var __v1 = use("BayLang.OpCodes.OpHtmlTag");
+		var __v2 = use("BayLang.OpCodes.OpHtmlContent");
+		var __v3 = use("BayLang.OpCodes.OpHtmlSlot");
+		var __v4 = use("BayLang.OpCodes.OpCall");
 		if (op_code instanceof __v0)
 		{
-			this.OpHtmlTag(ctx, op_code, result);
+			this.OpAssign(ctx, op_code, result);
 		}
 		else if (op_code instanceof __v1)
 		{
-			this.OpHtmlContent(ctx, op_code, result);
+			this.OpHtmlTag(ctx, op_code, result);
 		}
 		else if (op_code instanceof __v2)
 		{
+			this.OpHtmlContent(ctx, op_code, result);
+		}
+		else if (op_code instanceof __v3)
+		{
 			this.OpHtmlSlot(ctx, op_code, result);
+		}
+		else if (op_code instanceof __v4 && op_code.is_html)
+		{
+			result.push(ctx, "%render ");
+			this.translator.expression.translate(ctx, op_code, result);
+			result.push(ctx, ";");
 		}
 		else
 		{

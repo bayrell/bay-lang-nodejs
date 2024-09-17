@@ -107,6 +107,19 @@ Object.assign(BayLang.LangBay.TranslatorBayProgram.prototype,
 		{
 			return ;
 		}
+		/* Function flags */
+		var flags = use("Runtime.Vector").from(["async","static","pure"]);
+		flags = flags.filter(ctx, (ctx, flag_name) =>
+		{
+			return op_code.flags.isFlag(ctx, flag_name);
+		});
+		var __v0 = use("Runtime.rs");
+		result.push(ctx, __v0.join(ctx, " ", flags));
+		if (flags.count(ctx) > 0)
+		{
+			result.push(ctx, " ");
+		}
+		/* Function result type */
 		this.translator.expression.OpTypeIdentifier(ctx, op_code.result_type, result);
 		/* Function name */
 		result.push(ctx, " ");
@@ -115,12 +128,30 @@ Object.assign(BayLang.LangBay.TranslatorBayProgram.prototype,
 		result.push(ctx, "(");
 		this.OpDeclareFunctionArgs(ctx, op_code, result);
 		result.push(ctx, ")");
-		/* Items */
-		if (op_code.items.items.count(ctx) > 0)
+		/* Expression */
+		if (op_code.expression)
 		{
-			result.push(ctx, this.translator.newLine(ctx));
+			var is_multiline = op_code.expression.isMultiLine(ctx);
+			if (is_multiline)
+			{
+				result.push(ctx, " =>");
+				result.push(ctx, this.translator.newLine(ctx));
+			}
+			else
+			{
+				result.push(ctx, " => ");
+			}
+			this.translator.expression.translate(ctx, op_code.expression, result);
+			result.push(ctx, ";");
 		}
-		this.translator.operator.translateItems(ctx, op_code.items, result);
+		else if (op_code.items)
+		{
+			if (op_code.items.items.count(ctx) > 0)
+			{
+				result.push(ctx, this.translator.newLine(ctx));
+			}
+			this.translator.operator.translateItems(ctx, op_code.items, result);
+		}
 	},
 	/**
 	 * Translate class item

@@ -101,23 +101,47 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 		{
 			this.translator.levelInc(ctx);
 		}
+		var i = 0;
 		var values_count = op_code.values.count(ctx);
-		for (var i = 0; i < values_count; i++)
+		while (i < values_count)
 		{
 			var op_code_item = op_code.values.get(ctx, i);
 			if (is_multiline)
 			{
 				result.push(ctx, this.translator.newLine(ctx));
 			}
+			/* Preprocessor */
+			var __v0 = use("BayLang.OpCodes.OpPreprocessorIfDef");
+			if (op_code_item instanceof __v0)
+			{
+				var items = use("Runtime.Vector").from([]);
+				var condition = op_code_item.condition.value;
+				var __v1 = use("BayLang.OpCodes.OpPreprocessorIfDef");
+				while (op_code_item != null && op_code_item instanceof __v1 && op_code_item.condition.value == condition)
+				{
+					items.push(ctx, op_code_item);
+					/* Get next item */
+					i++;
+					op_code_item = op_code.values.get(ctx, i);
+				}
+				this.OpPreprocessorCollection(ctx, items, result);
+				continue;
+			}
+			/* Translate item */
 			this.translate(ctx, op_code_item, result);
-			if (is_multiline)
+			var __v0 = use("BayLang.OpCodes.OpPreprocessorIfDef");
+			if (!(op_code_item instanceof __v0))
 			{
-				result.push(ctx, ",");
+				if (is_multiline)
+				{
+					result.push(ctx, ",");
+				}
+				else if (i < values_count - 1)
+				{
+					result.push(ctx, ", ");
+				}
 			}
-			else if (i < values_count - 1)
-			{
-				result.push(ctx, ", ");
-			}
+			i++;
 		}
 		if (is_multiline)
 		{
@@ -125,6 +149,23 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 			result.push(ctx, this.translator.newLine(ctx));
 		}
 		result.push(ctx, "]");
+	},
+	/**
+	 * Collection preprocessor
+	 */
+	OpPreprocessorCollection: function(ctx, items, result)
+	{
+		var condition = items.get(ctx, 0).condition.value;
+		result.push(ctx, "#ifdef " + use("Runtime.rtl").toStr(condition) + use("Runtime.rtl").toStr(" then"));
+		for (var i = 0; i < items.count(ctx); i++)
+		{
+			var op_code_item = items.get(ctx, i);
+			result.push(ctx, this.translator.newLine(ctx));
+			this.translate(ctx, op_code_item.items, result);
+			result.push(ctx, ",");
+		}
+		result.push(ctx, this.translator.newLine(ctx));
+		result.push(ctx, "#endif");
 	},
 	/**
 	 * OpDict
@@ -145,14 +186,31 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 			this.translator.levelInc(ctx);
 		}
 		/* Items */
+		var i = 0;
 		var values_count = op_code.values.count(ctx);
-		for (var i = 0; i < values_count; i++)
+		while (i < values_count)
 		{
 			var op_code_item = op_code.values.get(ctx, i);
 			if (is_multiline)
 			{
 				result.push(ctx, this.translator.newLine(ctx));
 			}
+			/* Preprocessor */
+			if (op_code_item.condition != null)
+			{
+				var items = use("Runtime.Vector").from([]);
+				var condition = op_code_item.condition.value;
+				while (op_code_item != null && op_code_item.condition != null)
+				{
+					items.push(ctx, op_code_item);
+					/* Get next item */
+					i++;
+					op_code_item = op_code.values.get(ctx, i);
+				}
+				this.OpPreprocessorDict(ctx, items, result);
+				continue;
+			}
+			/* Translate item */
 			result.push(ctx, this.translator.toString(ctx, op_code_item.key));
 			result.push(ctx, ": ");
 			this.translate(ctx, op_code_item.value, result);
@@ -164,6 +222,7 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 			{
 				result.push(ctx, ", ");
 			}
+			i++;
 		}
 		/* End bracket */
 		if (is_multiline)
@@ -172,6 +231,25 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 			result.push(ctx, this.translator.newLine(ctx));
 		}
 		result.push(ctx, "}");
+	},
+	/**
+	 * Dict preprocessor
+	 */
+	OpPreprocessorDict: function(ctx, items, result)
+	{
+		var condition = items.get(ctx, 0).condition.value;
+		result.push(ctx, "#ifdef " + use("Runtime.rtl").toStr(condition) + use("Runtime.rtl").toStr(" then"));
+		for (var i = 0; i < items.count(ctx); i++)
+		{
+			var op_code_item = items.get(ctx, i);
+			result.push(ctx, this.translator.newLine(ctx));
+			result.push(ctx, this.translator.toString(ctx, op_code_item.key));
+			result.push(ctx, ": ");
+			this.translate(ctx, op_code_item.value, result);
+			result.push(ctx, ",");
+		}
+		result.push(ctx, this.translator.newLine(ctx));
+		result.push(ctx, "#endif");
 	},
 	/**
 	 * OpAttr

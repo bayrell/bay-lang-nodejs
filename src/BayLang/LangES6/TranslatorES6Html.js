@@ -422,7 +422,7 @@ Object.assign(BayLang.LangES6.TranslatorES6Html,
 			}
 			t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["debug_component"]), debug_component.pushIm(ctx, i));
 			content += use("Runtime.rtl").toStr(t.s(ctx, t.expression.constructor.toString(ctx, item.name) + use("Runtime.rtl").toStr(": ")));
-			var res = this.OpHtmlItemsAsFunction(ctx, t, item.items);
+			var res = this.OpHtmlItemsAsFunction(ctx, t, item.items, item.args);
 			t = res.get(ctx, 0);
 			content += use("Runtime.rtl").toStr(res.get(ctx, 1) + use("Runtime.rtl").toStr(","));
 		}
@@ -433,8 +433,9 @@ Object.assign(BayLang.LangES6.TranslatorES6Html,
 	/**
 	 * Translator html items as function
 	 */
-	OpHtmlItemsAsFunction: function(ctx, t, op_code)
+	OpHtmlItemsAsFunction: function(ctx, t, op_code, args)
 	{
+		if (args == undefined) args = null;
 		/* If slot */
 		var __v0 = use("BayLang.OpCodes.OpHtmlSlot");
 		if (op_code.items.get(ctx, 0) instanceof __v0)
@@ -445,6 +446,12 @@ Object.assign(BayLang.LangES6.TranslatorES6Html,
 		var save_op_code_inc = t.save_op_code_inc;
 		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["save_op_code_inc"]), 0);
 		var content = "() => {";
+		if (args != null)
+		{
+			var __v0 = use("BayLang.OpCodes.OpDeclareFunction");
+			var res = t.operator.constructor.OpDeclareFunctionArgs(ctx, t, new __v0(ctx, use("Runtime.Map").from({"args":args,"is_context":false})));
+			content = "(" + use("Runtime.rtl").toStr(Runtime.rtl.attr(ctx, res, 1)) + use("Runtime.rtl").toStr(") => {");
+		}
 		t = t.levelInc(ctx);
 		var res = this.OpHtmlExpression(ctx, t, op_code);
 		t = Runtime.rtl.attr(ctx, res, 0);

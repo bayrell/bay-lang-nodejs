@@ -221,6 +221,21 @@ Object.assign(BayLang.Caret.prototype,
 		this.readChar(ctx);
 	},
 	/**
+	 * Match string
+	 */
+	matchString: function(ctx, s)
+	{
+		var __v0 = use("Runtime.rs");
+		var count = __v0.strlen(ctx, s);
+		var next_string = this.nextString(ctx, count);
+		if (next_string != s)
+		{
+			var __v1 = use("BayLang.Exceptions.ParserExpected");
+			throw new __v1(ctx, s, this, this.file_name)
+		}
+		this.readString(ctx, count);
+	},
+	/**
 	 * Skip chars
 	 */
 	skipChar: function(ctx, ch)
@@ -228,7 +243,9 @@ Object.assign(BayLang.Caret.prototype,
 		if (this.nextChar(ctx) == ch)
 		{
 			this.readChar(ctx);
+			return true;
 		}
+		return false;
 	},
 	/**
 	 * Skip space

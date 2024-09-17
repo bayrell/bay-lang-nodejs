@@ -20,6 +20,6 @@ let use = require("./use.js");
 
 module.exports = 
 {
-	VERSION: "0.12.2",
+	VERSION: "0.12.3-1",
 	"use": use,
 };

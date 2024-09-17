@@ -42,7 +42,9 @@ Object.assign(BayLang.OpCodes.OpHtmlSlot.prototype,
 		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.op = "op_html_slot";
 		this.name = "";
+		this.args = null;
 		this.attrs = null;
+		this.vars = null;
 		this.items = null;
 	},
 });

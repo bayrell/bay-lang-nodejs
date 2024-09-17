@@ -184,7 +184,25 @@ Object.assign(BayLang.Test.LangBay.Program.prototype,
 	{
 		this.reset(ctx);
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["class Test","{","\tvoid main()","\t{","\t\treturn true;","\t}","}"]));
+		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["class Test","{","\tbool main()","\t{","\t\treturn true;","\t}","}"]));
+		var res = this.translate(ctx, content);
+		var __v1 = use("Runtime.Unit.AssertHelper");
+		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+	},
+	testFn4: function(ctx)
+	{
+		this.reset(ctx);
+		var __v0 = use("Runtime.rs");
+		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["class Test","{","\tbool main() => true;","}"]));
+		var res = this.translate(ctx, content);
+		var __v1 = use("Runtime.Unit.AssertHelper");
+		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+	},
+	testFn5: function(ctx)
+	{
+		this.reset(ctx);
+		var __v0 = use("Runtime.rs");
+		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["class Test","{","\tstatic bool main() => true;","}"]));
 		var res = this.translate(ctx, content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
 		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
@@ -263,6 +281,8 @@ Object.assign(BayLang.Test.LangBay.Program,
 			"testFn1",
 			"testFn2",
 			"testFn3",
+			"testFn4",
+			"testFn5",
 			"testAssign1",
 			"testAssign2",
 		];
@@ -480,7 +500,7 @@ Object.assign(BayLang.Test.LangBay.Program,
 				]),
 			});
 		}
-		if (field_name == "testAssign1")
+		if (field_name == "testFn4")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -504,7 +524,7 @@ Object.assign(BayLang.Test.LangBay.Program,
 				]),
 			});
 		}
-		if (field_name == "testAssign2")
+		if (field_name == "testFn5")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -526,6 +546,59 @@ Object.assign(BayLang.Test.LangBay.Program,
 			return Map.from({
 				"annotations": Vector.from([
 					new __v13(ctx, use("Runtime.Map").from({})),
+				]),
+			});
+		}
+		if (field_name == "testAssign1")
+		{
+			
+			var __v0 = use("Runtime.Unit.Test");
+			var __v1 = use("Runtime.Unit.Test");
+			var __v2 = use("Runtime.Unit.Test");
+			var __v3 = use("Runtime.Unit.Test");
+			var __v4 = use("Runtime.Unit.Test");
+			var __v5 = use("Runtime.Unit.Test");
+			var __v6 = use("Runtime.Unit.Test");
+			var __v7 = use("Runtime.Unit.Test");
+			var __v8 = use("Runtime.Unit.Test");
+			var __v9 = use("Runtime.Unit.Test");
+			var __v10 = use("Runtime.Unit.Test");
+			var __v11 = use("Runtime.Unit.Test");
+			var __v12 = use("Runtime.Unit.Test");
+			var __v13 = use("Runtime.Unit.Test");
+			var __v14 = use("Runtime.Unit.Test");
+			var Vector = use("Runtime.Vector");
+			var Map = use("Runtime.Map");
+			return Map.from({
+				"annotations": Vector.from([
+					new __v14(ctx, use("Runtime.Map").from({})),
+				]),
+			});
+		}
+		if (field_name == "testAssign2")
+		{
+			
+			var __v0 = use("Runtime.Unit.Test");
+			var __v1 = use("Runtime.Unit.Test");
+			var __v2 = use("Runtime.Unit.Test");
+			var __v3 = use("Runtime.Unit.Test");
+			var __v4 = use("Runtime.Unit.Test");
+			var __v5 = use("Runtime.Unit.Test");
+			var __v6 = use("Runtime.Unit.Test");
+			var __v7 = use("Runtime.Unit.Test");
+			var __v8 = use("Runtime.Unit.Test");
+			var __v9 = use("Runtime.Unit.Test");
+			var __v10 = use("Runtime.Unit.Test");
+			var __v11 = use("Runtime.Unit.Test");
+			var __v12 = use("Runtime.Unit.Test");
+			var __v13 = use("Runtime.Unit.Test");
+			var __v14 = use("Runtime.Unit.Test");
+			var __v15 = use("Runtime.Unit.Test");
+			var Vector = use("Runtime.Vector");
+			var Map = use("Runtime.Map");
+			return Map.from({
+				"annotations": Vector.from([
+					new __v15(ctx, use("Runtime.Map").from({})),
 				]),
 			});
 		}

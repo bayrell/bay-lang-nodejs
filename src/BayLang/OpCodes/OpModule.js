@@ -40,10 +40,10 @@ Object.assign(BayLang.OpCodes.OpModule.prototype,
 	/**
 	 * Add module
 	 */
-	addModule: function(ctx, class_name, is_component, alias_name)
+	addModule: function(ctx, class_name, alias_name, is_component)
 	{
-		if (is_component == undefined) is_component = true;
 		if (alias_name == undefined) alias_name = "";
+		if (is_component == undefined) is_component = true;
 		if (alias_name == "")
 		{
 			var __v0 = use("Runtime.rs");

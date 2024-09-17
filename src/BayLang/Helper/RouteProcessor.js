@@ -58,8 +58,6 @@ Object.assign(BayLang.Helper.RouteProcessor.prototype,
 			var parser = new __v1(ctx);
 			var res = parser.constructor.parse(ctx, parser, content);
 			var op_code = res.get(ctx, 1);
-			/* Get routes */
-			this.module.routes = this.constructor.getRoutes(ctx, op_code);
 		}
 		catch (_ex)
 		{
@@ -73,32 +71,33 @@ Object.assign(BayLang.Helper.RouteProcessor.prototype,
 			}
 		}
 	},
+	/**
+	 * Returns routes
+	 */
+	getRoutes: function(ctx)
+	{
+		var class_op_code = this.constructor.findClass(ctx, this.op_code);
+		if (!class_op_code)
+		{
+			return use("Runtime.Vector").from([]);
+		}
+		var routes_op_code = this.constructor.findFunction(ctx, class_op_code);
+		if (!routes_op_code)
+		{
+			return use("Runtime.Vector").from([]);
+		}
+		return this.constructor.findRoutes(ctx, routes_op_code);
+	},
 	_init: function(ctx)
 	{
 		use("Runtime.BaseObject").prototype._init.call(this,ctx);
 		this.module = null;
+		this.op_code = null;
 	},
 });
 Object.assign(BayLang.Helper.RouteProcessor, use("Runtime.BaseObject"));
 Object.assign(BayLang.Helper.RouteProcessor,
 {
-	/**
-	 * Returns routes
-	 */
-	getRoutes: function(ctx, op_code)
-	{
-		var class_op_code = this.findClass(ctx, op_code);
-		if (!class_op_code)
-		{
-			return use("Runtime.Vector").from([]);
-		}
-		var routes_op_code = this.findFunction(ctx, class_op_code);
-		if (!routes_op_code)
-		{
-			return use("Runtime.Vector").from([]);
-		}
-		return this.findRoutes(ctx, routes_op_code);
-	},
 	/**
 	 * Find class
 	 */

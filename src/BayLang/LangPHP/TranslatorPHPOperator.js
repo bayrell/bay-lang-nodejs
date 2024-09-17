@@ -111,29 +111,29 @@ Object.assign(BayLang.LangPHP.TranslatorPHPOperator,
 					var obj_s = Runtime.rtl.attr(ctx, res, 1);
 					for (var j = 0; j < items.count(ctx); j++)
 					{
-						var item = Runtime.rtl.attr(ctx, items, j);
+						var item_attr = Runtime.rtl.attr(ctx, items, j);
 						var __v5 = use("BayLang.OpCodes.OpAttr");
 						var __v6 = use("BayLang.OpCodes.OpAttr");
 						var __v7 = use("BayLang.OpCodes.OpAttr");
-						if (item.kind == __v5.KIND_ATTR)
+						if (item_attr.kind == __v5.KIND_ATTR)
 						{
-							obj_s += use("Runtime.rtl").toStr("->" + use("Runtime.rtl").toStr(item.value.value));
-							items2.push(ctx, t.expression.constructor.toString(ctx, item.value.value));
+							obj_s += use("Runtime.rtl").toStr("->" + use("Runtime.rtl").toStr(item_attr.value.value));
+							items2.push(ctx, t.expression.constructor.toString(ctx, item_attr.value.value));
 						}
-						else if (item.kind == __v6.KIND_DYNAMIC)
+						else if (item_attr.kind == __v6.KIND_DYNAMIC)
 						{
-							var res = t.expression.constructor.Expression(ctx, t, item.value);
+							var res = t.expression.constructor.Expression(ctx, t, item_attr.value);
 							t = Runtime.rtl.attr(ctx, res, 0);
 							obj_s += use("Runtime.rtl").toStr("[" + use("Runtime.rtl").toStr(Runtime.rtl.attr(ctx, res, 1)) + use("Runtime.rtl").toStr("]"));
 							items2.push(ctx, Runtime.rtl.attr(ctx, res, 1));
 						}
-						else if (item.kind == __v7.KIND_DYNAMIC_ATTRS)
+						else if (item_attr.kind == __v7.KIND_DYNAMIC_ATTRS)
 						{
-							if (item.attrs != null)
+							if (item_attr.attrs != null)
 							{
-								for (var j = item.attrs.count(ctx) - 1; j >= 0; j--)
+								for (var j = item_attr.attrs.count(ctx) - 1; j >= 0; j--)
 								{
-									var res = t.expression.constructor.Expression(ctx, t, Runtime.rtl.attr(ctx, item.attrs, j));
+									var res = t.expression.constructor.Expression(ctx, t, Runtime.rtl.attr(ctx, item_attr.attrs, j));
 									t = Runtime.rtl.attr(ctx, res, 0);
 									obj_s += use("Runtime.rtl").toStr("[" + use("Runtime.rtl").toStr(Runtime.rtl.attr(ctx, res, 1)) + use("Runtime.rtl").toStr("]"));
 									items2.push(ctx, Runtime.rtl.attr(ctx, res, 1));

@@ -182,6 +182,17 @@ Object.assign(BayLang.Test.LangBay.Style.prototype,
 		var __v2 = use("Runtime.Unit.AssertHelper");
 		__v2.equalValue(ctx, css_content, res.get(ctx, 1), css_content);
 	},
+	test11: function(ctx)
+	{
+		this.reset(ctx);
+		var __v0 = use("Runtime.rs");
+		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from([".main_page{","\tpadding: 20px;","\tcolor: green;","}"]));
+		var __v1 = use("Runtime.rs");
+		var css_content = __v1.join(ctx, "\n", use("Runtime.Vector").from([".main_page.h-71c3{padding: 20px;color: green}"]));
+		var res = this.translate(ctx, content);
+		var __v2 = use("Runtime.Unit.AssertHelper");
+		__v2.equalValue(ctx, css_content, res.get(ctx, 1), css_content);
+	},
 	_init: function(ctx)
 	{
 		this.parser = null;
@@ -235,6 +246,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 			"test8",
 			"test9",
 			"test10",
+			"test11",
 		];
 		return use("Runtime.Vector").from(a);
 	},
@@ -402,6 +414,28 @@ Object.assign(BayLang.Test.LangBay.Style,
 			return Map.from({
 				"annotations": Vector.from([
 					new __v9(ctx, use("Runtime.Map").from({})),
+				]),
+			});
+		}
+		if (field_name == "test11")
+		{
+			
+			var __v0 = use("Runtime.Unit.Test");
+			var __v1 = use("Runtime.Unit.Test");
+			var __v2 = use("Runtime.Unit.Test");
+			var __v3 = use("Runtime.Unit.Test");
+			var __v4 = use("Runtime.Unit.Test");
+			var __v5 = use("Runtime.Unit.Test");
+			var __v6 = use("Runtime.Unit.Test");
+			var __v7 = use("Runtime.Unit.Test");
+			var __v8 = use("Runtime.Unit.Test");
+			var __v9 = use("Runtime.Unit.Test");
+			var __v10 = use("Runtime.Unit.Test");
+			var Vector = use("Runtime.Vector");
+			var Map = use("Runtime.Map");
+			return Map.from({
+				"annotations": Vector.from([
+					new __v10(ctx, use("Runtime.Map").from({})),
 				]),
 			});
 		}

@@ -315,6 +315,31 @@ Object.assign(BayLang.Helper.Project.prototype,
 		await __v3.saveFile(ctx, project_json_path, content);
 	},
 	/**
+	 * Find module by file name
+	 */
+	findModuleByFileName: function(ctx, file_name)
+	{
+		var res = null;
+		var module_path_sz = -1;
+		var module_names = this.modules.keys(ctx);
+		for (var i = 0; i < module_names.count(ctx); i++)
+		{
+			var module_name = module_names.get(ctx, i);
+			var module = this.modules.get(ctx, module_name);
+			if (module.checkFile(ctx, file_name))
+			{
+				var __v0 = use("Runtime.rs");
+				var sz = __v0.strlen(ctx, module.path);
+				if (module_path_sz < sz)
+				{
+					module_path_sz = sz;
+					res = module;
+				}
+			}
+		}
+		return res;
+	},
+	/**
 	 * Load modules
 	 */
 	loadModules: async function(ctx)

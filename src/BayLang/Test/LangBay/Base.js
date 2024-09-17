@@ -285,6 +285,24 @@ Object.assign(BayLang.Test.LangBay.Base.prototype,
 		var __v1 = use("Runtime.Unit.AssertHelper");
 		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
 	},
+	testPreprocessor1: function(ctx)
+	{
+		this.reset(ctx);
+		var __v0 = use("Runtime.rs");
+		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["[","\t\"1\",","\t#ifdef BACKEND then","\t\"2\",","\t\"3\",","\t#endif","\t\"4\",","]"]));
+		var res = this.translate(ctx, content);
+		var __v1 = use("Runtime.Unit.AssertHelper");
+		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+	},
+	testPreprocessor2: function(ctx)
+	{
+		this.reset(ctx);
+		var __v0 = use("Runtime.rs");
+		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\t\"name\": \"test\",","\t#ifdef BACKEND then","\t\"value1\": 1,","\t\"value2\": 2,","\t#endif","}"]));
+		var res = this.translate(ctx, content);
+		var __v1 = use("Runtime.Unit.AssertHelper");
+		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+	},
 	testFn1: function(ctx)
 	{
 		this.reset(ctx);
@@ -479,6 +497,8 @@ Object.assign(BayLang.Test.LangBay.Base,
 			"testDict6",
 			"testDict7",
 			"testDict8",
+			"testPreprocessor1",
+			"testPreprocessor2",
 			"testFn1",
 			"testFn2",
 			"testFn3",
@@ -1062,7 +1082,7 @@ Object.assign(BayLang.Test.LangBay.Base,
 				]),
 			});
 		}
-		if (field_name == "testFn1")
+		if (field_name == "testPreprocessor1")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -1098,7 +1118,7 @@ Object.assign(BayLang.Test.LangBay.Base,
 				]),
 			});
 		}
-		if (field_name == "testFn2")
+		if (field_name == "testPreprocessor2")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -1135,7 +1155,7 @@ Object.assign(BayLang.Test.LangBay.Base,
 				]),
 			});
 		}
-		if (field_name == "testFn3")
+		if (field_name == "testFn1")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -1173,7 +1193,7 @@ Object.assign(BayLang.Test.LangBay.Base,
 				]),
 			});
 		}
-		if (field_name == "testFn4")
+		if (field_name == "testFn2")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -1212,7 +1232,7 @@ Object.assign(BayLang.Test.LangBay.Base,
 				]),
 			});
 		}
-		if (field_name == "testFn5")
+		if (field_name == "testFn3")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -1252,7 +1272,7 @@ Object.assign(BayLang.Test.LangBay.Base,
 				]),
 			});
 		}
-		if (field_name == "testFn6")
+		if (field_name == "testFn4")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -1293,7 +1313,7 @@ Object.assign(BayLang.Test.LangBay.Base,
 				]),
 			});
 		}
-		if (field_name == "testFn7")
+		if (field_name == "testFn5")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -1335,7 +1355,7 @@ Object.assign(BayLang.Test.LangBay.Base,
 				]),
 			});
 		}
-		if (field_name == "testFn8")
+		if (field_name == "testFn6")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -1378,7 +1398,7 @@ Object.assign(BayLang.Test.LangBay.Base,
 				]),
 			});
 		}
-		if (field_name == "testFn9")
+		if (field_name == "testFn7")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -1422,7 +1442,7 @@ Object.assign(BayLang.Test.LangBay.Base,
 				]),
 			});
 		}
-		if (field_name == "testNew1")
+		if (field_name == "testFn8")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -1467,7 +1487,7 @@ Object.assign(BayLang.Test.LangBay.Base,
 				]),
 			});
 		}
-		if (field_name == "testNew2")
+		if (field_name == "testFn9")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -1513,7 +1533,7 @@ Object.assign(BayLang.Test.LangBay.Base,
 				]),
 			});
 		}
-		if (field_name == "testNew3")
+		if (field_name == "testNew1")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -1560,7 +1580,7 @@ Object.assign(BayLang.Test.LangBay.Base,
 				]),
 			});
 		}
-		if (field_name == "testNew4")
+		if (field_name == "testNew2")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -1608,7 +1628,7 @@ Object.assign(BayLang.Test.LangBay.Base,
 				]),
 			});
 		}
-		if (field_name == "testNew5")
+		if (field_name == "testNew3")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -1654,6 +1674,107 @@ Object.assign(BayLang.Test.LangBay.Base,
 			return Map.from({
 				"annotations": Vector.from([
 					new __v37(ctx, use("Runtime.Map").from({})),
+				]),
+			});
+		}
+		if (field_name == "testNew4")
+		{
+			
+			var __v0 = use("Runtime.Unit.Test");
+			var __v1 = use("Runtime.Unit.Test");
+			var __v2 = use("Runtime.Unit.Test");
+			var __v3 = use("Runtime.Unit.Test");
+			var __v4 = use("Runtime.Unit.Test");
+			var __v5 = use("Runtime.Unit.Test");
+			var __v6 = use("Runtime.Unit.Test");
+			var __v7 = use("Runtime.Unit.Test");
+			var __v8 = use("Runtime.Unit.Test");
+			var __v9 = use("Runtime.Unit.Test");
+			var __v10 = use("Runtime.Unit.Test");
+			var __v11 = use("Runtime.Unit.Test");
+			var __v12 = use("Runtime.Unit.Test");
+			var __v13 = use("Runtime.Unit.Test");
+			var __v14 = use("Runtime.Unit.Test");
+			var __v15 = use("Runtime.Unit.Test");
+			var __v16 = use("Runtime.Unit.Test");
+			var __v17 = use("Runtime.Unit.Test");
+			var __v18 = use("Runtime.Unit.Test");
+			var __v19 = use("Runtime.Unit.Test");
+			var __v20 = use("Runtime.Unit.Test");
+			var __v21 = use("Runtime.Unit.Test");
+			var __v22 = use("Runtime.Unit.Test");
+			var __v23 = use("Runtime.Unit.Test");
+			var __v24 = use("Runtime.Unit.Test");
+			var __v25 = use("Runtime.Unit.Test");
+			var __v26 = use("Runtime.Unit.Test");
+			var __v27 = use("Runtime.Unit.Test");
+			var __v28 = use("Runtime.Unit.Test");
+			var __v29 = use("Runtime.Unit.Test");
+			var __v30 = use("Runtime.Unit.Test");
+			var __v31 = use("Runtime.Unit.Test");
+			var __v32 = use("Runtime.Unit.Test");
+			var __v33 = use("Runtime.Unit.Test");
+			var __v34 = use("Runtime.Unit.Test");
+			var __v35 = use("Runtime.Unit.Test");
+			var __v36 = use("Runtime.Unit.Test");
+			var __v37 = use("Runtime.Unit.Test");
+			var __v38 = use("Runtime.Unit.Test");
+			var Vector = use("Runtime.Vector");
+			var Map = use("Runtime.Map");
+			return Map.from({
+				"annotations": Vector.from([
+					new __v38(ctx, use("Runtime.Map").from({})),
+				]),
+			});
+		}
+		if (field_name == "testNew5")
+		{
+			
+			var __v0 = use("Runtime.Unit.Test");
+			var __v1 = use("Runtime.Unit.Test");
+			var __v2 = use("Runtime.Unit.Test");
+			var __v3 = use("Runtime.Unit.Test");
+			var __v4 = use("Runtime.Unit.Test");
+			var __v5 = use("Runtime.Unit.Test");
+			var __v6 = use("Runtime.Unit.Test");
+			var __v7 = use("Runtime.Unit.Test");
+			var __v8 = use("Runtime.Unit.Test");
+			var __v9 = use("Runtime.Unit.Test");
+			var __v10 = use("Runtime.Unit.Test");
+			var __v11 = use("Runtime.Unit.Test");
+			var __v12 = use("Runtime.Unit.Test");
+			var __v13 = use("Runtime.Unit.Test");
+			var __v14 = use("Runtime.Unit.Test");
+			var __v15 = use("Runtime.Unit.Test");
+			var __v16 = use("Runtime.Unit.Test");
+			var __v17 = use("Runtime.Unit.Test");
+			var __v18 = use("Runtime.Unit.Test");
+			var __v19 = use("Runtime.Unit.Test");
+			var __v20 = use("Runtime.Unit.Test");
+			var __v21 = use("Runtime.Unit.Test");
+			var __v22 = use("Runtime.Unit.Test");
+			var __v23 = use("Runtime.Unit.Test");
+			var __v24 = use("Runtime.Unit.Test");
+			var __v25 = use("Runtime.Unit.Test");
+			var __v26 = use("Runtime.Unit.Test");
+			var __v27 = use("Runtime.Unit.Test");
+			var __v28 = use("Runtime.Unit.Test");
+			var __v29 = use("Runtime.Unit.Test");
+			var __v30 = use("Runtime.Unit.Test");
+			var __v31 = use("Runtime.Unit.Test");
+			var __v32 = use("Runtime.Unit.Test");
+			var __v33 = use("Runtime.Unit.Test");
+			var __v34 = use("Runtime.Unit.Test");
+			var __v35 = use("Runtime.Unit.Test");
+			var __v36 = use("Runtime.Unit.Test");
+			var __v37 = use("Runtime.Unit.Test");
+			var __v38 = use("Runtime.Unit.Test");
+			var __v39 = use("Runtime.Unit.Test");
+			var Vector = use("Runtime.Vector");
+			var Map = use("Runtime.Map");
+			return Map.from({
+				"annotations": Vector.from([
+					new __v39(ctx, use("Runtime.Map").from({})),
 				]),
 			});
 		}

@@ -174,6 +174,8 @@ Object.assign(BayLang.Helper.Widget.prototype,
 				throw _ex;
 			}
 		}
+		/* Get component name */
+		this.component_name = this.getComponentNameFromModel(ctx);
 	},
 	/**
 	 * Returns model op code
@@ -184,14 +186,10 @@ Object.assign(BayLang.Helper.Widget.prototype,
 	},
 	/** Component **/
 	/**
-	 * Returns component name
+	 * Returns component name from model
 	 */
-	getComponentName: function(ctx)
+	getComponentNameFromModel: function(ctx)
 	{
-		if (!this.isModelBased(ctx))
-		{
-			return this.name;
-		}
 		if (this.model == null)
 		{
 			return "";
@@ -201,9 +199,20 @@ Object.assign(BayLang.Helper.Widget.prototype,
 		return this.constructor.extractComponentName(ctx, this.model, op_code_assign);
 	},
 	/**
+	 * Returns component name
+	 */
+	getComponentName: function(ctx)
+	{
+		if (!this.isModelBased(ctx))
+		{
+			return this.name;
+		}
+		return this.component_name;
+	},
+	/**
 	 * Returns component path
 	 */
-	getComponetPath: function(ctx)
+	getComponentPath: function(ctx)
 	{
 		return this.module.resolveClassName(ctx, this.getComponentName(ctx));
 	},
@@ -230,7 +239,7 @@ Object.assign(BayLang.Helper.Widget.prototype,
 			return Promise.resolve();
 		}
 		this.component_content = "";
-		var file_path = this.getComponetPath(ctx);
+		var file_path = this.getComponentPath(ctx);
 		var __v0 = use("Runtime.fs");
 		if (!await __v0.isFile(ctx, file_path))
 		{
@@ -277,6 +286,7 @@ Object.assign(BayLang.Helper.Widget.prototype,
 		this.name = "";
 		this.model = null;
 		this.component = null;
+		this.component_name = "";
 		this.model_content = null;
 		this.component_content = null;
 		this.model_error = null;

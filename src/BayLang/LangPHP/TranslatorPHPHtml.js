@@ -369,7 +369,7 @@ Object.assign(BayLang.LangPHP.TranslatorPHPHtml,
 				continue;
 			}
 			content += use("Runtime.rtl").toStr(t.s(ctx, t.expression.constructor.toString(ctx, item.name) + use("Runtime.rtl").toStr(" => ")));
-			var res = this.OpHtmlItemsAsFunction(ctx, t, item.items);
+			var res = this.OpHtmlItemsAsFunction(ctx, t, item.items, item.args, item.vars);
 			t = res.get(ctx, 0);
 			content += use("Runtime.rtl").toStr(res.get(ctx, 1) + use("Runtime.rtl").toStr(","));
 		}
@@ -380,8 +380,10 @@ Object.assign(BayLang.LangPHP.TranslatorPHPHtml,
 	/**
 	 * Translator html items as function
 	 */
-	OpHtmlItemsAsFunction: function(ctx, t, op_code)
+	OpHtmlItemsAsFunction: function(ctx, t, op_code, args, vars)
 	{
+		if (args == undefined) args = null;
+		if (vars == undefined) vars = null;
 		/* If slot */
 		var __v0 = use("BayLang.OpCodes.OpHtmlSlot");
 		if (op_code.items.get(ctx, 0) instanceof __v0)
@@ -391,19 +393,36 @@ Object.assign(BayLang.LangPHP.TranslatorPHPHtml,
 		var save_op_codes = t.save_op_codes;
 		var save_op_code_inc = t.save_op_code_inc;
 		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["save_op_code_inc"]), 0);
-		/* Get used vars */
+		/* Use vars */
 		var use_vars = "";
 		var used_vars = use("Runtime.Vector").from([]);
+		/* Html slot */
+		var f_args = "";
+		if (args != null)
+		{
+			var __v0 = use("BayLang.OpCodes.OpDeclareFunction");
+			var res = t.operator.constructor.OpDeclareFunctionArgs(ctx, t, new __v0(ctx, use("Runtime.Map").from({"args":args,"is_context":false})));
+			f_args = Runtime.rtl.attr(ctx, res, 1);
+		}
+		/* Slot vars */
+		if (vars != null)
+		{
+			for (var i = 0; i < vars.count(ctx); i++)
+			{
+				used_vars.push(ctx, vars.get(ctx, i).value);
+			}
+		}
+		/* Get used vars */
 		this.exportUsedVars(ctx, used_vars, op_code);
 		if (used_vars.count(ctx) > 0)
 		{
 			used_vars = used_vars.map(ctx, (ctx, s) =>
 			{
-				return "$" + use("Runtime.rtl").toStr(s);
+				return "&$" + use("Runtime.rtl").toStr(s);
 			});
 			use_vars = " use (" + use("Runtime.rtl").toStr(used_vars.join(ctx, ", ")) + use("Runtime.rtl").toStr(") ");
 		}
-		var content = "function ()" + use("Runtime.rtl").toStr(use_vars) + use("Runtime.rtl").toStr("{");
+		var content = "function (" + use("Runtime.rtl").toStr(f_args) + use("Runtime.rtl").toStr(")") + use("Runtime.rtl").toStr(use_vars) + use("Runtime.rtl").toStr("{");
 		t = t.levelInc(ctx);
 		var res = this.OpHtmlExpression(ctx, t, op_code, false);
 		t = Runtime.rtl.attr(ctx, res, 0);
