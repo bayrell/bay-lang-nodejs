@@ -34,7 +34,7 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 	OpIdentifier: function(ctx, op_code, result)
 	{
 		result.push(ctx, op_code.value);
-		this.opcode_level = 20;
+		this.translator.opcode_level = 20;
 	},
 	/**
 	 * OpNumber
@@ -42,7 +42,7 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 	OpNumber: function(ctx, op_code, result)
 	{
 		result.push(ctx, op_code.value);
-		this.opcode_level = 20;
+		this.translator.opcode_level = 20;
 	},
 	/**
 	 * OpString
@@ -50,7 +50,7 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 	OpString: function(ctx, op_code, result)
 	{
 		result.push(ctx, this.translator.toString(ctx, op_code.value));
-		this.opcode_level = 20;
+		this.translator.opcode_level = 20;
 	},
 	/**
 	 * OpTypeTemplate
@@ -308,7 +308,7 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 				result.push(ctx, "]");
 			}
 		}
-		this.opcode_level = 20;
+		this.translator.opcode_level = 20;
 	},
 	/**
 	 * OpClassOf
@@ -344,7 +344,7 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 			}
 			result.push(ctx, ")");
 		}
-		this.opcode_level = 20;
+		this.translator.opcode_level = 20;
 	},
 	/**
 	 * OpNew
@@ -373,7 +373,7 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 			}
 			result.push(ctx, ")");
 		}
-		this.opcode_level = 20;
+		this.translator.opcode_level = 20;
 	},
 	/**
 	 * OpMath
@@ -382,7 +382,7 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 	{
 		var result1 = use("Runtime.Vector").from([]);
 		this.Expression(ctx, op_code.value1, result1);
-		var opcode_level1 = this.opcode_level;
+		var opcode_level1 = this.translator.opcode_level;
 		var op = "";
 		var opcode_level = 0;
 		if (op_code.math == "!")
@@ -564,7 +564,7 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 			result.push(ctx, " " + use("Runtime.rtl").toStr(op) + use("Runtime.rtl").toStr(" "));
 			var result2 = use("Runtime.Vector").from([]);
 			this.Expression(ctx, op_code.value2, result2);
-			var opcode_level2 = this.opcode_level;
+			var opcode_level2 = this.translator.opcode_level;
 			if (opcode_level2 < opcode_level)
 			{
 				result.push(ctx, "(");
@@ -576,7 +576,7 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 				result.appendItems(ctx, result2);
 			}
 		}
-		this.opcode_level = opcode_level;
+		this.translator.opcode_level = opcode_level;
 	},
 	/**
 	 * Translate item

@@ -38,6 +38,30 @@ Object.assign(BayLang.LangBay.TranslatorBayHtml.prototype,
 		result.push(ctx, ";");
 	},
 	/**
+	 * OpUse
+	 */
+	OpUse: function(ctx, op_code, result)
+	{
+		var __v0 = use("Runtime.rs");
+		var items = __v0.split(ctx, ".", op_code.name);
+		var last_name = items.last(ctx);
+		/* Get attrs */
+		var attrs = use("Runtime.Vector").from(["name=\"" + use("Runtime.rtl").toStr(op_code.name) + use("Runtime.rtl").toStr("\"")]);
+		/* Add alias name */
+		if (op_code.alias != "" && op_code.alias != last_name)
+		{
+			attrs.push(ctx, "as=\"" + use("Runtime.rtl").toStr(op_code.alias) + use("Runtime.rtl").toStr("\""));
+		}
+		/* Add component */
+		if (op_code.is_component)
+		{
+			attrs.push(ctx, "component=\"true\"");
+		}
+		/* Add result */
+		var __v1 = use("Runtime.rs");
+		result.push(ctx, "<use " + use("Runtime.rtl").toStr(__v1.join(ctx, " ", attrs)) + use("Runtime.rtl").toStr(" />"));
+	},
+	/**
 	 * Translate html content
 	 */
 	OpHtmlContent: function(ctx, op_code, result)
@@ -190,6 +214,7 @@ Object.assign(BayLang.LangBay.TranslatorBayHtml.prototype,
 		var __v2 = use("BayLang.OpCodes.OpHtmlContent");
 		var __v3 = use("BayLang.OpCodes.OpHtmlSlot");
 		var __v4 = use("BayLang.OpCodes.OpCall");
+		var __v5 = use("BayLang.OpCodes.OpHtmlValue");
 		if (op_code instanceof __v0)
 		{
 			this.OpAssign(ctx, op_code, result);
@@ -211,6 +236,21 @@ Object.assign(BayLang.LangBay.TranslatorBayHtml.prototype,
 			result.push(ctx, "%render ");
 			this.translator.expression.translate(ctx, op_code, result);
 			result.push(ctx, ";");
+		}
+		else if (op_code instanceof __v5)
+		{
+			if (op_code.kind == "raw")
+			{
+				result.push(ctx, "@raw{{ ");
+				this.translator.expression.translate(ctx, op_code.value, result);
+				result.push(ctx, " }}");
+			}
+			else
+			{
+				result.push(ctx, "{{ ");
+				this.translator.expression.translate(ctx, op_code.value, result);
+				result.push(ctx, " }}");
+			}
 		}
 		else
 		{
@@ -400,14 +440,7 @@ Object.assign(BayLang.LangBay.TranslatorBayHtml.prototype,
 			for (var i = 0; i < uses.count(ctx); i++)
 			{
 				var use_item = uses.get(ctx, i);
-				if (use_item.is_component)
-				{
-					result.push(ctx, "<use name=\"" + use("Runtime.rtl").toStr(uses.get(ctx, i).name) + use("Runtime.rtl").toStr("\" component=\"true\" />"));
-				}
-				else
-				{
-					result.push(ctx, "<use name=\"" + use("Runtime.rtl").toStr(uses.get(ctx, i).name) + use("Runtime.rtl").toStr("\" />"));
-				}
+				this.OpUse(ctx, use_item, result);
 				result.push(ctx, this.translator.newLine(ctx));
 			}
 		}

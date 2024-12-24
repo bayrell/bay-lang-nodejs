@@ -44,13 +44,10 @@ Object.assign(BayLang.OpCodes.OpModule.prototype,
 	{
 		if (alias_name == undefined) alias_name = "";
 		if (is_component == undefined) is_component = true;
-		if (alias_name == "")
+		if (alias_name != "")
 		{
-			var __v0 = use("Runtime.rs");
-			var class_name_arr = __v0.split(ctx, ".", class_name);
-			alias_name = class_name_arr.last(ctx);
+			this.uses.set(ctx, alias_name, class_name);
 		}
-		this.uses.set(ctx, alias_name, class_name);
 		/* Add op_code */
 		var __v0 = use("Runtime.lib");
 		var pos = this.items.find(ctx, __v0.isInstance(ctx, "BayLang.OpCodes.OpNamespace"));
@@ -93,7 +90,7 @@ Object.assign(BayLang.OpCodes.OpModule.prototype,
 		return this.uses.has(ctx, alias_name);
 	},
 	/**
-	 * Find module
+	 * Find alias name
 	 */
 	findModule: function(ctx, class_name)
 	{

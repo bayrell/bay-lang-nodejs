@@ -43,8 +43,16 @@ Object.assign(BayLang.LangBay.TranslatorBayProgram.prototype,
 	 */
 	OpUse: function(ctx, op_code, result)
 	{
+		var __v0 = use("Runtime.rs");
+		var items = __v0.split(ctx, ".", op_code.name);
+		var last_name = items.last(ctx);
 		result.push(ctx, "use ");
 		result.push(ctx, op_code.name);
+		if (op_code.alias != "" && op_code.alias != last_name)
+		{
+			result.push(ctx, " as ");
+			result.push(ctx, op_code.alias);
+		}
 		result.push(ctx, ";");
 	},
 	/**
