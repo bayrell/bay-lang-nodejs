@@ -24,8 +24,6 @@ BayLang.Helper.Module = function(ctx, project, module_path)
 	use("Runtime.BaseObject").call(this, ctx);
 	this.path = module_path;
 	this.project = project;
-	var __v0 = use("BayLang.Helper.WidgetProcessor");
-	this.widget_processor = new __v0(ctx, this);
 };
 BayLang.Helper.Module.prototype = Object.create(use("Runtime.BaseObject").prototype);
 BayLang.Helper.Module.prototype.constructor = BayLang.Helper.Module;
@@ -72,6 +70,20 @@ Object.assign(BayLang.Helper.Module.prototype,
 		this.required_modules = module_info.get(ctx, "require");
 		this.submodules = module_info.get(ctx, "modules");
 		this.exclude = module_info.get(ctx, "exclude");
+		/* Load widgets */
+		this.widgets = use("Runtime.Vector").from([]);
+		if (module_info.has(ctx, "widgets"))
+		{
+			var widgets = module_info.get(ctx, "widgets");
+			this.widgets = module_info.get(ctx, "widgets").map(ctx, (ctx, item) =>
+			{
+				var __v2 = use("BayLang.Helper.Widget");
+				var widget = new __v2(ctx, this);
+				widget.kind = item.get(ctx, "kind");
+				widget.name = item.get(ctx, "name");
+				return widget;
+			});
+		}
 		return Promise.resolve(true);
 	},
 	/**
@@ -542,22 +554,6 @@ Object.assign(BayLang.Helper.Module.prototype,
 		this.routes = route_processor.getRoutes(ctx);
 	},
 	/**
-	 * Load widgets
-	 */
-	loadWidgets: async function(ctx)
-	{
-		var __v0 = use("BayLang.Helper.WidgetProcessor");
-		var widget_processor = new __v0(ctx, this);
-		await widget_processor.load(ctx);
-		this.widgets = widget_processor.getWidgets(ctx).map(ctx, (ctx, widget_name) =>
-		{
-			var __v1 = use("BayLang.Helper.Widget");
-			var widget = new __v1(ctx, this);
-			widget.name = widget_name;
-			return widget;
-		});
-	},
-	/**
 	 * Add widget
 	 */
 	addWidget: async function(ctx, widget)
@@ -583,6 +579,13 @@ Object.assign(BayLang.Helper.Module.prototype,
 		{
 			module_info.get(ctx, "assets").push(ctx, component_path);
 		}
+		/* Add widget to module.json */
+		if (!module_info.has(ctx, "widgets"))
+		{
+			module_info.set(ctx, "widgets", use("Runtime.Vector").from([]));
+		}
+		module_info.get(ctx, "widgets").push(ctx, use("Runtime.Map").from({"kind":widget.kind,"name":widget.name}));
+		/* Save module.json */
 		var __v4 = use("Runtime.rtl");
 		var __v5 = use("Runtime.Serializer");
 		content = __v4.json_encode(ctx, module_info, __v5.JSON_PRETTY);
@@ -597,10 +600,6 @@ Object.assign(BayLang.Helper.Module.prototype,
 		{
 			this.assets.push(ctx, component_path);
 		}
-		/* Add to ModuleDescription */
-		await this.widget_processor.load(ctx);
-		await this.widget_processor.addWidget(ctx, widget.name);
-		await this.widget_processor.save(ctx);
 	},
 	/**
 	 * Remove widget
@@ -629,6 +628,18 @@ Object.assign(BayLang.Helper.Module.prototype,
 				assets.remove(ctx, i);
 			}
 		}
+		/* Remove widget from module.json */
+		if (module_info.has(ctx, "widgets"))
+		{
+			var widgets = module_info.get(ctx, "widgets");
+			var __v4 = use("Runtime.lib");
+			var pos = widgets.find(ctx, __v4.equalAttr(ctx, "name", widget.name));
+			if (pos >= 0)
+			{
+				widgets.remove(ctx, pos);
+			}
+		}
+		/* Save module.json */
 		var __v4 = use("Runtime.rtl");
 		var __v5 = use("Runtime.Serializer");
 		content = __v4.json_encode(ctx, module_info, __v5.JSON_PRETTY);
@@ -643,10 +654,6 @@ Object.assign(BayLang.Helper.Module.prototype,
 				this.assets.remove(ctx, i);
 			}
 		}
-		/* Remove from ModuleDescription */
-		await this.widget_processor.load(ctx);
-		await this.widget_processor.removeWidget(ctx, widget.name);
-		await this.widget_processor.save(ctx);
 	},
 	_init: function(ctx)
 	{
@@ -665,7 +672,6 @@ Object.assign(BayLang.Helper.Module.prototype,
 		this.groups = null;
 		this.widgets = null;
 		this.exclude = null;
-		this.widget_processor = null;
 	},
 });
 Object.assign(BayLang.Helper.Module, use("Runtime.BaseObject"));

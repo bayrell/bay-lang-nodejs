@@ -43,7 +43,6 @@ add("BayLang.LangConstant");
 add("BayLang.LangUtils");
 add("BayLang.ModuleDescription");
 add("BayLang.SaveOpCode");
-add("BayLang.Compiler.CLI");
 add("BayLang.Compiler.Commands.Make");
 add("BayLang.Compiler.Commands.MakeAll");
 add("BayLang.Compiler.Commands.Modules");

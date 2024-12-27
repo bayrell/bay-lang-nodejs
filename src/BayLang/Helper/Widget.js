@@ -41,6 +41,7 @@ Object.assign(BayLang.Helper.Widget.prototype,
 	 */
 	serialize: function(ctx, serializer, data)
 	{
+		serializer.process(ctx, this, "kind", data);
 		serializer.process(ctx, this, "name", data);
 	},
 	/**
@@ -283,6 +284,7 @@ Object.assign(BayLang.Helper.Widget.prototype,
 	{
 		use("Runtime.BaseObject").prototype._init.call(this,ctx);
 		this.module = null;
+		this.kind = "";
 		this.name = "";
 		this.model = null;
 		this.component = null;

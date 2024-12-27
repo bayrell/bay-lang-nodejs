@@ -1,9 +1,9 @@
 "use strict;"
 var use = require('bay-lang').use;
 /*!
- *  Bayrell Parser Library.  
+ *  BayLang Technology
  *
- *  (c) Copyright 2016-2018 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.

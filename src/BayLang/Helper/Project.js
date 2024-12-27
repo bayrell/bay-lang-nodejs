@@ -350,7 +350,6 @@ Object.assign(BayLang.Helper.Project.prototype,
 			var module_name = modules.get(ctx, i);
 			var module = this.modules.get(ctx, module_name);
 			await module.loadRoutes(ctx);
-			await module.loadWidgets(ctx);
 		}
 	},
 	/**
