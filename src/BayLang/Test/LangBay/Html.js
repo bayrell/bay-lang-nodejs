@@ -212,6 +212,15 @@ Object.assign(BayLang.Test.LangBay.Html.prototype,
 		var __v1 = use("Runtime.Unit.AssertHelper");
 		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
 	},
+	testClick: function(ctx)
+	{
+		this.reset(ctx);
+		var __v0 = use("Runtime.rs");
+		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<template>","\t<button","\t\tclass=\"widget_test\"","\t\t@event:click={{","\t\t\tvoid ()","\t\t\t{","\t\t\t\tthis.onClick();","\t\t\t}","\t\t}}","\t>","\t\tTest","\t</button>","</template>","","</class>"]));
+		var res = this.translate(ctx, content);
+		var __v1 = use("Runtime.Unit.AssertHelper");
+		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+	},
 	testScript1: function(ctx)
 	{
 		this.reset(ctx);
@@ -343,6 +352,7 @@ Object.assign(BayLang.Test.LangBay.Html,
 			"testContent1",
 			"testContent2",
 			"testContent3",
+			"testClick",
 			"testScript1",
 			"testSlot1",
 			"testSlot2",
@@ -641,7 +651,7 @@ Object.assign(BayLang.Test.LangBay.Html,
 				]),
 			});
 		}
-		if (field_name == "testScript1")
+		if (field_name == "testClick")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -668,7 +678,7 @@ Object.assign(BayLang.Test.LangBay.Html,
 				]),
 			});
 		}
-		if (field_name == "testSlot1")
+		if (field_name == "testScript1")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -696,7 +706,7 @@ Object.assign(BayLang.Test.LangBay.Html,
 				]),
 			});
 		}
-		if (field_name == "testSlot2")
+		if (field_name == "testSlot1")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -725,7 +735,7 @@ Object.assign(BayLang.Test.LangBay.Html,
 				]),
 			});
 		}
-		if (field_name == "testStyle1")
+		if (field_name == "testSlot2")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -755,7 +765,7 @@ Object.assign(BayLang.Test.LangBay.Html,
 				]),
 			});
 		}
-		if (field_name == "testStyle2")
+		if (field_name == "testStyle1")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -786,7 +796,7 @@ Object.assign(BayLang.Test.LangBay.Html,
 				]),
 			});
 		}
-		if (field_name == "testStyle3")
+		if (field_name == "testStyle2")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -818,7 +828,7 @@ Object.assign(BayLang.Test.LangBay.Html,
 				]),
 			});
 		}
-		if (field_name == "testStyle4")
+		if (field_name == "testStyle3")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -851,7 +861,7 @@ Object.assign(BayLang.Test.LangBay.Html,
 				]),
 			});
 		}
-		if (field_name == "testStyle5")
+		if (field_name == "testStyle4")
 		{
 			
 			var __v0 = use("Runtime.Unit.Test");
@@ -882,6 +892,41 @@ Object.assign(BayLang.Test.LangBay.Html,
 			return Map.from({
 				"annotations": Vector.from([
 					new __v22(ctx, use("Runtime.Map").from({})),
+				]),
+			});
+		}
+		if (field_name == "testStyle5")
+		{
+			
+			var __v0 = use("Runtime.Unit.Test");
+			var __v1 = use("Runtime.Unit.Test");
+			var __v2 = use("Runtime.Unit.Test");
+			var __v3 = use("Runtime.Unit.Test");
+			var __v4 = use("Runtime.Unit.Test");
+			var __v5 = use("Runtime.Unit.Test");
+			var __v6 = use("Runtime.Unit.Test");
+			var __v7 = use("Runtime.Unit.Test");
+			var __v8 = use("Runtime.Unit.Test");
+			var __v9 = use("Runtime.Unit.Test");
+			var __v10 = use("Runtime.Unit.Test");
+			var __v11 = use("Runtime.Unit.Test");
+			var __v12 = use("Runtime.Unit.Test");
+			var __v13 = use("Runtime.Unit.Test");
+			var __v14 = use("Runtime.Unit.Test");
+			var __v15 = use("Runtime.Unit.Test");
+			var __v16 = use("Runtime.Unit.Test");
+			var __v17 = use("Runtime.Unit.Test");
+			var __v18 = use("Runtime.Unit.Test");
+			var __v19 = use("Runtime.Unit.Test");
+			var __v20 = use("Runtime.Unit.Test");
+			var __v21 = use("Runtime.Unit.Test");
+			var __v22 = use("Runtime.Unit.Test");
+			var __v23 = use("Runtime.Unit.Test");
+			var Vector = use("Runtime.Vector");
+			var Map = use("Runtime.Map");
+			return Map.from({
+				"annotations": Vector.from([
+					new __v23(ctx, use("Runtime.Map").from({})),
 				]),
 			});
 		}

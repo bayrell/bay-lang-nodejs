@@ -594,8 +594,9 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 		var __v3 = use("BayLang.OpCodes.OpClassOf");
 		var __v4 = use("BayLang.OpCodes.OpCollection");
 		var __v5 = use("BayLang.OpCodes.OpDict");
-		var __v6 = use("BayLang.OpCodes.OpCall");
-		var __v7 = use("BayLang.OpCodes.OpNew");
+		var __v6 = use("BayLang.OpCodes.OpDeclareFunction");
+		var __v7 = use("BayLang.OpCodes.OpCall");
+		var __v8 = use("BayLang.OpCodes.OpNew");
 		if (op_code instanceof __v0)
 		{
 			this.OpString(ctx, op_code, result);
@@ -622,9 +623,13 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 		}
 		else if (op_code instanceof __v6)
 		{
-			this.OpCall(ctx, op_code, result);
+			this.translator.program.OpDeclareFunction(ctx, op_code, result);
 		}
 		else if (op_code instanceof __v7)
+		{
+			this.OpCall(ctx, op_code, result);
+		}
+		else if (op_code instanceof __v8)
 		{
 			this.OpNew(ctx, op_code, result);
 		}

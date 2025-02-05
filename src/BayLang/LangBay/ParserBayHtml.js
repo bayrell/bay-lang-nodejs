@@ -436,7 +436,7 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 				{
 					var item = new_items.get(ctx, i);
 					item = this.readCssBodyConcatItem(ctx, item.caret_start, item.caret_end, media_selector, item);
-					items.push(ctx, item);
+					sub_items.push(ctx, item);
 				}
 				/* Get caret */
 				caret = parser.getCaret(ctx);

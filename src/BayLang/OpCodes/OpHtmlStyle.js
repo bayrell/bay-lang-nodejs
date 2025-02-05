@@ -76,16 +76,11 @@ Object.assign(BayLang.OpCodes.OpHtmlStyle.prototype,
 	{
 		reader.matchToken(ctx, "{");
 		var caret = reader.main_caret;
-		caret.skipSpace(ctx);
 		var level = 0;
 		var items = use("Runtime.Vector").from([]);
 		while (!caret.eof(ctx) && (caret.nextChar(ctx) != "}" && level == 0 || level > 0))
 		{
 			var ch = caret.readChar(ctx);
-			if (ch != "\t")
-			{
-				items.push(ctx, ch);
-			}
 			if (ch == "{")
 			{
 				level = level + 1;
@@ -94,12 +89,12 @@ Object.assign(BayLang.OpCodes.OpHtmlStyle.prototype,
 			{
 				level = level - 1;
 			}
+			items.push(ctx, ch);
 		}
 		reader.init(ctx, caret);
 		reader.matchToken(ctx, "}");
 		var __v0 = use("Runtime.rs");
-		var __v1 = use("Runtime.rs");
-		return __v0.trim(ctx, __v1.join(ctx, "", items));
+		return __v0.join(ctx, "", items);
 	},
 	_init: function(ctx)
 	{

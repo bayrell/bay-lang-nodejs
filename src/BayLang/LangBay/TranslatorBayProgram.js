@@ -119,7 +119,7 @@ Object.assign(BayLang.LangBay.TranslatorBayProgram.prototype,
 		var flags = use("Runtime.Vector").from(["async","static","pure"]);
 		flags = flags.filter(ctx, (ctx, flag_name) =>
 		{
-			return op_code.flags.isFlag(ctx, flag_name);
+			return (op_code.flags) ? (op_code.flags.isFlag(ctx, flag_name)) : (false);
 		});
 		var __v0 = use("Runtime.rs");
 		result.push(ctx, __v0.join(ctx, " ", flags));
