@@ -25,6 +25,7 @@ const { resolve } = require('path');
 const fileExists = promisify(fs.exists);
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
+const rename = promisify(fs.rename);
 const symlink = promisify(fs.symlink);
 const unlink = promisify(fs.unlink);
 const lstat = promisify(fs.lstat);
@@ -55,18 +56,24 @@ Object.assign(Runtime.fs,
 		return path;
 	},
 	/**
+	 * Return true if path is exists
+	 * @param string path
+	 * @param boolean
+	 */
+	exists: async function(ctx, filepath)
+	{
+		var is_exists = await fileExists(filepath);
+		if (!is_exists) return Promise.resolve( false );
+		return Promise.resolve( true );
+	},
+	/**
 	 * Return true if path is folder
 	 * @param string path
 	 * @param boolean
 	 */
-	isDir: async function(ctx, dirpath)
+	isDir: async function(ctx, filepath)
 	{
-		var is_exists = await fileExists(dirpath);
-		if (!is_exists) return Promise.resolve( false );
-		
-		dirpath = resolve(dirpath);
-		var stat = await lstat(dirpath);
-		return Promise.resolve( stat.isDirectory() );
+		return await this.isFolder(ctx, filepath);
 	},
 	/**
 	 * Return true if path is folder
@@ -115,6 +122,20 @@ Object.assign(Runtime.fs,
 		if (ch == undefined) ch = "utf8";
 		await writeFile( resolve(filepath), content, { "encoding": ch } );
 		return Promise.resolve("");
+	},
+	/**
+	 * Rename file
+	 */
+	rename: async function(ctx, file_path, file_new_path)
+	{
+		await rename(file_path, file_new_path);
+	},
+	/**
+	 * Remove file
+	 */
+	unlink: async function(ctx, file_path)
+	{
+		await unlink(file_path);
 	},
 	/**
 	 * Scan directory

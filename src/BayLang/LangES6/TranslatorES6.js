@@ -28,121 +28,51 @@ BayLang.LangES6.TranslatorES6.prototype.constructor = BayLang.LangES6.Translator
 Object.assign(BayLang.LangES6.TranslatorES6.prototype,
 {
 	/**
-	 * Returns true if emulate async await
+	 * Returns string
 	 */
-	isEmulateAsyncAwait: function(ctx)
+	toString: function(ctx, s)
 	{
-		return this.enable_async_await && this.emulate_async_await;
+		var __v0 = use("Runtime.re");
+		s = __v0.replace(ctx, "\\\\", "\\\\", s);
+		var __v1 = use("Runtime.re");
+		s = __v1.replace(ctx, "\"", "\\\"", s);
+		var __v2 = use("Runtime.re");
+		s = __v2.replace(ctx, "\n", "\\n", s);
+		var __v3 = use("Runtime.re");
+		s = __v3.replace(ctx, "\r", "\\r", s);
+		var __v4 = use("Runtime.re");
+		s = __v4.replace(ctx, "\t", "\\t", s);
+		return "\"" + use("Runtime.rtl").toStr(s) + use("Runtime.rtl").toStr("\"");
 	},
 	/**
-	 * Returns true if async await
+	 * Translate BaseOpCode
 	 */
-	isAsyncAwait: function(ctx)
+	translate: function(ctx, op_code)
 	{
-		return this.enable_async_await && !this.emulate_async_await;
+		var content = use("Runtime.Vector").from([]);
+		this.program.translate(ctx, op_code, content);
+		var __v0 = use("Runtime.rs");
+		return __v0.join(ctx, "", content);
 	},
 	_init: function(ctx)
 	{
 		use("BayLang.CoreTranslator").prototype._init.call(this,ctx);
-		this.is_pipe = false;
-		this.is_call = false;
-		this.pipe_var_name = "";
-		this.html_var_name = "";
-		this.is_html = false;
-		this.async_await = null;
-		this.expression = null;
-		this.html = null;
-		this.operator = null;
-		this.program = null;
-		this.debug_component = null;
-		this.frontend = true;
-		this.backend = false;
-		this.use_module_name = false;
-		this.use_strict = true;
-		this.enable_async_await = true;
-		this.emulate_async_await = false;
-		this.enable_context = false;
-		this.enable_check_types = false;
-		this.enable_introspection = true;
-	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "is_pipe")return this.is_pipe;
-		else if (k == "is_call")return this.is_call;
-		else if (k == "pipe_var_name")return this.pipe_var_name;
-		else if (k == "html_var_name")return this.html_var_name;
-		else if (k == "is_html")return this.is_html;
-		else if (k == "async_await")return this.async_await;
-		else if (k == "expression")return this.expression;
-		else if (k == "html")return this.html;
-		else if (k == "operator")return this.operator;
-		else if (k == "program")return this.program;
-		else if (k == "debug_component")return this.debug_component;
-		else if (k == "frontend")return this.frontend;
-		else if (k == "backend")return this.backend;
-		else if (k == "use_module_name")return this.use_module_name;
-		else if (k == "use_strict")return this.use_strict;
-		else if (k == "enable_async_await")return this.enable_async_await;
-		else if (k == "emulate_async_await")return this.emulate_async_await;
-		else if (k == "enable_context")return this.enable_context;
-		else if (k == "enable_check_types")return this.enable_check_types;
-		else if (k == "enable_introspection")return this.enable_introspection;
-		return use("BayLang.CoreTranslator").prototype.takeValue.call(this,ctx,k,d);
+		var __v0 = use("BayLang.LangES6.TranslatorES6Expression");
+		var __v1 = use("BayLang.LangES6.TranslatorES6Operator");
+		var __v2 = use("BayLang.LangES6.TranslatorES6Program");
+		var __v3 = use("BayLang.LangES6.TranslatorES6Html");
+		this.vars = use("Runtime.Map").from({});
+		this.uses = use("Runtime.Map").from({});
+		this.current_namespace_name = "";
+		this.expression = new __v0(ctx, this);
+		this.operator = new __v1(ctx, this);
+		this.program = new __v2(ctx, this);
+		this.html = new __v3(ctx, this);
 	},
 });
 Object.assign(BayLang.LangES6.TranslatorES6, use("BayLang.CoreTranslator"));
 Object.assign(BayLang.LangES6.TranslatorES6,
 {
-	/**
-	 * Reset translator
-	 */
-	reset: function(ctx, t)
-	{
-		var __v0 = use("Runtime.Dict");
-		var __v1 = use("BayLang.LangES6.TranslatorES6AsyncAwait");
-		var __v2 = use("BayLang.LangES6.TranslatorES6Expression");
-		var __v3 = use("BayLang.LangES6.TranslatorES6Html");
-		var __v4 = use("BayLang.LangES6.TranslatorES6Operator");
-		var __v5 = use("BayLang.LangES6.TranslatorES6Program");
-		var __v6 = use("Runtime.Collection");
-		var __v7 = use("Runtime.Collection");
-		return t.copy(ctx, use("Runtime.Map").from({"value":"","current_namespace_name":"","debug_component":use("Runtime.Vector").from([]),"modules":new __v0(ctx),"async_await":new __v1(ctx),"expression":new __v2(ctx),"html":new __v3(ctx),"operator":new __v4(ctx),"program":new __v5(ctx),"save_vars":new __v6(ctx),"save_op_codes":new __v7(ctx),"save_op_code_inc":0,"preprocessor_flags":use("Runtime.Map").from({"ES6":true,"JAVASCRIPT":true,"FRONTEND":t.frontend,"BACKEND":t.backend,"USE_MODULE_NAME":t.use_module_name,"USE_STRICT":t.use_strict,"ENABLE_ASYNC_AWAIT":t.enable_async_await,"EMULATE_ASYNC_AWAIT":t.emulate_async_await,"ENABLE_CONTEXT":t.enable_context,"ENABLE_CHECK_TYPES":t.enable_check_types})}));
-	},
-	/**
-	 * Translate BaseOpCode
-	 */
-	translate: function(ctx, t, op_code)
-	{
-		return t.program.constructor.translateProgram(ctx, t, op_code);
-	},
-	/**
-	 * Output save op code content
-	 */
-	outputSaveOpCode: function(ctx, t, save_op_code_value)
-	{
-		if (save_op_code_value == undefined) save_op_code_value = 0;
-		var content = "";
-		for (var i = 0; i < t.save_op_codes.count(ctx); i++)
-		{
-			if (i < save_op_code_value)
-			{
-				continue;
-			}
-			var save = t.save_op_codes.item(ctx, i);
-			var s = "";
-			if (t.is_html)
-			{
-				s = (save.content == "") ? (t.s(ctx, "let " + use("Runtime.rtl").toStr(save.var_name) + use("Runtime.rtl").toStr(" = ") + use("Runtime.rtl").toStr(save.var_content) + use("Runtime.rtl").toStr(";"))) : (save.content);
-			}
-			else
-			{
-				s = (save.content == "") ? (t.s(ctx, "var " + use("Runtime.rtl").toStr(save.var_name) + use("Runtime.rtl").toStr(" = ") + use("Runtime.rtl").toStr(save.var_content) + use("Runtime.rtl").toStr(";"))) : (save.content);
-			}
-			content += use("Runtime.rtl").toStr(s);
-		}
-		return content;
-	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
@@ -168,26 +98,6 @@ Object.assign(BayLang.LangES6.TranslatorES6,
 	getFieldsList: function(ctx)
 	{
 		var a = [];
-		a.push("is_pipe");
-		a.push("is_call");
-		a.push("pipe_var_name");
-		a.push("html_var_name");
-		a.push("is_html");
-		a.push("async_await");
-		a.push("expression");
-		a.push("html");
-		a.push("operator");
-		a.push("program");
-		a.push("debug_component");
-		a.push("frontend");
-		a.push("backend");
-		a.push("use_module_name");
-		a.push("use_strict");
-		a.push("enable_async_await");
-		a.push("emulate_async_await");
-		a.push("enable_context");
-		a.push("enable_check_types");
-		a.push("enable_introspection");
 		return use("Runtime.Vector").from(a);
 	},
 	getFieldInfoByName: function(ctx,field_name)

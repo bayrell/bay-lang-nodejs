@@ -27,93 +27,64 @@ BayLang.LangPHP.TranslatorPHP.prototype = Object.create(use("BayLang.CoreTransla
 BayLang.LangPHP.TranslatorPHP.prototype.constructor = BayLang.LangPHP.TranslatorPHP;
 Object.assign(BayLang.LangPHP.TranslatorPHP.prototype,
 {
+	/**
+	 * Returns string
+	 */
+	toString: function(ctx, s)
+	{
+		var __v0 = use("Runtime.re");
+		s = __v0.replace(ctx, "\\\\", "\\\\", s);
+		var __v1 = use("Runtime.re");
+		s = __v1.replace(ctx, "\"", "\\\"", s);
+		var __v2 = use("Runtime.re");
+		s = __v2.replace(ctx, "\n", "\\n", s);
+		var __v3 = use("Runtime.re");
+		s = __v3.replace(ctx, "\r", "\\r", s);
+		var __v4 = use("Runtime.re");
+		s = __v4.replace(ctx, "\t", "\\t", s);
+		return "\"" + use("Runtime.rtl").toStr(s) + use("Runtime.rtl").toStr("\"");
+	},
+	/**
+	 * Returns module name
+	 */
+	getModuleName: function(ctx, module_name)
+	{
+		var __v0 = use("Runtime.rs");
+		return __v0.replace(ctx, ".", "\\", module_name);
+	},
+	/**
+	 * Translate BaseOpCode
+	 */
+	translate: function(ctx, op_code)
+	{
+		var content = use("Runtime.Vector").from([]);
+		if (op_code.is_component)
+		{
+			this.html.translate(ctx, op_code, content);
+		}
+		else
+		{
+			this.program.translate(ctx, op_code, content);
+		}
+		var __v0 = use("Runtime.rs");
+		return __v0.join(ctx, "", content);
+	},
 	_init: function(ctx)
 	{
 		use("BayLang.CoreTranslator").prototype._init.call(this,ctx);
-		this.is_pipe = false;
-		this.pipe_var_name = "";
-		this.html_var_name = "";
-		this.is_html = false;
-		this.expression = null;
-		this.html = null;
-		this.operator = null;
-		this.program = null;
-		this.frontend = false;
-		this.backend = true;
-		this.enable_context = false;
-		this.enable_check_types = false;
-		this.enable_introspection = true;
-	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "is_pipe")return this.is_pipe;
-		else if (k == "pipe_var_name")return this.pipe_var_name;
-		else if (k == "html_var_name")return this.html_var_name;
-		else if (k == "is_html")return this.is_html;
-		else if (k == "expression")return this.expression;
-		else if (k == "html")return this.html;
-		else if (k == "operator")return this.operator;
-		else if (k == "program")return this.program;
-		else if (k == "frontend")return this.frontend;
-		else if (k == "backend")return this.backend;
-		else if (k == "enable_context")return this.enable_context;
-		else if (k == "enable_check_types")return this.enable_check_types;
-		else if (k == "enable_introspection")return this.enable_introspection;
-		return use("BayLang.CoreTranslator").prototype.takeValue.call(this,ctx,k,d);
+		var __v0 = use("BayLang.LangPHP.TranslatorPHPExpression");
+		var __v1 = use("BayLang.LangPHP.TranslatorPHPOperator");
+		var __v2 = use("BayLang.LangPHP.TranslatorPHPProgram");
+		var __v3 = use("BayLang.LangPHP.TranslatorPHPHtml");
+		this.expression = new __v0(ctx, this);
+		this.operator = new __v1(ctx, this);
+		this.program = new __v2(ctx, this);
+		this.html = new __v3(ctx, this);
 	},
 });
 Object.assign(BayLang.LangPHP.TranslatorPHP, use("BayLang.CoreTranslator"));
 Object.assign(BayLang.LangPHP.TranslatorPHP,
 {
-	/**
-	 * Reset translator
-	 */
-	reset: function(ctx, t)
-	{
-		var __v0 = use("Runtime.Dict");
-		var __v1 = use("BayLang.LangPHP.TranslatorPHPExpression");
-		var __v2 = use("BayLang.LangPHP.TranslatorPHPHtml");
-		var __v3 = use("BayLang.LangPHP.TranslatorPHPOperator");
-		var __v4 = use("BayLang.LangPHP.TranslatorPHPProgram");
-		var __v5 = use("Runtime.Collection");
-		var __v6 = use("Runtime.Collection");
-		return t.copy(ctx, use("Runtime.Map").from({"value":"","current_namespace_name":"","modules":new __v0(ctx),"expression":new __v1(ctx),"html":new __v2(ctx),"operator":new __v3(ctx),"program":new __v4(ctx),"save_vars":new __v5(ctx),"save_op_codes":new __v6(ctx),"save_op_code_inc":0,"preprocessor_flags":use("Runtime.Map").from({"PHP":true,"FRONTEND":t.frontend,"BACKEND":t.backend,"ENABLE_CONTEXT":t.enable_context,"ENABLE_CHECK_TYPES":t.enable_check_types})}));
-	},
-	/**
-	 * Translate BaseOpCode
-	 */
-	translate: function(ctx, t, op_code)
-	{
-		t = this.reset(ctx, t);
-		return t.program.constructor.translateProgram(ctx, t, op_code);
-	},
-	/**
-	 * Inc save op code
-	 */
-	nextSaveOpCode: function(ctx, t)
-	{
-		return "$__v" + use("Runtime.rtl").toStr(t.save_op_code_inc);
-	},
-	/**
-	 * Output save op code content
-	 */
-	outputSaveOpCode: function(ctx, t, save_op_code_value)
-	{
-		if (save_op_code_value == undefined) save_op_code_value = 0;
-		var content = "";
-		for (var i = 0; i < t.save_op_codes.count(ctx); i++)
-		{
-			if (i < save_op_code_value)
-			{
-				continue;
-			}
-			var save = t.save_op_codes.item(ctx, i);
-			var s = (save.content == "") ? (t.s(ctx, save.var_name + use("Runtime.rtl").toStr(" = ") + use("Runtime.rtl").toStr(save.var_content) + use("Runtime.rtl").toStr(";"))) : (save.content);
-			content += use("Runtime.rtl").toStr(s);
-		}
-		return content;
-	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
@@ -139,19 +110,6 @@ Object.assign(BayLang.LangPHP.TranslatorPHP,
 	getFieldsList: function(ctx)
 	{
 		var a = [];
-		a.push("is_pipe");
-		a.push("pipe_var_name");
-		a.push("html_var_name");
-		a.push("is_html");
-		a.push("expression");
-		a.push("html");
-		a.push("operator");
-		a.push("program");
-		a.push("frontend");
-		a.push("backend");
-		a.push("enable_context");
-		a.push("enable_check_types");
-		a.push("enable_introspection");
 		return use("Runtime.Vector").from(a);
 	},
 	getFieldInfoByName: function(ctx,field_name)

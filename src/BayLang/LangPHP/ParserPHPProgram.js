@@ -18,15 +18,15 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBayProgram = function(ctx, parser)
+if (typeof BayLang.LangPHP == 'undefined') BayLang.LangPHP = {};
+BayLang.LangPHP.ParserPHPProgram = function(ctx, parser)
 {
 	use("Runtime.BaseObject").call(this, ctx);
 	this.parser = parser;
 };
-BayLang.LangBay.ParserBayProgram.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.LangBay.ParserBayProgram.prototype.constructor = BayLang.LangBay.ParserBayProgram;
-Object.assign(BayLang.LangBay.ParserBayProgram.prototype,
+BayLang.LangPHP.ParserPHPProgram.prototype = Object.create(use("Runtime.BaseObject").prototype);
+BayLang.LangPHP.ParserPHPProgram.prototype.constructor = BayLang.LangPHP.ParserPHPProgram;
+Object.assign(BayLang.LangPHP.ParserPHPProgram.prototype,
 {
 	/**
 	 * Read namespace
@@ -97,6 +97,8 @@ Object.assign(BayLang.LangBay.ParserBayProgram.prototype,
 	{
 		var items = use("Runtime.Vector").from([]);
 		var caret_start = reader.caret(ctx);
+		/* Read PHP token */
+		reader.matchToken(ctx, "<?php");
 		/* Read module */
 		while (!reader.eof(ctx) && reader.nextToken(ctx) != "")
 		{
@@ -127,17 +129,17 @@ Object.assign(BayLang.LangBay.ParserBayProgram.prototype,
 		this.parser = null;
 	},
 });
-Object.assign(BayLang.LangBay.ParserBayProgram, use("Runtime.BaseObject"));
-Object.assign(BayLang.LangBay.ParserBayProgram,
+Object.assign(BayLang.LangPHP.ParserPHPProgram, use("Runtime.BaseObject"));
+Object.assign(BayLang.LangPHP.ParserPHPProgram,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "BayLang.LangBay";
+		return "BayLang.LangPHP";
 	},
 	getClassName: function()
 	{
-		return "BayLang.LangBay.ParserBayProgram";
+		return "BayLang.LangPHP.ParserPHPProgram";
 	},
 	getParentClassName: function()
 	{
@@ -173,5 +175,5 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 	{
 		return null;
 	},
-});use.add(BayLang.LangBay.ParserBayProgram);
-module.exports = BayLang.LangBay.ParserBayProgram;
+});use.add(BayLang.LangPHP.ParserPHPProgram);
+module.exports = BayLang.LangPHP.ParserPHPProgram;

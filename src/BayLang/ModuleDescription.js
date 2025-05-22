@@ -40,7 +40,7 @@ Object.assign(BayLang.ModuleDescription,
 	 */
 	getModuleVersion: function(ctx)
 	{
-		return "0.12.4";
+		return "1.0";
 	},
 	/**
 	 * Returns required modules

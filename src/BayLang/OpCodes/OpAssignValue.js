@@ -33,16 +33,13 @@ Object.assign(BayLang.OpCodes.OpAssignValue.prototype,
 	serialize: function(ctx, serializer, data)
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
+		serializer.process(ctx, this, "value", data);
 		serializer.process(ctx, this, "expression", data);
-		serializer.process(ctx, this, "op_code", data);
-		serializer.process(ctx, this, "var_name", data);
 	},
 	_init: function(ctx)
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
-		this.op = "";
-		this.var_name = "";
-		this.op_code = null;
+		this.value = null;
 		this.expression = null;
 	},
 });

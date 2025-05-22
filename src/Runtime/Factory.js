@@ -17,30 +17,45 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.LangConstant = function(ctx)
+if (typeof Runtime == 'undefined') Runtime = {};
+Runtime.Factory = function(ctx, name, args)
 {
+	if (args == undefined) args = null;
+	use("Runtime.BaseObject").call(this, ctx, use("Runtime.Map").from({"name":name,"args":args}));
 };
-Object.assign(BayLang.LangConstant.prototype,
+Runtime.Factory.prototype = Object.create(use("Runtime.BaseObject").prototype);
+Runtime.Factory.prototype.constructor = Runtime.Factory;
+Object.assign(Runtime.Factory.prototype,
 {
+	/**
+	 * Create new object
+	 */
+	createInstance: function(ctx)
+	{
+		var __v0 = use("Runtime.rtl");
+		return __v0.newInstance(ctx, this.name, this.args);
+	},
+	_init: function(ctx)
+	{
+		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		this.args = null;
+	},
 });
-Object.assign(BayLang.LangConstant,
+Object.assign(Runtime.Factory, use("Runtime.BaseObject"));
+Object.assign(Runtime.Factory,
 {
-	ERROR_PARSER: -1000,
-	ERROR_PARSER_EOF: -1001,
-	ERROR_PARSER_EXPECTED: -1002,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "BayLang";
+		return "Runtime";
 	},
 	getClassName: function()
 	{
-		return "BayLang.LangConstant";
+		return "Runtime.Factory";
 	},
 	getParentClassName: function()
 	{
-		return "";
+		return "Runtime.BaseObject";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -72,5 +87,9 @@ Object.assign(BayLang.LangConstant,
 	{
 		return null;
 	},
-});use.add(BayLang.LangConstant);
-module.exports = BayLang.LangConstant;
+	__implements__:
+	[
+		use("Runtime.FactoryInterface"),
+	],
+});use.add(Runtime.Factory);
+module.exports = Runtime.Factory;

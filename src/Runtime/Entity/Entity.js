@@ -19,27 +19,22 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Entity == 'undefined') Runtime.Entity = {};
-Runtime.Entity.Entity = function(ctx)
+Runtime.Entity.Entity = function(ctx, obj)
 {
-	use("Runtime.BaseStruct").apply(this, arguments);
+	use("Runtime.BaseObject").call(this, ctx);
+	this._assign_values(ctx, obj);
 };
-Runtime.Entity.Entity.prototype = Object.create(use("Runtime.BaseStruct").prototype);
+Runtime.Entity.Entity.prototype = Object.create(use("Runtime.BaseObject").prototype);
 Runtime.Entity.Entity.prototype.constructor = Runtime.Entity.Entity;
 Object.assign(Runtime.Entity.Entity.prototype,
 {
 	_init: function(ctx)
 	{
-		use("Runtime.BaseStruct").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this,ctx);
 		this.name = "";
 	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "name")return this.name;
-		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
-	},
 });
-Object.assign(Runtime.Entity.Entity, use("Runtime.BaseStruct"));
+Object.assign(Runtime.Entity.Entity, use("Runtime.BaseObject"));
 Object.assign(Runtime.Entity.Entity,
 {
 	/* ======================= Class Init Functions ======================= */
@@ -53,7 +48,7 @@ Object.assign(Runtime.Entity.Entity,
 	},
 	getParentClassName: function()
 	{
-		return "Runtime.BaseStruct";
+		return "Runtime.BaseObject";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -67,7 +62,6 @@ Object.assign(Runtime.Entity.Entity,
 	getFieldsList: function(ctx)
 	{
 		var a = [];
-		a.push("name");
 		return use("Runtime.Vector").from(a);
 	},
 	getFieldInfoByName: function(ctx,field_name)

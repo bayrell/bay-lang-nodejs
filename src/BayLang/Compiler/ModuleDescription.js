@@ -59,11 +59,8 @@ Object.assign(BayLang.Compiler.ModuleDescription,
 	{
 		var __v0 = use("Runtime.Console.Annotations.ConsoleCommand");
 		var __v1 = use("Runtime.Console.Annotations.ConsoleCommand");
-		var __v2 = use("Runtime.Console.Annotations.ConsoleCommand");
-		var __v3 = use("Runtime.Console.Annotations.ConsoleCommand");
-		var __v4 = use("Runtime.Console.Annotations.ConsoleCommand");
-		var __v5 = use("Runtime.Entity.Provider");
-		return use("Runtime.Vector").from([new __v0(ctx, "BayLang.Compiler.Commands.Make"),new __v1(ctx, "BayLang.Compiler.Commands.MakeAll"),new __v2(ctx, "BayLang.Compiler.Commands.Modules"),new __v3(ctx, "BayLang.Compiler.Commands.Version"),new __v4(ctx, "BayLang.Compiler.Commands.Watch"),new __v5(ctx, "BayLang.Compiler.SettingsProvider")]);
+		var __v2 = use("Runtime.Entity.Provider");
+		return use("Runtime.Vector").from([new __v0(ctx, "BayLang.Compiler.Commands.Compile"),new __v1(ctx, "BayLang.Compiler.Commands.Version"),new __v2(ctx, "BayLang.Compiler.SettingsProvider")]);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()

@@ -282,6 +282,15 @@ Object.assign(BayLang.LangBay.TranslatorBayProgram.prototype,
 		{
 			this.OpUse(ctx, op_code, result);
 		}
+		else
+		{
+			this.translator.last_semicolon = false;
+			var exists = this.translator.operator.translateItem(ctx, op_code, result);
+			if (exists && !this.translator.last_semicolon)
+			{
+				result.push(ctx, ";");
+			}
+		}
 	},
 	/**
 	 * Translate items

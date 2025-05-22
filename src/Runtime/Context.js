@@ -93,7 +93,7 @@ Object.assign(Runtime.Context.prototype,
 	 */
 	getEnvironments: function(ctx)
 	{
-		return this.environments.clone(ctx);
+		return this.environments.copy(ctx);
 	},
 	/**
 	 * Returns provider by name
@@ -215,6 +215,10 @@ Object.assign(Runtime.Context.prototype,
 		{
 			params = use("Runtime.Map").from({});
 		}
+		if (!this.providers.has(ctx, "hook"))
+		{
+			return params;
+		}
 		var hook = this.provider(ctx, "hook");
 		var methods_list = hook.getMethods(ctx, hook_name);
 		for (var i = 0; i < methods_list.count(ctx); i++)
@@ -274,7 +278,7 @@ Object.assign(Runtime.Context.prototype,
 		{
 			var factory = providers.get(ctx, i);
 			/* Create provider */
-			var provider = factory.createProvider(ctx);
+			var provider = factory.createInstance(ctx);
 			if (!provider)
 			{
 				var __v0 = use("Runtime.Exceptions.RuntimeException");
@@ -339,7 +343,6 @@ Object.assign(Runtime.Context.prototype,
 		this.providers = use("Runtime.Map").from({});
 		this.entities = use("Runtime.Vector").from([]);
 		this.start_time = 0;
-		this.tz = "UTC";
 		this.initialized = false;
 		this.started = false;
 	},
@@ -363,13 +366,12 @@ Object.assign(Runtime.Context,
 		{
 			params.set("start_time", Date.now());
 		}
-		let Collection = use("Runtime.Collection");
-		let Dict = use("Runtime.Dict");
 		let Map = use("Runtime.Map");
+		let Vector = use("Runtime.Vector");
 		
 		if (!params.has(ctx, "cli_args"))
 		{
-			params.set(ctx, "cli_args", Collection.from(process.argv.slice(1)));
+			params.set(ctx, "cli_args", Vector.from(process.argv.slice(1)));
 		}
 		if (!params.has(ctx, "base_path"))
 		{
@@ -382,10 +384,10 @@ Object.assign(Runtime.Context,
 		if (params.has(ctx, "modules"))
 		{
 			var modules = params.get(ctx, "modules");
-			var __v0 = use("Runtime.Collection");
+			var __v0 = use("Runtime.Vector");
 			if (!(modules instanceof __v0))
 			{
-				var __v1 = use("Runtime.Collection");
+				var __v1 = use("Runtime.Vector");
 				modules = __v1.from(modules);
 			}
 			params.set(ctx, "modules", modules.toVector(ctx));
@@ -396,7 +398,7 @@ Object.assign(Runtime.Context,
 			var __v0 = use("Runtime.Map");
 			params.set(ctx, "environments", new __v0(ctx));
 		}
-		var env = Runtime.rtl.attr(ctx, params, "environments");
+		var env = params.get(ctx, "environments");
 		if (!env)
 		{
 			env = use("Runtime.Map").from({});
@@ -451,7 +453,6 @@ Object.assign(Runtime.Context,
 		{
 			instance.tz = params.get(ctx, "tz");
 		}
-		instance.start_modules = instance.modules.copy(ctx);
 		return instance;
 	},
 	/**
@@ -487,14 +488,17 @@ Object.assign(Runtime.Context,
 				cache.set(ctx, module_name, true);
 				var __v0 = use("Runtime.Callback");
 				var f = new __v0(ctx, module_name + use("Runtime.rtl").toStr(".ModuleDescription"), "requiredModules");
-				var __v1 = use("Runtime.rtl");
-				var sub_modules = __v1.apply(ctx, f);
-				if (sub_modules != null)
+				if (f.exists(ctx))
 				{
-					var sub_modules = sub_modules.keys(ctx);
-					this._getRequiredModules(ctx, res, cache, sub_modules);
+					var __v1 = use("Runtime.rtl");
+					var sub_modules = __v1.apply(ctx, f);
+					if (sub_modules != null)
+					{
+						var sub_modules = sub_modules.keys(ctx);
+						this._getRequiredModules(ctx, res, cache, sub_modules);
+					}
+					res.push(ctx, module_name);
 				}
-				res.push(ctx, module_name);
 			}
 		}
 	},
@@ -512,8 +516,7 @@ Object.assign(Runtime.Context,
 			var f = new __v1(ctx, module_name + use("Runtime.rtl").toStr(".ModuleDescription"), "entities");
 			if (f.exists(ctx))
 			{
-				var __v2 = use("Runtime.rtl");
-				var arr = __v2.apply(ctx, f);
+				var arr = f.apply(ctx);
 				if (arr)
 				{
 					entities.appendItems(ctx, arr);

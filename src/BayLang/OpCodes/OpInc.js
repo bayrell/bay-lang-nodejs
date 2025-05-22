@@ -34,23 +34,21 @@ Object.assign(BayLang.OpCodes.OpInc.prototype,
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
 		serializer.process(ctx, this, "kind", data);
-		serializer.process(ctx, this, "value", data);
+		serializer.process(ctx, this, "item", data);
 	},
 	_init: function(ctx)
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.op = "op_inc";
 		this.kind = "";
-		this.value = null;
+		this.item = null;
 	},
 });
 Object.assign(BayLang.OpCodes.OpInc, use("BayLang.OpCodes.BaseOpCode"));
 Object.assign(BayLang.OpCodes.OpInc,
 {
-	KIND_PRE_INC: "pre_inc",
-	KIND_PRE_DEC: "pre_dec",
-	KIND_POST_INC: "post_inc",
-	KIND_POST_DEC: "post_dec",
+	KIND_INC: "inc",
+	KIND_DEC: "dec",
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{

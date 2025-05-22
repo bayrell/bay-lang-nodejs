@@ -18,33 +18,48 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-if (typeof Runtime.Exceptions == 'undefined') Runtime.Exceptions = {};
-Runtime.Exceptions.UnknownError = function(ctx, prev)
+Runtime.SerializerBase64 = function(ctx)
 {
-	if (prev == undefined) prev = null;
-	var __v0 = use("Runtime.rtl");
-	use("Runtime.Exceptions.AbstractException").call(this, ctx, ctx.constructor.translate(ctx, "Runtime", "Unknown error"), __v0.ERROR_UNKNOWN, prev);
+	use("Runtime.SerializerJson").apply(this, arguments);
 };
-Runtime.Exceptions.UnknownError.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
-Runtime.Exceptions.UnknownError.prototype.constructor = Runtime.Exceptions.UnknownError;
-Object.assign(Runtime.Exceptions.UnknownError.prototype,
+Runtime.SerializerBase64.prototype = Object.create(use("Runtime.SerializerJson").prototype);
+Runtime.SerializerBase64.prototype.constructor = Runtime.SerializerBase64;
+Object.assign(Runtime.SerializerBase64.prototype,
 {
+	/**
+	 * Export object to data
+	 */
+	encode: function(ctx, object)
+	{
+		var s = use("Runtime.SerializerJson").prototype.encode.bind(this)(ctx, object);
+		var __v0 = use("Runtime.rs");
+		return __v0.base64_encode(ctx, s);
+	},
+	/**
+	 * Import from string
+	 */
+	decode: function(ctx, s)
+	{
+		var __v0 = use("Runtime.rs");
+		s = __v0.base64_decode(ctx, s);
+		return use("Runtime.SerializerJson").prototype.decode.bind(this)(ctx, s);
+	},
 });
-Object.assign(Runtime.Exceptions.UnknownError, use("Runtime.Exceptions.AbstractException"));
-Object.assign(Runtime.Exceptions.UnknownError,
+Object.assign(Runtime.SerializerBase64, use("Runtime.SerializerJson"));
+Object.assign(Runtime.SerializerBase64,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "Runtime.Exceptions";
+		return "Runtime";
 	},
 	getClassName: function()
 	{
-		return "Runtime.Exceptions.UnknownError";
+		return "Runtime.SerializerBase64";
 	},
 	getParentClassName: function()
 	{
-		return "Runtime.Exceptions.AbstractException";
+		return "Runtime.SerializerJson";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -76,5 +91,5 @@ Object.assign(Runtime.Exceptions.UnknownError,
 	{
 		return null;
 	},
-});use.add(Runtime.Exceptions.UnknownError);
-module.exports = Runtime.Exceptions.UnknownError;
+});use.add(Runtime.SerializerBase64);
+module.exports = Runtime.SerializerBase64;

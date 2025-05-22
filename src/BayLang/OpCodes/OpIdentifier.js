@@ -41,21 +41,11 @@ Object.assign(BayLang.OpCodes.OpIdentifier.prototype,
 		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.op = "op_identifier";
 		this.value = "";
-		this.kind = "";
 	},
 });
 Object.assign(BayLang.OpCodes.OpIdentifier, use("BayLang.OpCodes.BaseOpCode"));
 Object.assign(BayLang.OpCodes.OpIdentifier,
 {
-	KIND_PIPE: "pipe",
-	KIND_VARIABLE: "var",
-	KIND_SYS_TYPE: "sys",
-	KIND_SYS_FUNCTION: "sys_fn",
-	KIND_FUNCTION: "fn",
-	KIND_CONTEXT: "ctx",
-	KIND_CONSTANT: "const",
-	KIND_CLASS: "class",
-	KIND_CLASSREF: "classref",
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{

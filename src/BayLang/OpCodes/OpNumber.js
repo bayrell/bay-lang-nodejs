@@ -27,7 +27,6 @@ BayLang.OpCodes.OpNumber.prototype = Object.create(use("BayLang.OpCodes.BaseOpCo
 BayLang.OpCodes.OpNumber.prototype.constructor = BayLang.OpCodes.OpNumber;
 Object.assign(BayLang.OpCodes.OpNumber.prototype,
 {
-	/*bool negative = false;*/
 	/**
 	 * Serialize object
 	 */

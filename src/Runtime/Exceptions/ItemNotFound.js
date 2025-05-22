@@ -19,10 +19,10 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Exceptions == 'undefined') Runtime.Exceptions = {};
-Runtime.Exceptions.ItemNotFound = function(ctx, name, object, prev)
+Runtime.Exceptions.ItemNotFound = function(ctx, object, name, prev)
 {
-	if (name == undefined) name = "";
 	if (object == undefined) object = "Item";
+	if (name == undefined) name = "";
 	if (prev == undefined) prev = null;
 	var message = "";
 	if (name != "")

@@ -18,33 +18,21 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBay = function(ctx)
+if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
+BayLang.LangES6.ParserES6 = function(ctx)
 {
 	use("BayLang.CoreParser").apply(this, arguments);
 };
-BayLang.LangBay.ParserBay.prototype = Object.create(use("BayLang.CoreParser").prototype);
-BayLang.LangBay.ParserBay.prototype.constructor = BayLang.LangBay.ParserBay;
-Object.assign(BayLang.LangBay.ParserBay.prototype,
+BayLang.LangES6.ParserES6.prototype = Object.create(use("BayLang.CoreParser").prototype);
+BayLang.LangES6.ParserES6.prototype.constructor = BayLang.LangES6.ParserES6;
+Object.assign(BayLang.LangES6.ParserES6.prototype,
 {
 	/**
 	 * Returns true if registered variable
 	 */
 	isRegisteredVariable: function(ctx, name)
 	{
-		var variables = use("Runtime.Vector").from(["print","rs","rtl"]);
-		if (variables.indexOf(ctx, name) == -1)
-		{
-			return false;
-		}
-		return true;
-	},
-	/**
-	 * Returns true if system type
-	 */
-	isSystemType: function(ctx, name)
-	{
-		var variables = use("Runtime.Vector").from(["var","void","bool","byte","int","char","string","list","scalar","primitive","html","Error","Object","DateTime","Collection","Dict","Vector","Map","ArrayInterface"]);
+		var variables = use("Runtime.Vector").from(["console","document","window"]);
 		if (variables.indexOf(ctx, name) == -1)
 		{
 			return false;
@@ -76,22 +64,6 @@ Object.assign(BayLang.LangBay.ParserBay.prototype,
 		throw op_code.caret_end.error(ctx, "Unknown identifier '" + use("Runtime.rtl").toStr(name) + use("Runtime.rtl").toStr("'"))
 	},
 	/**
-	 * Find type
-	 */
-	findType: function(ctx, op_code)
-	{
-		var name = op_code.value;
-		if (this.uses.has(ctx, name))
-		{
-			return ;
-		}
-		if (this.isSystemType(ctx, name))
-		{
-			return ;
-		}
-		throw op_code.caret_end.error(ctx, "Unknown type '" + use("Runtime.rtl").toStr(name) + use("Runtime.rtl").toStr("'"))
-	},
-	/**
 	 * Parse file and convert to BaseOpCode
 	 */
 	parse: function(ctx)
@@ -106,13 +78,11 @@ Object.assign(BayLang.LangBay.ParserBay.prototype,
 	_init: function(ctx)
 	{
 		use("BayLang.CoreParser").prototype._init.call(this,ctx);
-		var __v0 = use("BayLang.LangBay.ParserBayBase");
-		var __v1 = use("BayLang.LangBay.ParserBayExpression");
-		var __v2 = use("BayLang.LangBay.ParserBayFunction");
-		var __v3 = use("BayLang.LangBay.ParserBayHtml");
-		var __v4 = use("BayLang.LangBay.ParserBayOperator");
-		var __v5 = use("BayLang.LangBay.ParserBayPreprocessor");
-		var __v6 = use("BayLang.LangBay.ParserBayProgram");
+		var __v0 = use("BayLang.LangES6.ParserES6Base");
+		var __v1 = use("BayLang.LangES6.ParserES6Expression");
+		var __v2 = use("BayLang.LangES6.ParserES6Function");
+		var __v3 = use("BayLang.LangES6.ParserES6Operator");
+		var __v4 = use("BayLang.LangES6.ParserES6Program");
 		this.vars = use("Runtime.Map").from({});
 		this.uses = use("Runtime.Map").from({});
 		this.current_namespace = null;
@@ -131,23 +101,21 @@ Object.assign(BayLang.LangBay.ParserBay.prototype,
 		this.parser_base = new __v0(ctx, this);
 		this.parser_expression = new __v1(ctx, this);
 		this.parser_function = new __v2(ctx, this);
-		this.parser_html = new __v3(ctx, this);
-		this.parser_operator = new __v4(ctx, this);
-		this.parser_preprocessor = new __v5(ctx, this);
-		this.parser_program = new __v6(ctx, this);
+		this.parser_operator = new __v3(ctx, this);
+		this.parser_program = new __v4(ctx, this);
 	},
 });
-Object.assign(BayLang.LangBay.ParserBay, use("BayLang.CoreParser"));
-Object.assign(BayLang.LangBay.ParserBay,
+Object.assign(BayLang.LangES6.ParserES6, use("BayLang.CoreParser"));
+Object.assign(BayLang.LangES6.ParserES6,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "BayLang.LangBay";
+		return "BayLang.LangES6";
 	},
 	getClassName: function()
 	{
-		return "BayLang.LangBay.ParserBay";
+		return "BayLang.LangES6.ParserES6";
 	},
 	getParentClassName: function()
 	{
@@ -183,5 +151,5 @@ Object.assign(BayLang.LangBay.ParserBay,
 	{
 		return null;
 	},
-});use.add(BayLang.LangBay.ParserBay);
-module.exports = BayLang.LangBay.ParserBay;
+});use.add(BayLang.LangES6.ParserES6);
+module.exports = BayLang.LangES6.ParserES6;

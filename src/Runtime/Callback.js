@@ -43,13 +43,31 @@ Object.assign(Runtime.Callback.prototype,
 		return true;
 	},
 	/**
+	 * Check callback
+	 */
+	check: function(ctx)
+	{
+		if (!this.exists(ctx))
+		{
+			var __v0 = use("Runtime.Exceptions.RuntimeException");
+			var __v1 = use("Runtime.rtl");
+			throw new __v0(ctx, "Method '" + use("Runtime.rtl").toStr(this.name) + use("Runtime.rtl").toStr("' not found in ") + use("Runtime.rtl").toStr(__v1.get_class_name(ctx, this.obj)))
+		}
+	},
+	/**
 	 * Apply
 	 */
 	apply: function(ctx, args)
 	{
 		if (args == undefined) args = null;
-		var __v0 = use("Runtime.rtl");
-		return __v0.apply(ctx, this, args);
+		this.check(ctx);
+		if (args == null) args = [];
+		else args = Array.prototype.slice.call(args);
+		if (typeof ctx != "undefined") args.unshift(ctx);
+		
+		var obj = this.obj;
+		if (typeof obj == "string") obj = Runtime.rtl.find_class(obj);
+		return obj[this.name].bind(obj).apply(null, args);
 	},
 	_init: function(ctx)
 	{

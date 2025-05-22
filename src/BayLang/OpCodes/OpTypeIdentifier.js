@@ -34,14 +34,14 @@ Object.assign(BayLang.OpCodes.OpTypeIdentifier.prototype,
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
 		serializer.process(ctx, this, "entity_name", data);
-		serializer.process(ctx, this, "template", data);
+		serializer.process(ctx, this, "generics", data);
 	},
 	_init: function(ctx)
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.op = "op_type_identifier";
 		this.entity_name = null;
-		this.template = null;
+		this.generics = null;
 	},
 });
 Object.assign(BayLang.OpCodes.OpTypeIdentifier, use("BayLang.OpCodes.BaseOpCode"));

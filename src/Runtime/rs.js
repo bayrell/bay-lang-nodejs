@@ -403,6 +403,10 @@ Object.assign(Runtime.rs,
 	 */
 	htmlEscape: function(ctx, s)
 	{
+		if (s == null)
+		{
+			return "";
+		}
 		var obj = {
 			"<":"&lt;",
 			">": "&gt;", 

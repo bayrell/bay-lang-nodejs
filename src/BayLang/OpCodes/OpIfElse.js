@@ -34,13 +34,13 @@ Object.assign(BayLang.OpCodes.OpIfElse.prototype,
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
 		serializer.process(ctx, this, "condition", data);
-		serializer.process(ctx, this, "if_true", data);
+		serializer.process(ctx, this, "content", data);
 	},
 	_init: function(ctx)
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.condition = null;
-		this.if_true = null;
+		this.content = null;
 	},
 });
 Object.assign(BayLang.OpCodes.OpIfElse, use("BayLang.OpCodes.BaseOpCode"));

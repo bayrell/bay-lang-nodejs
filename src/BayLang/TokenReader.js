@@ -36,6 +36,13 @@ Object.assign(BayLang.TokenReader.prototype,
 		this.readToken(ctx);
 	},
 	/**
+	 * Returns caret
+	 */
+	caret: function(ctx)
+	{
+		return this.main_caret.copy(ctx);
+	},
+	/**
 	 * Returns eof
 	 */
 	eof: function(ctx)
@@ -60,14 +67,27 @@ Object.assign(BayLang.TokenReader.prototype,
 		return token;
 	},
 	/**
+	 * Returns parser error
+	 */
+	error: function(ctx, message)
+	{
+		return this.main_caret.error(ctx, message);
+	},
+	/**
+	 * Returns expected error
+	 */
+	expected: function(ctx, message)
+	{
+		return this.main_caret.expected(ctx, message);
+	},
+	/**
 	 * Match next token
 	 */
 	matchToken: function(ctx, ch)
 	{
 		if (this.nextToken(ctx) != ch)
 		{
-			var __v0 = use("BayLang.Exceptions.ParserExpected");
-			throw new __v0(ctx, ch, this.main_caret, this.main_caret.file_name)
+			throw new this.next_token.expected(ctx, ch)
 		}
 		this.readToken(ctx);
 	},

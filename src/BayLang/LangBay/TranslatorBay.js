@@ -21,51 +21,12 @@ if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
 BayLang.LangBay.TranslatorBay = function(ctx)
 {
-	use("Runtime.BaseObject").apply(this, arguments);
+	use("BayLang.CoreTranslator").apply(this, arguments);
 };
-BayLang.LangBay.TranslatorBay.prototype = Object.create(use("Runtime.BaseObject").prototype);
+BayLang.LangBay.TranslatorBay.prototype = Object.create(use("BayLang.CoreTranslator").prototype);
 BayLang.LangBay.TranslatorBay.prototype.constructor = BayLang.LangBay.TranslatorBay;
 Object.assign(BayLang.LangBay.TranslatorBay.prototype,
 {
-	/**
-	 * Reset translator
-	 */
-	reset: function(ctx)
-	{
-		this.opcode_level = 0;
-		this.indent_level = 0;
-		this.preprocessor_flags = use("Runtime.Map").from({});
-	},
-	/**
-	 * Set flag
-	 */
-	setFlag: function(ctx, flag_name, value)
-	{
-		this.preprocessor_flags.set(ctx, flag_name, value);
-		return this;
-	},
-	/**
-	 * Increment indent level
-	 */
-	levelInc: function(ctx)
-	{
-		this.indent_level = this.indent_level + 1;
-	},
-	/**
-	 * Decrease indent level
-	 */
-	levelDec: function(ctx)
-	{
-		this.indent_level = this.indent_level - 1;
-	},
-	/**
-	 * Returns new line with indent
-	 */
-	newLine: function(ctx)
-	{
-		var __v0 = use("Runtime.rs");
-		return this.crlf + use("Runtime.rtl").toStr(__v0.str_repeat(ctx, this.indent, this.indent_level));
-	},
 	/**
 	 * Returns string
 	 */
@@ -83,45 +44,39 @@ Object.assign(BayLang.LangBay.TranslatorBay.prototype,
 		s = __v4.replace(ctx, "\t", "\\t", s);
 		return "\"" + use("Runtime.rtl").toStr(s) + use("Runtime.rtl").toStr("\"");
 	},
+	/**
+	 * Translate BaseOpCode
+	 */
+	translate: function(ctx, op_code)
+	{
+		var content = use("Runtime.Vector").from([]);
+		if (op_code.is_component)
+		{
+			this.html.translate(ctx, op_code, content);
+		}
+		else
+		{
+			this.program.translate(ctx, op_code, content);
+		}
+		var __v0 = use("Runtime.rs");
+		return __v0.join(ctx, "", content);
+	},
 	_init: function(ctx)
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("BayLang.CoreTranslator").prototype._init.call(this,ctx);
 		var __v0 = use("BayLang.LangBay.TranslatorBayExpression");
 		var __v1 = use("BayLang.LangBay.TranslatorBayOperator");
 		var __v2 = use("BayLang.LangBay.TranslatorBayProgram");
 		var __v3 = use("BayLang.LangBay.TranslatorBayHtml");
-		this.opcode_level = 0;
-		this.indent_level = 0;
-		this.indent = "\t";
-		this.crlf = "\n";
-		this.preprocessor_flags = use("Runtime.Map").from({});
 		this.expression = new __v0(ctx, this);
 		this.operator = new __v1(ctx, this);
 		this.program = new __v2(ctx, this);
 		this.html = new __v3(ctx, this);
 	},
 });
-Object.assign(BayLang.LangBay.TranslatorBay, use("Runtime.BaseObject"));
+Object.assign(BayLang.LangBay.TranslatorBay, use("BayLang.CoreTranslator"));
 Object.assign(BayLang.LangBay.TranslatorBay,
 {
-	/**
-	 * Translate BaseOpCode
-	 */
-	translate: function(ctx, t, op_code)
-	{
-		var content = use("Runtime.Vector").from([]);
-		if (op_code.is_component)
-		{
-			t.html.translate(ctx, op_code, content);
-		}
-		else
-		{
-			t.program.translate(ctx, op_code, content);
-		}
-		var __v0 = use("Runtime.rs");
-		var result = __v0.join(ctx, "", content);
-		return use("Runtime.Vector").from([t,result]);
-	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
@@ -133,7 +88,7 @@ Object.assign(BayLang.LangBay.TranslatorBay,
 	},
 	getParentClassName: function()
 	{
-		return "Runtime.BaseObject";
+		return "BayLang.CoreTranslator";
 	},
 	getClassInfo: function(ctx)
 	{

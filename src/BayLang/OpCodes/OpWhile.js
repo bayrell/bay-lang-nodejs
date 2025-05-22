@@ -34,14 +34,14 @@ Object.assign(BayLang.OpCodes.OpWhile.prototype,
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
 		serializer.process(ctx, this, "condition", data);
-		serializer.process(ctx, this, "value", data);
+		serializer.process(ctx, this, "content", data);
 	},
 	_init: function(ctx)
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.op = "op_while";
 		this.condition = null;
-		this.value = null;
+		this.content = null;
 	},
 });
 Object.assign(BayLang.OpCodes.OpWhile, use("BayLang.OpCodes.BaseOpCode"));

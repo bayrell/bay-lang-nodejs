@@ -46,7 +46,6 @@ Object.assign(BayLang.OpCodes.OpCall.prototype,
 		this.obj = null;
 		this.args = null;
 		this.is_await = false;
-		this.is_context = true;
 		this.is_html = false;
 	},
 });

@@ -26,21 +26,31 @@ Object.assign(BayLang.LangUtils.prototype,
 });
 Object.assign(BayLang.LangUtils,
 {
+	ERROR_PARSER: -1000,
+	ERROR_PARSER_EOF: -1001,
+	ERROR_PARSER_EXPECTED: -1002,
 	/**
-	 * Parse file and convert to BaseOpCode
+	 * Create parser
 	 */
-	parse: function(ctx, parser, text)
+	createParser: function(ctx, lang)
 	{
-		var res = parser.constructor.parse(ctx, parser, text);
-		return Runtime.rtl.attr(ctx, res, 1);
-	},
-	/**
-	 * Translate BaseOpCode to string
-	 */
-	translate: function(ctx, translator, op_code)
-	{
-		var res = translator.constructor.translate(ctx, translator, op_code);
-		return Runtime.rtl.attr(ctx, res, 1);
+		if (lang == undefined) lang = "";
+		if (lang == "bay")
+		{
+			var __v0 = use("BayLang.LangBay.ParserBay");
+			return new __v0(ctx);
+		}
+		else if (lang == "es6")
+		{
+			var __v1 = use("BayLang.LangES6.ParserES6");
+			return new __v1(ctx);
+		}
+		else if (lang == "php")
+		{
+			var __v2 = use("BayLang.LangPHP.ParserPHP");
+			return new __v2(ctx);
+		}
+		return null;
 	},
 	/**
 	 * Create translator
@@ -48,32 +58,27 @@ Object.assign(BayLang.LangUtils,
 	createTranslator: function(ctx, lang)
 	{
 		if (lang == undefined) lang = "";
-		var t = null;
 		if (lang == "bay")
 		{
 			var __v0 = use("BayLang.LangBay.TranslatorBay");
-			t = new __v0(ctx);
-			t.reset(ctx);
+			return new __v0(ctx);
 		}
 		else if (lang == "es6")
 		{
 			var __v1 = use("BayLang.LangES6.TranslatorES6");
-			t = new __v1(ctx);
-			t = t.constructor.reset(ctx, t);
+			return new __v1(ctx);
 		}
 		else if (lang == "nodejs")
 		{
 			var __v2 = use("BayLang.LangNode.TranslatorNode");
-			t = new __v2(ctx);
-			t = t.constructor.reset(ctx, t);
+			return new __v2(ctx);
 		}
 		else if (lang == "php")
 		{
 			var __v3 = use("BayLang.LangPHP.TranslatorPHP");
-			t = new __v3(ctx);
-			t = t.constructor.reset(ctx, t);
+			return new __v3(ctx);
 		}
-		return t;
+		return null;
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()

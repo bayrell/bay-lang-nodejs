@@ -208,6 +208,22 @@ Object.assign(BayLang.Caret.prototype,
 		return s;
 	},
 	/**
+	 * Returns parser error
+	 */
+	error: function(ctx, message)
+	{
+		var __v0 = use("BayLang.Exceptions.ParserError");
+		return new __v0(ctx, message, this, this.file_name);
+	},
+	/**
+	 * Returns expected error
+	 */
+	expected: function(ctx, message)
+	{
+		var __v0 = use("BayLang.Exceptions.ParserExpected");
+		return new __v0(ctx, message, this, this.file_name);
+	},
+	/**
 	 * Match char
 	 */
 	matchChar: function(ctx, ch)
@@ -215,8 +231,7 @@ Object.assign(BayLang.Caret.prototype,
 		var next = this.nextChar(ctx);
 		if (next != ch)
 		{
-			var __v0 = use("BayLang.Exceptions.ParserExpected");
-			throw new __v0(ctx, ch, this, this.file_name)
+			throw this.expected(ctx, ch)
 		}
 		this.readChar(ctx);
 	},
@@ -230,8 +245,7 @@ Object.assign(BayLang.Caret.prototype,
 		var next_string = this.nextString(ctx, count);
 		if (next_string != s)
 		{
-			var __v1 = use("BayLang.Exceptions.ParserExpected");
-			throw new __v1(ctx, s, this, this.file_name)
+			throw this.expected(ctx, s)
 		}
 		this.readString(ctx, count);
 	},
@@ -271,22 +285,79 @@ Object.assign(BayLang.Caret.prototype,
 	 */
 	readToken: function(ctx)
 	{
-		var items = use("Runtime.Vector").from([]);
+		/* Skip space */
 		this.skipSpace(ctx);
 		if (this.eof(ctx))
 		{
 			return "";
 		}
+		/* Read special token */
+		var token = this.readSpecialToken(ctx);
+		if (token)
+		{
+			var __v0 = use("Runtime.rs");
+			this.readString(ctx, __v0.strlen(ctx, token));
+			return token;
+		}
+		/* Read char */
 		if (!this.isTokenChar(ctx, this.nextChar(ctx)))
 		{
 			return this.readChar(ctx);
 		}
+		/* Read token */
+		var items = use("Runtime.Vector").from([]);
 		while (!this.eof(ctx) && this.isTokenChar(ctx, this.nextChar(ctx)))
 		{
 			items.push(ctx, this.readChar(ctx));
 		}
 		var __v0 = use("Runtime.rs");
 		return __v0.join(ctx, "", items);
+	},
+	/**
+	 * Read special token
+	 */
+	readSpecialToken: function(ctx)
+	{
+		if (this.eof(ctx))
+		{
+			return "";
+		}
+		var s = this.nextString(ctx, 10);
+		if (s == "#endswitch")
+		{
+			return s;
+		}
+		s = this.nextString(ctx, 7);
+		if (s == "#ifcode" || s == "#switch" || s == "#elseif" || s == "%render")
+		{
+			return s;
+		}
+		s = this.nextString(ctx, 6);
+		if (s == "#endif" || s == "#ifdef" || s == "%while")
+		{
+			return s;
+		}
+		s = this.nextString(ctx, 5);
+		if (s == "#case" || s == "%else" || s == "<?php")
+		{
+			return s;
+		}
+		s = this.nextString(ctx, 4);
+		if (s == "@css" || s == "%for" || s == "%var" || s == "%set")
+		{
+			return s;
+		}
+		s = this.nextString(ctx, 3);
+		if (s == "!--" || s == "!==" || s == "===" || s == "..." || s == "#if" || s == "%if")
+		{
+			return s;
+		}
+		s = this.nextString(ctx, 2);
+		if (s == "==" || s == "!=" || s == "<=" || s == ">=" || s == "=>" || s == "->" || s == "|>" || s == "::" || s == "+=" || s == "-=" || s == "~=" || s == "**" || s == "<<" || s == ">>" || s == "++" || s == "--")
+		{
+			return s;
+		}
+		return "";
 	},
 	_init: function(ctx)
 	{
@@ -310,27 +381,19 @@ Object.assign(BayLang.Caret,
 	 */
 	isChar: function(ctx, ch)
 	{
-		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isChar", arguments);
-		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
 		var __v1 = use("Runtime.rs");
-		var __memorize_value = __v0.indexOf(ctx, "qazwsxedcrfvtgbyhnujmikolp", __v1.lower(ctx, ch)) !== -1;
-		use("Runtime.rtl")._memorizeSave("BayLang.Caret.isChar", arguments, __memorize_value);
-		return __memorize_value;
+		return __v0.indexOf(ctx, "qazwsxedcrfvtgbyhnujmikolp", __v1.lower(ctx, ch)) !== -1;
 	},
 	/**
 	 * Return true if is number
 	 * @param char ch
 	 * @return boolean
 	 */
-	isNumber: function(ctx, ch)
+	isNumberChar: function(ctx, ch)
 	{
-		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isNumber", arguments);
-		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
-		var __memorize_value = __v0.indexOf(ctx, "0123456789", ch) !== -1;
-		use("Runtime.rtl")._memorizeSave("BayLang.Caret.isNumber", arguments, __memorize_value);
-		return __memorize_value;
+		return __v0.indexOf(ctx, "0123456789", ch) !== -1;
 	},
 	/**
 	 * Return true if char is number
@@ -339,38 +402,28 @@ Object.assign(BayLang.Caret,
 	 */
 	isHexChar: function(ctx, ch)
 	{
-		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isHexChar", arguments);
-		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
 		var __v1 = use("Runtime.rs");
-		var __memorize_value = __v0.indexOf(ctx, "0123456789abcdef", __v1.lower(ctx, ch)) !== -1;
-		use("Runtime.rtl")._memorizeSave("BayLang.Caret.isHexChar", arguments, __memorize_value);
-		return __memorize_value;
+		return __v0.indexOf(ctx, "0123456789abcdef", __v1.lower(ctx, ch)) !== -1;
 	},
 	/**
 	 * Return true if is string of numbers
 	 * @param string s
 	 * @return boolean
 	 */
-	isStringOfNumbers: function(ctx, s)
+	isNumber: function(ctx, s)
 	{
-		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isStringOfNumbers", arguments);
-		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
 		var sz = __v0.strlen(ctx, s);
 		for (var i = 0; i < sz; i++)
 		{
 			var __v1 = use("Runtime.rs");
-			if (!this.isNumber(ctx, __v1.charAt(ctx, s, i)))
+			if (!this.isNumberChar(ctx, __v1.charAt(ctx, s, i)))
 			{
-				var __memorize_value = false;
-				use("Runtime.rtl")._memorizeSave("BayLang.Caret.isStringOfNumbers", arguments, __memorize_value);
-				return __memorize_value;
+				return false;
 			}
 		}
-		var __memorize_value = true;
-		use("Runtime.rtl")._memorizeSave("BayLang.Caret.isStringOfNumbers", arguments, __memorize_value);
-		return __memorize_value;
+		return true;
 	},
 	/**
 	 * Return true if char is system or space. ASCII code <= 32.
@@ -379,18 +432,12 @@ Object.assign(BayLang.Caret,
 	 */
 	isSkipChar: function(ctx, ch)
 	{
-		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isSkipChar", arguments);
-		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
 		if (__v0.ord(ctx, ch) <= 32)
 		{
-			var __memorize_value = true;
-			use("Runtime.rtl")._memorizeSave("BayLang.Caret.isSkipChar", arguments, __memorize_value);
-			return __memorize_value;
+			return true;
 		}
-		var __memorize_value = false;
-		use("Runtime.rtl")._memorizeSave("BayLang.Caret.isSkipChar", arguments, __memorize_value);
-		return __memorize_value;
+		return false;
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()

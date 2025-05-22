@@ -18,77 +18,22 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBayProgram = function(ctx, parser)
+if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
+BayLang.LangES6.ParserES6Program = function(ctx, parser)
 {
 	use("Runtime.BaseObject").call(this, ctx);
 	this.parser = parser;
 };
-BayLang.LangBay.ParserBayProgram.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.LangBay.ParserBayProgram.prototype.constructor = BayLang.LangBay.ParserBayProgram;
-Object.assign(BayLang.LangBay.ParserBayProgram.prototype,
+BayLang.LangES6.ParserES6Program.prototype = Object.create(use("Runtime.BaseObject").prototype);
+BayLang.LangES6.ParserES6Program.prototype.constructor = BayLang.LangES6.ParserES6Program;
+Object.assign(BayLang.LangES6.ParserES6Program.prototype,
 {
-	/**
-	 * Read namespace
-	 */
-	readNamespace: function(ctx, reader)
-	{
-		var caret_start = reader.caret(ctx);
-		/* Read module name */
-		reader.matchToken(ctx, "namespace");
-		var entity_name = this.parser.parser_base.readEntityName(ctx, reader);
-		var module_name = entity_name.getName(ctx);
-		/* Create op_code */
-		var __v0 = use("BayLang.OpCodes.OpNamespace");
-		var op_code = new __v0(ctx, use("Runtime.Map").from({"caret_start":caret_start,"caret_end":reader.caret(ctx),"name":module_name}));
-		/* Set current namespace */
-		this.parser.current_namespace = op_code;
-		this.parser.current_namespace_name = module_name;
-		/* Returns op_code */
-		return op_code;
-	},
-	/**
-	 * Read use
-	 */
-	readUse: function(ctx, reader)
-	{
-		var look = null;
-		var token = null;
-		var name = null;
-		var caret_start = reader.caret(ctx);
-		var alias = "";
-		/* Read module name */
-		reader.matchToken(ctx, "use");
-		var module_name = this.parser.parser_base.readEntityName(ctx, reader);
-		/* Read alias */
-		if (reader.nextToken(ctx) == "as")
-		{
-			reader.readToken(ctx);
-			alias = reader.readToken(ctx);
-		}
-		var __v0 = use("BayLang.OpCodes.OpUse");
-		return new __v0(ctx, use("Runtime.Map").from({"name":module_name.getName(ctx),"alias":alias,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
-	},
 	/**
 	 * Read module
 	 */
 	readModuleItem: function(ctx, reader)
 	{
-		var next_token = reader.nextToken(ctx);
-		/* Namespace */
-		if (next_token == "namespace")
-		{
-			return this.readNamespace(ctx, reader);
-		}
-		else if (next_token == "use")
-		{
-			return this.readUse(ctx, reader);
-		}
-		else if (next_token != "")
-		{
-			return this.parser.parser_operator.readOperator(ctx, reader);
-		}
-		return null;
+		return this.parser.parser_operator.readOperator(ctx, reader);
 	},
 	/**
 	 * Parse program
@@ -127,17 +72,17 @@ Object.assign(BayLang.LangBay.ParserBayProgram.prototype,
 		this.parser = null;
 	},
 });
-Object.assign(BayLang.LangBay.ParserBayProgram, use("Runtime.BaseObject"));
-Object.assign(BayLang.LangBay.ParserBayProgram,
+Object.assign(BayLang.LangES6.ParserES6Program, use("Runtime.BaseObject"));
+Object.assign(BayLang.LangES6.ParserES6Program,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "BayLang.LangBay";
+		return "BayLang.LangES6";
 	},
 	getClassName: function()
 	{
-		return "BayLang.LangBay.ParserBayProgram";
+		return "BayLang.LangES6.ParserES6Program";
 	},
 	getParentClassName: function()
 	{
@@ -173,5 +118,5 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 	{
 		return null;
 	},
-});use.add(BayLang.LangBay.ParserBayProgram);
-module.exports = BayLang.LangBay.ParserBayProgram;
+});use.add(BayLang.LangES6.ParserES6Program);
+module.exports = BayLang.LangES6.ParserES6Program;

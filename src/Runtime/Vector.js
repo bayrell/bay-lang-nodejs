@@ -121,7 +121,8 @@ Object.assign(Runtime.Vector.prototype,
 	 */
 	add: function(ctx, value, pos, kind)
 	{
-		if (kind == undefined) kind = "before";
+		if (pos == undefined) pos = -1;
+		if (kind == undefined) kind = "after";
 		if (pos == -1)
 		{
 			if (kind == "before")
@@ -132,7 +133,7 @@ Object.assign(Runtime.Vector.prototype,
 			else
 			{
 				this.append(ctx, value);
-				return this.count(ctx);
+				return this.count(ctx) - 1;
 			}
 		}
 		if (kind == "after")
@@ -150,7 +151,7 @@ Object.assign(Runtime.Vector.prototype,
 	 */
 	addItem: function(ctx, value, dest_item, kind)
 	{
-		if (kind == undefined) kind = "before";
+		if (kind == undefined) kind = "after";
 		var pos = this.indexOf(ctx, dest_item);
 		return this.add(ctx, value, pos, kind);
 	},

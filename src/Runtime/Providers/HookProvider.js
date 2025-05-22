@@ -57,7 +57,7 @@ Object.assign(Runtime.Providers.HookProvider.prototype,
 	 */
 	register: function(ctx, hook_name, obj, method_name, priority)
 	{
-		if (priority == undefined) priority = 0;
+		if (priority == undefined) priority = 100;
 		if (!this.hooks.has(ctx, hook_name))
 		{
 			var __v0 = use("Runtime.Map");
@@ -112,7 +112,8 @@ Object.assign(Runtime.Providers.HookProvider.prototype,
 		var __v0 = use("Runtime.Vector");
 		var res = new __v0(ctx);
 		var priorities = Runtime.rtl.attr(ctx, this.hooks, hook_name);
-		var priorities_keys = priorities.keys(ctx).sort(ctx);
+		var __v1 = use("Runtime.lib");
+		var priorities_keys = priorities.keys(ctx).sort(ctx, __v1.compareInt(ctx));
 		for (var i = 0; i < priorities_keys.count(ctx); i++)
 		{
 			var priority = Runtime.rtl.attr(ctx, priorities_keys, i);

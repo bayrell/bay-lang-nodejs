@@ -18,15 +18,15 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBayExpression = function(ctx, parser)
+if (typeof BayLang.LangPHP == 'undefined') BayLang.LangPHP = {};
+BayLang.LangPHP.ParserPHPExpression = function(ctx, parser)
 {
 	use("Runtime.BaseObject").call(this, ctx);
 	this.parser = parser;
 };
-BayLang.LangBay.ParserBayExpression.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.LangBay.ParserBayExpression.prototype.constructor = BayLang.LangBay.ParserBayExpression;
-Object.assign(BayLang.LangBay.ParserBayExpression.prototype,
+BayLang.LangPHP.ParserPHPExpression.prototype = Object.create(use("Runtime.BaseObject").prototype);
+BayLang.LangPHP.ParserPHPExpression.prototype.constructor = BayLang.LangPHP.ParserPHPExpression;
+Object.assign(BayLang.LangPHP.ParserPHPExpression.prototype,
 {
 	/**
 	 * Read negative
@@ -282,17 +282,17 @@ Object.assign(BayLang.LangBay.ParserBayExpression.prototype,
 		this.parser = null;
 	},
 });
-Object.assign(BayLang.LangBay.ParserBayExpression, use("Runtime.BaseObject"));
-Object.assign(BayLang.LangBay.ParserBayExpression,
+Object.assign(BayLang.LangPHP.ParserPHPExpression, use("Runtime.BaseObject"));
+Object.assign(BayLang.LangPHP.ParserPHPExpression,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "BayLang.LangBay";
+		return "BayLang.LangPHP";
 	},
 	getClassName: function()
 	{
-		return "BayLang.LangBay.ParserBayExpression";
+		return "BayLang.LangPHP.ParserPHPExpression";
 	},
 	getParentClassName: function()
 	{
@@ -328,5 +328,5 @@ Object.assign(BayLang.LangBay.ParserBayExpression,
 	{
 		return null;
 	},
-});use.add(BayLang.LangBay.ParserBayExpression);
-module.exports = BayLang.LangBay.ParserBayExpression;
+});use.add(BayLang.LangPHP.ParserPHPExpression);
+module.exports = BayLang.LangPHP.ParserPHPExpression;

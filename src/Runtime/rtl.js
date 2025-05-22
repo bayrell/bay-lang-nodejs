@@ -41,29 +41,26 @@ Object.assign(Runtime.rtl,
 	ERROR_OK: 1,
 	ERROR_PROCCESS: 100,
 	ERROR_FALSE: -100,
+	ERROR_RUNTIME: -1,
 	ERROR_UNKNOWN: -1,
 	ERROR_INDEX_OUT_OF_RANGE: -2,
-	ERROR_KEY_NOT_FOUND: -3,
-	ERROR_STOP_ITERATION: -4,
-	ERROR_FILE_NOT_FOUND: -5,
+	ERROR_STOP_ITERATION: -3,
 	ERROR_ITEM_NOT_FOUND: -5,
-	ERROR_OBJECT_DOES_NOT_EXISTS: -5,
 	ERROR_OBJECT_ALLREADY_EXISTS: -6,
 	ERROR_ASSERT: -7,
 	ERROR_REQUEST: -8,
 	ERROR_RESPONSE: -9,
 	ERROR_CSRF_TOKEN: -10,
-	ERROR_RUNTIME: -11,
 	ERROR_VALIDATION: -12,
-	ERROR_PARSE_SERIALIZATION_ERROR: -14,
-	ERROR_ASSIGN_DATA_STRUCT_VALUE: -15,
+	ERROR_SERIALIZATION: -14,
+	ERROR_ASSIGN: -15,
 	ERROR_AUTH: -16,
 	ERROR_DUPLICATE: -17,
 	ERROR_API_NOT_FOUND: -18,
 	ERROR_API_WRONG_FORMAT: -19,
 	ERROR_API_WRONG_APP_NAME: -20,
-	ERROR_API_ERROR: -21,
-	ERROR_CURL_ERROR: -22,
+	ERROR_API: -21,
+	ERROR_CURL: -22,
 	ERROR_FATAL: -99,
 	ERROR_HTTP_CONTINUE: -100,
 	ERROR_HTTP_SWITCH: -101,
@@ -260,26 +257,21 @@ Object.assign(Runtime.rtl,
 		if (args == undefined) args = null;
 		if (args == null) args = [];
 		else args = Array.prototype.slice.call(args);
-		
 		if (typeof ctx != "undefined") args.unshift(ctx);
 		
 		if (f instanceof Runtime.Callback)
 		{
-			let obj = f.obj;
-			let method_name = f.name;
-			if (typeof obj == "string") obj = this.find_class(obj);
-			if (!this.exists(ctx, obj) || !this.exists(ctx, obj[method_name]))
-			{
-				throw new Runtime.Exceptions.RuntimeException(ctx, "Method '" +
-					f.name + "' not found in " +
-					this.get_class_name(ctx, f.obj)
-				);
-			}
-			return obj[f.name].bind(obj).apply(null, args);
-			/*return Runtime.rtl.apply(obj[f.name].bind(obj), args);*/
+			return f.apply(args);
 		}
 		
 		return f.apply(null, args);
+	},
+	/**
+	 * Await promise
+	 */
+	resolvePromise: async function(ctx, value)
+	{
+		return await value;
 	},
 	/**
 	 * Run async function

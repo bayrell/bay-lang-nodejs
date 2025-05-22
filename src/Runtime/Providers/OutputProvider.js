@@ -107,6 +107,11 @@ Object.assign(Runtime.Providers.OutputProvider.prototype,
 		}
 		return color;
 	},
+	_init: function(ctx)
+	{
+		use("Runtime.BaseProvider").prototype._init.call(this,ctx);
+		this.color_table = use("Runtime.Map").from({});
+	},
 });
 Object.assign(Runtime.Providers.OutputProvider, use("Runtime.BaseProvider"));
 Object.assign(Runtime.Providers.OutputProvider,

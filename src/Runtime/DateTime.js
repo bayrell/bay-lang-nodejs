@@ -138,7 +138,7 @@ Object.assign(Runtime.DateTime.prototype,
 		var offset = ctx.env(ctx, "TZ_OFFSET");
 		if (offset)
 		{
-			dt = dt.shiftOffset(ctx, offset);
+			dt = dt.setOffset(ctx, offset);
 		}
 		return dt;
 	},
@@ -149,19 +149,19 @@ Object.assign(Runtime.DateTime.prototype,
 	{
 		var timestamp = this.getTimestamp(ctx);
 		var dt = this.constructor.create(ctx, timestamp + seconds);
-		dt.shiftOffset(ctx, this.o);
+		dt.setOffset(ctx, this.o);
 		return dt;
 	},
 	/**
-	 * Shift offset
+	 * Set offset
 	 */
-	shiftOffset: function(ctx, offset)
+	setOffset: function(ctx, offset)
 	{
 		var dt = this.toObject(ctx);
 		var dt_offset;
 		dt_offset = -dt.getTimezoneOffset() * 60;
 		/* Modify offset */
-		var delta = offset * 60 * 60 - dt_offset;
+		var delta = offset - dt_offset;
 		dt = this.constructor.modify(ctx, dt, delta);
 		var obj = this.constructor.fromObject(ctx, dt);
 		obj.o = offset;
@@ -252,6 +252,12 @@ Object.assign(Runtime.DateTime,
 		return dt;
 	},
 	/**
+	 * Get tz offset
+	 */
+	getOffset: function(ctx, tz)
+	{
+	},
+	/**
 	 * Add seconds
 	 */
 	modify: function(ctx, dt, seconds)
@@ -267,6 +273,9 @@ Object.assign(Runtime.DateTime,
 		dt.setHours(dt.getHours() + h);
 		return dt;
 	},
+	/**
+	 * Create from native object
+	 */
 	fromObject: function(ctx, dt)
 	{
 		var Dict = use("Runtime.Dict");

@@ -18,15 +18,15 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBayExpression = function(ctx, parser)
+if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
+BayLang.LangES6.ParserES6Expression = function(ctx, parser)
 {
 	use("Runtime.BaseObject").call(this, ctx);
 	this.parser = parser;
 };
-BayLang.LangBay.ParserBayExpression.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.LangBay.ParserBayExpression.prototype.constructor = BayLang.LangBay.ParserBayExpression;
-Object.assign(BayLang.LangBay.ParserBayExpression.prototype,
+BayLang.LangES6.ParserES6Expression.prototype = Object.create(use("Runtime.BaseObject").prototype);
+BayLang.LangES6.ParserES6Expression.prototype.constructor = BayLang.LangES6.ParserES6Expression;
+Object.assign(BayLang.LangES6.ParserES6Expression.prototype,
 {
 	/**
 	 * Read negative
@@ -49,13 +49,17 @@ Object.assign(BayLang.LangBay.ParserBayExpression.prototype,
 	readBitNot: function(ctx, reader)
 	{
 		var caret_start = reader.caret(ctx);
-		var operations = use("Runtime.Vector").from(["not","bitnot","!"]);
+		var operations = use("Runtime.Vector").from(["~","!"]);
 		if (operations.indexOf(ctx, reader.nextToken(ctx)) >= 0)
 		{
 			var op = reader.readToken(ctx);
 			if (op == "!")
 			{
 				op = "not";
+			}
+			else if (op == "~")
+			{
+				op = "bitnot";
 			}
 			var op_code = this.readNegative(ctx, reader);
 			var __v0 = use("BayLang.OpCodes.OpMath");
@@ -282,17 +286,17 @@ Object.assign(BayLang.LangBay.ParserBayExpression.prototype,
 		this.parser = null;
 	},
 });
-Object.assign(BayLang.LangBay.ParserBayExpression, use("Runtime.BaseObject"));
-Object.assign(BayLang.LangBay.ParserBayExpression,
+Object.assign(BayLang.LangES6.ParserES6Expression, use("Runtime.BaseObject"));
+Object.assign(BayLang.LangES6.ParserES6Expression,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "BayLang.LangBay";
+		return "BayLang.LangES6";
 	},
 	getClassName: function()
 	{
-		return "BayLang.LangBay.ParserBayExpression";
+		return "BayLang.LangES6.ParserES6Expression";
 	},
 	getParentClassName: function()
 	{
@@ -328,5 +332,5 @@ Object.assign(BayLang.LangBay.ParserBayExpression,
 	{
 		return null;
 	},
-});use.add(BayLang.LangBay.ParserBayExpression);
-module.exports = BayLang.LangBay.ParserBayExpression;
+});use.add(BayLang.LangES6.ParserES6Expression);
+module.exports = BayLang.LangES6.ParserES6Expression;

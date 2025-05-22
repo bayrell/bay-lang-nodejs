@@ -28,18 +28,28 @@ BayLang.OpCodes.OpEntityName.prototype.constructor = BayLang.OpCodes.OpEntityNam
 Object.assign(BayLang.OpCodes.OpEntityName.prototype,
 {
 	/**
+	 * Returns name
+	 */
+	getName: function(ctx)
+	{
+		return this.items.map(ctx, (ctx, item) =>
+		{
+			return item.value;
+		}).join(ctx, ".");
+	},
+	/**
 	 * Serialize object
 	 */
 	serialize: function(ctx, serializer, data)
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
-		serializer.process(ctx, this, "names", data);
+		serializer.process(ctx, this, "items", data);
 	},
 	_init: function(ctx)
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.op = "op_entity_name";
-		this.names = null;
+		this.items = null;
 	},
 });
 Object.assign(BayLang.OpCodes.OpEntityName, use("BayLang.OpCodes.BaseOpCode"));

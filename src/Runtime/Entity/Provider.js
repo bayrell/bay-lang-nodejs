@@ -42,7 +42,7 @@ Object.assign(Runtime.Entity.Provider.prototype,
 	/**
 	 * Create provider
 	 */
-	createProvider: function(ctx)
+	createInstance: function(ctx)
 	{
 		var provider = null;
 		var class_name = this.value;
@@ -125,5 +125,9 @@ Object.assign(Runtime.Entity.Provider,
 	{
 		return null;
 	},
+	__implements__:
+	[
+		use("Runtime.FactoryInterface"),
+	],
 });use.add(Runtime.Entity.Provider);
 module.exports = Runtime.Entity.Provider;

@@ -18,15 +18,15 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBayBase = function(ctx, parser)
+if (typeof BayLang.LangPHP == 'undefined') BayLang.LangPHP = {};
+BayLang.LangPHP.ParserPHPBase = function(ctx, parser)
 {
 	use("Runtime.BaseObject").call(this, ctx);
 	this.parser = parser;
 };
-BayLang.LangBay.ParserBayBase.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.LangBay.ParserBayBase.prototype.constructor = BayLang.LangBay.ParserBayBase;
-Object.assign(BayLang.LangBay.ParserBayBase.prototype,
+BayLang.LangPHP.ParserPHPBase.prototype = Object.create(use("Runtime.BaseObject").prototype);
+BayLang.LangPHP.ParserPHPBase.prototype.constructor = BayLang.LangPHP.ParserPHPBase;
+Object.assign(BayLang.LangPHP.ParserPHPBase.prototype,
 {
 	/**
 	 * Read number
@@ -174,6 +174,11 @@ Object.assign(BayLang.LangBay.ParserBayBase.prototype,
 	readIdentifier: function(ctx, reader)
 	{
 		var caret_start = reader.caret(ctx);
+		/* Skip $ */
+		if (reader.nextToken(ctx) == "$")
+		{
+			reader.readToken(ctx);
+		}
 		/* Read identifier */
 		var name = reader.readToken(ctx);
 		if (!this.constructor.isIdentifier(ctx, name) || this.constructor.isReserved(ctx, name))
@@ -194,7 +199,7 @@ Object.assign(BayLang.LangBay.ParserBayBase.prototype,
 		/* Read name */
 		items.push(ctx, this.readIdentifier(ctx, reader));
 		/* Read names */
-		while (reader.nextToken(ctx) == ".")
+		while (reader.nextToken(ctx) == "\\")
 		{
 			reader.readToken(ctx);
 			items.push(ctx, this.readIdentifier(ctx, reader));
@@ -245,8 +250,8 @@ Object.assign(BayLang.LangBay.ParserBayBase.prototype,
 		this.parser = null;
 	},
 });
-Object.assign(BayLang.LangBay.ParserBayBase, use("Runtime.BaseObject"));
-Object.assign(BayLang.LangBay.ParserBayBase,
+Object.assign(BayLang.LangPHP.ParserPHPBase, use("Runtime.BaseObject"));
+Object.assign(BayLang.LangPHP.ParserPHPBase,
 {
 	/**
 	 * Is system type
@@ -671,291 +676,6 @@ Object.assign(BayLang.LangBay.ParserBayBase,
 		return use("Runtime.Vector").from([parser,new __v0(ctx, use("Runtime.Map").from({"args":args,"value":op_code,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/**
-	 * Read method
-	 */
-	readMethod: function(ctx, parser, match)
-	{
-		if (match == undefined) match = true;
-		var look = null;
-		var token = null;
-		var parser_value = null;
-		var op_code = null;
-		var value1 = "";
-		var value2 = "";
-		var kind = "";
-		var caret_start = parser.caret;
-		if (match)
-		{
-			var res = this.matchToken(ctx, parser, "method");
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			token = Runtime.rtl.attr(ctx, res, 1);
-		}
-		var save = parser;
-		/* Read static method */
-		var __v0 = use("BayLang.Exceptions.ParserError");
-		try
-		{
-			var res = this.readIdentifier(ctx, parser);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			op_code = Runtime.rtl.attr(ctx, res, 1);
-			var res = this.matchToken(ctx, parser, "::");
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			var res = this.readToken(ctx, parser);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			token = Runtime.rtl.attr(ctx, res, 1);
-			var __v0 = use("BayLang.OpCodes.OpIdentifier");
-			if (op_code.kind == __v0.KIND_VARIABLE)
-			{
-				var __v1 = use("BayLang.OpCodes.OpMethod");
-				kind = __v1.KIND_STATIC;
-			}
-			else
-			{
-				var __v2 = use("BayLang.OpCodes.OpMethod");
-				kind = __v2.KIND_CLASS;
-			}
-			value1 = op_code;
-			value2 = token.content;
-		}
-		catch (_ex)
-		{
-			if (_ex instanceof __v0)
-			{
-				var e = _ex;
-			}
-			else
-			{
-				throw _ex;
-			}
-		}
-		/* Read instance method */
-		if (kind == "")
-		{
-			parser = save;
-			var __v1 = use("BayLang.Exceptions.ParserError");
-			try
-			{
-				var res = this.readIdentifier(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				op_code = Runtime.rtl.attr(ctx, res, 1);
-				var res = this.matchToken(ctx, parser, ".");
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				var res = this.readToken(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				token = Runtime.rtl.attr(ctx, res, 1);
-				var __v0 = use("BayLang.OpCodes.OpMethod");
-				kind = __v0.KIND_ATTR;
-				value1 = op_code;
-				value2 = token.content;
-			}
-			catch (_ex)
-			{
-				if (_ex instanceof __v1)
-				{
-					var e = _ex;
-				}
-				else
-				{
-					throw _ex;
-				}
-			}
-		}
-		/* Error */
-		if (kind == "")
-		{
-			var __v0 = use("BayLang.Exceptions.ParserExpected");
-			throw new __v0(ctx, "'.' or '::'", parser.caret, parser.file_name)
-		}
-		var __v0 = use("BayLang.OpCodes.OpMethod");
-		return use("Runtime.Vector").from([parser,new __v0(ctx, use("Runtime.Map").from({"value1":value1,"value2":value2,"kind":kind,"caret_start":caret_start,"caret_end":parser.caret}))]);
-	},
-	/**
-	 * Read curry
-	 */
-	readCurry: function(ctx, parser)
-	{
-		var look = null;
-		var token = null;
-		var obj = null;
-		var __v0 = use("Runtime.Vector");
-		var args = new __v0(ctx);
-		var res = this.matchToken(ctx, parser, "curry");
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
-		var res = this.readDynamic(ctx, parser, 14);
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		obj = Runtime.rtl.attr(ctx, res, 1);
-		var res = this.matchToken(ctx, parser, "(");
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		var res = this.readToken(ctx, parser);
-		look = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
-		while (!token.eof && token.content != ")")
-		{
-			var arg = null;
-			if (token.content == "?")
-			{
-				var pos = 0;
-				parser = look;
-				var res = this.readToken(ctx, look);
-				look = Runtime.rtl.attr(ctx, res, 0);
-				token = Runtime.rtl.attr(ctx, res, 1);
-				if (this.isNumber(ctx, token.content))
-				{
-					pos = use("Runtime.rtl").to(token.content, {"e":"int"});
-					parser = look;
-				}
-				var __v1 = use("BayLang.OpCodes.OpCurryArg");
-				arg = new __v1(ctx, use("Runtime.Map").from({"pos":pos}));
-				args.push(ctx, arg);
-			}
-			else
-			{
-				var res = parser.parser_expression.constructor.readExpression(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				arg = Runtime.rtl.attr(ctx, res, 1);
-				args.push(ctx, arg);
-			}
-			var res = this.readToken(ctx, parser);
-			look = Runtime.rtl.attr(ctx, res, 0);
-			token = Runtime.rtl.attr(ctx, res, 1);
-			if (token.content == ",")
-			{
-				parser = look;
-				var res = this.readToken(ctx, parser);
-				look = Runtime.rtl.attr(ctx, res, 0);
-				token = Runtime.rtl.attr(ctx, res, 1);
-			}
-		}
-		var res = this.matchToken(ctx, parser, ")");
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		var __v1 = use("BayLang.OpCodes.OpCurry");
-		return use("Runtime.Vector").from([parser,new __v1(ctx, use("Runtime.Map").from({"obj":obj,"args":args}))]);
-	},
-	/**
-	 * Read base item
-	 */
-	readBaseItem: function(ctx, parser)
-	{
-		var look = null;
-		var token = null;
-		var op_code = null;
-		var res = this.readToken(ctx, parser);
-		look = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
-		var caret_start = look.caret;
-		if (token.content == "new")
-		{
-			var res = this.readNew(ctx, parser);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			op_code = Runtime.rtl.attr(ctx, res, 1);
-		}
-		else if (token.content == "method")
-		{
-			var res = this.readMethod(ctx, parser);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			op_code = Runtime.rtl.attr(ctx, res, 1);
-		}
-		else if (token.content == "classof")
-		{
-			var res = this.readClassOf(ctx, parser);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			op_code = Runtime.rtl.attr(ctx, res, 1);
-		}
-		else if (token.content == "classref")
-		{
-			var res = this.readClassRef(ctx, parser);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			op_code = Runtime.rtl.attr(ctx, res, 1);
-		}
-		else if (token.content == "(")
-		{
-			var save_parser = parser;
-			parser = look;
-			/* Try to read OpTypeConvert */
-			var __v0 = use("BayLang.Exceptions.ParserError");
-			try
-			{
-				var res = this.readTypeIdentifier(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				var op_type = Runtime.rtl.attr(ctx, res, 1);
-				var res = this.readToken(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				token = Runtime.rtl.attr(ctx, res, 1);
-				if (token.content == ")")
-				{
-					var res = this.readDynamic(ctx, parser);
-					parser = Runtime.rtl.attr(ctx, res, 0);
-					op_code = Runtime.rtl.attr(ctx, res, 1);
-					var __v0 = use("BayLang.OpCodes.OpTypeConvert");
-					return use("Runtime.Vector").from([parser,new __v0(ctx, use("Runtime.Map").from({"pattern":op_type,"value":op_code,"caret_start":caret_start,"caret_end":parser.caret}))]);
-				}
-			}
-			catch (_ex)
-			{
-				if (_ex instanceof __v0)
-				{
-					var e = _ex;
-				}
-				else
-				{
-					throw _ex;
-				}
-			}
-			/* Read Expression */
-			var res = this.matchToken(ctx, save_parser, "(");
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			var res = parser.parser_expression.constructor.readExpression(ctx, parser);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			op_code = Runtime.rtl.attr(ctx, res, 1);
-			var res = this.matchToken(ctx, parser, ")");
-			parser = Runtime.rtl.attr(ctx, res, 0);
-		}
-		else
-		{
-			var res = this.readFixed(ctx, parser);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			op_code = Runtime.rtl.attr(ctx, res, 1);
-		}
-		return use("Runtime.Vector").from([parser,op_code]);
-	},
-	/**
-	 * Read classof
-	 */
-	readClassOf: function(ctx, parser)
-	{
-		var look = null;
-		var token = null;
-		var op_code = null;
-		var res = this.matchToken(ctx, parser, "classof");
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
-		var caret_start = token.caret_start;
-		var res = this.readEntityName(ctx, parser);
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		op_code = Runtime.rtl.attr(ctx, res, 1);
-		var __v0 = use("BayLang.OpCodes.OpClassOf");
-		return use("Runtime.Vector").from([parser,new __v0(ctx, use("Runtime.Map").from({"entity_name":op_code,"caret_start":caret_start,"caret_end":parser.caret}))]);
-	},
-	/**
-	 * Read classref
-	 */
-	readClassRef: function(ctx, parser)
-	{
-		var look = null;
-		var token = null;
-		var op_code = null;
-		var res = this.matchToken(ctx, parser, "classref");
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
-		var caret_start = token.caret_start;
-		var res = parser.parser_expression.constructor.readExpression(ctx, parser);
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		op_code = Runtime.rtl.attr(ctx, res, 1);
-		var __v0 = use("BayLang.OpCodes.OpClassRef");
-		return use("Runtime.Vector").from([parser,new __v0(ctx, use("Runtime.Map").from({"value":op_code,"caret_start":caret_start,"caret_end":parser.caret}))]);
-	},
-	/**
 	 * Read dynamic
 	 */
 	readDynamic: function(ctx, parser, dynamic_flags)
@@ -1219,11 +939,11 @@ Object.assign(BayLang.LangBay.ParserBayBase,
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "BayLang.LangBay";
+		return "BayLang.LangPHP";
 	},
 	getClassName: function()
 	{
-		return "BayLang.LangBay.ParserBayBase";
+		return "BayLang.LangPHP.ParserPHPBase";
 	},
 	getParentClassName: function()
 	{
@@ -1259,5 +979,5 @@ Object.assign(BayLang.LangBay.ParserBayBase,
 	{
 		return null;
 	},
-});use.add(BayLang.LangBay.ParserBayBase);
-module.exports = BayLang.LangBay.ParserBayBase;
+});use.add(BayLang.LangPHP.ParserPHPBase);
+module.exports = BayLang.LangPHP.ParserPHPBase;

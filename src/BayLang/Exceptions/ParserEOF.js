@@ -22,7 +22,7 @@ if (typeof BayLang.Exceptions == 'undefined') BayLang.Exceptions = {};
 BayLang.Exceptions.ParserEOF = function(ctx, prev)
 {
 	if (prev == undefined) prev = null;
-	var __v0 = use("BayLang.LangConstant");
+	var __v0 = use("BayLang.LangUtils");
 	use("BayLang.Exceptions.ParserUnknownError").call(this, ctx, "ERROR_PARSER_EOF", __v0.ERROR_PARSER_EOF, prev);
 };
 BayLang.Exceptions.ParserEOF.prototype = Object.create(use("BayLang.Exceptions.ParserUnknownError").prototype);

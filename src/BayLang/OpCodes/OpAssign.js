@@ -47,16 +47,9 @@ Object.assign(BayLang.OpCodes.OpAssign.prototype,
 	_init: function(ctx)
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
-		this.kind = "";
-		this.var_name = "";
 		this.flags = null;
 		this.pattern = null;
-		this.annotations = null;
-		this.comments = null;
-		this.values = null;
-		this.names = null;
-		this.expression = null;
-		this.condition = null;
+		this.items = null;
 	},
 });
 Object.assign(BayLang.OpCodes.OpAssign, use("BayLang.OpCodes.BaseOpCode"));

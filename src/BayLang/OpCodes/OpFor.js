@@ -36,7 +36,7 @@ Object.assign(BayLang.OpCodes.OpFor.prototype,
 		serializer.process(ctx, this, "expr1", data);
 		serializer.process(ctx, this, "expr2", data);
 		serializer.process(ctx, this, "expr3", data);
-		serializer.process(ctx, this, "value", data);
+		serializer.process(ctx, this, "content", data);
 	},
 	_init: function(ctx)
 	{
@@ -45,7 +45,7 @@ Object.assign(BayLang.OpCodes.OpFor.prototype,
 		this.expr1 = null;
 		this.expr2 = null;
 		this.expr3 = null;
-		this.value = null;
+		this.content = null;
 	},
 });
 Object.assign(BayLang.OpCodes.OpFor, use("BayLang.OpCodes.BaseOpCode"));

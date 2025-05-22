@@ -53,42 +53,50 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 		this.translator.opcode_level = 20;
 	},
 	/**
-	 * OpTypeTemplate
+	 * OpCode generics
 	 */
-	OpTypeTemplate: function(ctx, items, result)
+	OpCodeGenerics: function(ctx, items, result)
 	{
-		if (items)
+		if (!items)
 		{
-			result.push(ctx, "<");
-			var items_count = items.count(ctx);
-			for (var i = 0; i < items_count; i++)
-			{
-				var op_code_item = items.get(ctx, i);
-				var __v0 = use("BayLang.OpCodes.OpIdentifier");
-				var __v1 = use("BayLang.OpCodes.OpTypeIdentifier");
-				if (op_code_item instanceof __v0)
-				{
-					this.OpIdentifier(ctx, op_code_item, result);
-				}
-				else if (op_code_item instanceof __v1)
-				{
-					this.OpTypeIdentifier(ctx, op_code_item, result);
-				}
-				if (i < items_count - 1)
-				{
-					result.push(ctx, ", ");
-				}
-			}
-			result.push(ctx, ">");
+			return ;
 		}
+		/* Get items count */
+		var items_count = items.count(ctx);
+		if (items_count == 0)
+		{
+			return ;
+		}
+		/* Output generics */
+		result.push(ctx, "<");
+		for (var i = 0; i < items_count; i++)
+		{
+			var op_code_item = items.get(ctx, i);
+			var __v0 = use("BayLang.OpCodes.OpIdentifier");
+			var __v1 = use("BayLang.OpCodes.OpTypeIdentifier");
+			if (op_code_item instanceof __v0)
+			{
+				this.OpIdentifier(ctx, op_code_item, result);
+			}
+			else if (op_code_item instanceof __v1)
+			{
+				this.OpTypeIdentifier(ctx, op_code_item, result);
+			}
+			if (i < items_count - 1)
+			{
+				result.push(ctx, ", ");
+			}
+		}
+		result.push(ctx, ">");
 	},
 	/**
 	 * OpTypeIdentifier
 	 */
 	OpTypeIdentifier: function(ctx, op_code, result)
 	{
-		result.push(ctx, op_code.entity_name.names.last(ctx));
-		this.OpTypeTemplate(ctx, op_code.template, result);
+		var pattern = op_code.entity_name.items.last(ctx);
+		result.push(ctx, pattern.value);
+		this.OpCodeGenerics(ctx, op_code.generics, result);
 	},
 	/**
 	 * OpCollection
@@ -510,6 +518,11 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 			opcode_level = 10;
 			op = "implements";
 		}
+		if (op_code.math == "bitnot")
+		{
+			opcode_level = 16;
+			op = "bitnot";
+		}
 		if (op_code.math == "not")
 		{
 			opcode_level = 16;
@@ -535,9 +548,20 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 			opcode_level = 5;
 			op = "or";
 		}
-		if (op_code.math == "not" || op_code.math == "!")
+		if (op_code.math == "not" || op_code.math == "bitnot" || op_code.math == "!")
 		{
-			result.push(ctx, "not ");
+			if (op_code.math == "not")
+			{
+				result.push(ctx, "not ");
+			}
+			else if (op_code.math == "bitnot")
+			{
+				result.push(ctx, "bitnot ");
+			}
+			else
+			{
+				result.push(ctx, op_code.math);
+			}
 			if (opcode_level1 < opcode_level)
 			{
 				result.push(ctx, "(");

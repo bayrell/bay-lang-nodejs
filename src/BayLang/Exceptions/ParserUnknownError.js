@@ -24,7 +24,7 @@ BayLang.Exceptions.ParserUnknownError = function(ctx, s, code, prev)
 	if (prev == undefined) prev = null;
 	if (code == -1)
 	{
-		var __v0 = use("BayLang.LangConstant");
+		var __v0 = use("BayLang.LangUtils");
 		code = __v0.ERROR_PARSER;
 	}
 	use("Runtime.Exceptions.AbstractException").call(this, ctx, s, code, prev);

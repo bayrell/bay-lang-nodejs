@@ -17,48 +17,60 @@ var use = require('bay-lang').use;
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-if (typeof BayLang == 'undefined') BayLang = {};
-if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpSafe = function(ctx)
+if (typeof Runtime == 'undefined') Runtime = {};
+Runtime.File = function(ctx, params)
 {
-	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
+	use("Runtime.BaseObject").call(this, ctx);
+	this._assign_values(ctx, params);
 };
-BayLang.OpCodes.OpSafe.prototype = Object.create(use("BayLang.OpCodes.BaseOpCode").prototype);
-BayLang.OpCodes.OpSafe.prototype.constructor = BayLang.OpCodes.OpSafe;
-Object.assign(BayLang.OpCodes.OpSafe.prototype,
+Runtime.File.prototype = Object.create(use("Runtime.BaseObject").prototype);
+Runtime.File.prototype.constructor = Runtime.File;
+Object.assign(Runtime.File.prototype,
 {
 	/**
-	 * Serialize object
+	 * Returns file name
 	 */
-	serialize: function(ctx, serializer, data)
+	getName: function(ctx)
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
-		serializer.process(ctx, this, "items", data);
-		serializer.process(ctx, this, "obj", data);
+		return this.name;
+	},
+	/**
+	 * Returns file path
+	 */
+	getPath: function(ctx)
+	{
+		return this.path;
+	},
+	/**
+	 * Returns file size
+	 */
+	getSize: function(ctx)
+	{
+		return this.size;
 	},
 	_init: function(ctx)
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
-		this.op = "op_safe";
-		this.obj = null;
-		this.items = null;
+		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		this.name = "";
+		this.path = "";
+		this.size = 0;
 	},
 });
-Object.assign(BayLang.OpCodes.OpSafe, use("BayLang.OpCodes.BaseOpCode"));
-Object.assign(BayLang.OpCodes.OpSafe,
+Object.assign(Runtime.File, use("Runtime.BaseObject"));
+Object.assign(Runtime.File,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "BayLang.OpCodes";
+		return "Runtime";
 	},
 	getClassName: function()
 	{
-		return "BayLang.OpCodes.OpSafe";
+		return "Runtime.File";
 	},
 	getParentClassName: function()
 	{
-		return "BayLang.OpCodes.BaseOpCode";
+		return "Runtime.BaseObject";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -90,5 +102,5 @@ Object.assign(BayLang.OpCodes.OpSafe,
 	{
 		return null;
 	},
-});use.add(BayLang.OpCodes.OpSafe);
-module.exports = BayLang.OpCodes.OpSafe;
+});use.add(Runtime.File);
+module.exports = Runtime.File;

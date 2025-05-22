@@ -23,7 +23,7 @@ BayLang.Exceptions.ParserExpected = function(ctx, s, caret, file, prev)
 {
 	if (file == undefined) file = "";
 	if (prev == undefined) prev = null;
-	var __v0 = use("BayLang.LangConstant");
+	var __v0 = use("BayLang.LangUtils");
 	use("BayLang.Exceptions.ParserError").call(this, ctx, s + use("Runtime.rtl").toStr(" expected"), caret, file, __v0.ERROR_PARSER_EXPECTED, prev);
 };
 BayLang.Exceptions.ParserExpected.prototype = Object.create(use("BayLang.Exceptions.ParserError").prototype);

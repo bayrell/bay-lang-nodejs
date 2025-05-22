@@ -3,7 +3,7 @@ var use = require('bay-lang').use;
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2020 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -42,8 +42,9 @@ Object.assign(Runtime.Monad.prototype,
 	/**
 	 * Call function on value
 	 */
-	call: function(ctx, f)
+	call: function(ctx, f, is_return_value)
 	{
+		if (is_return_value == undefined) is_return_value = true;
 		if (this.val === null || this.err != null)
 		{
 			return this;
@@ -51,7 +52,11 @@ Object.assign(Runtime.Monad.prototype,
 		try
 		{
 			var __v0 = use("Runtime.rtl");
-			this.val = __v0.apply(ctx, f, use("Runtime.Vector").from([this.val]));
+			var value = __v0.apply(ctx, f, use("Runtime.Vector").from([this.val]));
+			if (is_return_value)
+			{
+				this.val = value;
+			}
 		}
 		catch (_ex)
 		{
@@ -72,8 +77,9 @@ Object.assign(Runtime.Monad.prototype,
 	/**
 	 * Call async function on value
 	 */
-	callAsync: async function(ctx, f)
+	callAsync: async function(ctx, f, is_return_value)
 	{
+		if (is_return_value == undefined) is_return_value = true;
 		if (this.val === null || this.err != null)
 		{
 			return Promise.resolve(this);
@@ -81,7 +87,17 @@ Object.assign(Runtime.Monad.prototype,
 		try
 		{
 			var __v0 = use("Runtime.rtl");
-			this.val = await __v0.apply(ctx, f, use("Runtime.Vector").from([this.val]));
+			var value = __v0.apply(ctx, f, use("Runtime.Vector").from([this.val]));
+			var __v1 = use("Runtime.rtl");
+			if (__v1.isPromise(ctx, value))
+			{
+				var __v2 = use("Runtime.rtl");
+				await __v2.resolvePromise(ctx, value);
+			}
+			if (is_return_value)
+			{
+				this.val = value;
+			}
 		}
 		catch (_ex)
 		{
@@ -98,6 +114,22 @@ Object.assign(Runtime.Monad.prototype,
 			}
 		}
 		return Promise.resolve(this);
+	},
+	/**
+	 * Call function on value
+	 */
+	map: function(ctx, f, is_return)
+	{
+		if (is_return == undefined) is_return = true;
+		return this.call(ctx, f, is_return);
+	},
+	/**
+	 * Call function on value
+	 */
+	mapAsync: async function(ctx, f, is_return)
+	{
+		if (is_return == undefined) is_return = true;
+		return Promise.resolve(await this.callAsync(ctx, f, is_return));
 	},
 	/**
 	 * Call method on value

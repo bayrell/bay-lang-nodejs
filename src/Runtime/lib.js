@@ -288,6 +288,28 @@ Object.assign(Runtime.lib,
 		};
 	},
 	/**
+	 * Comparator
+	 */
+	comparator: function(ctx, compare, f)
+	{
+		if (f == undefined) f = null;
+		return (ctx, a, b) =>
+		{
+			return compare(ctx, f(ctx, a), f(ctx, b));
+		};
+	},
+	/**
+	 * Compare int
+	 */
+	compareInt: function(ctx, order)
+	{
+		if (order == undefined) order = "asc";
+		return (ctx, a, b) =>
+		{
+			return (order == "asc") ? (a - b) : ("desc");
+		};
+	},
+	/**
 	 * Sort asc
 	 */
 	sortAsc: function(ctx, a, b)
@@ -440,6 +462,38 @@ Object.assign(Runtime.lib,
 		return async (ctx, value) =>
 		{
 			return await f(ctx, value);
+		};
+	},
+	/**
+	 * Create pipe
+	 */
+	pipe: function(ctx)
+	{
+		var __v0 = use("Runtime.Chain");
+		return new __v0(ctx);
+	},
+	/**
+	 * Value for pipe
+	 */
+	value: function(ctx)
+	{
+		return (ctx, value) =>
+		{
+			return value;
+		};
+	},
+	/**
+	 * Normalize date time
+	 */
+	normalizeDateTime: function(ctx)
+	{
+		return (ctx, date_time) =>
+		{
+			if (!date_time)
+			{
+				return "";
+			}
+			return date_time.normalize(ctx).getDateTimeString(ctx);
 		};
 	},
 	/**
