@@ -60,16 +60,31 @@ Object.assign(BayLang.LangBay.ParserBay.prototype,
 		this.vars.set(ctx, name, true);
 	},
 	/**
+	 * Find identifier
+	 */
+	findIdentifier: function(ctx, op_code)
+	{
+		var name = op_code.value;
+		if (this.vars.has(ctx, name) || this.isRegisteredVariable(ctx, name))
+		{
+			var __v0 = use("BayLang.OpCodes.OpIdentifier");
+			op_code.kind = __v0.KIND_VARIABLE;
+		}
+		if (this.uses.has(ctx, name) || this.isSystemType(ctx, name))
+		{
+			var __v0 = use("BayLang.OpCodes.OpIdentifier");
+			op_code.kind = __v0.KIND_TYPE;
+		}
+	},
+	/**
 	 * Find variable
 	 */
 	findVariable: function(ctx, op_code)
 	{
 		var name = op_code.value;
-		if (this.vars.has(ctx, name))
-		{
-			return ;
-		}
-		if (this.isRegisteredVariable(ctx, name))
+		this.findIdentifier(ctx, op_code);
+		var __v0 = use("BayLang.OpCodes.OpIdentifier");
+		if (op_code.kind == __v0.KIND_VARIABLE)
 		{
 			return ;
 		}
@@ -81,11 +96,8 @@ Object.assign(BayLang.LangBay.ParserBay.prototype,
 	findType: function(ctx, op_code)
 	{
 		var name = op_code.value;
-		if (this.uses.has(ctx, name))
-		{
-			return ;
-		}
-		if (this.isSystemType(ctx, name))
+		var __v0 = use("BayLang.OpCodes.OpIdentifier");
+		if (op_code.kind == __v0.KIND_TYPE)
 		{
 			return ;
 		}
@@ -96,11 +108,7 @@ Object.assign(BayLang.LangBay.ParserBay.prototype,
 	 */
 	parse: function(ctx)
 	{
-		var __v0 = use("BayLang.TokenReader");
-		var reader = new __v0(ctx);
-		var __v1 = use("BayLang.Caret");
-		var __v2 = use("Runtime.Reference");
-		reader.init(ctx, new __v1(ctx, use("Runtime.Map").from({"content":new __v2(ctx, this.content),"tab_size":this.tab_size})));
+		var reader = this.createReader(ctx);
 		return this.parser_program.parse(ctx, reader);
 	},
 	_init: function(ctx)

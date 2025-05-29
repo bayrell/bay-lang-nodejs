@@ -37,6 +37,18 @@ Object.assign(BayLang.CoreParser.prototype,
 		return this;
 	},
 	/**
+	 * Create reader
+	 */
+	createReader: function(ctx)
+	{
+		var __v0 = use("BayLang.TokenReader");
+		var reader = new __v0(ctx);
+		var __v1 = use("BayLang.Caret");
+		var __v2 = use("Runtime.Reference");
+		reader.init(ctx, new __v1(ctx, use("Runtime.Map").from({"content":new __v2(ctx, this.content),"tab_size":this.tab_size})));
+		return reader;
+	},
+	/**
 	 * Parse file and convert to BaseOpCode
 	 */
 	parse: function(ctx)

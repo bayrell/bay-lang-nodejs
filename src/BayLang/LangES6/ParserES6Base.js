@@ -126,10 +126,7 @@ Object.assign(BayLang.LangES6.ParserES6Base.prototype,
 			ch = caret.nextChar(ctx);
 		}
 		/* Read end string char */
-		if (ch != "'" && ch != "\"")
-		{
-			throw caret.expected(ctx, "End of string")
-		}
+		caret.matchString(ctx, str_char);
 		/* Restore reader */
 		reader.init(ctx, caret);
 		/* Returns op_code */
@@ -204,7 +201,29 @@ Object.assign(BayLang.LangES6.ParserES6Base.prototype,
 		return new __v0(ctx, use("Runtime.Map").from({"items":items,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
 	},
 	/**
-	 * Read dynamic identifier
+	 * Read type identifier
+	 */
+	readTypeIdentifier: function(ctx, reader, read_generic)
+	{
+		if (read_generic == undefined) read_generic = true;
+		var caret_start = reader.caret(ctx);
+		/* Read var */
+		if (reader.nextToken(ctx) == "var")
+		{
+			reader.readToken(ctx);
+			var caret_end = reader.caret(ctx);
+			var __v0 = use("BayLang.OpCodes.OpTypeIdentifier");
+			var __v1 = use("BayLang.OpCodes.OpEntityName");
+			var __v2 = use("BayLang.OpCodes.OpIdentifier");
+			return new __v0(ctx, use("Runtime.Map").from({"entity_name":new __v1(ctx, use("Runtime.Map").from({"items":use("Runtime.Vector").from([new __v2(ctx, use("Runtime.Map").from({"value":"var","caret_start":caret_start,"caret_end":caret_end}))]),"caret_start":caret_start,"caret_end":caret_end})),"caret_start":caret_start,"caret_end":caret_end}));
+		}
+		/* Read entity name */
+		var entity_name = this.readEntityName(ctx, reader);
+		var __v0 = use("BayLang.OpCodes.OpTypeIdentifier");
+		return new __v0(ctx, use("Runtime.Map").from({"entity_name":entity_name,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
+	},
+	/**
+	 * Read item
 	 */
 	readItem: function(ctx, reader)
 	{
@@ -212,6 +231,10 @@ Object.assign(BayLang.LangES6.ParserES6Base.prototype,
 		if (__v0.isNumber(ctx, reader.nextToken(ctx)))
 		{
 			return this.readNumber(ctx, reader);
+		}
+		else if (reader.nextToken(ctx) == "'" || reader.nextToken(ctx) == "\"")
+		{
+			return this.readString(ctx, reader);
 		}
 		return this.readIdentifier(ctx, reader);
 	},

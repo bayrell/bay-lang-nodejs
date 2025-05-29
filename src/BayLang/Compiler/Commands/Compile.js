@@ -79,57 +79,27 @@ Object.assign(BayLang.Compiler.Commands.Compile,
 		}
 		var __v0 = use("Runtime.io");
 		__v0.print(ctx, "Convert " + use("Runtime.rtl").toStr(src_file_name) + use("Runtime.rtl").toStr(" to ") + use("Runtime.rtl").toStr(dest_file_name));
-		var from_lang = "";
-		var to_lang = "";
-		if (command == "bay_to_php")
-		{
-			from_lang = "bay";
-			to_lang = "php";
-		}
-		if (command == "bay_to_es6")
-		{
-			from_lang = "bay";
-			to_lang = "es6";
-		}
-		if (command == "php_to_bay")
-		{
-			from_lang = "php";
-			to_lang = "bay";
-		}
-		if (command == "php_to_es6")
-		{
-			from_lang = "php";
-			to_lang = "es6";
-		}
-		if (command == "es6_to_bay")
-		{
-			from_lang = "es6";
-			to_lang = "bay";
-		}
-		if (command == "es6_to_php")
-		{
-			from_lang = "es6";
-			to_lang = "php";
-		}
 		var __v1 = use("BayLang.LangUtils");
-		var parser = __v1.createParser(ctx, from_lang);
+		var res = __v1.parseCommand(ctx, command);
 		var __v2 = use("BayLang.LangUtils");
-		var translator = __v2.createTranslator(ctx, to_lang);
+		var parser = __v2.createParser(ctx, res.get(ctx, "from"));
+		var __v3 = use("BayLang.LangUtils");
+		var translator = __v3.createTranslator(ctx, res.get(ctx, "to"));
 		/* Check file exists */
-		var __v3 = use("Runtime.fs");
-		if (!await __v3.isFile(ctx, src_file_name))
+		var __v4 = use("Runtime.fs");
+		if (!await __v4.isFile(ctx, src_file_name))
 		{
-			var __v4 = use("Runtime.io");
-			__v4.print_error(ctx, "File not found");
+			var __v5 = use("Runtime.io");
+			__v5.print_error(ctx, "File not found");
 			return Promise.resolve(this.FAIL);
 		}
 		/* Read file name */
 		var op_code = null;
-		var __v3 = use("Runtime.fs");
-		var content = await __v3.readFile(ctx, src_file_name);
+		var __v4 = use("Runtime.fs");
+		var content = await __v4.readFile(ctx, src_file_name);
 		var output = "";
 		/* Translate file */
-		var __v4 = use("BayLang.Exceptions.ParserError");
+		var __v5 = use("BayLang.Exceptions.ParserError");
 		try
 		{
 			parser.setContent(ctx, content);
@@ -138,12 +108,12 @@ Object.assign(BayLang.Compiler.Commands.Compile,
 		}
 		catch (_ex)
 		{
-			if (_ex instanceof __v4)
+			if (_ex instanceof __v5)
 			{
 				var error = _ex;
 				
-				var __v5 = use("Runtime.io");
-				__v5.print_error(ctx, error.toString(ctx));
+				var __v6 = use("Runtime.io");
+				__v6.print_error(ctx, error.toString(ctx));
 				return Promise.resolve(this.FAIL);
 			}
 			else
@@ -152,11 +122,11 @@ Object.assign(BayLang.Compiler.Commands.Compile,
 			}
 		}
 		/* Save file */
-		var __v4 = use("Runtime.fs");
-		await __v4.saveFile(ctx, dest_file_name, output);
+		var __v5 = use("Runtime.fs");
+		await __v5.saveFile(ctx, dest_file_name, output);
 		/* Return result */
-		var __v5 = use("Runtime.io");
-		__v5.print(ctx, "Ok");
+		var __v6 = use("Runtime.io");
+		__v6.print(ctx, "Ok");
 		return Promise.resolve(this.SUCCESS);
 	},
 	/* ======================= Class Init Functions ======================= */

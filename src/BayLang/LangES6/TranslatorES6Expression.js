@@ -338,7 +338,7 @@ Object.assign(BayLang.LangES6.TranslatorES6Expression.prototype,
 	 */
 	OpCall: function(ctx, op_code, result)
 	{
-		this.translateItem(ctx, op_code.obj, result);
+		this.translateItem(ctx, op_code.item, result);
 		var __v0 = use("BayLang.OpCodes.OpDict");
 		if (op_code.args.count(ctx) == 1 && op_code.args.get(ctx, 0) instanceof __v0)
 		{
@@ -535,25 +535,15 @@ Object.assign(BayLang.LangES6.TranslatorES6Expression.prototype,
 			opcode_level = 16;
 			op = "!";
 		}
-		if (op_code.math == "and")
+		if (op_code.math == "and" || op_code.math == "&&")
 		{
 			opcode_level = 6;
-			op = "and";
+			op = "&&";
 		}
-		if (op_code.math == "&&")
-		{
-			opcode_level = 6;
-			op = "and";
-		}
-		if (op_code.math == "or")
+		if (op_code.math == "or" || op_code.math == "||")
 		{
 			opcode_level = 5;
-			op = "or";
-		}
-		if (op_code.math == "||")
-		{
-			opcode_level = 5;
-			op = "or";
+			op = "||";
 		}
 		if (op_code.math == "not" || op_code.math == "bitnot")
 		{
@@ -588,19 +578,39 @@ Object.assign(BayLang.LangES6.TranslatorES6Expression.prototype,
 			{
 				result.appendItems(ctx, result1);
 			}
-			result.push(ctx, " " + use("Runtime.rtl").toStr(op) + use("Runtime.rtl").toStr(" "));
+			if (op == "~")
+			{
+				result.push(ctx, " + ");
+			}
+			else
+			{
+				result.push(ctx, " " + use("Runtime.rtl").toStr(op) + use("Runtime.rtl").toStr(" "));
+			}
 			var result2 = use("Runtime.Vector").from([]);
 			this.Expression(ctx, op_code.value2, result2);
 			var opcode_level2 = this.translator.opcode_level;
 			if (opcode_level2 < opcode_level)
 			{
+				if (op == "~")
+				{
+					result.push(ctx, "String");
+				}
 				result.push(ctx, "(");
 				result.appendItems(ctx, result2);
 				result.push(ctx, ")");
 			}
 			else
 			{
-				result.appendItems(ctx, result2);
+				if (op == "~")
+				{
+					result.push(ctx, "String(");
+					result.appendItems(ctx, result2);
+					result.push(ctx, ")");
+				}
+				else
+				{
+					result.appendItems(ctx, result2);
+				}
 			}
 		}
 		this.translator.opcode_level = opcode_level;

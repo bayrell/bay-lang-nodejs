@@ -30,6 +30,60 @@ Object.assign(BayLang.LangUtils,
 	ERROR_PARSER_EOF: -1001,
 	ERROR_PARSER_EXPECTED: -1002,
 	/**
+	 * Parse command
+	 */
+	parseCommand: function(ctx, command)
+	{
+		var from_lang = "";
+		var to_lang = "";
+		if (command == "bay_to_bay")
+		{
+			from_lang = "bay";
+			to_lang = "bay";
+		}
+		if (command == "bay_to_php")
+		{
+			from_lang = "bay";
+			to_lang = "php";
+		}
+		if (command == "bay_to_es6")
+		{
+			from_lang = "bay";
+			to_lang = "es6";
+		}
+		if (command == "php_to_php")
+		{
+			from_lang = "php";
+			to_lang = "php";
+		}
+		if (command == "php_to_bay")
+		{
+			from_lang = "php";
+			to_lang = "bay";
+		}
+		if (command == "php_to_es6")
+		{
+			from_lang = "php";
+			to_lang = "es6";
+		}
+		if (command == "es6_to_es6")
+		{
+			from_lang = "es6";
+			to_lang = "es6";
+		}
+		if (command == "es6_to_bay")
+		{
+			from_lang = "es6";
+			to_lang = "bay";
+		}
+		if (command == "es6_to_php")
+		{
+			from_lang = "es6";
+			to_lang = "php";
+		}
+		return use("Runtime.Map").from({"from":from_lang,"to":to_lang});
+	},
+	/**
 	 * Create parser
 	 */
 	createParser: function(ctx, lang)

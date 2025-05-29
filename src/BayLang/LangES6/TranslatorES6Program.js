@@ -276,10 +276,7 @@ Object.assign(BayLang.LangES6.TranslatorES6Program.prototype,
 		{
 			this.translator.last_semicolon = false;
 			var res = this.translator.operator.translateItem(ctx, op_code, result);
-			if (res && !this.translator.last_semicolon)
-			{
-				result.push(ctx, ";");
-			}
+			this.translator.operator.addSemicolon(ctx, op_code, result);
 			return res;
 		}
 		return true;

@@ -29,6 +29,32 @@ BayLang.LangES6.ParserES6Expression.prototype.constructor = BayLang.LangES6.Pars
 Object.assign(BayLang.LangES6.ParserES6Expression.prototype,
 {
 	/**
+	 * Read function
+	 */
+	readFunction: function(ctx, reader)
+	{
+		/* Save caret */
+		var save_caret = reader.caret(ctx);
+		/* Read expression */
+		if (reader.nextToken(ctx) == "(")
+		{
+			reader.matchToken(ctx, "(");
+			var op_code = this.readExpression(ctx, reader);
+			reader.matchToken(ctx, ")");
+			return op_code;
+		}
+		/* Try to read function */
+		var op_code = this.parser.parser_function.readCallFunction(ctx, reader);
+		if (op_code)
+		{
+			return op_code;
+		}
+		/* Restore reader */
+		reader.init(ctx, save_caret);
+		/* Read op_code */
+		return this.parser.parser_base.readItem(ctx, reader);
+	},
+	/**
 	 * Read negative
 	 */
 	readNegative: function(ctx, reader)
@@ -37,11 +63,11 @@ Object.assign(BayLang.LangES6.ParserES6Expression.prototype,
 		if (reader.nextToken(ctx) == "-")
 		{
 			reader.readToken(ctx);
-			var op_code = this.parser.parser_base.readItem(ctx, reader);
+			var op_code = this.readFunction(ctx, reader);
 			var __v0 = use("BayLang.OpCodes.OpMath");
 			return new __v0(ctx, use("Runtime.Map").from({"value1":op_code,"math":"!","caret_start":caret_start,"caret_end":reader.caret(ctx)}));
 		}
-		return this.parser.parser_base.readItem(ctx, reader);
+		return this.readFunction(ctx, reader);
 	},
 	/**
 	 * Read bit not
@@ -152,6 +178,18 @@ Object.assign(BayLang.LangES6.ParserES6Expression.prototype,
 		{
 			var math = reader.readToken(ctx);
 			var value = this.readFactor(ctx, reader);
+			var __v0 = use("BayLang.OpCodes.OpCall");
+			var __v1 = use("BayLang.OpCodes.OpIdentifier");
+			var __v2 = use("BayLang.OpCodes.OpString");
+			if (value instanceof __v0 && math == "+" && value.args.count(ctx) == 1 && value.obj instanceof __v1 && value.obj.value == "String")
+			{
+				math = "~";
+				value = value.args.get(ctx, 0);
+			}
+			else if (value instanceof __v2 && math == "+")
+			{
+				math = "~";
+			}
 			var __v0 = use("BayLang.OpCodes.OpMath");
 			op_code = new __v0(ctx, use("Runtime.Map").from({"value1":op_code,"value2":value,"math":math,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
 		}

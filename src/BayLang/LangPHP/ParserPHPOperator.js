@@ -52,6 +52,10 @@ Object.assign(BayLang.LangPHP.ParserPHPOperator.prototype,
 			if (token == "elseif" || token == "else" && reader.nextToken(ctx) == "if")
 			{
 				/* Read condition */
+				if (reader.nextToken(ctx) == "if")
+				{
+					reader.readToken(ctx);
+				}
 				reader.matchToken(ctx, "(");
 				var if_else_condition = this.parser.parser_expression.readExpression(ctx, reader);
 				reader.matchToken(ctx, ")");
@@ -130,6 +134,37 @@ Object.assign(BayLang.LangPHP.ParserPHPOperator.prototype,
 		if (pattern == null)
 		{
 			pattern = this.parser.parser_base.readTypeIdentifier(ctx, reader);
+		}
+		/* Read increment */
+		if (reader.nextToken(ctx) == "++" || reader.nextToken(ctx) == "--")
+		{
+			var kind = "";
+			var operation = reader.readToken(ctx);
+			if (operation == "++")
+			{
+				var __v0 = use("BayLang.OpCodes.OpInc");
+				kind = __v0.KIND_INC;
+			}
+			else if (operation == "--")
+			{
+				var __v1 = use("BayLang.OpCodes.OpInc");
+				kind = __v1.KIND_DEC;
+			}
+			/* Find identifier */
+			var __v0 = use("BayLang.OpCodes.OpTypeIdentifier");
+			if (pattern instanceof __v0)
+			{
+				pattern = pattern.entity_name.items.last(ctx);
+			}
+			var __v0 = use("BayLang.OpCodes.OpIdentifier");
+			if (!(pattern instanceof __v0))
+			{
+				throw pattern.caret_end.error(ctx, "Wrong type identifier")
+			}
+			this.parser.findVariable(ctx, pattern);
+			/* Returns op_code */
+			var __v0 = use("BayLang.OpCodes.OpInc");
+			return new __v0(ctx, use("Runtime.Map").from({"kind":kind,"item":pattern,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
 		}
 		/* Read items */
 		if (reader.nextToken(ctx) != "=")
@@ -285,14 +320,10 @@ Object.assign(BayLang.LangPHP.ParserPHPOperator.prototype,
 		/* Save caret */
 		var save_caret = reader.caret(ctx);
 		/* Try to read call function */
-		var pattern = this.parser.parser_base.readItem(ctx, reader);
-		if (reader.nextToken(ctx) == "(")
+		var op_code = this.parser.parser_function.readCallFunction(ctx, reader);
+		if (op_code)
 		{
-			var op_code = this.parser.parser_function.readCallFunction(ctx, reader, pattern);
-			if (op_code)
-			{
-				return op_code;
-			}
+			return op_code;
 		}
 		/* Restore reader */
 		reader.init(ctx, save_caret);

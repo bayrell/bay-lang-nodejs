@@ -331,7 +331,7 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 	 */
 	OpCall: function(ctx, op_code, result)
 	{
-		this.translateItem(ctx, op_code.obj, result);
+		this.translateItem(ctx, op_code.item, result);
 		var __v0 = use("BayLang.OpCodes.OpDict");
 		if (op_code.args.count(ctx) == 1 && op_code.args.get(ctx, 0) instanceof __v0)
 		{

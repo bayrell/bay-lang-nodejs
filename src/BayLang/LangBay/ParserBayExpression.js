@@ -29,6 +29,32 @@ BayLang.LangBay.ParserBayExpression.prototype.constructor = BayLang.LangBay.Pars
 Object.assign(BayLang.LangBay.ParserBayExpression.prototype,
 {
 	/**
+	 * Read function
+	 */
+	readFunction: function(ctx, reader)
+	{
+		/* Save caret */
+		var save_caret = reader.caret(ctx);
+		/* Read expression */
+		if (reader.nextToken(ctx) == "(")
+		{
+			reader.matchToken(ctx, "(");
+			var op_code = this.readExpression(ctx, reader);
+			reader.matchToken(ctx, ")");
+			return op_code;
+		}
+		/* Try to read function */
+		var op_code = this.parser.parser_function.readCallFunction(ctx, reader);
+		if (op_code)
+		{
+			return op_code;
+		}
+		/* Restore reader */
+		reader.init(ctx, save_caret);
+		/* Read op_code */
+		return this.parser.parser_base.readItem(ctx, reader);
+	},
+	/**
 	 * Read negative
 	 */
 	readNegative: function(ctx, reader)
@@ -37,11 +63,11 @@ Object.assign(BayLang.LangBay.ParserBayExpression.prototype,
 		if (reader.nextToken(ctx) == "-")
 		{
 			reader.readToken(ctx);
-			var op_code = this.parser.parser_base.readItem(ctx, reader);
+			var op_code = this.readFunction(ctx, reader);
 			var __v0 = use("BayLang.OpCodes.OpMath");
 			return new __v0(ctx, use("Runtime.Map").from({"value1":op_code,"math":"!","caret_start":caret_start,"caret_end":reader.caret(ctx)}));
 		}
-		return this.parser.parser_base.readItem(ctx, reader);
+		return this.readFunction(ctx, reader);
 	},
 	/**
 	 * Read bit not

@@ -52,6 +52,10 @@ Object.assign(BayLang.LangES6.ParserES6Operator.prototype,
 			if (token == "elseif" || token == "else" && reader.nextToken(ctx) == "if")
 			{
 				/* Read condition */
+				if (reader.nextToken(ctx) == "if")
+				{
+					reader.readToken(ctx);
+				}
 				reader.matchToken(ctx, "(");
 				var if_else_condition = this.parser.parser_expression.readExpression(ctx, reader);
 				reader.matchToken(ctx, ")");
@@ -127,14 +131,40 @@ Object.assign(BayLang.LangES6.ParserES6Operator.prototype,
 		var caret_start = reader.caret(ctx);
 		var items = use("Runtime.Vector").from([]);
 		/* Read pattern */
-		if (pattern == null && reader.nextToken(ctx) == "var")
+		if (pattern == null)
 		{
-			reader.readToken(ctx);
-			var caret_end = reader.caret(ctx);
+			pattern = this.parser.parser_base.readTypeIdentifier(ctx, reader);
+		}
+		/* Read increment */
+		if (reader.nextToken(ctx) == "++" || reader.nextToken(ctx) == "--")
+		{
+			var kind = "";
+			var operation = reader.readToken(ctx);
+			if (operation == "++")
+			{
+				var __v0 = use("BayLang.OpCodes.OpInc");
+				kind = __v0.KIND_INC;
+			}
+			else if (operation == "--")
+			{
+				var __v1 = use("BayLang.OpCodes.OpInc");
+				kind = __v1.KIND_DEC;
+			}
+			/* Find identifier */
 			var __v0 = use("BayLang.OpCodes.OpTypeIdentifier");
-			var __v1 = use("BayLang.OpCodes.OpEntityName");
-			var __v2 = use("BayLang.OpCodes.OpIdentifier");
-			pattern = new __v0(ctx, use("Runtime.Map").from({"entity_name":new __v1(ctx, use("Runtime.Map").from({"items":use("Runtime.Vector").from([new __v2(ctx, use("Runtime.Map").from({"value":"var","caret_start":caret_start,"caret_end":caret_end}))]),"caret_start":caret_start,"caret_end":caret_end})),"caret_start":caret_start,"caret_end":caret_end}));
+			if (pattern instanceof __v0)
+			{
+				pattern = pattern.entity_name.items.last(ctx);
+			}
+			var __v0 = use("BayLang.OpCodes.OpIdentifier");
+			if (!(pattern instanceof __v0))
+			{
+				throw pattern.caret_end.error(ctx, "Wrong type identifier")
+			}
+			this.parser.findVariable(ctx, pattern);
+			/* Returns op_code */
+			var __v0 = use("BayLang.OpCodes.OpInc");
+			return new __v0(ctx, use("Runtime.Map").from({"kind":kind,"item":pattern,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
 		}
 		/* Read items */
 		if (reader.nextToken(ctx) != "=")
@@ -172,6 +202,11 @@ Object.assign(BayLang.LangES6.ParserES6Operator.prototype,
 			/* Find identifier */
 			var __v0 = use("BayLang.OpCodes.OpTypeIdentifier");
 			if (value instanceof __v0)
+			{
+				value = value.entity_name.items.last(ctx);
+			}
+			var __v0 = use("BayLang.OpCodes.OpIdentifier");
+			if (!(value instanceof __v0))
 			{
 				throw value.caret_end.error(ctx, "Wrong type identifier")
 			}
@@ -268,14 +303,10 @@ Object.assign(BayLang.LangES6.ParserES6Operator.prototype,
 		/* Save caret */
 		var save_caret = reader.caret(ctx);
 		/* Try to read call function */
-		var pattern = this.parser.parser_base.readEntityName(ctx, reader);
-		if (reader.nextToken(ctx) == "(")
+		var op_code = this.parser.parser_function.readCallFunction(ctx, reader);
+		if (op_code)
 		{
-			var op_code = this.parser.parser_function.readCallFunction(ctx, reader, pattern);
-			if (op_code)
-			{
-				return op_code;
-			}
+			return op_code;
 		}
 		/* Restore reader */
 		reader.init(ctx, save_caret);

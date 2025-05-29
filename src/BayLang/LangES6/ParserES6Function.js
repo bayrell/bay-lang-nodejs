@@ -29,19 +29,17 @@ BayLang.LangES6.ParserES6Function.prototype.constructor = BayLang.LangES6.Parser
 Object.assign(BayLang.LangES6.ParserES6Function.prototype,
 {
 	/**
-	 * Returns variable
+	 * Returns pattern
 	 */
-	getVariable: function(ctx, pattern_ref)
+	getPattern: function(ctx, pattern)
 	{
-		var pattern = pattern_ref.value(ctx);
 		var __v0 = use("BayLang.OpCodes.OpEntityName");
 		if (pattern instanceof __v0)
 		{
 			if (pattern.items.count(ctx) == 2 && pattern.items.get(ctx, 0).value == "console" && pattern.items.get(ctx, 1).value == "log")
 			{
 				var __v1 = use("BayLang.OpCodes.OpIdentifier");
-				pattern_ref.setValue(ctx, new __v1(ctx, use("Runtime.Map").from({"value":"print","caret_start":pattern.caret_start,"caret_end":pattern.caret_end})));
-				return null;
+				return new __v1(ctx, use("Runtime.Map").from({"value":"print","caret_start":pattern.caret_start,"caret_end":pattern.caret_end}));
 			}
 			else
 			{
@@ -60,17 +58,19 @@ Object.assign(BayLang.LangES6.ParserES6Function.prototype,
 		/* Read identifier */
 		if (pattern == null)
 		{
-			pattern = this.parser.parser_base.readItem(ctx, reader);
+			if (!this.parser.parser_base.constructor.isIdentifier(ctx, reader.nextToken(ctx)))
+			{
+				return null;
+			}
+			pattern = this.parser.parser_base.readEntityName(ctx, reader);
 		}
-		/* Find variable */
-		var __v0 = use("Runtime.Reference");
-		var pattern_ref = new __v0(ctx, pattern);
-		var variable = this.getVariable(ctx, pattern_ref);
-		pattern = pattern_ref.value(ctx);
-		if (variable)
+		/* Next token should be bracket */
+		if (reader.nextToken(ctx) != "(")
 		{
-			this.parser.findVariable(ctx, variable);
+			return null;
 		}
+		/* Update pattern */
+		pattern = this.getPattern(ctx, pattern);
 		/* Read arguments */
 		reader.matchToken(ctx, "(");
 		var args = use("Runtime.Vector").from([]);
@@ -84,8 +84,8 @@ Object.assign(BayLang.LangES6.ParserES6Function.prototype,
 			}
 		}
 		reader.matchToken(ctx, ")");
-		var __v1 = use("BayLang.OpCodes.OpCall");
-		return new __v1(ctx, use("Runtime.Map").from({"args":args,"obj":pattern,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
+		var __v0 = use("BayLang.OpCodes.OpCall");
+		return new __v0(ctx, use("Runtime.Map").from({"args":args,"item":pattern,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
 	},
 	_init: function(ctx)
 	{

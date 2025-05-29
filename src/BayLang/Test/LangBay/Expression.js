@@ -264,7 +264,6 @@ Object.assign(BayLang.Test.LangBay.Expression,
 	{
 		if (field_name == "testMath1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var Vector = use("Runtime.Vector");
 			var Map = use("Runtime.Map");
@@ -276,7 +275,6 @@ Object.assign(BayLang.Test.LangBay.Expression,
 		}
 		if (field_name == "testMath2")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var Vector = use("Runtime.Vector");
@@ -289,7 +287,6 @@ Object.assign(BayLang.Test.LangBay.Expression,
 		}
 		if (field_name == "testMath3")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -303,7 +300,6 @@ Object.assign(BayLang.Test.LangBay.Expression,
 		}
 		if (field_name == "testMath4")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -318,7 +314,6 @@ Object.assign(BayLang.Test.LangBay.Expression,
 		}
 		if (field_name == "testMath5")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -334,7 +329,6 @@ Object.assign(BayLang.Test.LangBay.Expression,
 		}
 		if (field_name == "testMath6")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -351,7 +345,6 @@ Object.assign(BayLang.Test.LangBay.Expression,
 		}
 		if (field_name == "testMath7")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -369,7 +362,6 @@ Object.assign(BayLang.Test.LangBay.Expression,
 		}
 		if (field_name == "testMath8")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -388,7 +380,6 @@ Object.assign(BayLang.Test.LangBay.Expression,
 		}
 		if (field_name == "testFn1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -408,7 +399,6 @@ Object.assign(BayLang.Test.LangBay.Expression,
 		}
 		if (field_name == "testFn2")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -429,7 +419,6 @@ Object.assign(BayLang.Test.LangBay.Expression,
 		}
 		if (field_name == "testFn3")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -451,7 +440,6 @@ Object.assign(BayLang.Test.LangBay.Expression,
 		}
 		if (field_name == "test1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");

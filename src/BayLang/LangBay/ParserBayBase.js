@@ -126,10 +126,7 @@ Object.assign(BayLang.LangBay.ParserBayBase.prototype,
 			ch = caret.nextChar(ctx);
 		}
 		/* Read end string char */
-		if (ch != "'" && ch != "\"")
-		{
-			throw caret.expected(ctx, "End of string")
-		}
+		caret.matchString(ctx, str_char);
 		/* Restore reader */
 		reader.init(ctx, caret);
 		/* Returns op_code */
@@ -228,7 +225,7 @@ Object.assign(BayLang.LangBay.ParserBayBase.prototype,
 		return new __v0(ctx, use("Runtime.Map").from({"entity_name":entity_name,"generics":generics,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
 	},
 	/**
-	 * Read dynamic identifier
+	 * Read item
 	 */
 	readItem: function(ctx, reader)
 	{
@@ -236,6 +233,10 @@ Object.assign(BayLang.LangBay.ParserBayBase.prototype,
 		if (__v0.isNumber(ctx, reader.nextToken(ctx)))
 		{
 			return this.readNumber(ctx, reader);
+		}
+		else if (reader.nextToken(ctx) == "'" || reader.nextToken(ctx) == "\"")
+		{
+			return this.readString(ctx, reader);
 		}
 		return this.readIdentifier(ctx, reader);
 	},

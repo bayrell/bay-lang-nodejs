@@ -29,11 +29,10 @@ BayLang.LangPHP.ParserPHPFunction.prototype.constructor = BayLang.LangPHP.Parser
 Object.assign(BayLang.LangPHP.ParserPHPFunction.prototype,
 {
 	/**
-	 * Returns variable
+	 * Returns pattern
 	 */
-	getVariable: function(ctx, pattern_ref)
+	getPattern: function(ctx, pattern)
 	{
-		var pattern = pattern_ref.value(ctx);
 		var __v0 = use("BayLang.OpCodes.OpEntityName");
 		var __v1 = use("BayLang.OpCodes.OpIdentifier");
 		if (pattern instanceof __v0)
@@ -61,15 +60,13 @@ Object.assign(BayLang.LangPHP.ParserPHPFunction.prototype,
 		{
 			pattern = this.parser.parser_base.readItem(ctx, reader);
 		}
-		/* Find variable */
-		var __v0 = use("Runtime.Reference");
-		var pattern_ref = new __v0(ctx, pattern);
-		var variable = this.getVariable(ctx, pattern_ref);
-		pattern = pattern_ref.value(ctx);
-		if (variable)
+		/* Next token should be bracket */
+		if (reader.nextToken(ctx) != "(")
 		{
-			this.parser.findVariable(ctx, variable);
+			return null;
 		}
+		/* Update pattern */
+		pattern = this.getPattern(ctx, pattern);
 		/* Read arguments */
 		reader.matchToken(ctx, "(");
 		var args = use("Runtime.Vector").from([]);
@@ -83,8 +80,8 @@ Object.assign(BayLang.LangPHP.ParserPHPFunction.prototype,
 			}
 		}
 		reader.matchToken(ctx, ")");
-		var __v1 = use("BayLang.OpCodes.OpCall");
-		return new __v1(ctx, use("Runtime.Map").from({"args":args,"obj":pattern,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
+		var __v0 = use("BayLang.OpCodes.OpCall");
+		return new __v0(ctx, use("Runtime.Map").from({"args":args,"item":pattern,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
 	},
 	_init: function(ctx)
 	{

@@ -338,7 +338,7 @@ Object.assign(BayLang.LangPHP.TranslatorPHPExpression.prototype,
 	 */
 	OpCall: function(ctx, op_code, result)
 	{
-		this.translateItem(ctx, op_code.obj, result);
+		this.translateItem(ctx, op_code.item, result);
 		var __v0 = use("BayLang.OpCodes.OpDict");
 		if (op_code.args.count(ctx) == 1 && op_code.args.get(ctx, 0) instanceof __v0)
 		{
@@ -535,25 +535,15 @@ Object.assign(BayLang.LangPHP.TranslatorPHPExpression.prototype,
 			opcode_level = 16;
 			op = "!";
 		}
-		if (op_code.math == "and")
+		if (op_code.math == "and" || op_code.math == "&&")
 		{
 			opcode_level = 6;
-			op = "and";
+			op = "&&";
 		}
-		if (op_code.math == "&&")
-		{
-			opcode_level = 6;
-			op = "and";
-		}
-		if (op_code.math == "or")
+		if (op_code.math == "or" || op_code.math == "||")
 		{
 			opcode_level = 5;
-			op = "or";
-		}
-		if (op_code.math == "||")
-		{
-			opcode_level = 5;
-			op = "or";
+			op = "||";
 		}
 		if (op_code.math == "not" || op_code.math == "bitnot")
 		{
@@ -587,6 +577,10 @@ Object.assign(BayLang.LangPHP.TranslatorPHPExpression.prototype,
 			else
 			{
 				result.appendItems(ctx, result1);
+			}
+			if (op == "~")
+			{
+				op = ".";
 			}
 			result.push(ctx, " " + use("Runtime.rtl").toStr(op) + use("Runtime.rtl").toStr(" "));
 			var result2 = use("Runtime.Vector").from([]);

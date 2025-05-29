@@ -37,13 +37,13 @@ Object.assign(BayLang.OpCodes.OpCall.prototype,
 		serializer.process(ctx, this, "is_await", data);
 		serializer.process(ctx, this, "is_context", data);
 		serializer.process(ctx, this, "is_html", data);
-		serializer.process(ctx, this, "obj", data);
+		serializer.process(ctx, this, "item", data);
 	},
 	_init: function(ctx)
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.op = "op_call";
-		this.obj = null;
+		this.item = null;
 		this.args = null;
 		this.is_await = false;
 		this.is_html = false;

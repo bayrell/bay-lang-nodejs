@@ -87,7 +87,7 @@ Object.assign(BayLang.TokenReader.prototype,
 	{
 		if (this.nextToken(ctx) != ch)
 		{
-			throw new this.next_token.expected(ctx, ch)
+			throw this.expected(ctx, ch)
 		}
 		this.readToken(ctx);
 	},

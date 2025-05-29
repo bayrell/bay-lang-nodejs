@@ -40,13 +40,17 @@ Object.assign(BayLang.LangBay.ParserBayFunction.prototype,
 		{
 			pattern = this.parser.parser_base.readItem(ctx, reader);
 		}
+		/* Next token should be bracket */
+		if (reader.nextToken(ctx) != "(")
+		{
+			return null;
+		}
 		/* Find identifier */
 		var __v0 = use("BayLang.OpCodes.OpTypeIdentifier");
 		if (pattern instanceof __v0)
 		{
 			pattern = pattern.entity_name.items.last(ctx);
 		}
-		this.parser.findVariable(ctx, pattern);
 		/* Read arguments */
 		reader.matchToken(ctx, "(");
 		var args = use("Runtime.Vector").from([]);
@@ -61,7 +65,7 @@ Object.assign(BayLang.LangBay.ParserBayFunction.prototype,
 		}
 		reader.matchToken(ctx, ")");
 		var __v0 = use("BayLang.OpCodes.OpCall");
-		return new __v0(ctx, use("Runtime.Map").from({"args":args,"obj":pattern,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
+		return new __v0(ctx, use("Runtime.Map").from({"args":args,"item":pattern,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
 	},
 	_init: function(ctx)
 	{

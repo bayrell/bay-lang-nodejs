@@ -40,12 +40,15 @@ Object.assign(BayLang.OpCodes.OpIdentifier.prototype,
 	{
 		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
 		this.op = "op_identifier";
+		this.kind = "";
 		this.value = "";
 	},
 });
 Object.assign(BayLang.OpCodes.OpIdentifier, use("BayLang.OpCodes.BaseOpCode"));
 Object.assign(BayLang.OpCodes.OpIdentifier,
 {
+	KIND_VARIABLE: "var",
+	KIND_TYPE: "type",
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{

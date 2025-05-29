@@ -126,10 +126,7 @@ Object.assign(BayLang.LangPHP.ParserPHPBase.prototype,
 			ch = caret.nextChar(ctx);
 		}
 		/* Read end string char */
-		if (ch != "'" && ch != "\"")
-		{
-			throw caret.expected(ctx, "End of string")
-		}
+		caret.matchString(ctx, str_char);
 		/* Restore reader */
 		reader.init(ctx, caret);
 		/* Returns op_code */
@@ -174,9 +171,11 @@ Object.assign(BayLang.LangPHP.ParserPHPBase.prototype,
 	readIdentifier: function(ctx, reader)
 	{
 		var caret_start = reader.caret(ctx);
-		/* Skip $ */
+		/* Detect variable */
+		var is_variable = false;
 		if (reader.nextToken(ctx) == "$")
 		{
+			is_variable = true;
 			reader.readToken(ctx);
 		}
 		/* Read identifier */
@@ -184,6 +183,11 @@ Object.assign(BayLang.LangPHP.ParserPHPBase.prototype,
 		if (!this.constructor.isIdentifier(ctx, name) || this.constructor.isReserved(ctx, name))
 		{
 			throw reader.expected(ctx, "Identifier")
+		}
+		/* Check if function */
+		if (!this.parser.isRegisteredVariable(ctx, name) && !is_variable)
+		{
+			throw reader.expected(ctx, "Variable")
 		}
 		/* Returns op_code */
 		var __v0 = use("BayLang.OpCodes.OpIdentifier");
@@ -233,7 +237,7 @@ Object.assign(BayLang.LangPHP.ParserPHPBase.prototype,
 		return new __v0(ctx, use("Runtime.Map").from({"entity_name":entity_name,"generics":generics,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
 	},
 	/**
-	 * Read dynamic identifier
+	 * Read item
 	 */
 	readItem: function(ctx, reader)
 	{
@@ -241,6 +245,10 @@ Object.assign(BayLang.LangPHP.ParserPHPBase.prototype,
 		if (__v0.isNumber(ctx, reader.nextToken(ctx)))
 		{
 			return this.readNumber(ctx, reader);
+		}
+		else if (reader.nextToken(ctx) == "'" || reader.nextToken(ctx) == "\"")
+		{
+			return this.readString(ctx, reader);
 		}
 		return this.readIdentifier(ctx, reader);
 	},

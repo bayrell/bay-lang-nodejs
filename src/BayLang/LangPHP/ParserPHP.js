@@ -32,7 +32,7 @@ Object.assign(BayLang.LangPHP.ParserPHP.prototype,
 	 */
 	isRegisteredVariable: function(ctx, name)
 	{
-		var variables = use("Runtime.Vector").from(["print","rs","rtl"]);
+		var variables = use("Runtime.Vector").from(["echo"]);
 		if (variables.indexOf(ctx, name) == -1)
 		{
 			return false;
@@ -68,11 +68,7 @@ Object.assign(BayLang.LangPHP.ParserPHP.prototype,
 	 */
 	parse: function(ctx)
 	{
-		var __v0 = use("BayLang.TokenReader");
-		var reader = new __v0(ctx);
-		var __v1 = use("BayLang.Caret");
-		var __v2 = use("Runtime.Reference");
-		reader.init(ctx, new __v1(ctx, use("Runtime.Map").from({"content":new __v2(ctx, this.content),"tab_size":this.tab_size})));
+		var reader = this.createReader(ctx);
 		return this.parser_program.parse(ctx, reader);
 	},
 	_init: function(ctx)
