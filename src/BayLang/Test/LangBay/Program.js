@@ -302,7 +302,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 	{
 		if (field_name == "testNamespace")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var Vector = use("Runtime.Vector");
 			var Map = use("Runtime.Map");
@@ -314,7 +313,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testUse1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var Vector = use("Runtime.Vector");
@@ -327,7 +325,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testUse2")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -341,7 +338,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testClass1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -356,7 +352,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testClass2")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -372,7 +367,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testClass3")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -389,7 +383,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testClass4")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -407,7 +400,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testClass5")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -426,7 +418,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testInterface1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -446,7 +437,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testStruct1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -467,7 +457,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testFn1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -489,7 +478,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testFn2")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -512,7 +500,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testFn3")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -536,7 +523,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testFn4")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -561,7 +547,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testFn5")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -587,7 +572,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testAssign1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -614,7 +598,6 @@ Object.assign(BayLang.Test.LangBay.Program,
 		}
 		if (field_name == "testAssign2")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");

@@ -368,7 +368,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 	{
 		if (field_name == "test1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var Vector = use("Runtime.Vector");
 			var Map = use("Runtime.Map");
@@ -380,7 +379,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "test2")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var Vector = use("Runtime.Vector");
@@ -393,7 +391,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "test3")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -407,7 +404,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "test4")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -422,7 +418,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testTemplate1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -438,7 +433,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testTemplate2")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -455,7 +449,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testTemplate3")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -473,7 +466,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testComponent1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -492,7 +484,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testComponent2")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -512,7 +503,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testComponent3")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -533,7 +523,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testComponent4")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -555,7 +544,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testComponent5")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -578,7 +566,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testContent1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -602,7 +589,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testContent2")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -627,7 +613,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testContent3")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -653,7 +638,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testClick")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -680,7 +664,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testScript1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -708,7 +691,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testSlot1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -737,7 +719,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testSlot2")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -767,7 +748,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testStyle1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -798,7 +778,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testStyle2")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -830,7 +809,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testStyle3")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -863,7 +841,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testStyle4")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -897,7 +874,6 @@ Object.assign(BayLang.Test.LangBay.Html,
 		}
 		if (field_name == "testStyle5")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");

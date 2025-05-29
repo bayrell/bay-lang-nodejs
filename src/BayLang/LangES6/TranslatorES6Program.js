@@ -238,7 +238,7 @@ Object.assign(BayLang.LangES6.TranslatorES6Program,
 		var save = t.constructor.outputSaveOpCode(ctx, t);
 		if (save != "")
 		{
-			content += use("Runtime.rtl").toStr(t.s(ctx, save));
+			content += use("Runtime.rtl").toStr(save);
 		}
 		content += use("Runtime.rtl").toStr(s1);
 		t = t.levelDec(ctx);

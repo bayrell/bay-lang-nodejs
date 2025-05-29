@@ -266,7 +266,6 @@ Object.assign(BayLang.Test.LangBay.Style,
 	{
 		if (field_name == "test1")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var Vector = use("Runtime.Vector");
 			var Map = use("Runtime.Map");
@@ -278,7 +277,6 @@ Object.assign(BayLang.Test.LangBay.Style,
 		}
 		if (field_name == "test2")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var Vector = use("Runtime.Vector");
@@ -291,7 +289,6 @@ Object.assign(BayLang.Test.LangBay.Style,
 		}
 		if (field_name == "test3")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -305,7 +302,6 @@ Object.assign(BayLang.Test.LangBay.Style,
 		}
 		if (field_name == "test4")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -320,7 +316,6 @@ Object.assign(BayLang.Test.LangBay.Style,
 		}
 		if (field_name == "test5")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -336,7 +331,6 @@ Object.assign(BayLang.Test.LangBay.Style,
 		}
 		if (field_name == "test6")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -353,7 +347,6 @@ Object.assign(BayLang.Test.LangBay.Style,
 		}
 		if (field_name == "test7")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -371,7 +364,6 @@ Object.assign(BayLang.Test.LangBay.Style,
 		}
 		if (field_name == "test8")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -390,7 +382,6 @@ Object.assign(BayLang.Test.LangBay.Style,
 		}
 		if (field_name == "test9")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -410,7 +401,6 @@ Object.assign(BayLang.Test.LangBay.Style,
 		}
 		if (field_name == "test10")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -431,7 +421,6 @@ Object.assign(BayLang.Test.LangBay.Style,
 		}
 		if (field_name == "test11")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
@@ -453,7 +442,6 @@ Object.assign(BayLang.Test.LangBay.Style,
 		}
 		if (field_name == "test12")
 		{
-			
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
 			var __v2 = use("Runtime.Unit.Test");
