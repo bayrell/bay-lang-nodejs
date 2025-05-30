@@ -181,7 +181,7 @@ Object.assign(BayLang.LangES6.ParserES6Expression.prototype,
 			var __v0 = use("BayLang.OpCodes.OpCall");
 			var __v1 = use("BayLang.OpCodes.OpIdentifier");
 			var __v2 = use("BayLang.OpCodes.OpString");
-			if (value instanceof __v0 && math == "+" && value.args.count(ctx) == 1 && value.obj instanceof __v1 && value.obj.value == "String")
+			if (value instanceof __v0 && math == "+" && value.args.count(ctx) == 1 && value.item instanceof __v1 && value.item.value == "String")
 			{
 				math = "~";
 				value = value.args.get(ctx, 0);

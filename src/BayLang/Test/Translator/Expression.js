@@ -180,6 +180,15 @@ Object.assign(BayLang.Test.Translator.Expression.prototype,
 		};
 		this.test(ctx, content, init);
 	},
+	testString: function(ctx)
+	{
+		var content = use("Runtime.Map").from({"bay":"\"Hello \" ~ username ~ \"!\"","es6":"\"Hello \" + String(username) + String(\"!\")","php":"\"Hello \" . $username . \"!\""});
+		var init = (ctx, parser, translator) =>
+		{
+			parser.vars.set(ctx, "username", true);
+		};
+		this.test(ctx, content);
+	},
 	testFn2: function(ctx)
 	{
 		var content = use("Runtime.Map").from({"bay":"a() + b()","es6":"a() + b()","php":"$a() + $b()"});
@@ -248,6 +257,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 			"testMath6",
 			"testMath7",
 			"testMath8",
+			"testString",
 			"testFn2",
 			"testFn3",
 		];
@@ -371,7 +381,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 				]),
 			});
 		}
-		if (field_name == "testFn2")
+		if (field_name == "testString")
 		{
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
@@ -390,7 +400,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 				]),
 			});
 		}
-		if (field_name == "testFn3")
+		if (field_name == "testFn2")
 		{
 			var __v0 = use("Runtime.Unit.Test");
 			var __v1 = use("Runtime.Unit.Test");
@@ -407,6 +417,27 @@ Object.assign(BayLang.Test.Translator.Expression,
 			return Map.from({
 				"annotations": Vector.from([
 					new __v9(ctx, use("Runtime.Map").from({})),
+				]),
+			});
+		}
+		if (field_name == "testFn3")
+		{
+			var __v0 = use("Runtime.Unit.Test");
+			var __v1 = use("Runtime.Unit.Test");
+			var __v2 = use("Runtime.Unit.Test");
+			var __v3 = use("Runtime.Unit.Test");
+			var __v4 = use("Runtime.Unit.Test");
+			var __v5 = use("Runtime.Unit.Test");
+			var __v6 = use("Runtime.Unit.Test");
+			var __v7 = use("Runtime.Unit.Test");
+			var __v8 = use("Runtime.Unit.Test");
+			var __v9 = use("Runtime.Unit.Test");
+			var __v10 = use("Runtime.Unit.Test");
+			var Vector = use("Runtime.Vector");
+			var Map = use("Runtime.Map");
+			return Map.from({
+				"annotations": Vector.from([
+					new __v10(ctx, use("Runtime.Map").from({})),
 				]),
 			});
 		}
