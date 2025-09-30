@@ -19,9 +19,9 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.TranslatorBayOperator = function(ctx, translator)
+BayLang.LangBay.TranslatorBayOperator = function(translator)
 {
-	use("Runtime.BaseObject").call(this, ctx);
+	use("Runtime.BaseObject").call(this);
 	this.translator = translator;
 };
 BayLang.LangBay.TranslatorBayOperator.prototype = Object.create(use("Runtime.BaseObject").prototype);
@@ -31,198 +31,198 @@ Object.assign(BayLang.LangBay.TranslatorBayOperator.prototype,
 	/**
 	 * OpAssign
 	 */
-	OpAssign: function(ctx, op_code, result)
+	OpAssign: function(op_code, result)
 	{
 		if (op_code.pattern)
 		{
-			this.translator.expression.OpTypeIdentifier(ctx, op_code.pattern, result);
+			this.translator.expression.OpTypeIdentifier(op_code.pattern, result);
 		}
-		var values_count = op_code.values.count(ctx);
+		var values_count = op_code.values.count();
 		for (var i = 0; i < values_count; i++)
 		{
-			var op_code_value = op_code.values.get(ctx, i);
+			var op_code_value = op_code.values.get(i);
 			if (op_code.pattern || i > 0)
 			{
-				result.push(ctx, " ");
+				result.push(" ");
 			}
 			if (op_code_value.op_code)
 			{
-				this.translator.expression.translate(ctx, op_code_value.op_code, result);
+				this.translator.expression.translate(op_code_value.op_code, result);
 			}
 			else
 			{
-				result.push(ctx, op_code_value.var_name);
+				result.push(op_code_value.var_name);
 			}
 			if (op_code_value.expression)
 			{
-				result.push(ctx, " = ");
-				this.translator.expression.translate(ctx, op_code_value.expression, result);
+				result.push(" = ");
+				this.translator.expression.translate(op_code_value.expression, result);
 			}
 			if (i < values_count - 1)
 			{
-				result.push(ctx, ",");
+				result.push(",");
 			}
 		}
 	},
 	/**
 	 * OpBreak
 	 */
-	OpBreak: function(ctx, op_code, result)
+	OpBreak: function(op_code, result)
 	{
-		result.push(ctx, "break");
+		result.push("break");
 	},
 	/**
 	 * OpContinue
 	 */
-	OpContinue: function(ctx, op_code, result)
+	OpContinue: function(op_code, result)
 	{
-		result.push(ctx, "continue");
+		result.push("continue");
 	},
 	/**
 	 * OpReturn
 	 */
-	OpReturn: function(ctx, op_code, result)
+	OpReturn: function(op_code, result)
 	{
-		result.push(ctx, "return");
+		result.push("return");
 		if (op_code.expression)
 		{
-			result.push(ctx, " ");
-			this.translator.expression.translate(ctx, op_code.expression, result);
+			result.push(" ");
+			this.translator.expression.translate(op_code.expression, result);
 		}
 	},
 	/**
 	 * OpInc
 	 */
-	OpInc: function(ctx, op_code, result)
+	OpInc: function(op_code, result)
 	{
 		var __v0 = use("BayLang.OpCodes.OpInc");
 		if (op_code.kind == __v0.KIND_PRE_INC)
 		{
-			result.push(ctx, "++");
-			this.translator.expression.translate(ctx, op_code.value, result);
+			result.push("++");
+			this.translator.expression.translate(op_code.value, result);
 		}
 		var __v0 = use("BayLang.OpCodes.OpInc");
 		if (op_code.kind == __v0.KIND_PRE_DEC)
 		{
-			result.push(ctx, "--");
-			this.translator.expression.translate(ctx, op_code.value, result);
+			result.push("--");
+			this.translator.expression.translate(op_code.value, result);
 		}
 		var __v0 = use("BayLang.OpCodes.OpInc");
 		if (op_code.kind == __v0.KIND_POST_INC)
 		{
-			this.translator.expression.translate(ctx, op_code.value, result);
-			result.push(ctx, "++");
+			this.translator.expression.translate(op_code.value, result);
+			result.push("++");
 		}
 		var __v0 = use("BayLang.OpCodes.OpInc");
 		if (op_code.kind == __v0.KIND_POST_DEC)
 		{
-			this.translator.expression.translate(ctx, op_code.value, result);
-			result.push(ctx, "--");
+			this.translator.expression.translate(op_code.value, result);
+			result.push("--");
 		}
 	},
 	/**
 	 * OpFor
 	 */
-	OpFor: function(ctx, op_code, result)
+	OpFor: function(op_code, result)
 	{
-		result.push(ctx, "for (");
-		this.translateItem(ctx, op_code.expr1, result);
-		result.push(ctx, "; ");
-		this.translator.expression.translate(ctx, op_code.expr2, result);
-		result.push(ctx, "; ");
-		this.translateItem(ctx, op_code.expr3, result);
-		result.push(ctx, ")");
-		result.push(ctx, this.translator.newLine(ctx));
-		this.translateItems(ctx, op_code.value, result);
+		result.push("for (");
+		this.translateItem(op_code.expr1, result);
+		result.push("; ");
+		this.translator.expression.translate(op_code.expr2, result);
+		result.push("; ");
+		this.translateItem(op_code.expr3, result);
+		result.push(")");
+		result.push(this.translator.newLine());
+		this.translateItems(op_code.value, result);
 	},
 	/**
 	 * OpIf
 	 */
-	OpIf: function(ctx, op_code, result)
+	OpIf: function(op_code, result)
 	{
-		result.push(ctx, "if (");
-		this.translator.expression.translate(ctx, op_code.condition, result);
-		result.push(ctx, ")");
-		result.push(ctx, this.translator.newLine(ctx));
-		this.translateItems(ctx, op_code.if_true, result);
-		if (op_code.if_else && op_code.if_else.count(ctx) > 0)
+		result.push("if (");
+		this.translator.expression.translate(op_code.condition, result);
+		result.push(")");
+		result.push(this.translator.newLine());
+		this.translateItems(op_code.if_true, result);
+		if (op_code.if_else && op_code.if_else.count() > 0)
 		{
-			for (var i = 0; i < op_code.if_else.count(ctx); i++)
+			for (var i = 0; i < op_code.if_else.count(); i++)
 			{
-				var op_code_item = op_code.if_else.get(ctx, i);
-				result.push(ctx, this.translator.newLine(ctx));
-				result.push(ctx, "else if (");
-				this.translator.expression.translate(ctx, op_code_item.condition, result);
-				result.push(ctx, ")");
-				result.push(ctx, this.translator.newLine(ctx));
-				this.translateItems(ctx, op_code_item.if_true, result);
+				var op_code_item = op_code.if_else.get(i);
+				result.push(this.translator.newLine());
+				result.push("else if (");
+				this.translator.expression.translate(op_code_item.condition, result);
+				result.push(")");
+				result.push(this.translator.newLine());
+				this.translateItems(op_code_item.if_true, result);
 			}
 		}
 		if (op_code.if_false)
 		{
-			result.push(ctx, this.translator.newLine(ctx));
-			result.push(ctx, "else");
-			result.push(ctx, this.translator.newLine(ctx));
-			this.translateItems(ctx, op_code.if_false, result);
+			result.push(this.translator.newLine());
+			result.push("else");
+			result.push(this.translator.newLine());
+			this.translateItems(op_code.if_false, result);
 		}
 	},
 	/**
 	 * OpThrow
 	 */
-	OpThrow: function(ctx, op_code, result)
+	OpThrow: function(op_code, result)
 	{
-		result.push(ctx, "throw ");
-		this.translator.expression.translate(ctx, op_code.expression, result);
+		result.push("throw ");
+		this.translator.expression.translate(op_code.expression, result);
 	},
 	/**
 	 * OpTryCatch
 	 */
-	OpTryCatch: function(ctx, op_code, result)
+	OpTryCatch: function(op_code, result)
 	{
-		result.push(ctx, "try");
-		result.push(ctx, this.translator.newLine(ctx));
-		this.translateItems(ctx, op_code.op_try, result);
-		if (op_code.items && op_code.items.count(ctx) > 0)
+		result.push("try");
+		result.push(this.translator.newLine());
+		this.translateItems(op_code.op_try, result);
+		if (op_code.items && op_code.items.count() > 0)
 		{
-			var items_count = op_code.items.count(ctx);
+			var items_count = op_code.items.count();
 			for (var i = 0; i < items_count; i++)
 			{
-				var op_code_item = op_code.items.get(ctx, i);
-				result.push(ctx, this.translator.newLine(ctx));
-				result.push(ctx, "catch (");
-				this.translator.expression.OpTypeIdentifier(ctx, op_code_item.pattern, result);
-				result.push(ctx, " ");
-				result.push(ctx, op_code_item.name);
-				result.push(ctx, ")");
-				result.push(ctx, this.translator.newLine(ctx));
-				this.translateItems(ctx, op_code_item.value, result);
+				var op_code_item = op_code.items.get(i);
+				result.push(this.translator.newLine());
+				result.push("catch (");
+				this.translator.expression.OpTypeIdentifier(op_code_item.pattern, result);
+				result.push(" ");
+				result.push(op_code_item.name);
+				result.push(")");
+				result.push(this.translator.newLine());
+				this.translateItems(op_code_item.value, result);
 			}
 		}
 	},
 	/**
 	 * OpWhile
 	 */
-	OpWhile: function(ctx, op_code, result)
+	OpWhile: function(op_code, result)
 	{
-		result.push(ctx, "while (");
-		this.translator.expression.translate(ctx, op_code.condition, result);
-		result.push(ctx, ")");
-		result.push(ctx, this.translator.newLine(ctx));
-		this.translateItems(ctx, op_code.value, result);
+		result.push("while (");
+		this.translator.expression.translate(op_code.condition, result);
+		result.push(")");
+		result.push(this.translator.newLine());
+		this.translateItems(op_code.value, result);
 	},
 	/**
 	 * OpComment
 	 */
-	OpComment: function(ctx, op_code, result)
+	OpComment: function(op_code, result)
 	{
-		result.push(ctx, "/*");
-		result.push(ctx, op_code.value);
-		result.push(ctx, "*/");
+		result.push("/*");
+		result.push(op_code.value);
+		result.push("*/");
 	},
 	/**
 	 * Translate item
 	 */
-	translateItem: function(ctx, op_code, result)
+	translateItem: function(op_code, result)
 	{
 		var __v0 = use("BayLang.OpCodes.OpAssign");
 		var __v1 = use("BayLang.OpCodes.OpBreak");
@@ -238,51 +238,51 @@ Object.assign(BayLang.LangBay.TranslatorBayOperator.prototype,
 		var __v11 = use("BayLang.OpCodes.OpComment");
 		if (op_code instanceof __v0)
 		{
-			this.OpAssign(ctx, op_code, result);
+			this.OpAssign(op_code, result);
 		}
 		else if (op_code instanceof __v1)
 		{
-			this.OpBreak(ctx, op_code, result);
+			this.OpBreak(op_code, result);
 		}
 		else if (op_code instanceof __v2)
 		{
-			this.translator.expression.OpCall(ctx, op_code, result);
+			this.translator.expression.OpCall(op_code, result);
 		}
 		else if (op_code instanceof __v3)
 		{
-			this.OpContinue(ctx, op_code, result);
+			this.OpContinue(op_code, result);
 		}
 		else if (op_code instanceof __v4)
 		{
-			this.OpReturn(ctx, op_code, result);
+			this.OpReturn(op_code, result);
 		}
 		else if (op_code instanceof __v5)
 		{
-			this.OpInc(ctx, op_code, result);
+			this.OpInc(op_code, result);
 		}
 		else if (op_code instanceof __v6)
 		{
-			this.OpFor(ctx, op_code, result);
+			this.OpFor(op_code, result);
 		}
 		else if (op_code instanceof __v7)
 		{
-			this.OpIf(ctx, op_code, result);
+			this.OpIf(op_code, result);
 		}
 		else if (op_code instanceof __v8)
 		{
-			this.OpThrow(ctx, op_code, result);
+			this.OpThrow(op_code, result);
 		}
 		else if (op_code instanceof __v9)
 		{
-			this.OpTryCatch(ctx, op_code, result);
+			this.OpTryCatch(op_code, result);
 		}
 		else if (op_code instanceof __v10)
 		{
-			this.OpWhile(ctx, op_code, result);
+			this.OpWhile(op_code, result);
 		}
 		else if (op_code instanceof __v11)
 		{
-			this.OpComment(ctx, op_code, result);
+			this.OpComment(op_code, result);
 		}
 		else
 		{
@@ -293,28 +293,28 @@ Object.assign(BayLang.LangBay.TranslatorBayOperator.prototype,
 	/**
 	 * Translate OpItems
 	 */
-	translateItems: function(ctx, op_code, result)
+	translateItems: function(op_code, result)
 	{
-		if (op_code.items.count(ctx) == 0)
+		if (op_code.items.count() == 0)
 		{
-			result.push(ctx, "{");
-			result.push(ctx, "}");
+			result.push("{");
+			result.push("}");
 			return ;
 		}
 		/* Begin bracket */
-		result.push(ctx, "{");
-		this.translator.levelInc(ctx);
+		result.push("{");
+		this.translator.levelInc();
 		/* Items */
-		var items_count = op_code.items.count(ctx);
+		var items_count = op_code.items.count();
 		for (var i = 0; i < items_count; i++)
 		{
-			var op_code_item = op_code.items.get(ctx, i);
+			var op_code_item = op_code.items.get(i);
 			var result_items = use("Runtime.Vector").from([]);
-			var flag = this.translateItem(ctx, op_code_item, result_items);
+			var flag = this.translateItem(op_code_item, result_items);
 			if (flag)
 			{
-				result.push(ctx, this.translator.newLine(ctx));
-				result.appendItems(ctx, result_items);
+				result.push(this.translator.newLine());
+				result.appendItems(result_items);
 				var __v0 = use("BayLang.OpCodes.OpAssign");
 				var __v1 = use("BayLang.OpCodes.OpBreak");
 				var __v2 = use("BayLang.OpCodes.OpCall");
@@ -324,18 +324,18 @@ Object.assign(BayLang.LangBay.TranslatorBayOperator.prototype,
 				var __v6 = use("BayLang.OpCodes.OpThrow");
 				if (op_code_item instanceof __v0 || op_code_item instanceof __v1 || op_code_item instanceof __v2 || op_code_item instanceof __v3 || op_code_item instanceof __v4 || op_code_item instanceof __v5 || op_code_item instanceof __v6)
 				{
-					result.push(ctx, ";");
+					result.push(";");
 				}
 			}
 		}
 		/* End bracket */
-		this.translator.levelDec(ctx);
-		result.push(ctx, this.translator.newLine(ctx));
-		result.push(ctx, "}");
+		this.translator.levelDec();
+		result.push(this.translator.newLine());
+		result.push("}");
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		this.translator = null;
 	},
 });
@@ -355,7 +355,7 @@ Object.assign(BayLang.LangBay.TranslatorBayOperator,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -364,24 +364,24 @@ Object.assign(BayLang.LangBay.TranslatorBayOperator,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

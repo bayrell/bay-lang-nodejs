@@ -20,7 +20,7 @@ var use = require('bay-lang').use;
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Test == 'undefined') BayLang.Test = {};
 if (typeof BayLang.Test.LangBay == 'undefined') BayLang.Test.LangBay = {};
-BayLang.Test.LangBay.Style = function(ctx)
+BayLang.Test.LangBay.Style = function()
 {
 };
 Object.assign(BayLang.Test.LangBay.Style.prototype,
@@ -28,42 +28,42 @@ Object.assign(BayLang.Test.LangBay.Style.prototype,
 	/**
 	 * Reset
 	 */
-	reset: function(ctx)
+	reset: function()
 	{
 		/* Create parser */
 		var __v0 = use("BayLang.LangBay.ParserBay");
-		var parser = new __v0(ctx);
-		parser = parser.constructor.reset(ctx, parser);
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["current_namespace_name"]), "App");
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["current_class_name"]), "Test");
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["uses"]), parser.uses.setIm(ctx, "Button", "Runtime.Widget.Button"));
+		var parser = new __v0();
+		parser = parser.constructor.reset(parser);
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["current_namespace_name"]), "App");
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["current_class_name"]), "Test");
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["uses"]), parser.uses.setIm("Button", "Runtime.Widget.Button"));
 		this.parser = parser;
 	},
 	/**
 	 * Set content
 	 */
-	setContent: function(ctx, content)
+	setContent: function(content)
 	{
-		this.parser = this.parser.constructor.setContent(ctx, this.parser, content);
+		this.parser = this.parser.constructor.setContent(this.parser, content);
 	},
 	/**
 	 * Translate
 	 */
-	translate: function(ctx, content, debug)
+	translate: function(content, debug)
 	{
 		if (debug == undefined) debug = false;
-		this.setContent(ctx, content + use("Runtime.rtl").toStr("}"));
+		this.setContent(content + use("Runtime.rtl").toStr("}"));
 		/* Parse */
 		var items = use("Runtime.Vector").from([]);
-		var res = this.parser.parser_html.constructor.readCssBodyItems(ctx, this.parser, items, use("Runtime.Vector").from([]));
-		var op_code = res.get(ctx, 1);
+		var res = this.parser.parser_html.constructor.readCssBodyItems(this.parser, items, use("Runtime.Vector").from([]));
+		var op_code = res.get(1);
 		/* Get items */
-		items = items.map(ctx, (ctx, op_code) =>
+		items = items.map((op_code) =>
 		{
 			return op_code.value;
 		});
 		var __v0 = use("Runtime.rs");
-		var result = __v0.join(ctx, "\n", items);
+		var result = __v0.join("\n", items);
 		/* Debug output */
 		if (debug)
 		{
@@ -72,139 +72,139 @@ Object.assign(BayLang.Test.LangBay.Style.prototype,
 		}
 		return use("Runtime.Vector").from([op_code,result]);
 	},
-	test1: function(ctx)
+	test1: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from([".main_page{","\tpadding: 20px;","}"]));
+		var content = __v0.join("\n", use("Runtime.Vector").from([".main_page{","\tpadding: 20px;","}"]));
 		var __v1 = use("Runtime.rs");
-		var css_content = __v1.join(ctx, "\n", use("Runtime.Vector").from([".main_page.h-71c3{padding: 20px}"]));
-		var res = this.translate(ctx, content);
+		var css_content = __v1.join("\n", use("Runtime.Vector").from([".main_page.h-71c3{padding: 20px}"]));
+		var res = this.translate(content);
 		var __v2 = use("Runtime.Unit.AssertHelper");
-		__v2.equalValue(ctx, css_content, res.get(ctx, 1), css_content);
+		__v2.equalValue(css_content, res.get(1), css_content);
 	},
-	test2: function(ctx)
+	test2: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from([".main_page{","\t.test1{","\t\tpadding: 20px;","\t}","}"]));
+		var content = __v0.join("\n", use("Runtime.Vector").from([".main_page{","\t.test1{","\t\tpadding: 20px;","\t}","}"]));
 		var __v1 = use("Runtime.rs");
-		var css_content = __v1.join(ctx, "\n", use("Runtime.Vector").from([".main_page.h-71c3 .test1.h-71c3{padding: 20px}"]));
-		var res = this.translate(ctx, content);
+		var css_content = __v1.join("\n", use("Runtime.Vector").from([".main_page.h-71c3 .test1.h-71c3{padding: 20px}"]));
+		var res = this.translate(content);
 		var __v2 = use("Runtime.Unit.AssertHelper");
-		__v2.equalValue(ctx, css_content, res.get(ctx, 1), css_content);
+		__v2.equalValue(css_content, res.get(1), css_content);
 	},
-	test3: function(ctx)
+	test3: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from([".main_page{","\t&__test1{","\t\tpadding: 20px;","\t}","}"]));
+		var content = __v0.join("\n", use("Runtime.Vector").from([".main_page{","\t&__test1{","\t\tpadding: 20px;","\t}","}"]));
 		var __v1 = use("Runtime.rs");
-		var css_content = __v1.join(ctx, "\n", use("Runtime.Vector").from([".main_page__test1.h-71c3{padding: 20px}"]));
-		var res = this.translate(ctx, content);
+		var css_content = __v1.join("\n", use("Runtime.Vector").from([".main_page__test1.h-71c3{padding: 20px}"]));
+		var res = this.translate(content);
 		var __v2 = use("Runtime.Unit.AssertHelper");
-		__v2.equalValue(ctx, css_content, res.get(ctx, 1), css_content);
+		__v2.equalValue(css_content, res.get(1), css_content);
 	},
-	test4: function(ctx)
+	test4: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from([".main_page{","\t&__test1{","\t\t&_test2{","\t\t\tpadding: 20px;","\t\t}","\t}","}"]));
+		var content = __v0.join("\n", use("Runtime.Vector").from([".main_page{","\t&__test1{","\t\t&_test2{","\t\t\tpadding: 20px;","\t\t}","\t}","}"]));
 		var __v1 = use("Runtime.rs");
-		var css_content = __v1.join(ctx, "\n", use("Runtime.Vector").from([".main_page__test1_test2.h-71c3{padding: 20px}"]));
-		var res = this.translate(ctx, content);
+		var css_content = __v1.join("\n", use("Runtime.Vector").from([".main_page__test1_test2.h-71c3{padding: 20px}"]));
+		var res = this.translate(content);
 		var __v2 = use("Runtime.Unit.AssertHelper");
-		__v2.equalValue(ctx, css_content, res.get(ctx, 1), css_content);
+		__v2.equalValue(css_content, res.get(1), css_content);
 	},
-	test5: function(ctx)
+	test5: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from([".main_page{","\t&__test1{","\t\t.test2{","\t\t\tpadding: 20px;","\t\t}","\t}","}"]));
+		var content = __v0.join("\n", use("Runtime.Vector").from([".main_page{","\t&__test1{","\t\t.test2{","\t\t\tpadding: 20px;","\t\t}","\t}","}"]));
 		var __v1 = use("Runtime.rs");
-		var css_content = __v1.join(ctx, "\n", use("Runtime.Vector").from([".main_page__test1.h-71c3 .test2.h-71c3{padding: 20px}"]));
-		var res = this.translate(ctx, content);
+		var css_content = __v1.join("\n", use("Runtime.Vector").from([".main_page__test1.h-71c3 .test2.h-71c3{padding: 20px}"]));
+		var res = this.translate(content);
 		var __v2 = use("Runtime.Unit.AssertHelper");
-		__v2.equalValue(ctx, css_content, res.get(ctx, 1), css_content);
+		__v2.equalValue(css_content, res.get(1), css_content);
 	},
-	test6: function(ctx)
+	test6: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from([".main_page{","\t.test1{","\t\t&__test2{","\t\t\tpadding: 20px;","\t\t}","\t}","}"]));
+		var content = __v0.join("\n", use("Runtime.Vector").from([".main_page{","\t.test1{","\t\t&__test2{","\t\t\tpadding: 20px;","\t\t}","\t}","}"]));
 		var __v1 = use("Runtime.rs");
-		var css_content = __v1.join(ctx, "\n", use("Runtime.Vector").from([".main_page.h-71c3 .test1__test2.h-71c3{padding: 20px}"]));
-		var res = this.translate(ctx, content);
+		var css_content = __v1.join("\n", use("Runtime.Vector").from([".main_page.h-71c3 .test1__test2.h-71c3{padding: 20px}"]));
+		var res = this.translate(content);
 		var __v2 = use("Runtime.Unit.AssertHelper");
-		__v2.equalValue(ctx, css_content, res.get(ctx, 1), css_content);
+		__v2.equalValue(css_content, res.get(1), css_content);
 	},
-	test7: function(ctx)
+	test7: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from([".main_page{","\t%(Button)widget_button{","\t\tpadding: 20px;","\t}","}"]));
+		var content = __v0.join("\n", use("Runtime.Vector").from([".main_page{","\t%(Button)widget_button{","\t\tpadding: 20px;","\t}","}"]));
 		var __v1 = use("Runtime.rs");
-		var css_content = __v1.join(ctx, "\n", use("Runtime.Vector").from([".main_page.h-71c3 .widget_button.h-8dd7{padding: 20px}"]));
-		var res = this.translate(ctx, content);
+		var css_content = __v1.join("\n", use("Runtime.Vector").from([".main_page.h-71c3 .widget_button.h-8dd7{padding: 20px}"]));
+		var res = this.translate(content);
 		var __v2 = use("Runtime.Unit.AssertHelper");
-		__v2.equalValue(ctx, css_content, res.get(ctx, 1), css_content);
+		__v2.equalValue(css_content, res.get(1), css_content);
 	},
-	test8: function(ctx)
+	test8: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from([".main_page{","\t%(Button)widget_button{","\t\t&__test1{","\t\t\tpadding: 20px;","\t\t}","\t}","}"]));
+		var content = __v0.join("\n", use("Runtime.Vector").from([".main_page{","\t%(Button)widget_button{","\t\t&__test1{","\t\t\tpadding: 20px;","\t\t}","\t}","}"]));
 		var __v1 = use("Runtime.rs");
-		var css_content = __v1.join(ctx, "\n", use("Runtime.Vector").from([".main_page.h-71c3 .widget_button__test1.h-8dd7{padding: 20px}"]));
-		var res = this.translate(ctx, content);
+		var css_content = __v1.join("\n", use("Runtime.Vector").from([".main_page.h-71c3 .widget_button__test1.h-8dd7{padding: 20px}"]));
+		var res = this.translate(content);
 		var __v2 = use("Runtime.Unit.AssertHelper");
-		__v2.equalValue(ctx, css_content, res.get(ctx, 1), css_content);
+		__v2.equalValue(css_content, res.get(1), css_content);
 	},
-	test9: function(ctx)
+	test9: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from([".main_page{","\t%(Button)widget_button{","\t\t.test1{","\t\t\tpadding: 20px;","\t\t}","\t}","}"]));
+		var content = __v0.join("\n", use("Runtime.Vector").from([".main_page{","\t%(Button)widget_button{","\t\t.test1{","\t\t\tpadding: 20px;","\t\t}","\t}","}"]));
 		var __v1 = use("Runtime.rs");
-		var css_content = __v1.join(ctx, "\n", use("Runtime.Vector").from([".main_page.h-71c3 .widget_button.h-8dd7 .test1.h-71c3{padding: 20px}"]));
-		var res = this.translate(ctx, content);
+		var css_content = __v1.join("\n", use("Runtime.Vector").from([".main_page.h-71c3 .widget_button.h-8dd7 .test1.h-71c3{padding: 20px}"]));
+		var res = this.translate(content);
 		var __v2 = use("Runtime.Unit.AssertHelper");
-		__v2.equalValue(ctx, css_content, res.get(ctx, 1), css_content);
+		__v2.equalValue(css_content, res.get(1), css_content);
 	},
-	test10: function(ctx)
+	test10: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from([".main_page{","\tp{","\t\tfont-weight: bold;","\t}","}"]));
+		var content = __v0.join("\n", use("Runtime.Vector").from([".main_page{","\tp{","\t\tfont-weight: bold;","\t}","}"]));
 		var __v1 = use("Runtime.rs");
-		var css_content = __v1.join(ctx, "\n", use("Runtime.Vector").from([".main_page.h-71c3 p{font-weight: bold}"]));
-		var res = this.translate(ctx, content);
+		var css_content = __v1.join("\n", use("Runtime.Vector").from([".main_page.h-71c3 p{font-weight: bold}"]));
+		var res = this.translate(content);
 		var __v2 = use("Runtime.Unit.AssertHelper");
-		__v2.equalValue(ctx, css_content, res.get(ctx, 1), css_content);
+		__v2.equalValue(css_content, res.get(1), css_content);
 	},
-	test11: function(ctx)
+	test11: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from([".main_page{","\tpadding: 20px;","\tcolor: green;","}"]));
+		var content = __v0.join("\n", use("Runtime.Vector").from([".main_page{","\tpadding: 20px;","\tcolor: green;","}"]));
 		var __v1 = use("Runtime.rs");
-		var css_content = __v1.join(ctx, "\n", use("Runtime.Vector").from([".main_page.h-71c3{padding: 20px;color: green}"]));
-		var res = this.translate(ctx, content);
+		var css_content = __v1.join("\n", use("Runtime.Vector").from([".main_page.h-71c3{padding: 20px;color: green}"]));
+		var res = this.translate(content);
 		var __v2 = use("Runtime.Unit.AssertHelper");
-		__v2.equalValue(ctx, css_content, res.get(ctx, 1), css_content);
+		__v2.equalValue(css_content, res.get(1), css_content);
 	},
-	test12: function(ctx)
+	test12: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from([".main_page{","\tpadding: 20px;","\tcolor: green;","\t@media (max-width: 950px){","\t\tdisplay: none;","\t}","}"]));
+		var content = __v0.join("\n", use("Runtime.Vector").from([".main_page{","\tpadding: 20px;","\tcolor: green;","\t@media (max-width: 950px){","\t\tdisplay: none;","\t}","}"]));
 		var __v1 = use("Runtime.rs");
-		var css_content = __v1.join(ctx, "\n", use("Runtime.Vector").from([".main_page.h-71c3{padding: 20px;color: green}","@media (max-width: 950px){.main_page.h-71c3{display: none}}"]));
-		var res = this.translate(ctx, content);
+		var css_content = __v1.join("\n", use("Runtime.Vector").from([".main_page.h-71c3{padding: 20px;color: green}","@media (max-width: 950px){.main_page.h-71c3{display: none}}"]));
+		var res = this.translate(content);
 		var __v2 = use("Runtime.Unit.AssertHelper");
-		__v2.equalValue(ctx, css_content, res.get(ctx, 1), css_content);
+		__v2.equalValue(css_content, res.get(1), css_content);
 	},
-	_init: function(ctx)
+	_init: function()
 	{
 		this.parser = null;
 	},
@@ -224,7 +224,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -233,18 +233,18 @@ Object.assign(BayLang.Test.LangBay.Style,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 			"test1",
@@ -262,7 +262,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		if (field_name == "test1")
 		{
@@ -271,7 +271,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v0(ctx, use("Runtime.Map").from({})),
+					new __v0(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -283,7 +283,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v1(ctx, use("Runtime.Map").from({})),
+					new __v1(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -296,7 +296,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v2(ctx, use("Runtime.Map").from({})),
+					new __v2(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -310,7 +310,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v3(ctx, use("Runtime.Map").from({})),
+					new __v3(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -325,7 +325,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v4(ctx, use("Runtime.Map").from({})),
+					new __v4(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -341,7 +341,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v5(ctx, use("Runtime.Map").from({})),
+					new __v5(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -358,7 +358,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v6(ctx, use("Runtime.Map").from({})),
+					new __v6(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -376,7 +376,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v7(ctx, use("Runtime.Map").from({})),
+					new __v7(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -395,7 +395,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v8(ctx, use("Runtime.Map").from({})),
+					new __v8(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -415,7 +415,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v9(ctx, use("Runtime.Map").from({})),
+					new __v9(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -436,7 +436,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v10(ctx, use("Runtime.Map").from({})),
+					new __v10(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -458,7 +458,7 @@ Object.assign(BayLang.Test.LangBay.Style,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v11(ctx, use("Runtime.Map").from({})),
+					new __v11(use("Runtime.Map").from({})),
 				]),
 			});
 		}

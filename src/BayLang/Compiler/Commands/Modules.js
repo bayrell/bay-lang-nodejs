@@ -20,7 +20,7 @@ var use = require('bay-lang').use;
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
-BayLang.Compiler.Commands.Modules = function(ctx)
+BayLang.Compiler.Commands.Modules = function()
 {
 	use("Runtime.Console.BaseCommand").apply(this, arguments);
 };
@@ -35,54 +35,54 @@ Object.assign(BayLang.Compiler.Commands.Modules,
 	/**
 	 * Returns name
 	 */
-	getName: function(ctx)
+	getName: function()
 	{
 		return "modules";
 	},
 	/**
 	 * Returns description
 	 */
-	getDescription: function(ctx)
+	getDescription: function()
 	{
 		return "Show modules";
 	},
 	/**
 	 * Run task
 	 */
-	run: async function(ctx)
+	run: async function()
 	{
-		this.showModules(ctx, true);
+		this.showModules(true);
 		return Promise.resolve(this.SUCCESS);
 	},
 	/**
 	 * Returns modules
 	 */
-	getModules: function(ctx)
+	getModules: function()
 	{
-		var settings = ctx.provider(ctx, "BayLang.Compiler.SettingsProvider");
+		var settings = use("Runtime.rtl").getContext().provider("BayLang.Compiler.SettingsProvider");
 		return settings.modules;
 	},
 	/**
 	 * Show modules
 	 */
-	showModules: function(ctx, verbose)
+	showModules: function(verbose)
 	{
-		var modules = this.getModules(ctx);
-		var modules_names = modules.keys(ctx).sort(ctx);
-		for (var i = 0; i < modules_names.count(ctx); i++)
+		var modules = this.getModules();
+		var modules_names = modules.keys().sort();
+		for (var i = 0; i < modules_names.count(); i++)
 		{
-			var module_name = Runtime.rtl.attr(ctx, modules_names, i);
-			var module = Runtime.rtl.attr(ctx, modules, module_name);
+			var module_name = Runtime.rtl.attr(modules_names, i);
+			var module = Runtime.rtl.attr(modules, module_name);
 			if (verbose)
 			{
 				var __v0 = use("Runtime.io");
 				var __v1 = use("Runtime.io");
-				__v0.print(ctx, i + 1 + use("Runtime.rtl").toStr(") ") + use("Runtime.rtl").toStr(__v1.color(ctx, "yellow", module_name)) + use("Runtime.rtl").toStr(" - ") + use("Runtime.rtl").toStr(module.path));
+				__v0.print(i + 1 + use("Runtime.rtl").toStr(") ") + use("Runtime.rtl").toStr(__v1.color("yellow", module_name)) + use("Runtime.rtl").toStr(" - ") + use("Runtime.rtl").toStr(module.path));
 			}
 			else
 			{
 				var __v2 = use("Runtime.io");
-				__v2.print(ctx, module_name);
+				__v2.print(module_name);
 			}
 		}
 	},
@@ -99,7 +99,7 @@ Object.assign(BayLang.Compiler.Commands.Modules,
 	{
 		return "Runtime.Console.BaseCommand";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -108,24 +108,24 @@ Object.assign(BayLang.Compiler.Commands.Modules,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

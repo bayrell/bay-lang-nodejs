@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.TokenReader = function(ctx)
+BayLang.TokenReader = function()
 {
 	use("Runtime.BaseObject").apply(this, arguments);
 };
@@ -29,51 +29,51 @@ Object.assign(BayLang.TokenReader.prototype,
 	/**
 	 * Init token reader
 	 */
-	init: function(ctx, caret)
+	init: function(caret)
 	{
 		this.main_caret = caret;
-		this.next_caret = caret.copy(ctx);
-		this.readToken(ctx);
+		this.next_caret = caret.copy();
+		this.readToken();
 	},
 	/**
 	 * Returns eof
 	 */
-	eof: function(ctx)
+	eof: function()
 	{
-		return this.main_caret.eof(ctx);
+		return this.main_caret.eof();
 	},
 	/**
 	 * Returns next token
 	 */
-	nextToken: function(ctx)
+	nextToken: function()
 	{
 		return this.next_token;
 	},
 	/**
 	 * Read token
 	 */
-	readToken: function(ctx)
+	readToken: function()
 	{
 		var token = this.next_token;
-		this.main_caret.seek(ctx, this.next_caret);
-		this.next_token = this.next_caret.readToken(ctx);
+		this.main_caret.seek(this.next_caret);
+		this.next_token = this.next_caret.readToken();
 		return token;
 	},
 	/**
 	 * Match next token
 	 */
-	matchToken: function(ctx, ch)
+	matchToken: function(ch)
 	{
-		if (this.nextToken(ctx) != ch)
+		if (this.nextToken() != ch)
 		{
 			var __v0 = use("BayLang.Exceptions.ParserExpected");
-			throw new __v0(ctx, ch, this.main_caret, this.main_caret.file_name)
+			throw new __v0(ch, this.main_caret, this.main_caret.file_name)
 		}
-		this.readToken(ctx);
+		this.readToken();
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		this.main_caret = null;
 		this.next_caret = null;
 		this.next_token = "";
@@ -95,7 +95,7 @@ Object.assign(BayLang.TokenReader,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -104,24 +104,24 @@ Object.assign(BayLang.TokenReader,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

@@ -18,10 +18,10 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Reference = function(ctx, ref)
+Runtime.Reference = function(ref)
 {
 	if (ref == undefined) ref = null;
-	use("Runtime.BaseObject").call(this, ctx);
+	use("Runtime.BaseObject").call(this);
 	this.ref = ref;
 };
 Runtime.Reference.prototype = Object.create(use("Runtime.BaseObject").prototype);
@@ -31,22 +31,22 @@ Object.assign(Runtime.Reference.prototype,
 	/**
 	 * Returns value
 	 */
-	setValue: function(ctx, new_value)
+	setValue: function(new_value)
 	{
 		this.ref = new_value;
 	},
 	/**
 	 * Returns value
 	 */
-	value: function(ctx)
+	value: function()
 	{
 		return this.ref;
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		var __v0 = use("Runtime.rtl");
-		this.uq = __v0.unique(ctx);
+		this.uq = __v0.unique();
 		this.ref = null;
 	},
 });
@@ -66,7 +66,7 @@ Object.assign(Runtime.Reference,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -75,24 +75,24 @@ Object.assign(Runtime.Reference,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

@@ -19,12 +19,12 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Exceptions == 'undefined') BayLang.Exceptions = {};
-BayLang.Exceptions.ParserError = function(ctx, s, caret, file, code, prev)
+BayLang.Exceptions.ParserError = function(s, caret, file, code, prev)
 {
 	if (file == undefined) file = "";
 	if (code == undefined) code = -1;
 	if (prev == undefined) prev = null;
-	use("BayLang.Exceptions.ParserUnknownError").call(this, ctx, s, code, prev);
+	use("BayLang.Exceptions.ParserUnknownError").call(this, s, code, prev);
 	this.error_line = caret.y + 1;
 	this.error_pos = caret.x + 1;
 	this.error_file = file;
@@ -33,12 +33,12 @@ BayLang.Exceptions.ParserError.prototype = Object.create(use("BayLang.Exceptions
 BayLang.Exceptions.ParserError.prototype.constructor = BayLang.Exceptions.ParserError;
 Object.assign(BayLang.Exceptions.ParserError.prototype,
 {
-	buildErrorMessage: function(ctx)
+	buildErrorMessage: function()
 	{
-		var error_str = this.getErrorMessage(ctx);
-		var file = this.getFileName(ctx);
-		var line = this.getErrorLine(ctx);
-		var pos = this.getErrorPos(ctx);
+		var error_str = this.getErrorMessage();
+		var file = this.getFileName();
+		var line = this.getErrorLine();
+		var pos = this.getErrorPos();
 		if (line != -1)
 		{
 			error_str += use("Runtime.rtl").toStr(" at Ln:" + use("Runtime.rtl").toStr(line) + use("Runtime.rtl").toStr(((pos != "") ? (", Pos:" + use("Runtime.rtl").toStr(pos)) : (""))));
@@ -66,7 +66,7 @@ Object.assign(BayLang.Exceptions.ParserError,
 	{
 		return "BayLang.Exceptions.ParserUnknownError";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -75,24 +75,24 @@ Object.assign(BayLang.Exceptions.ParserError,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

@@ -20,7 +20,7 @@ var use = require('bay-lang').use;
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Test == 'undefined') BayLang.Test = {};
 if (typeof BayLang.Test.LangBay == 'undefined') BayLang.Test.LangBay = {};
-BayLang.Test.LangBay.Operator = function(ctx)
+BayLang.Test.LangBay.Operator = function()
 {
 };
 Object.assign(BayLang.Test.LangBay.Operator.prototype,
@@ -28,300 +28,300 @@ Object.assign(BayLang.Test.LangBay.Operator.prototype,
 	/**
 	 * Reset
 	 */
-	reset: function(ctx)
+	reset: function()
 	{
 		var __v0 = use("BayLang.LangBay.ParserBay");
-		this.parser = new __v0(ctx);
-		this.parser = this.parser.constructor.reset(ctx, this.parser);
+		this.parser = new __v0();
+		this.parser = this.parser.constructor.reset(this.parser);
 		var __v1 = use("BayLang.LangBay.TranslatorBay");
-		this.translator = new __v1(ctx);
-		this.translator.reset(ctx);
+		this.translator = new __v1();
+		this.translator.reset();
 	},
 	/**
 	 * Set content
 	 */
-	setContent: function(ctx, content)
+	setContent: function(content)
 	{
-		this.parser = this.parser.constructor.setContent(ctx, this.parser, content);
+		this.parser = this.parser.constructor.setContent(this.parser, content);
 	},
 	/**
 	 * Add variable
 	 */
-	addVar: function(ctx, var_name)
+	addVar: function(var_name)
 	{
 		var parser = this.parser;
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["vars"]), parser.vars.setIm(ctx, var_name, true));
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["vars"]), parser.vars.setIm(var_name, true));
 		this.parser = parser;
 	},
 	/**
 	 * Translate
 	 */
-	translate: function(ctx, content, debug)
+	translate: function(content, debug)
 	{
 		if (debug == undefined) debug = false;
 		var result = use("Runtime.Vector").from([]);
-		this.setContent(ctx, content);
+		this.setContent(content);
 		/* Parse */
-		var res = this.parser.parser_operator.constructor.readOperators(ctx, this.parser);
-		var op_code = res.get(ctx, 1);
+		var res = this.parser.parser_operator.constructor.readOperators(this.parser);
+		var op_code = res.get(1);
 		/* Translate */
-		this.translator.operator.translateItems(ctx, op_code, result);
+		this.translator.operator.translateItems(op_code, result);
 		/* Debug output */
 		if (debug)
 		{
 			console.log(op_code);
 			console.log(result);
 			var __v0 = use("Runtime.rs");
-			console.log(__v0.join(ctx, "", result));
+			console.log(__v0.join("", result));
 		}
 		var __v0 = use("Runtime.rs");
-		return use("Runtime.Vector").from([op_code,__v0.join(ctx, "", result)]);
+		return use("Runtime.Vector").from([op_code,__v0.join("", result)]);
 	},
-	testAssign1: function(ctx)
+	testAssign1: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\tint a;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\tint a;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testAssign2: function(ctx)
+	testAssign2: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\tint a = 1;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\tint a = 1;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testAssign3: function(ctx)
+	testAssign3: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\tint a = 1;","\ta = 2;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\tint a = 1;","\ta = 2;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testAssign4: function(ctx)
+	testAssign4: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\tint a = 1, b = 2;","\ta = a + b;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\tint a = 1, b = 2;","\ta = a + b;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testAssign5: function(ctx)
+	testAssign5: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\tthis.a = 1;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\tthis.a = 1;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testAssign6: function(ctx)
+	testAssign6: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\tCollection<string> content = [];","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\tCollection<string> content = [];","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testAssign7: function(ctx)
+	testAssign7: function()
 	{
-		this.reset(ctx);
-		this.addVar(ctx, "content");
+		this.reset();
+		this.addVar("content");
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\tstring content = rs::join(\"\\n\", content);","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\tstring content = rs::join(\"\\n\", content);","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testBreak: function(ctx)
+	testBreak: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\tbreak;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\tbreak;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testContinue: function(ctx)
+	testContinue: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\tcontinue;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\tcontinue;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testReturn1: function(ctx)
+	testReturn1: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\treturn;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\treturn;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testReturn2: function(ctx)
+	testReturn2: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\treturn 1;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\treturn 1;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testReturn3: function(ctx)
+	testReturn3: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\treturn true;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\treturn true;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testReturn4: function(ctx)
+	testReturn4: function()
 	{
-		this.reset(ctx);
+		this.reset();
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\treturn this.result;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\treturn this.result;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testInc1: function(ctx)
+	testInc1: function()
 	{
-		this.reset(ctx);
-		this.addVar(ctx, "a");
+		this.reset();
+		this.addVar("a");
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\ta++;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\ta++;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testInc2: function(ctx)
+	testInc2: function()
 	{
-		this.reset(ctx);
-		this.addVar(ctx, "a");
+		this.reset();
+		this.addVar("a");
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\t++a;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\t++a;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testDec1: function(ctx)
+	testDec1: function()
 	{
-		this.reset(ctx);
-		this.addVar(ctx, "a");
+		this.reset();
+		this.addVar("a");
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\ta--;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\ta--;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testDec2: function(ctx)
+	testDec2: function()
 	{
-		this.reset(ctx);
-		this.addVar(ctx, "a");
+		this.reset();
+		this.addVar("a");
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\t--a;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\t--a;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testFor1: function(ctx)
+	testFor1: function()
 	{
-		this.reset(ctx);
-		this.addVar(ctx, "io");
+		this.reset();
+		this.addVar("io");
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\tfor (int i = 0; i < 10; i++)","\t{","\t\tio::print(i);","\t}","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\tfor (int i = 0; i < 10; i++)","\t{","\t\tio::print(i);","\t}","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testIf1: function(ctx)
+	testIf1: function()
 	{
-		this.reset(ctx);
-		this.addVar(ctx, "a");
-		this.addVar(ctx, "b");
-		this.addVar(ctx, "io");
+		this.reset();
+		this.addVar("a");
+		this.addVar("b");
+		this.addVar("io");
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\tif (a > b)","\t{","\t\tio::print(\"Yes\");","\t}","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\tif (a > b)","\t{","\t\tio::print(\"Yes\");","\t}","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testIf2: function(ctx)
+	testIf2: function()
 	{
-		this.reset(ctx);
-		this.addVar(ctx, "a");
-		this.addVar(ctx, "b");
-		this.addVar(ctx, "io");
+		this.reset();
+		this.addVar("a");
+		this.addVar("b");
+		this.addVar("io");
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\tif (a > b)","\t{","\t\tio::print(\"Yes\");","\t}","\telse","\t{","\t\tio::print(\"No\");","\t}","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\tif (a > b)","\t{","\t\tio::print(\"Yes\");","\t}","\telse","\t{","\t\tio::print(\"No\");","\t}","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testIf3: function(ctx)
+	testIf3: function()
 	{
-		this.reset(ctx);
-		this.addVar(ctx, "a");
-		this.addVar(ctx, "io");
+		this.reset();
+		this.addVar("a");
+		this.addVar("io");
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\tif (a == 1)","\t{","\t\tio::print(1);","\t}","\telse if (a == 2)","\t{","\t\tio::print(2);","\t}","\telse if (a == 3)","\t{","\t\tio::print(3);","\t}","\telse","\t{","\t\tio::print(\"No\");","\t}","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\tif (a == 1)","\t{","\t\tio::print(1);","\t}","\telse if (a == 2)","\t{","\t\tio::print(2);","\t}","\telse if (a == 3)","\t{","\t\tio::print(3);","\t}","\telse","\t{","\t\tio::print(\"No\");","\t}","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testThrow1: function(ctx)
+	testThrow1: function()
 	{
-		this.reset(ctx);
-		this.addVar(ctx, "RuntimeException");
+		this.reset();
+		this.addVar("RuntimeException");
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\tthrow new RuntimeException(\"Error\");","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\tthrow new RuntimeException(\"Error\");","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testTry1: function(ctx)
+	testTry1: function()
 	{
-		this.reset(ctx);
-		this.addVar(ctx, "io");
-		this.addVar(ctx, "RuntimeException");
+		this.reset();
+		this.addVar("io");
+		this.addVar("RuntimeException");
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\ttry","\t{","\t\tthis.translate();","\t}","\tcatch (RuntimeException e)","\t{","\t\tio::print_error(e.toString());","\t}","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\ttry","\t{","\t\tthis.translate();","\t}","\tcatch (RuntimeException e)","\t{","\t\tio::print_error(e.toString());","\t}","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testWhile1: function(ctx)
+	testWhile1: function()
 	{
-		this.reset(ctx);
-		this.addVar(ctx, "i");
+		this.reset();
+		this.addVar("i");
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\twhile (i < 10)","\t{","\t\ti++;","\t}","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\twhile (i < 10)","\t{","\t\ti++;","\t}","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	testComment1: function(ctx)
+	testComment1: function()
 	{
-		this.reset(ctx);
-		this.addVar(ctx, "i");
+		this.reset();
+		this.addVar("i");
 		var __v0 = use("Runtime.rs");
-		var content = __v0.join(ctx, "\n", use("Runtime.Vector").from(["{","\t/* Increment value */","\ti++;","}"]));
-		var res = this.translate(ctx, content);
+		var content = __v0.join("\n", use("Runtime.Vector").from(["{","\t/* Increment value */","\ti++;","}"]));
+		var res = this.translate(content);
 		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(ctx, content, res.get(ctx, 1), content);
+		__v1.equalValue(content, res.get(1), content);
 	},
-	_init: function(ctx)
+	_init: function()
 	{
 		this.parser = null;
 		this.translator = null;
@@ -342,7 +342,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -351,18 +351,18 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 			"testAssign1",
@@ -393,7 +393,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		if (field_name == "testAssign1")
 		{
@@ -402,7 +402,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v0(ctx, use("Runtime.Map").from({})),
+					new __v0(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -414,7 +414,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v1(ctx, use("Runtime.Map").from({})),
+					new __v1(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -427,7 +427,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v2(ctx, use("Runtime.Map").from({})),
+					new __v2(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -441,7 +441,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v3(ctx, use("Runtime.Map").from({})),
+					new __v3(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -456,7 +456,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v4(ctx, use("Runtime.Map").from({})),
+					new __v4(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -472,7 +472,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v5(ctx, use("Runtime.Map").from({})),
+					new __v5(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -489,7 +489,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v6(ctx, use("Runtime.Map").from({})),
+					new __v6(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -507,7 +507,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v7(ctx, use("Runtime.Map").from({})),
+					new __v7(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -526,7 +526,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v8(ctx, use("Runtime.Map").from({})),
+					new __v8(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -546,7 +546,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v9(ctx, use("Runtime.Map").from({})),
+					new __v9(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -567,7 +567,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v10(ctx, use("Runtime.Map").from({})),
+					new __v10(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -589,7 +589,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v11(ctx, use("Runtime.Map").from({})),
+					new __v11(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -612,7 +612,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v12(ctx, use("Runtime.Map").from({})),
+					new __v12(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -636,7 +636,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v13(ctx, use("Runtime.Map").from({})),
+					new __v13(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -661,7 +661,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v14(ctx, use("Runtime.Map").from({})),
+					new __v14(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -687,7 +687,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v15(ctx, use("Runtime.Map").from({})),
+					new __v15(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -714,7 +714,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v16(ctx, use("Runtime.Map").from({})),
+					new __v16(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -742,7 +742,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v17(ctx, use("Runtime.Map").from({})),
+					new __v17(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -771,7 +771,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v18(ctx, use("Runtime.Map").from({})),
+					new __v18(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -801,7 +801,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v19(ctx, use("Runtime.Map").from({})),
+					new __v19(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -832,7 +832,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v20(ctx, use("Runtime.Map").from({})),
+					new __v20(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -864,7 +864,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v21(ctx, use("Runtime.Map").from({})),
+					new __v21(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -897,7 +897,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v22(ctx, use("Runtime.Map").from({})),
+					new __v22(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -931,7 +931,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v23(ctx, use("Runtime.Map").from({})),
+					new __v23(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -966,7 +966,7 @@ Object.assign(BayLang.Test.LangBay.Operator,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v24(ctx, use("Runtime.Map").from({})),
+					new __v24(use("Runtime.Map").from({})),
 				]),
 			});
 		}

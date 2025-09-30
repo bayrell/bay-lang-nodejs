@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Console == 'undefined') Runtime.Console = {};
-Runtime.Console.App = function(ctx)
+Runtime.Console.App = function()
 {
 	use("Runtime.BaseObject").apply(this, arguments);
 };
@@ -30,19 +30,19 @@ Object.assign(Runtime.Console.App.prototype,
 	/**
 	 * Init app
 	 */
-	init: async function(ctx)
+	init: async function()
 	{
 	},
 	/**
 	 * Start app
 	 */
-	start: async function(ctx)
+	start: async function()
 	{
 	},
 	/**
 	 * Returns exit code from command
 	 */
-	getExitCode: function(ctx, command_error)
+	getExitCode: function(command_error)
 	{
 		if (command_error == 0)
 		{
@@ -57,43 +57,43 @@ Object.assign(Runtime.Console.App.prototype,
 	/**
 	 * Main entry point
 	 */
-	main: async function(ctx)
+	main: async function()
 	{
 		var command_error = -1;
 		/* Run console command */
-		var commands = ctx.provider(ctx, "Runtime.Console.CommandsList");
-		var cmd = Runtime.rtl.attr(ctx, ctx.cli_args, 1);
+		var commands = use("Runtime.rtl").getContext().provider("Runtime.Console.CommandsList");
+		var cmd = Runtime.rtl.attr(use("Runtime.rtl").getContext().cli_args, 1);
 		if (cmd == null)
 		{
 			cmd = "help";
 		}
 		/* Find class name */
-		var class_name = commands.getCommandByName(ctx, cmd);
+		var class_name = commands.getCommandByName(cmd);
 		var __v0 = use("Runtime.rtl");
-		if (!__v0.class_exists(ctx, class_name))
+		if (!__v0.class_exists(class_name))
 		{
 			var __v1 = use("Runtime.io");
-			__v1.print_error(ctx, "Command " + use("Runtime.rtl").toStr(cmd) + use("Runtime.rtl").toStr(" not found"));
-			return Promise.resolve(this.getExitCode(ctx, -1));
+			__v1.print_error("Command " + use("Runtime.rtl").toStr(cmd) + use("Runtime.rtl").toStr(" not found"));
+			return Promise.resolve(this.getExitCode(-1));
 		}
 		/* Find command */
 		var __v0 = use("Runtime.Callback");
-		var command_run = new __v0(ctx, class_name, "run");
-		if (!command_run.exists(ctx))
+		var command_run = new __v0(class_name, "run");
+		if (!command_run.exists())
 		{
 			var __v1 = use("Runtime.Callback");
 			var __v2 = use("Runtime.rtl");
-			command_run = new __v1(ctx, __v2.newInstance(ctx, class_name), "run");
-			if (!command_run.exists(ctx))
+			command_run = new __v1(__v2.newInstance(class_name), "run");
+			if (!command_run.exists())
 			{
 				var __v3 = use("Runtime.io");
-				__v3.print_error(ctx, "Command " + use("Runtime.rtl").toStr(cmd) + use("Runtime.rtl").toStr(" not found"));
-				return Promise.resolve(this.getExitCode(ctx, -1));
+				__v3.print_error("Command " + use("Runtime.rtl").toStr(cmd) + use("Runtime.rtl").toStr(" not found"));
+				return Promise.resolve(this.getExitCode(-1));
 			}
 		}
 		/* Run command */
-		command_error = await command_run.apply(ctx);
-		return Promise.resolve(this.getExitCode(ctx, command_error));
+		command_error = await command_run.apply();
+		return Promise.resolve(this.getExitCode(command_error));
 	},
 });
 Object.assign(Runtime.Console.App, use("Runtime.BaseObject"));
@@ -112,7 +112,7 @@ Object.assign(Runtime.Console.App,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -121,24 +121,24 @@ Object.assign(Runtime.Console.App,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangNode == 'undefined') BayLang.LangNode = {};
-BayLang.LangNode.TranslatorNode = function(ctx)
+BayLang.LangNode.TranslatorNode = function()
 {
 	use("BayLang.LangES6.TranslatorES6").apply(this, arguments);
 };
@@ -27,9 +27,9 @@ BayLang.LangNode.TranslatorNode.prototype = Object.create(use("BayLang.LangES6.T
 BayLang.LangNode.TranslatorNode.prototype.constructor = BayLang.LangNode.TranslatorNode;
 Object.assign(BayLang.LangNode.TranslatorNode.prototype,
 {
-	_init: function(ctx)
+	_init: function()
 	{
-		use("BayLang.LangES6.TranslatorES6").prototype._init.call(this,ctx);
+		use("BayLang.LangES6.TranslatorES6").prototype._init.call(this);
 		this.async_await = null;
 		this.expression = null;
 		this.html = null;
@@ -39,9 +39,9 @@ Object.assign(BayLang.LangNode.TranslatorNode.prototype,
 		this.enable_async_await = true;
 		this.emulate_async_await = false;
 		this.enable_introspection = false;
-		this.enable_context = true;
+		this.enable_context = false;
 	},
-	takeValue: function(ctx,k,d)
+	takeValue: function(k,d)
 	{
 		if (d == undefined) d = null;
 		if (k == "async_await")return this.async_await;
@@ -54,7 +54,7 @@ Object.assign(BayLang.LangNode.TranslatorNode.prototype,
 		else if (k == "emulate_async_await")return this.emulate_async_await;
 		else if (k == "enable_introspection")return this.enable_introspection;
 		else if (k == "enable_context")return this.enable_context;
-		return use("BayLang.LangES6.TranslatorES6").prototype.takeValue.call(this,ctx,k,d);
+		return use("BayLang.LangES6.TranslatorES6").prototype.takeValue.call(this,k,d);
 	},
 });
 Object.assign(BayLang.LangNode.TranslatorNode, use("BayLang.LangES6.TranslatorES6"));
@@ -63,22 +63,22 @@ Object.assign(BayLang.LangNode.TranslatorNode,
 	/**
 	 * Reset translator
 	 */
-	reset: function(ctx, t)
+	reset: function(t)
 	{
-		t = use("BayLang.LangES6.TranslatorES6").reset.bind(this)(ctx, t);
+		t = use("BayLang.LangES6.TranslatorES6").reset.bind(this)(t);
 		var __v0 = use("BayLang.LangNode.TranslatorNodeExpression");
-		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["expression"]), new __v0(ctx));
+		t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["expression"]), new __v0());
 		var __v1 = use("BayLang.LangNode.TranslatorNodeProgram");
-		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["program"]), new __v1(ctx));
-		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["preprocessor_flags"]), t.preprocessor_flags.concat(ctx, use("Runtime.Map").from({"BACKEND":true,"NODEJS":true,"ES6":false})));
+		t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["program"]), new __v1());
+		t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["preprocessor_flags"]), t.preprocessor_flags.concat(use("Runtime.Map").from({"BACKEND":true,"NODEJS":true,"ES6":false})));
 		return t;
 	},
 	/**
 	 * Translate BaseOpCode
 	 */
-	translate: function(ctx, t, op_code)
+	translate: function(t, op_code)
 	{
-		return t.program.constructor.translateProgram(ctx, t, op_code);
+		return t.program.constructor.translateProgram(t, op_code);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
@@ -93,7 +93,7 @@ Object.assign(BayLang.LangNode.TranslatorNode,
 	{
 		return "BayLang.LangES6.TranslatorES6";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -102,7 +102,7 @@ Object.assign(BayLang.LangNode.TranslatorNode,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		a.push("async_await");
@@ -117,19 +117,19 @@ Object.assign(BayLang.LangNode.TranslatorNode,
 		a.push("enable_context");
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

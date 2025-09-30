@@ -18,9 +18,9 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Money = function(ctx, value, currency)
+Runtime.Money = function(value, currency)
 {
-	use("Runtime.BaseObject").call(this, ctx);
+	use("Runtime.BaseObject").call(this);
 	this.value = value;
 	this.currency = currency;
 };
@@ -31,32 +31,32 @@ Object.assign(Runtime.Money.prototype,
 	/**
 	 * Returns value
 	 */
-	getValue: function(ctx)
+	getValue: function()
 	{
 		return this.value;
 	},
 	/**
 	 * Returns currency
 	 */
-	getCurrency: function(ctx)
+	getCurrency: function()
 	{
 		return this.currency;
 	},
 	/**
 	 * Add money
 	 */
-	add: function(ctx, money)
+	add: function(money)
 	{
 		if (this.currency != money.currency)
 		{
 			var __v0 = use("Runtime.Exceptions.RuntimeException");
-			throw new __v0(ctx, "Money currency mismatch")
+			throw new __v0("Money currency mismatch")
 		}
-		this.value = Runtime.rtl.attr(ctx, this.value, ["value"]) + money.currency;
+		this.value = Runtime.rtl.attr(this.value, ["value"]) + money.currency;
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		this.value = 0;
 		this.currency = "";
 	},
@@ -77,7 +77,7 @@ Object.assign(Runtime.Money,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -86,24 +86,24 @@ Object.assign(Runtime.Money,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

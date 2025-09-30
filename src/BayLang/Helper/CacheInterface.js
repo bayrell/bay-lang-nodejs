@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Helper == 'undefined') BayLang.Helper = {};
-BayLang.Helper.CacheInterface = function(ctx)
+BayLang.Helper.CacheInterface = function()
 {
 };
 Object.assign(BayLang.Helper.CacheInterface.prototype,
@@ -27,19 +27,19 @@ Object.assign(BayLang.Helper.CacheInterface.prototype,
 	/**
 	 * Load object
 	 */
-	load: async function(ctx)
+	load: async function()
 	{
 	},
 	/**
 	 * Read object from cache
 	 */
-	readCache: async function(ctx)
+	readCache: async function()
 	{
 	},
 	/**
 	 * Save object to cache
 	 */
-	saveCache: async function(ctx)
+	saveCache: async function()
 	{
 	},
 });

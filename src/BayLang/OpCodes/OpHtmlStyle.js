@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpHtmlStyle = function(ctx)
+BayLang.OpCodes.OpHtmlStyle = function()
 {
 	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
 };
@@ -30,57 +30,57 @@ Object.assign(BayLang.OpCodes.OpHtmlStyle.prototype,
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize: function(serializer, data)
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
-		serializer.process(ctx, this, "content", data);
-		serializer.process(ctx, this, "is_global", data);
-		serializer.process(ctx, this, "value", data);
+		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, serializer, data);
+		serializer.process(this, "content", data);
+		serializer.process(this, "is_global", data);
+		serializer.process(this, "value", data);
 	},
 	/**
 	 * Read styles from content
 	 */
-	readStyles: function(ctx)
+	readStyles: function()
 	{
 		var __v0 = use("BayLang.TokenReader");
-		var reader = new __v0(ctx);
+		var reader = new __v0();
 		var __v1 = use("BayLang.Caret");
 		var __v2 = use("Runtime.Reference");
-		reader.init(ctx, new __v1(ctx, use("Runtime.Map").from({"content":new __v2(ctx, this.content)})));
+		reader.init(new __v1(use("Runtime.Map").from({"content":new __v2(this.content)})));
 		var styles = use("Runtime.Map").from({});
-		while (!reader.eof(ctx) && reader.nextToken(ctx) == ".")
+		while (!reader.eof() && reader.nextToken() == ".")
 		{
-			var selector = this.readSelector(ctx, reader);
-			var code = this.readCssBlock(ctx, reader);
-			styles.set(ctx, selector, code);
+			var selector = this.readSelector(reader);
+			var code = this.readCssBlock(reader);
+			styles.set(selector, code);
 		}
 		return styles;
 	},
 	/**
 	 * Read selector
 	 */
-	readSelector: function(ctx, reader)
+	readSelector: function(reader)
 	{
 		var items = use("Runtime.Vector").from([]);
-		while (!reader.eof(ctx) && reader.nextToken(ctx) != "{")
+		while (!reader.eof() && reader.nextToken() != "{")
 		{
-			items.push(ctx, reader.readToken(ctx));
+			items.push(reader.readToken());
 		}
 		var __v0 = use("Runtime.rs");
-		return __v0.join(ctx, "", items);
+		return __v0.join("", items);
 	},
 	/**
 	 * Read css block
 	 */
-	readCssBlock: function(ctx, reader)
+	readCssBlock: function(reader)
 	{
-		reader.matchToken(ctx, "{");
+		reader.matchToken("{");
 		var caret = reader.main_caret;
 		var level = 0;
 		var items = use("Runtime.Vector").from([]);
-		while (!caret.eof(ctx) && (caret.nextChar(ctx) != "}" && level == 0 || level > 0))
+		while (!caret.eof() && (caret.nextChar() != "}" && level == 0 || level > 0))
 		{
-			var ch = caret.readChar(ctx);
+			var ch = caret.readChar();
 			if (ch == "{")
 			{
 				level = level + 1;
@@ -89,16 +89,16 @@ Object.assign(BayLang.OpCodes.OpHtmlStyle.prototype,
 			{
 				level = level - 1;
 			}
-			items.push(ctx, ch);
+			items.push(ch);
 		}
-		reader.init(ctx, caret);
-		reader.matchToken(ctx, "}");
+		reader.init(caret);
+		reader.matchToken("}");
 		var __v0 = use("Runtime.rs");
-		return __v0.join(ctx, "", items);
+		return __v0.join("", items);
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this);
 		this.op = "op_html_style";
 		this.content = "";
 		this.is_global = false;
@@ -121,7 +121,7 @@ Object.assign(BayLang.OpCodes.OpHtmlStyle,
 	{
 		return "BayLang.OpCodes.BaseOpCode";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -130,24 +130,24 @@ Object.assign(BayLang.OpCodes.OpHtmlStyle,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

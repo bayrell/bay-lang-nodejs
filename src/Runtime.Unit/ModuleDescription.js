@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
-Runtime.Unit.ModuleDescription = function(ctx)
+Runtime.Unit.ModuleDescription = function()
 {
 };
 Object.assign(Runtime.Unit.ModuleDescription.prototype,
@@ -31,7 +31,7 @@ Object.assign(Runtime.Unit.ModuleDescription,
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleName: function(ctx)
+	getModuleName: function()
 	{
 		return "Runtime.Unit";
 	},
@@ -39,7 +39,7 @@ Object.assign(Runtime.Unit.ModuleDescription,
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleVersion: function(ctx)
+	getModuleVersion: function()
 	{
 		return "0.12.0";
 	},
@@ -47,20 +47,20 @@ Object.assign(Runtime.Unit.ModuleDescription,
 	 * Returns required modules
 	 * @return Map<string, string>
 	 */
-	requiredModules: function(ctx)
+	requiredModules: function()
 	{
 		return use("Runtime.Map").from({"Runtime":"*","Runtime.Console":"*"});
 	},
 	/**
 	 * Returns enities
 	 */
-	entities: function(ctx)
+	entities: function()
 	{
 		var __v0 = use("Runtime.Console.Annotations.ConsoleCommand");
 		var __v1 = use("Runtime.Console.Annotations.ConsoleCommand");
 		var __v2 = use("Runtime.Entity.Provider");
 		var __v3 = use("Runtime.Unit.TestProvider");
-		return use("Runtime.Vector").from([new __v0(ctx, "Runtime.Unit.Commands.TestAll"),new __v1(ctx, "Runtime.Unit.Commands.TestRun"),new __v2(ctx, "Runtime.Unit.TestProvider", new __v3(ctx))]);
+		return use("Runtime.Vector").from([new __v0("Runtime.Unit.Commands.TestAll"),new __v1("Runtime.Unit.Commands.TestRun"),new __v2("Runtime.Unit.TestProvider", new __v3())]);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
@@ -75,7 +75,7 @@ Object.assign(Runtime.Unit.ModuleDescription,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -84,24 +84,24 @@ Object.assign(Runtime.Unit.ModuleDescription,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

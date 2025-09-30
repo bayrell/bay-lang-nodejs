@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpTypeConvert = function(ctx)
+BayLang.OpCodes.OpTypeConvert = function()
 {
 	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
 };
@@ -30,15 +30,15 @@ Object.assign(BayLang.OpCodes.OpTypeConvert.prototype,
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize: function(serializer, data)
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
-		serializer.process(ctx, this, "pattern", data);
-		serializer.process(ctx, this, "value", data);
+		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, serializer, data);
+		serializer.process(this, "pattern", data);
+		serializer.process(this, "value", data);
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this);
 		this.op = "op_type_convert";
 		this.pattern = null;
 		this.value = null;
@@ -60,7 +60,7 @@ Object.assign(BayLang.OpCodes.OpTypeConvert,
 	{
 		return "BayLang.OpCodes.BaseOpCode";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -69,24 +69,24 @@ Object.assign(BayLang.OpCodes.OpTypeConvert,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

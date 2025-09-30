@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Context = function(ctx)
+Runtime.Context = function()
 {
 	use("Runtime.BaseObject").apply(this, arguments);
 };
@@ -29,98 +29,98 @@ Object.assign(Runtime.Context.prototype,
 	/**
 	 * Returns app
 	 */
-	getApp: function(ctx)
+	getApp: function()
 	{
 		return this.app;
 	},
 	/**
 	 * Returns true if is initialized
 	 */
-	isInitialized: function(ctx)
+	isInitialized: function()
 	{
 		return this.initialized;
 	},
 	/**
 	 * Returns true if is started
 	 */
-	isStarted: function(ctx)
+	isStarted: function()
 	{
 		return this.started;
 	},
 	/**
 	 * Returns start time
 	 */
-	getStartTime: function(ctx)
+	getStartTime: function()
 	{
 		return this.start_time;
 	},
 	/**
 	 * Returns base path
 	 */
-	getBasePath: function(ctx)
+	getBasePath: function()
 	{
 		return this.base_path;
 	},
 	/**
 	 * Returns console args
 	 */
-	getConsoleArgs: function(ctx)
+	getConsoleArgs: function()
 	{
-		return this.cli_args.slice(ctx);
+		return this.cli_args.slice();
 	},
 	/**
 	 * Returns modules
 	 */
-	getModules: function(ctx)
+	getModules: function()
 	{
-		return this.modules.slice(ctx);
+		return this.modules.slice();
 	},
 	/**
 	 * Returns entities
 	 */
-	getEntities: function(ctx, class_name)
+	getEntities: function(class_name)
 	{
 		if (class_name == undefined) class_name = "";
 		if (class_name == "")
 		{
-			return this.entities.slice(ctx);
+			return this.entities.slice();
 		}
 		var __v0 = use("Runtime.lib");
-		return this.entities.filter(ctx, __v0.isInstance(ctx, class_name));
+		return this.entities.filter(__v0.isInstance(class_name));
 	},
 	/**
 	 * Returns environments
 	 */
-	getEnvironments: function(ctx)
+	getEnvironments: function()
 	{
-		return this.environments.clone(ctx);
+		return this.environments.clone();
 	},
 	/**
 	 * Returns provider by name
 	 */
-	provider: function(ctx, provider_name)
+	provider: function(provider_name)
 	{
-		if (!this.providers.has(ctx, provider_name))
+		if (!this.providers.has(provider_name))
 		{
 			var __v0 = use("Runtime.Exceptions.RuntimeException");
-			throw new __v0(ctx, "Provider '" + use("Runtime.rtl").toStr(provider_name) + use("Runtime.rtl").toStr("' not found"))
+			throw new __v0("Provider '" + use("Runtime.rtl").toStr(provider_name) + use("Runtime.rtl").toStr("' not found"))
 		}
-		return this.providers.get(ctx, provider_name);
+		return this.providers.get(provider_name);
 	},
 	/**
 	 * Return environment
 	 */
-	env: function(ctx, name)
+	env: function(name)
 	{
-		var value = Runtime.rtl.attr(ctx, this.environments, name);
+		var value = Runtime.rtl.attr(this.environments, name);
 		var __v0 = use("Runtime.Hooks.RuntimeHook");
-		var hook_res = this.callHook(ctx, __v0.ENV, use("Runtime.Map").from({"name":name,"value":value}));
-		return Runtime.rtl.attr(ctx, hook_res, "value");
+		var hook_res = this.callHook(__v0.ENV, use("Runtime.Map").from({"name":name,"value":value}));
+		return Runtime.rtl.attr(hook_res, "value");
 	},
 	/**
 	 * Init
 	 */
-	init: async function(ctx)
+	init: async function()
 	{
 		if (this.initialized)
 		{
@@ -130,29 +130,29 @@ Object.assign(Runtime.Context.prototype,
 		if (this.entry_point)
 		{
 			var __v0 = use("Runtime.rtl");
-			this.app = __v0.newInstance(ctx, this.entry_point);
+			this.app = __v0.newInstance(this.entry_point);
 		}
 		var modules = this.modules;
-		if (modules.indexOf(ctx, "Runtime"))
+		if (modules.indexOf("Runtime"))
 		{
-			modules.prepend(ctx, "Runtime");
+			modules.prepend("Runtime");
 		}
 		/* Extend modules */
-		this.modules = this.constructor.getRequiredModules(ctx, modules);
+		this.modules = this.constructor.getRequiredModules(modules);
 		/* Get modules entities */
-		this.entities = this.constructor.getEntitiesFromModules(ctx, this.modules);
+		this.entities = this.constructor.getEntitiesFromModules(this.modules);
 		/* Create providers */
-		this.createProviders(ctx);
+		this.createProviders();
 		/* Init providers */
-		await this.initProviders(ctx);
+		await this.initProviders();
 		/* Hook init app */
 		var __v0 = use("Runtime.Hooks.RuntimeHook");
-		await this.callHookAsync(ctx, __v0.INIT);
+		await this.callHookAsync(__v0.INIT);
 		/* Init app */
 		var __v1 = use("Runtime.rtl");
-		if (this.app != null && __v1.method_exists(ctx, this.app, "init"))
+		if (this.app != null && __v1.method_exists(this.app, "init"))
 		{
-			await this.app.init(ctx);
+			await this.app.init();
 		}
 		/* Set initialized */
 		this.initialized = true;
@@ -160,33 +160,33 @@ Object.assign(Runtime.Context.prototype,
 	/**
 	 * Start context
 	 */
-	start: async function(ctx)
+	start: async function()
 	{
 		if (this.started)
 		{
 			return Promise.resolve();
 		}
 		/* Start providers */
-		await this.startProviders(ctx);
+		await this.startProviders();
 		/* Hook start app */
 		var __v0 = use("Runtime.Hooks.RuntimeHook");
-		await this.callHookAsync(ctx, __v0.START);
+		await this.callHookAsync(__v0.START);
 		/* Start app */
 		var __v1 = use("Runtime.rtl");
-		if (this.app && __v1.method_exists(ctx, this.app, "start"))
+		if (this.app && __v1.method_exists(this.app, "start"))
 		{
-			await this.app.start(ctx);
+			await this.app.start();
 		}
 		/* Hook launched app */
 		var __v1 = use("Runtime.Hooks.RuntimeHook");
-		await this.callHookAsync(ctx, __v1.LAUNCHED);
+		await this.callHookAsync(__v1.LAUNCHED);
 		/* Set started */
 		this.started = true;
 	},
 	/**
 	 * Run context
 	 */
-	run: async function(ctx)
+	run: async function()
 	{
 		var code = 0;
 		/* Run app */
@@ -196,37 +196,37 @@ Object.assign(Runtime.Context.prototype,
 		}
 		/* Run entry_point */
 		var __v0 = use("Runtime.rtl");
-		if (__v0.method_exists(ctx, this.app, "main"))
+		if (__v0.method_exists(this.app, "main"))
 		{
 			/* Hook launched app */
 			var __v1 = use("Runtime.Hooks.RuntimeHook");
-			await this.callHookAsync(ctx, __v1.RUN);
-			code = await this.app.main(ctx);
+			await this.callHookAsync(__v1.RUN);
+			code = await this.app.main();
 		}
 		return Promise.resolve(code);
 	},
 	/**
 	 * Call hook
 	 */
-	callHook: function(ctx, hook_name, params)
+	callHook: function(hook_name, params)
 	{
 		if (params == undefined) params = null;
 		if (params == null)
 		{
 			params = use("Runtime.Map").from({});
 		}
-		var hook = this.provider(ctx, "hook");
-		var methods_list = hook.getMethods(ctx, hook_name);
-		for (var i = 0; i < methods_list.count(ctx); i++)
+		var hook = this.provider("hook");
+		var methods_list = hook.getMethods(hook_name);
+		for (var i = 0; i < methods_list.count(); i++)
 		{
-			var f = Runtime.rtl.attr(ctx, methods_list, i);
+			var f = Runtime.rtl.attr(methods_list, i);
 			var __v0 = use("Runtime.rtl");
-			var res = __v0.apply(ctx, f, use("Runtime.Vector").from([params]));
+			var res = __v0.apply(f, use("Runtime.Vector").from([params]));
 			var __v1 = use("Runtime.rtl");
-			if (__v1.isPromise(ctx, res))
+			if (__v1.isPromise(res))
 			{
 				var __v2 = use("Runtime.Exceptions.RuntimeException");
-				throw new __v2(ctx, "Promise is not allowed")
+				throw new __v2("Promise is not allowed")
 			}
 		}
 		return params;
@@ -234,27 +234,27 @@ Object.assign(Runtime.Context.prototype,
 	/**
 	 * Call hook
 	 */
-	callHookAsync: async function(ctx, hook_name, params)
+	callHookAsync: async function(hook_name, params)
 	{
 		if (params == undefined) params = null;
 		if (params == null)
 		{
 			params = use("Runtime.Map").from({});
 		}
-		var hook = this.provider(ctx, "hook");
-		var methods_list = hook.getMethods(ctx, hook_name);
-		for (var i = 0; i < methods_list.count(ctx); i++)
+		var hook = this.provider("hook");
+		var methods_list = hook.getMethods(hook_name);
+		for (var i = 0; i < methods_list.count(); i++)
 		{
-			var f = Runtime.rtl.attr(ctx, methods_list, i);
+			var f = Runtime.rtl.attr(methods_list, i);
 			var __v0 = use("Runtime.rtl");
-			await __v0.apply(ctx, f, use("Runtime.Vector").from([params]));
+			await __v0.apply(f, use("Runtime.Vector").from([params]));
 		}
 		return Promise.resolve(params);
 	},
 	/**
 	 * Translate message
 	 */
-	translate: function(ctx, module, s, params)
+	translate: function(module, s, params)
 	{
 		if (params == undefined) params = null;
 		if (params == null)
@@ -262,58 +262,58 @@ Object.assign(Runtime.Context.prototype,
 			return s;
 		}
 		var __v0 = use("Runtime.rs");
-		return __v0.format(ctx, s, params);
+		return __v0.format(s, params);
 	},
 	/**
 	 * Create providers
 	 */
-	createProviders: function(ctx)
+	createProviders: function()
 	{
-		var providers = this.getEntities(ctx, "Runtime.Entity.Provider");
-		for (var i = 0; i < providers.count(ctx); i++)
+		var providers = this.getEntities("Runtime.Entity.Provider");
+		for (var i = 0; i < providers.count(); i++)
 		{
-			var factory = providers.get(ctx, i);
+			var factory = providers.get(i);
 			/* Create provider */
-			var provider = factory.createProvider(ctx);
+			var provider = factory.createProvider();
 			if (!provider)
 			{
 				var __v0 = use("Runtime.Exceptions.RuntimeException");
-				throw new __v0(ctx, "Wrong declare provider '" + use("Runtime.rtl").toStr(factory.name) + use("Runtime.rtl").toStr("'"))
+				throw new __v0("Wrong declare provider '" + use("Runtime.rtl").toStr(factory.name) + use("Runtime.rtl").toStr("'"))
 			}
 			/* Add provider */
-			this.registerProvider(ctx, factory.name, provider);
+			this.registerProvider(factory.name, provider);
 		}
 	},
 	/**
 	 * Init providers
 	 */
-	initProviders: async function(ctx)
+	initProviders: async function()
 	{
-		var providers_names = this.providers.keys(ctx);
-		for (var i = 0; i < providers_names.count(ctx); i++)
+		var providers_names = this.providers.keys();
+		for (var i = 0; i < providers_names.count(); i++)
 		{
-			var provider_name = providers_names.get(ctx, i);
-			var provider = this.providers.get(ctx, provider_name);
-			await provider.init(ctx);
+			var provider_name = providers_names.get(i);
+			var provider = this.providers.get(provider_name);
+			await provider.init();
 		}
 	},
 	/**
 	 * Start providers
 	 */
-	startProviders: async function(ctx)
+	startProviders: async function()
 	{
-		var providers_names = this.providers.keys(ctx);
-		for (var i = 0; i < providers_names.count(ctx); i++)
+		var providers_names = this.providers.keys();
+		for (var i = 0; i < providers_names.count(); i++)
 		{
-			var provider_name = providers_names.get(ctx, i);
-			var provider = this.providers.get(ctx, provider_name);
-			await provider.start(ctx);
+			var provider_name = providers_names.get(i);
+			var provider = this.providers.get(provider_name);
+			await provider.start();
 		}
 	},
 	/**
 	 * Register provider
 	 */
-	registerProvider: function(ctx, provider_name, provider)
+	registerProvider: function(provider_name, provider)
 	{
 		if (this.initialized)
 		{
@@ -323,13 +323,13 @@ Object.assign(Runtime.Context.prototype,
 		if (!(provider instanceof __v0))
 		{
 			var __v1 = use("Runtime.Exceptions.RuntimeException");
-			throw new __v1(ctx, "Provider '" + provider_name + "' must be intstanceof BaseProvider")
+			throw new __v1("Provider '" + provider_name + "' must be intstanceof BaseProvider")
 		}
-		this.providers.set(ctx, provider_name, provider);
+		this.providers.set(provider_name, provider);
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		this.app = null;
 		this.base_path = "";
 		this.entry_point = "";
@@ -350,7 +350,7 @@ Object.assign(Runtime.Context,
 	/**
 	 * Create context
 	 */
-	create: function(ctx, params)
+	create: function(params)
 	{
 		var __v0 = use("Runtime.Dict");
 		if (!(params instanceof __v0))
@@ -358,7 +358,7 @@ Object.assign(Runtime.Context,
 			var __v1 = use("Runtime.Dict");
 			params = __v1.from(params);
 		}
-		params = params.toMap(ctx);
+		params = params.toMap();
 		if (!params.has("start_time"))
 		{
 			params.set("start_time", Date.now());
@@ -367,91 +367,91 @@ Object.assign(Runtime.Context,
 		let Dict = use("Runtime.Dict");
 		let Map = use("Runtime.Map");
 		
-		if (!params.has(ctx, "cli_args"))
+		if (!params.has("cli_args"))
 		{
-			params.set(ctx, "cli_args", Collection.from(process.argv.slice(1)));
+			params.set("cli_args", Collection.from(process.argv.slice(1)));
 		}
-		if (!params.has(ctx, "base_path"))
+		if (!params.has("base_path"))
 		{
-			params.set(ctx, "base_path", process.cwd());
+			params.set("base_path", process.cwd());
 		}
-		if (!params.has(ctx, "environments"))
+		if (!params.has("environments"))
 		{
-			params.set(ctx, "environments", Map.from(process.env));
+			params.set("environments", Map.from(process.env));
 		}
-		if (params.has(ctx, "modules"))
+		if (params.has("modules"))
 		{
-			var modules = params.get(ctx, "modules");
+			var modules = params.get("modules");
 			var __v0 = use("Runtime.Collection");
 			if (!(modules instanceof __v0))
 			{
 				var __v1 = use("Runtime.Collection");
 				modules = __v1.from(modules);
 			}
-			params.set(ctx, "modules", modules.toVector(ctx));
+			params.set("modules", modules.toVector());
 		}
 		/* Setup default environments */
-		if (!params.has(ctx, "environments"))
+		if (!params.has("environments"))
 		{
 			var __v0 = use("Runtime.Map");
-			params.set(ctx, "environments", new __v0(ctx));
+			params.set("environments", new __v0());
 		}
-		var env = Runtime.rtl.attr(ctx, params, "environments");
+		var env = Runtime.rtl.attr(params, "environments");
 		if (!env)
 		{
 			env = use("Runtime.Map").from({});
 		}
-		if (!env.has(ctx, "CLOUD_ENV"))
+		if (!env.has("CLOUD_ENV"))
 		{
-			env.set(ctx, "CLOUD_ENV", false);
+			env.set("CLOUD_ENV", false);
 		}
-		if (!env.has(ctx, "DEBUG"))
+		if (!env.has("DEBUG"))
 		{
-			env.set(ctx, "DEBUG", false);
+			env.set("DEBUG", false);
 		}
-		if (!env.has(ctx, "LOCALE"))
+		if (!env.has("LOCALE"))
 		{
-			env.set(ctx, "LOCALE", "en_US");
+			env.set("LOCALE", "en_US");
 		}
-		if (!env.has(ctx, "TZ"))
+		if (!env.has("TZ"))
 		{
-			env.set(ctx, "TZ", "UTC");
+			env.set("TZ", "UTC");
 		}
-		if (!env.has(ctx, "TZ_OFFSET"))
+		if (!env.has("TZ_OFFSET"))
 		{
-			env.set(ctx, "TZ_OFFSET", 0);
+			env.set("TZ_OFFSET", 0);
 		}
 		var __v0 = use("Runtime.rtl");
-		var instance = __v0.newInstance(ctx, this.getClassName(ctx));
-		if (params.has(ctx, "base_path"))
+		var instance = __v0.newInstance(this.getClassName());
+		if (params.has("base_path"))
 		{
-			instance.base_path = params.get(ctx, "base_path");
+			instance.base_path = params.get("base_path");
 		}
-		if (params.has(ctx, "entry_point"))
+		if (params.has("entry_point"))
 		{
-			instance.entry_point = params.get(ctx, "entry_point");
+			instance.entry_point = params.get("entry_point");
 		}
-		if (params.has(ctx, "cli_args"))
+		if (params.has("cli_args"))
 		{
-			instance.cli_args = params.get(ctx, "cli_args");
+			instance.cli_args = params.get("cli_args");
 		}
-		if (params.has(ctx, "environments"))
+		if (params.has("environments"))
 		{
-			instance.environments = params.get(ctx, "environments");
+			instance.environments = params.get("environments");
 		}
-		if (params.has(ctx, "modules"))
+		if (params.has("modules"))
 		{
-			instance.modules = params.get(ctx, "modules");
+			instance.modules = params.get("modules");
 		}
-		if (params.has(ctx, "start_time"))
+		if (params.has("start_time"))
 		{
-			instance.start_time = params.get(ctx, "start_time");
+			instance.start_time = params.get("start_time");
 		}
-		if (params.has(ctx, "tz"))
+		if (params.has("tz"))
 		{
-			instance.tz = params.get(ctx, "tz");
+			instance.tz = params.get("tz");
 		}
-		instance.start_modules = instance.modules.copy(ctx);
+		instance.start_modules = instance.modules.copy();
 		return instance;
 	},
 	/**
@@ -459,64 +459,64 @@ Object.assign(Runtime.Context,
 	 * @param Collection<string> modules
 	 * @return Collection<string>
 	 */
-	getRequiredModules: function(ctx, modules)
+	getRequiredModules: function(modules)
 	{
 		var __v0 = use("Runtime.Vector");
-		var res = new __v0(ctx);
+		var res = new __v0();
 		var __v1 = use("Runtime.Map");
-		var cache = new __v1(ctx);
-		this._getRequiredModules(ctx, res, cache, modules);
-		return res.removeDuplicates(ctx);
+		var cache = new __v1();
+		this._getRequiredModules(res, cache, modules);
+		return res.removeDuplicates();
 	},
 	/**
 	 * Returns required modules
 	 * @param string class_name
 	 * @return Collection<string>
 	 */
-	_getRequiredModules: function(ctx, res, cache, modules)
+	_getRequiredModules: function(res, cache, modules)
 	{
 		if (modules == null)
 		{
 			return ;
 		}
-		for (var i = 0; i < modules.count(ctx); i++)
+		for (var i = 0; i < modules.count(); i++)
 		{
-			var module_name = modules.item(ctx, i);
-			if (!cache.has(ctx, module_name))
+			var module_name = modules.item(i);
+			if (!cache.has(module_name))
 			{
-				cache.set(ctx, module_name, true);
+				cache.set(module_name, true);
 				var __v0 = use("Runtime.Callback");
-				var f = new __v0(ctx, module_name + use("Runtime.rtl").toStr(".ModuleDescription"), "requiredModules");
+				var f = new __v0(module_name + use("Runtime.rtl").toStr(".ModuleDescription"), "requiredModules");
 				var __v1 = use("Runtime.rtl");
-				var sub_modules = __v1.apply(ctx, f);
+				var sub_modules = __v1.apply(f);
 				if (sub_modules != null)
 				{
-					var sub_modules = sub_modules.keys(ctx);
-					this._getRequiredModules(ctx, res, cache, sub_modules);
+					var sub_modules = sub_modules.keys();
+					this._getRequiredModules(res, cache, sub_modules);
 				}
-				res.push(ctx, module_name);
+				res.push(module_name);
 			}
 		}
 	},
 	/**
 	 * Returns modules entities
 	 */
-	getEntitiesFromModules: function(ctx, modules)
+	getEntitiesFromModules: function(modules)
 	{
 		var __v0 = use("Runtime.Vector");
-		var entities = new __v0(ctx);
-		for (var i = 0; i < modules.count(ctx); i++)
+		var entities = new __v0();
+		for (var i = 0; i < modules.count(); i++)
 		{
-			var module_name = modules.item(ctx, i);
+			var module_name = modules.item(i);
 			var __v1 = use("Runtime.Callback");
-			var f = new __v1(ctx, module_name + use("Runtime.rtl").toStr(".ModuleDescription"), "entities");
-			if (f.exists(ctx))
+			var f = new __v1(module_name + use("Runtime.rtl").toStr(".ModuleDescription"), "entities");
+			if (f.exists())
 			{
 				var __v2 = use("Runtime.rtl");
-				var arr = __v2.apply(ctx, f);
+				var arr = __v2.apply(f);
 				if (arr)
 				{
-					entities.appendItems(ctx, arr);
+					entities.appendItems(arr);
 				}
 			}
 		}
@@ -535,7 +535,7 @@ Object.assign(Runtime.Context,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -544,24 +544,24 @@ Object.assign(Runtime.Context,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

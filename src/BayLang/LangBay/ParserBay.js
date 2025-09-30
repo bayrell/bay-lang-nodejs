@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBay = function(ctx)
+BayLang.LangBay.ParserBay = function()
 {
 	use("BayLang.CoreParser").apply(this, arguments);
 };
@@ -27,9 +27,9 @@ BayLang.LangBay.ParserBay.prototype = Object.create(use("BayLang.CoreParser").pr
 BayLang.LangBay.ParserBay.prototype.constructor = BayLang.LangBay.ParserBay;
 Object.assign(BayLang.LangBay.ParserBay.prototype,
 {
-	_init: function(ctx)
+	_init: function()
 	{
-		use("BayLang.CoreParser").prototype._init.call(this,ctx);
+		use("BayLang.CoreParser").prototype._init.call(this);
 		this.vars = null;
 		this.uses = null;
 		this.current_namespace = null;
@@ -52,7 +52,7 @@ Object.assign(BayLang.LangBay.ParserBay.prototype,
 		this.parser_preprocessor = null;
 		this.parser_program = null;
 	},
-	takeValue: function(ctx,k,d)
+	takeValue: function(k,d)
 	{
 		if (d == undefined) d = null;
 		if (k == "vars")return this.vars;
@@ -76,7 +76,7 @@ Object.assign(BayLang.LangBay.ParserBay.prototype,
 		else if (k == "parser_operator")return this.parser_operator;
 		else if (k == "parser_preprocessor")return this.parser_preprocessor;
 		else if (k == "parser_program")return this.parser_program;
-		return use("BayLang.CoreParser").prototype.takeValue.call(this,ctx,k,d);
+		return use("BayLang.CoreParser").prototype.takeValue.call(this,k,d);
 	},
 });
 Object.assign(BayLang.LangBay.ParserBay, use("BayLang.CoreParser"));
@@ -85,7 +85,7 @@ Object.assign(BayLang.LangBay.ParserBay,
 	/**
 	 * Reset parser
 	 */
-	reset: function(ctx, parser)
+	reset: function(parser)
 	{
 		var __v0 = use("Runtime.Dict");
 		var __v1 = use("Runtime.Dict");
@@ -96,21 +96,21 @@ Object.assign(BayLang.LangBay.ParserBay,
 		var __v6 = use("BayLang.LangBay.ParserBayOperator");
 		var __v7 = use("BayLang.LangBay.ParserBayPreprocessor");
 		var __v8 = use("BayLang.LangBay.ParserBayProgram");
-		return parser.copy(ctx, use("Runtime.Map").from({"vars":new __v0(ctx),"uses":new __v1(ctx),"caret":new __v2(ctx, use("Runtime.Map").from({})),"token":null,"parser_base":new __v3(ctx),"parser_expression":new __v4(ctx),"parser_html":new __v5(ctx),"parser_operator":new __v6(ctx),"parser_preprocessor":new __v7(ctx),"parser_program":new __v8(ctx)}));
+		return parser.copy(use("Runtime.Map").from({"vars":new __v0(),"uses":new __v1(),"caret":new __v2(use("Runtime.Map").from({})),"token":null,"parser_base":new __v3(),"parser_expression":new __v4(),"parser_html":new __v5(),"parser_operator":new __v6(),"parser_preprocessor":new __v7(),"parser_program":new __v8()}));
 	},
 	/**
 	 * Parse file and convert to BaseOpCode
 	 */
-	parse: function(ctx, parser, content)
+	parse: function(parser, content)
 	{
-		parser = this.reset(ctx, parser);
-		parser = this.setContent(ctx, parser, content);
-		return parser.parser_program.constructor.readProgram(ctx, parser);
+		parser = this.reset(parser);
+		parser = this.setContent(parser, content);
+		return parser.parser_program.constructor.readProgram(parser);
 	},
 	/**
 	 * Find module name
 	 */
-	findModuleName: function(ctx, parser, module_name)
+	findModuleName: function(parser, module_name)
 	{
 		if (module_name == "Collection")
 		{
@@ -140,9 +140,9 @@ Object.assign(BayLang.LangBay.ParserBay,
 		{
 			return "";
 		}
-		else if (parser.uses.has(ctx, module_name))
+		else if (parser.uses.has(module_name))
 		{
-			return parser.uses.item(ctx, module_name);
+			return parser.uses.item(module_name);
 		}
 		return module_name;
 	},
@@ -159,7 +159,7 @@ Object.assign(BayLang.LangBay.ParserBay,
 	{
 		return "BayLang.CoreParser";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -168,7 +168,7 @@ Object.assign(BayLang.LangBay.ParserBay,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		a.push("vars");
@@ -194,19 +194,19 @@ Object.assign(BayLang.LangBay.ParserBay,
 		a.push("parser_program");
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

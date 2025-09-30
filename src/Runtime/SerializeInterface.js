@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.SerializeInterface = function(ctx)
+Runtime.SerializeInterface = function()
 {
 };
 Object.assign(Runtime.SerializeInterface.prototype,
@@ -26,7 +26,7 @@ Object.assign(Runtime.SerializeInterface.prototype,
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize: function(serializer, data)
 	{
 	},
 });

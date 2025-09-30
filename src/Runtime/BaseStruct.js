@@ -18,11 +18,11 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.BaseStruct = function(ctx, obj)
+Runtime.BaseStruct = function(obj)
 {
 	if (obj == undefined) obj = null;
-	use("Runtime.BaseObject").call(this, ctx);
-	this._assign_values(ctx, obj);
+	use("Runtime.BaseObject").call(this);
+	this._assign_values(obj);
 	if (this.__uq__ == undefined || this.__uq__ == null) this.__uq__ = Symbol();
 		Object.freeze(this);
 };
@@ -35,7 +35,7 @@ Object.assign(Runtime.BaseStruct.prototype,
 	 * @param Map obj = null
 	 * @return BaseStruct
 	 */
-	clone: function(ctx, obj)
+	clone: function(obj)
 	{
 		if (obj == undefined) obj = null;
 		if (obj == null)
@@ -46,7 +46,7 @@ Object.assign(Runtime.BaseStruct.prototype,
 		var item = Object.create(proto);
 		item = Object.assign(item, this);
 		
-		item._assign_values(ctx, obj);
+		item._assign_values(obj);
 		
 		Object.freeze(item);
 		
@@ -58,26 +58,26 @@ Object.assign(Runtime.BaseStruct.prototype,
 	 * @param Map obj = null
 	 * @return BaseStruct
 	 */
-	copy: function(ctx, obj)
+	copy: function(obj)
 	{
 		if (obj == undefined) obj = null;
-		return this.clone(ctx, obj);
+		return this.clone(obj);
 	},
 	/**
 	 * Returns struct as Map
 	 * @return Map
 	 */
-	toMap: function(ctx)
+	toMap: function()
 	{
 		var __v0 = use("Runtime.Map");
-		var values = new __v0(ctx);
+		var values = new __v0();
 		var __v1 = use("Runtime.rtl");
-		var names = __v1.getFields(ctx, this.constructor.getClassName(ctx));
-		for (var i = 0; i < names.count(ctx); i++)
+		var names = __v1.getFields(this.constructor.getClassName());
+		for (var i = 0; i < names.count(); i++)
 		{
-			var variable_name = names.item(ctx, i);
-			var value = this.get(ctx, variable_name, null);
-			values.set(ctx, variable_name, value);
+			var variable_name = names.item(i);
+			var value = this.get(variable_name, null);
+			values.set(variable_name, value);
 		}
 		return values;
 	},
@@ -88,7 +88,7 @@ Object.assign(Runtime.BaseStruct,
 	/**
 	 * Returns new instance
 	 */
-	newInstance: function(ctx, items)
+	newInstance: function(items)
 	{
 		return new (
 			Function.prototype.bind.apply(
@@ -110,7 +110,7 @@ Object.assign(Runtime.BaseStruct,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -119,30 +119,30 @@ Object.assign(Runtime.BaseStruct,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},
 });use.add(Runtime.BaseStruct);
 module.exports = Runtime.BaseStruct;
-Runtime.BaseStruct.prototype.get = function(ctx, k, v)
+Runtime.BaseStruct.prototype.get = function(k, v)
 {
 	if (v == undefined) v = null;
 	return this[k] != undefined ? this[k] : v;

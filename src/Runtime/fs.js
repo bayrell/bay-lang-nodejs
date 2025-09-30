@@ -30,7 +30,7 @@ const unlink = promisify(fs.unlink);
 const lstat = promisify(fs.lstat);
 const mkdir = promisify(fs.mkdir);
 const readdir = promisify(fs.readdir);
-Runtime.fs = function(ctx)
+Runtime.fs = function()
 {
 };
 Object.assign(Runtime.fs.prototype,
@@ -42,16 +42,16 @@ Object.assign(Runtime.fs,
 	/**
 	 * Join
 	 */
-	join: function(ctx, arr)
+	join: function(arr)
 	{
 		var __v0 = use("Runtime.rs");
-		var path = __v0.join(ctx, this.DIRECTORY_SEPARATOR, arr);
+		var path = __v0.join(this.DIRECTORY_SEPARATOR, arr);
 		var __v1 = use("Runtime.re");
-		path = __v1.replace(ctx, "\\/+", "/", path);
+		path = __v1.replace("\\/+", "/", path);
 		var __v2 = use("Runtime.re");
-		path = __v2.replace(ctx, "\\/\\.\\/", "/", path);
+		path = __v2.replace("\\/\\.\\/", "/", path);
 		var __v3 = use("Runtime.re");
-		path = __v3.replace(ctx, "\\/+$", "", path);
+		path = __v3.replace("\\/+$", "", path);
 		return path;
 	},
 	/**
@@ -59,7 +59,7 @@ Object.assign(Runtime.fs,
 	 * @param string path
 	 * @param boolean
 	 */
-	isDir: async function(ctx, dirpath)
+	isDir: async function(dirpath)
 	{
 		var is_exists = await fileExists(dirpath);
 		if (!is_exists) return Promise.resolve( false );
@@ -73,7 +73,7 @@ Object.assign(Runtime.fs,
 	 * @param string path
 	 * @param boolean
 	 */
-	isFolder: async function(ctx, filepath)
+	isFolder: async function(filepath)
 	{
 		var is_exists = await fileExists(filepath);
 		if (!is_exists) return Promise.resolve( false );
@@ -87,7 +87,7 @@ Object.assign(Runtime.fs,
 	 * @param string path
 	 * @param boolean
 	 */
-	isFile: async function(ctx, filepath)
+	isFile: async function(filepath)
 	{
 		var is_exists = await fileExists(filepath);
 		if (!is_exists) return Promise.resolve( false );
@@ -99,7 +99,7 @@ Object.assign(Runtime.fs,
 	/**
 	 * Read local file
 	 */
-	readFile: async function(ctx, filepath, ch)
+	readFile: async function(filepath, ch)
 	{
 		if (ch == undefined) ch = "utf8";
 		var content = await readFile( resolve(filepath), { "encoding": ch } );
@@ -109,7 +109,7 @@ Object.assign(Runtime.fs,
 	/**
 	 * Save local file
 	 */
-	saveFile: async function(ctx, filepath, content, ch)
+	saveFile: async function(filepath, content, ch)
 	{
 		if (content == undefined) content = "";
 		if (ch == undefined) ch = "utf8";
@@ -119,7 +119,7 @@ Object.assign(Runtime.fs,
 	/**
 	 * Scan directory
 	 */
-	listDir: async function(ctx, dirpath)
+	listDir: async function(dirpath)
 	{
 		dirpath = resolve(dirpath);
 		var Vector = use("Runtime.Vector");
@@ -132,29 +132,29 @@ Object.assign(Runtime.fs,
 	/**
 	 * Scan directory recursive
 	 */
-	listDirRecursive: async function(ctx, dirpath, parent_name)
+	listDirRecursive: async function(dirpath, parent_name)
 	{
 		if (parent_name == undefined) parent_name = "";
 		var __v0 = use("Runtime.Vector");
-		var res = new __v0(ctx);
-		var items = await this.listDir(ctx, dirpath);
-		for (var i = 0; i < items.count(ctx); i++)
+		var res = new __v0();
+		var items = await this.listDir(dirpath);
+		for (var i = 0; i < items.count(); i++)
 		{
-			var item_name = items.item(ctx, i);
-			var item_path = this.join(ctx, use("Runtime.Vector").from([dirpath,item_name]));
-			var item_name2 = this.join(ctx, use("Runtime.Vector").from([parent_name,item_name]));
+			var item_name = items.item(i);
+			var item_path = this.join(use("Runtime.Vector").from([dirpath,item_name]));
+			var item_name2 = this.join(use("Runtime.Vector").from([parent_name,item_name]));
 			if (item_name == "." || item_name == "..")
 			{
 				continue;
 			}
 			var __v1 = use("Runtime.rs");
-			item_name2 = __v1.removeFirstSlash(ctx, item_name2);
-			res.push(ctx, item_name2);
-			var is_dir = await this.isDir(ctx, item_path);
+			item_name2 = __v1.removeFirstSlash(item_name2);
+			res.push(item_name2);
+			var is_dir = await this.isDir(item_path);
 			if (is_dir)
 			{
-				var sub_items = await this.listDirRecursive(ctx, item_path, item_name2);
-				res.appendItems(ctx, sub_items);
+				var sub_items = await this.listDirRecursive(item_path, item_name2);
+				res.appendItems(sub_items);
 			}
 		}
 		return Promise.resolve(res);
@@ -162,7 +162,7 @@ Object.assign(Runtime.fs,
 	/**
 	 * Make dir recursive
 	 */
-	mkdir: async function(ctx, filepath, mode)
+	mkdir: async function(filepath, mode)
 	{
 		if (mode == undefined) mode = "755";
 		filepath = resolve(filepath);
@@ -186,7 +186,7 @@ Object.assign(Runtime.fs,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -195,24 +195,24 @@ Object.assign(Runtime.fs,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

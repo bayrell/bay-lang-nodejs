@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Monad = function(ctx, value, err)
+Runtime.Monad = function(value, err)
 {
 	if (err == undefined) err = null;
 	this.val = value;
@@ -29,7 +29,7 @@ Object.assign(Runtime.Monad.prototype,
 	/**
 	 * Return attr of object
 	 */
-	attr: function(ctx, attr_name)
+	attr: function(attr_name)
 	{
 		if (this.val === null || this.err != null)
 		{
@@ -37,12 +37,12 @@ Object.assign(Runtime.Monad.prototype,
 		}
 		var __v0 = use("Runtime.Monad");
 		var __v1 = use("Runtime.rtl");
-		return new __v0(ctx, __v1.attr(ctx, this.val, attr_name, null));
+		return new __v0(__v1.attr(this.val, attr_name, null));
 	},
 	/**
 	 * Call function on value
 	 */
-	call: function(ctx, f)
+	call: function(f)
 	{
 		if (this.val === null || this.err != null)
 		{
@@ -51,7 +51,7 @@ Object.assign(Runtime.Monad.prototype,
 		try
 		{
 			var __v0 = use("Runtime.rtl");
-			this.val = __v0.apply(ctx, f, use("Runtime.Vector").from([this.val]));
+			this.val = __v0.apply(f, use("Runtime.Vector").from([this.val]));
 		}
 		catch (_ex)
 		{
@@ -72,7 +72,7 @@ Object.assign(Runtime.Monad.prototype,
 	/**
 	 * Call async function on value
 	 */
-	callAsync: async function(ctx, f)
+	callAsync: async function(f)
 	{
 		if (this.val === null || this.err != null)
 		{
@@ -81,7 +81,7 @@ Object.assign(Runtime.Monad.prototype,
 		try
 		{
 			var __v0 = use("Runtime.rtl");
-			this.val = await __v0.apply(ctx, f, use("Runtime.Vector").from([this.val]));
+			this.val = await __v0.apply(f, use("Runtime.Vector").from([this.val]));
 		}
 		catch (_ex)
 		{
@@ -102,7 +102,7 @@ Object.assign(Runtime.Monad.prototype,
 	/**
 	 * Call method on value
 	 */
-	callMethod: function(ctx, method_name, args)
+	callMethod: function(method_name, args)
 	{
 		if (args == undefined) args = null;
 		if (this.val === null || this.err != null)
@@ -112,9 +112,9 @@ Object.assign(Runtime.Monad.prototype,
 		try
 		{
 			var __v0 = use("Runtime.Callback");
-			var f = new __v0(ctx, this.val, method_name);
+			var f = new __v0(this.val, method_name);
 			var __v1 = use("Runtime.rtl");
-			this.val = __v1.apply(ctx, f, args);
+			this.val = __v1.apply(f, args);
 		}
 		catch (_ex)
 		{
@@ -135,7 +135,7 @@ Object.assign(Runtime.Monad.prototype,
 	/**
 	 * Call async method on value
 	 */
-	callMethodAsync: async function(ctx, method_name, args)
+	callMethodAsync: async function(method_name, args)
 	{
 		if (args == undefined) args = null;
 		if (this.val === null || this.err != null)
@@ -145,9 +145,9 @@ Object.assign(Runtime.Monad.prototype,
 		try
 		{
 			var __v0 = use("Runtime.Callback");
-			var f = new __v0(ctx, this.val, method_name);
+			var f = new __v0(this.val, method_name);
 			var __v1 = use("Runtime.rtl");
-			this.val = await __v1.apply(ctx, f, args);
+			this.val = await __v1.apply(f, args);
 		}
 		catch (_ex)
 		{
@@ -168,15 +168,15 @@ Object.assign(Runtime.Monad.prototype,
 	/**
 	 * Call function on monad
 	 */
-	monad: function(ctx, f)
+	monad: function(f)
 	{
 		var __v0 = use("Runtime.rtl");
-		return __v0.apply(ctx, f, use("Runtime.Vector").from([this]));
+		return __v0.apply(f, use("Runtime.Vector").from([this]));
 	},
 	/**
 	 * Returns value
 	 */
-	value: function(ctx)
+	value: function()
 	{
 		if (this.err != null)
 		{
@@ -188,7 +188,7 @@ Object.assign(Runtime.Monad.prototype,
 		}
 		return this.val;
 	},
-	_init: function(ctx)
+	_init: function()
 	{
 		this.val = null;
 		this.err = null;
@@ -209,7 +209,7 @@ Object.assign(Runtime.Monad,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -218,24 +218,24 @@ Object.assign(Runtime.Monad,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

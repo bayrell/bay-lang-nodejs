@@ -19,11 +19,11 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpFlags = function(ctx, params)
+BayLang.OpCodes.OpFlags = function(params)
 {
 	if (params == undefined) params = null;
-	use("Runtime.BaseObject").call(this, ctx);
-	this._assign_values(ctx, params);
+	use("Runtime.BaseObject").call(this);
+	this._assign_values(params);
 };
 BayLang.OpCodes.OpFlags.prototype = Object.create(use("Runtime.BaseObject").prototype);
 BayLang.OpCodes.OpFlags.prototype.constructor = BayLang.OpCodes.OpFlags;
@@ -32,41 +32,41 @@ Object.assign(BayLang.OpCodes.OpFlags.prototype,
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize: function(serializer, data)
 	{
-		serializer.process(ctx, this, "p_assignable", data);
-		serializer.process(ctx, this, "p_async", data);
-		serializer.process(ctx, this, "p_cloneable", data);
-		serializer.process(ctx, this, "p_const", data);
-		serializer.process(ctx, this, "p_declare", data);
-		serializer.process(ctx, this, "p_export", data);
-		serializer.process(ctx, this, "p_lambda", data);
-		serializer.process(ctx, this, "p_memorize", data);
-		serializer.process(ctx, this, "p_multiblock", data);
-		serializer.process(ctx, this, "p_private", data);
-		serializer.process(ctx, this, "p_props", data);
-		serializer.process(ctx, this, "p_protected", data);
-		serializer.process(ctx, this, "p_public", data);
-		serializer.process(ctx, this, "p_pure", data);
-		serializer.process(ctx, this, "p_serializable", data);
-		serializer.process(ctx, this, "p_static", data);
+		serializer.process(this, "p_assignable", data);
+		serializer.process(this, "p_async", data);
+		serializer.process(this, "p_cloneable", data);
+		serializer.process(this, "p_const", data);
+		serializer.process(this, "p_declare", data);
+		serializer.process(this, "p_export", data);
+		serializer.process(this, "p_lambda", data);
+		serializer.process(this, "p_memorize", data);
+		serializer.process(this, "p_multiblock", data);
+		serializer.process(this, "p_private", data);
+		serializer.process(this, "p_props", data);
+		serializer.process(this, "p_protected", data);
+		serializer.process(this, "p_public", data);
+		serializer.process(this, "p_pure", data);
+		serializer.process(this, "p_serializable", data);
+		serializer.process(this, "p_static", data);
 	},
 	/**
 	 * Read is Flag
 	 */
-	isFlag: function(ctx, name)
+	isFlag: function(name)
 	{
 		var __v0 = use("BayLang.OpCodes.OpFlags");
-		if (!__v0.hasFlag(ctx, name))
+		if (!__v0.hasFlag(name))
 		{
 			return false;
 		}
 		var __v0 = use("Runtime.rtl");
-		return __v0.attr(ctx, this, "p_" + use("Runtime.rtl").toStr(name));
+		return __v0.attr(this, "p_" + use("Runtime.rtl").toStr(name));
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		this.p_async = false;
 		this.p_export = false;
 		this.p_static = false;
@@ -91,14 +91,14 @@ Object.assign(BayLang.OpCodes.OpFlags,
 	/**
 	 * Get flags
 	 */
-	getFlags: function(ctx)
+	getFlags: function()
 	{
 		return use("Runtime.Vector").from(["async","export","static","const","public","private","declare","protected","serializable","cloneable","assignable","memorize","multiblock","pure","props"]);
 	},
 	/**
 	 * Get flags
 	 */
-	hasFlag: function(ctx, flag_name)
+	hasFlag: function(flag_name)
 	{
 		if (flag_name == "async" || flag_name == "export" || flag_name == "static" || flag_name == "const" || flag_name == "public" || flag_name == "private" || flag_name == "declare" || flag_name == "protected" || flag_name == "serializable" || flag_name == "cloneable" || flag_name == "assignable" || flag_name == "memorize" || flag_name == "multiblock" || flag_name == "lambda" || flag_name == "pure" || flag_name == "props")
 		{
@@ -119,7 +119,7 @@ Object.assign(BayLang.OpCodes.OpFlags,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -128,24 +128,24 @@ Object.assign(BayLang.OpCodes.OpFlags,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.ModuleDescription = function(ctx)
+Runtime.ModuleDescription = function()
 {
 };
 Object.assign(Runtime.ModuleDescription.prototype,
@@ -30,7 +30,7 @@ Object.assign(Runtime.ModuleDescription,
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleName: function(ctx)
+	getModuleName: function()
 	{
 		return "Runtime";
 	},
@@ -38,7 +38,7 @@ Object.assign(Runtime.ModuleDescription,
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleVersion: function(ctx)
+	getModuleVersion: function()
 	{
 		return "0.12.1";
 	},
@@ -46,18 +46,18 @@ Object.assign(Runtime.ModuleDescription,
 	 * Returns required modules
 	 * @return Map<string>
 	 */
-	requiredModules: function(ctx)
+	requiredModules: function()
 	{
 		return null;
 	},
 	/**
 	 * Returns enities
 	 */
-	entities: function(ctx)
+	entities: function()
 	{
 		var __v0 = use("Runtime.Entity.Provider");
 		var __v1 = use("Runtime.Entity.Provider");
-		return use("Runtime.Vector").from([new __v0(ctx, "output", "Runtime.Providers.OutputProvider"),new __v1(ctx, "hook", "Runtime.Providers.HookProvider")]);
+		return use("Runtime.Vector").from([new __v0("output", "Runtime.Providers.OutputProvider"),new __v1("hook", "Runtime.Providers.HookProvider")]);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
@@ -72,7 +72,7 @@ Object.assign(Runtime.ModuleDescription,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -81,24 +81,24 @@ Object.assign(Runtime.ModuleDescription,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

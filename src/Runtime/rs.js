@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.rs = function(ctx)
+Runtime.rs = function()
 {
 };
 Object.assign(Runtime.rs.prototype,
@@ -31,7 +31,7 @@ Object.assign(Runtime.rs,
 	 * @param string s The string
 	 * @return int
 	 */
-	strlen: function(ctx, s)
+	strlen: function(s)
 	{
 		return use("Runtime.rtl").toStr(s).length;
 	},
@@ -42,7 +42,7 @@ Object.assign(Runtime.rs,
 	 * @param int length
 	 * @return string
 	 */
-	substr: function(ctx, s, start, length)
+	substr: function(s, start, length)
 	{
 		if (length == undefined) length = null;
 		var _rtl = use("Runtime.rtl");
@@ -53,7 +53,7 @@ Object.assign(Runtime.rs,
 		}
 		var end = start + length;
 		if (length < 0){
-			var sz = _rs.strlen(ctx, s);
+			var sz = _rs.strlen(s);
 			end = sz + length;
 		}
 		return _rtl.toStr(s).substring(start, end);
@@ -64,15 +64,15 @@ Object.assign(Runtime.rs,
 	 * @param int pos The position
 	 * @return string
 	 */
-	charAt: function(ctx, s, pos)
+	charAt: function(s, pos)
 	{
-		return this.substr(ctx, s, pos, 1);
+		return this.substr(s, pos, 1);
 	},
 	/**
 	 * Returns ASCII symbol by code
 	 * @param int code
 	 */
-	chr: function(ctx, code)
+	chr: function(code)
 	{
 		return String.fromCharCode(code);
 	},
@@ -80,7 +80,7 @@ Object.assign(Runtime.rs,
 	 * Returns ASCII symbol code
 	 * @param char ch
 	 */
-	ord: function(ctx, ch)
+	ord: function(ch)
 	{
 		return use("Runtime.rtl").toStr(ch).charCodeAt(0);
 	},
@@ -89,7 +89,7 @@ Object.assign(Runtime.rs,
 	 * @param string s
 	 * @return string
 	 */
-	lower: function(ctx, s)
+	lower: function(s)
 	{
 		return use("Runtime.rtl").toStr(s).toLowerCase();
 	},
@@ -98,14 +98,14 @@ Object.assign(Runtime.rs,
 	 * @param string s
 	 * @return string
 	 */
-	upper: function(ctx, s)
+	upper: function(s)
 	{
 		return use("Runtime.rtl").toStr(s).toUpperCase();
 	},
 	/**
 	 * Compare strings
 	 */
-	compare: function(ctx, a, b)
+	compare: function(a, b)
 	{
 		if (a == b) return 0;
 		if (a < b) return -1;
@@ -114,7 +114,7 @@ Object.assign(Runtime.rs,
 	/**
 	 * Заменяет одну строку на другую
 	 */
-	replace: function(ctx, search, item, s)
+	replace: function(search, item, s)
 	{
 		return s.replaceAll(search, item);
 	},
@@ -124,7 +124,7 @@ Object.assign(Runtime.rs,
 	 * @param {integer} n - количество раз, которые нужно повторить строку s
 	 * @return {string} строка
 	 */
-	str_repeat: function(ctx, s, n)
+	str_repeat: function(s, n)
 	{
 		if (n <= 0) return "";
 		var res = '';
@@ -140,7 +140,7 @@ Object.assign(Runtime.rs,
 	 * @param integer limit - ограничение
 	 * @return Collection<string>
 	 */
-	split: function(ctx, delimiter, s, limit)
+	split: function(delimiter, s, limit)
 	{
 		if (limit == undefined) limit = -1;
 		var _rtl = use("Runtime.rtl");
@@ -159,7 +159,7 @@ Object.assign(Runtime.rs,
 	 * @param integer limit - ограничение 
 	 * @return Collection<string>
 	 */
-	splitArr: function(ctx, delimiters, s, limit)
+	splitArr: function(delimiters, s, limit)
 	{
 		if (limit == undefined) limit = -1;
 		var _rtl = use("Runtime.rtl");
@@ -184,7 +184,7 @@ Object.assign(Runtime.rs,
 	 * @param integer limit - ограничение 
 	 * @return Vector<string>
 	 */
-	join: function(ctx, ch, arr)
+	join: function(ch, arr)
 	{
 		if (arr == null) return "";
 		return Array.prototype.join.call(arr, ch);
@@ -192,15 +192,15 @@ Object.assign(Runtime.rs,
 	/**
 	 * Join
 	 */
-	join_path: function(ctx, arr)
+	join_path: function(arr)
 	{
-		var path = this.join(ctx, "/", arr);
+		var path = this.join("/", arr);
 		var __v0 = use("Runtime.re");
-		path = __v0.replace(ctx, "\\/+", "/", path);
+		path = __v0.replace("\\/+", "/", path);
 		var __v1 = use("Runtime.re");
-		path = __v1.replace(ctx, "\\/\\.\\/", "/", path);
+		path = __v1.replace("\\/\\.\\/", "/", path);
 		var __v2 = use("Runtime.re");
-		path = __v2.replace(ctx, "\\/+$", "", path);
+		path = __v2.replace("\\/+$", "", path);
 		return path;
 	},
 	/**
@@ -208,7 +208,7 @@ Object.assign(Runtime.rs,
 	 * @param {string} s - входная строка
 	 * @return {integer} новая строка
 	 */
-	trim: function(ctx, s, ch)
+	trim: function(s, ch)
 	{
 		if (ch == undefined) ch = "";
 		if (ch == undefined) ch = "";
@@ -225,35 +225,35 @@ Object.assign(Runtime.rs,
 	/**
 	 * Remove first slash
 	 */
-	removeFirstSlash: function(ctx, path)
+	removeFirstSlash: function(path)
 	{
 		var i = 0;
-		var sz = this.strlen(ctx, path);
-		while (i < sz && this.substr(ctx, path, i, 1) == "/")
+		var sz = this.strlen(path);
+		while (i < sz && this.substr(path, i, 1) == "/")
 		{
 			i++;
 		}
-		return this.substr(ctx, path, i);
+		return this.substr(path, i);
 	},
 	/**
 	 * Remove last slash
 	 */
-	removeLastSlash: function(ctx, path)
+	removeLastSlash: function(path)
 	{
-		var i = this.strlen(ctx, path) - 1;
-		while (i >= 0 && this.substr(ctx, path, i, 1) == "/")
+		var i = this.strlen(path) - 1;
+		while (i >= 0 && this.substr(path, i, 1) == "/")
 		{
 			i--;
 		}
-		return this.substr(ctx, path, 0, i + 1);
+		return this.substr(path, 0, i + 1);
 	},
 	/**
 	 * Add first slash
 	 */
-	addFirstSlash: function(ctx, path)
+	addFirstSlash: function(path)
 	{
 		var __v0 = use("Runtime.rs");
-		if (__v0.substr(ctx, path, 0, 1) == "/")
+		if (__v0.substr(path, 0, 1) == "/")
 		{
 			return path;
 		}
@@ -262,11 +262,11 @@ Object.assign(Runtime.rs,
 	/**
 	 * Add last slash
 	 */
-	addLastSlash: function(ctx, path)
+	addLastSlash: function(path)
 	{
 		var __v0 = use("Runtime.rs");
 		var __v1 = use("Runtime.rs");
-		if (__v0.substr(ctx, path, __v1.strlen(ctx, path) - 1, 1) == "/")
+		if (__v0.substr(path, __v1.strlen(path) - 1, 1) == "/")
 		{
 			return path;
 		}
@@ -281,20 +281,20 @@ Object.assign(Runtime.rs,
 	 *         extension  - расширение файла
 	 *         filename   - имя файла без расширения
 	 */
-	pathinfo: function(ctx, filepath)
+	pathinfo: function(filepath)
 	{
-		var arr1 = this.split(ctx, ".", filepath).toVector(ctx);
-		var arr2 = this.split(ctx, "/", filepath).toVector(ctx);
+		var arr1 = this.split(".", filepath).toVector();
+		var arr2 = this.split("/", filepath).toVector();
 		var filepath = filepath;
-		var extension = arr1.pop(ctx);
-		var basename = arr2.pop(ctx);
-		var dirname = this.join(ctx, "/", arr2);
-		var ext_length = this.strlen(ctx, extension);
+		var extension = arr1.pop();
+		var basename = arr2.pop();
+		var dirname = this.join("/", arr2);
+		var ext_length = this.strlen(extension);
 		if (ext_length > 0)
 		{
 			ext_length++;
 		}
-		var filename = this.substr(ctx, basename, 0, -1 * ext_length);
+		var filename = this.substr(basename, 0, -1 * ext_length);
 		return use("Runtime.Map").from({"filepath":filepath,"extension":extension,"basename":basename,"dirname":dirname,"filename":filename});
 	},
 	/**
@@ -302,17 +302,17 @@ Object.assign(Runtime.rs,
 	 * @param {string} filepath - путь к файлу
 	 * @return {string} полное имя файла
 	 */
-	filename: function(ctx, filepath)
+	filename: function(filepath)
 	{
-		var ret = this.pathinfo(ctx, filepath);
-		var res = Runtime.rtl.attr(ctx, ret, "basename");
-		var ext = Runtime.rtl.attr(ctx, ret, "extension");
+		var ret = this.pathinfo(filepath);
+		var res = Runtime.rtl.attr(ret, "basename");
+		var ext = Runtime.rtl.attr(ret, "extension");
 		if (ext != "")
 		{
 			var __v0 = use("Runtime.rs");
-			var sz = 0 - __v0.strlen(ctx, ext) - 1;
+			var sz = 0 - __v0.strlen(ext) - 1;
 			var __v1 = use("Runtime.rs");
-			res = __v1.substr(ctx, res, 0, sz);
+			res = __v1.substr(res, 0, sz);
 		}
 		return res;
 	},
@@ -321,10 +321,10 @@ Object.assign(Runtime.rs,
 	 * @param {string} filepath - путь к файлу
 	 * @return {string} полное имя файла
 	 */
-	basename: function(ctx, filepath)
+	basename: function(filepath)
 	{
-		var ret = this.pathinfo(ctx, filepath);
-		var res = Runtime.rtl.attr(ctx, ret, "basename");
+		var ret = this.pathinfo(filepath);
+		var res = Runtime.rtl.attr(ret, "basename");
 		return res;
 	},
 	/**
@@ -332,10 +332,10 @@ Object.assign(Runtime.rs,
 	 * @param {string} filepath - путь к файлу
 	 * @return {string} расширение файла
 	 */
-	extname: function(ctx, filepath)
+	extname: function(filepath)
 	{
-		var ret = this.pathinfo(ctx, filepath);
-		var res = Runtime.rtl.attr(ctx, ret, "extension");
+		var ret = this.pathinfo(filepath);
+		var res = Runtime.rtl.attr(ret, "extension");
 		return res;
 	},
 	/**
@@ -343,30 +343,30 @@ Object.assign(Runtime.rs,
 	 * @param {string} filepath - путь к файлу
 	 * @return {string} путь к папке, содержащий файл
 	 */
-	dirname: function(ctx, filepath)
+	dirname: function(filepath)
 	{
-		var ret = this.pathinfo(ctx, filepath);
-		var res = Runtime.rtl.attr(ctx, ret, "dirname");
+		var ret = this.pathinfo(filepath);
+		var res = Runtime.rtl.attr(ret, "dirname");
 		return res;
 	},
 	/**
 	 * New line to br
 	 */
-	nl2br: function(ctx, s)
+	nl2br: function(s)
 	{
-		return this.replace(ctx, "\n", "<br/>", s);
+		return this.replace("\n", "<br/>", s);
 	},
 	/**
 	 * Remove spaces
 	 */
-	spaceless: function(ctx, s)
+	spaceless: function(s)
 	{
 		var __v0 = use("Runtime.re");
-		s = __v0.replace(ctx, " +", " ", s);
+		s = __v0.replace(" +", " ", s);
 		var __v1 = use("Runtime.re");
-		s = __v1.replace(ctx, "\t", "", s);
+		s = __v1.replace("\t", "", s);
 		var __v2 = use("Runtime.re");
-		s = __v2.replace(ctx, "\n", "", s);
+		s = __v2.replace("\n", "", s);
 		return s;
 	},
 	/**
@@ -378,7 +378,7 @@ Object.assign(Runtime.rs,
 	 * @return {variable} Если строка найдена, то возвращает позицию вхождения, начиная с 0.
 	 *                    Если строка не найдена, то вернет -1
 	 */
-	indexOf: function(ctx, s, search, offset)
+	indexOf: function(s, search, offset)
 	{
 		if (offset == undefined) offset = 0;
 		var _rtl = use("Runtime.rtl");
@@ -392,7 +392,7 @@ Object.assign(Runtime.rs,
 	 * @param string s
 	 * @return string
 	 */
-	url_encode: function(ctx, s)
+	url_encode: function(s)
 	{
 		return encodeURIComponent(s);
 	},
@@ -401,7 +401,7 @@ Object.assign(Runtime.rs,
 	 * @param string s
 	 * @return string
 	 */
-	htmlEscape: function(ctx, s)
+	htmlEscape: function(s)
 	{
 		var obj = {
 			"<":"&lt;",
@@ -414,16 +414,16 @@ Object.assign(Runtime.rs,
 		};
 		return (new String(s)).replace(/[<>&"'`=]/g, function(v){ return obj[v]; });
 	},
-	escapeHtml: function(ctx, s)
+	escapeHtml: function(s)
 	{
-		return this.htmlEscape(ctx, s);
+		return this.htmlEscape(s);
 	},
 	/**
 	 * Base64 encode
 	 * @param string s
 	 * @return string
 	 */
-	base64_encode: function(ctx, s)
+	base64_encode: function(s)
 	{
 		return Buffer.from(s).toString('base64');
 	},
@@ -432,7 +432,7 @@ Object.assign(Runtime.rs,
 	 * @param string s
 	 * @return string
 	 */
-	base64_decode: function(ctx, s)
+	base64_decode: function(s)
 	{
 		return Buffer.from(s, 'base64').toString('ascii');
 	},
@@ -441,7 +441,7 @@ Object.assign(Runtime.rs,
 	 * @param string s
 	 * @return string
 	 */
-	base64_encode_url: function(ctx, s)
+	base64_encode_url: function(s)
 	{
 		return Buffer.from(s).toString('base64');
 	},
@@ -450,7 +450,7 @@ Object.assign(Runtime.rs,
 	 * @param string s
 	 * @return string
 	 */
-	base64_decode_url: function(ctx, s)
+	base64_decode_url: function(s)
 	{
 		return Buffer.from(s, 'base64').toString('ascii');
 	},
@@ -459,26 +459,26 @@ Object.assign(Runtime.rs,
 	 * @param string s The string
 	 * @return int
 	 */
-	parse_url: function(ctx, s)
+	parse_url: function(s)
 	{
 		var pos;
 		var uri;
 		var query;
 		var hash;
-		pos = this.indexOf(ctx, s, "#");
-		s = (pos >= 0) ? (this.substr(ctx, s, 0, pos)) : (s);
-		hash = (pos >= 0) ? (this.substr(ctx, s, pos + 1)) : ("");
-		pos = this.indexOf(ctx, s, "?");
-		uri = (pos >= 0) ? (this.substr(ctx, s, 0, pos)) : (s);
-		query = (pos >= 0) ? (this.substr(ctx, s, pos + 1)) : ("");
-		var arr = this.split(ctx, "&", query);
-		var arr2 = arr.filter(ctx, (ctx, s) =>
+		pos = this.indexOf(s, "#");
+		s = (pos >= 0) ? (this.substr(s, 0, pos)) : (s);
+		hash = (pos >= 0) ? (this.substr(s, pos + 1)) : ("");
+		pos = this.indexOf(s, "?");
+		uri = (pos >= 0) ? (this.substr(s, 0, pos)) : (s);
+		query = (pos >= 0) ? (this.substr(s, pos + 1)) : ("");
+		var arr = this.split("&", query);
+		var arr2 = arr.filter((s) =>
 		{
 			return s != "";
-		}).transition(ctx, (ctx, item) =>
+		}).transition((item) =>
 		{
-			var arr = this.split(ctx, "=", item);
-			return use("Runtime.Vector").from([Runtime.rtl.attr(ctx, arr, 1),Runtime.rtl.attr(ctx, arr, 0)]);
+			var arr = this.split("=", item);
+			return use("Runtime.Vector").from([Runtime.rtl.attr(arr, 1),Runtime.rtl.attr(arr, 0)]);
 		});
 		return use("Runtime.Map").from({"uri":uri,"query":query,"query_arr":arr2,"hash":hash});
 	},
@@ -487,36 +487,36 @@ Object.assign(Runtime.rs,
 	 * @param string s The string
 	 * @return int
 	 */
-	url_get_add: function(ctx, s, key, value)
+	url_get_add: function(s, key, value)
 	{
-		var r = this.parse_url(ctx, s);
-		var s1 = Runtime.rtl.attr(ctx, r, "uri");
-		var s2 = Runtime.rtl.attr(ctx, r, "query");
+		var r = this.parse_url(s);
+		var s1 = Runtime.rtl.attr(r, "uri");
+		var s2 = Runtime.rtl.attr(r, "query");
 		var find = false;
-		var arr = this.split(ctx, "&", s2);
-		arr = arr.map(ctx, (ctx, s) =>
+		var arr = this.split("&", s2);
+		arr = arr.map((s) =>
 		{
-			var arr = this.split(ctx, "=", s);
-			if (Runtime.rtl.attr(ctx, arr, 0) == key)
+			var arr = this.split("=", s);
+			if (Runtime.rtl.attr(arr, 0) == key)
 			{
 				find = true;
 				if (value != "")
 				{
-					return key + use("Runtime.rtl").toStr("=") + use("Runtime.rtl").toStr(this.htmlEscape(ctx, value));
+					return key + use("Runtime.rtl").toStr("=") + use("Runtime.rtl").toStr(this.htmlEscape(value));
 				}
 				return "";
 			}
 			return s;
-		}).filter(ctx, (ctx, s) =>
+		}).filter((s) =>
 		{
 			return s != "";
 		});
 		if (!find && value != "")
 		{
-			arr.push(ctx, key + use("Runtime.rtl").toStr("=") + use("Runtime.rtl").toStr(this.htmlEscape(ctx, value)));
+			arr.push(key + use("Runtime.rtl").toStr("=") + use("Runtime.rtl").toStr(this.htmlEscape(value)));
 		}
 		s = s1;
-		s2 = this.join(ctx, "&", arr);
+		s2 = this.join("&", arr);
 		if (s2 != "")
 		{
 			s = s + use("Runtime.rtl").toStr("?") + use("Runtime.rtl").toStr(s2);
@@ -526,53 +526,53 @@ Object.assign(Runtime.rs,
 	/**
 	 * Strip tags
 	 */
-	strip_tags: function(ctx, content, allowed_tags)
+	strip_tags: function(content, allowed_tags)
 	{
 		if (allowed_tags == undefined) allowed_tags = null;
 		if (allowed_tags == null)
 		{
 			var __v0 = use("Runtime.re");
-			content = __v0.replace(ctx, "<[^>]+>", "", content);
+			content = __v0.replace("<[^>]+>", "", content);
 			var __v1 = use("Runtime.rs");
 			var __v2 = use("Runtime.rs");
-			content = __v1.trim(ctx, __v2.spaceless(ctx, content));
+			content = __v1.trim(__v2.spaceless(content));
 			return content;
 		}
 		var __v0 = use("Runtime.re");
-		var matches = __v0.matchAll(ctx, "<[^>]+>", content, "i");
+		var matches = __v0.matchAll("<[^>]+>", content, "i");
 		if (matches)
 		{
-			for (var i = 0; i < matches.count(ctx); i++)
+			for (var i = 0; i < matches.count(); i++)
 			{
-				var match = Runtime.rtl.attr(ctx, matches, i);
-				var tag_str = Runtime.rtl.attr(ctx, match, 0);
+				var match = Runtime.rtl.attr(matches, i);
+				var tag_str = Runtime.rtl.attr(match, 0);
 				var __v1 = use("Runtime.re");
-				var tag_match = __v1.matchAll(ctx, "<(\\/|)([a-zA-Z]+)(|[^>]*)>", tag_str, "i");
+				var tag_match = __v1.matchAll("<(\\/|)([a-zA-Z]+)(|[^>]*)>", tag_str, "i");
 				if (tag_match)
 				{
-					var tag_name = this.lower(ctx, Runtime.rtl.attr(ctx, Runtime.rtl.attr(ctx, tag_match, 0), 2));
-					if (allowed_tags.indexOf(ctx, tag_name) == -1)
+					var tag_name = this.lower(Runtime.rtl.attr(Runtime.rtl.attr(tag_match, 0), 2));
+					if (allowed_tags.indexOf(tag_name) == -1)
 					{
-						content = this.replace(ctx, tag_str, "", content);
+						content = this.replace(tag_str, "", content);
 					}
 				}
 			}
 		}
 		var __v1 = use("Runtime.rs");
 		var __v2 = use("Runtime.rs");
-		content = __v1.trim(ctx, __v2.spaceless(ctx, content));
+		content = __v1.trim(__v2.spaceless(content));
 		return content;
 	},
 	/**
 	 * Generate uuid
 	 */
-	uid: function(ctx)
+	uid: function()
 	{
 	},
 	/**
 	 * Generate timestamp based uuid
 	 */
-	time_uid: function(ctx)
+	time_uid: function()
 	{
 	},
 	/**
@@ -580,19 +580,19 @@ Object.assign(Runtime.rs,
 	 * @param string
 	 * @return int hash
 	 */
-	hash: function(ctx, s, last, x, p)
+	hash: function(s, last, x, p)
 	{
 		if (last == undefined) last = true;
 		if (x == undefined) x = 257;
 		if (p == undefined) p = 1000000007;
 		var h = 0;
 		var __v0 = use("Runtime.rs");
-		var sz = __v0.strlen(ctx, s);
+		var sz = __v0.strlen(s);
 		for (var i = 0; i < sz; i++)
 		{
 			var __v1 = use("Runtime.rs");
 			var __v2 = use("Runtime.rs");
-			var ch = __v1.ord(ctx, __v2.substr(ctx, s, i, 1));
+			var ch = __v1.ord(__v2.substr(s, i, 1));
 			h = (h * x + ch) % p;
 		}
 		if (last)
@@ -606,7 +606,7 @@ Object.assign(Runtime.rs,
 	 * @param int
 	 * @return string
 	 */
-	toHex: function(ctx, h)
+	toHex: function(h)
 	{
 		var r = "";
 		var a = "0123456789abcdef";
@@ -615,7 +615,7 @@ Object.assign(Runtime.rs,
 			var c = h & 15;
 			h = h >> 4;
 			var __v0 = use("Runtime.rs");
-			r = __v0.substr(ctx, a, c, 1) + use("Runtime.rtl").toStr(r);
+			r = __v0.substr(a, c, 1) + use("Runtime.rtl").toStr(r);
 			if (h == 0)
 			{
 				break;
@@ -626,7 +626,7 @@ Object.assign(Runtime.rs,
 	/**
 	 * Hex decode
 	 */
-	hexdec: function(ctx, s)
+	hexdec: function(s)
 	{
 		return parseInt(s, 16);
 	},
@@ -638,17 +638,17 @@ Object.assign(Runtime.rs,
 	 *   - n - numberic
 	 * @return string
 	 */
-	random_string: function(ctx, len, spec)
+	random_string: function(len, spec)
 	{
 		if (len == undefined) len = 8;
 		if (spec == undefined) spec = "aun";
 		var s = "";
 		var res = "";
 		var __v0 = use("Runtime.rs");
-		var sz = __v0.strlen(ctx, spec);
+		var sz = __v0.strlen(spec);
 		for (var i = 0; i < sz; i++)
 		{
-			var ch = Runtime.rtl.attr(ctx, spec, i);
+			var ch = Runtime.rtl.attr(spec, i);
 			if (ch == "a")
 			{
 				s += use("Runtime.rtl").toStr("qwertyuiopasdfghjklzxcvbnm");
@@ -667,29 +667,29 @@ Object.assign(Runtime.rs,
 			}
 		}
 		var __v1 = use("Runtime.rs");
-		var sz_s = __v1.strlen(ctx, s);
+		var sz_s = __v1.strlen(s);
 		for (var i = 0; i < len; i++)
 		{
 			var __v2 = use("Runtime.Math");
-			var code = __v2.random(ctx, 0, sz_s - 1);
-			res += use("Runtime.rtl").toStr(Runtime.rtl.attr(ctx, s, code));
+			var code = __v2.random(0, sz_s - 1);
+			res += use("Runtime.rtl").toStr(Runtime.rtl.attr(s, code));
 		}
 		return res;
 	},
 	/**
 	 * Format string
 	 */
-	format: function(ctx, s, params)
+	format: function(s, params)
 	{
 		if (params == undefined) params = null;
 		if (params == null)
 		{
 			return s;
 		}
-		params.each(ctx, (ctx, value, key) =>
+		params.each((value, key) =>
 		{
 			var __v0 = use("Runtime.rs");
-			s = __v0.replace(ctx, "%" + use("Runtime.rtl").toStr(key) + use("Runtime.rtl").toStr("%"), value, s);
+			s = __v0.replace("%" + use("Runtime.rtl").toStr(key) + use("Runtime.rtl").toStr("%"), value, s);
 		});
 		return s;
 	},
@@ -706,7 +706,7 @@ Object.assign(Runtime.rs,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -715,24 +715,24 @@ Object.assign(Runtime.rs,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

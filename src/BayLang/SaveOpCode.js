@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.SaveOpCode = function(ctx)
+BayLang.SaveOpCode = function()
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
@@ -26,22 +26,22 @@ BayLang.SaveOpCode.prototype = Object.create(use("Runtime.BaseStruct").prototype
 BayLang.SaveOpCode.prototype.constructor = BayLang.SaveOpCode;
 Object.assign(BayLang.SaveOpCode.prototype,
 {
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseStruct").prototype._init.call(this,ctx);
+		use("Runtime.BaseStruct").prototype._init.call(this);
 		this.var_name = "";
 		this.var_content = "";
 		this.content = "";
 		this.op_code = null;
 	},
-	takeValue: function(ctx,k,d)
+	takeValue: function(k,d)
 	{
 		if (d == undefined) d = null;
 		if (k == "var_name")return this.var_name;
 		else if (k == "var_content")return this.var_content;
 		else if (k == "content")return this.content;
 		else if (k == "op_code")return this.op_code;
-		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
+		return use("Runtime.BaseStruct").prototype.takeValue.call(this,k,d);
 	},
 });
 Object.assign(BayLang.SaveOpCode, use("Runtime.BaseStruct"));
@@ -60,7 +60,7 @@ Object.assign(BayLang.SaveOpCode,
 	{
 		return "Runtime.BaseStruct";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -69,7 +69,7 @@ Object.assign(BayLang.SaveOpCode,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		a.push("var_name");
@@ -78,19 +78,19 @@ Object.assign(BayLang.SaveOpCode,
 		a.push("op_code");
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

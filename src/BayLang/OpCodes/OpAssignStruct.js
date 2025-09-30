@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpAssignStruct = function(ctx)
+BayLang.OpCodes.OpAssignStruct = function()
 {
 	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
 };
@@ -30,18 +30,18 @@ Object.assign(BayLang.OpCodes.OpAssignStruct.prototype,
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize: function(serializer, data)
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
-		serializer.process(ctx, this, "annotations", data);
-		serializer.process(ctx, this, "comments", data);
-		serializer.process(ctx, this, "expression", data);
-		serializer.process(ctx, this, "names", data);
-		serializer.process(ctx, this, "var_name", data);
+		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, serializer, data);
+		serializer.process(this, "annotations", data);
+		serializer.process(this, "comments", data);
+		serializer.process(this, "expression", data);
+		serializer.process(this, "names", data);
+		serializer.process(this, "var_name", data);
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this);
 		this.var_name = "";
 		this.annotations = null;
 		this.comments = null;
@@ -65,7 +65,7 @@ Object.assign(BayLang.OpCodes.OpAssignStruct,
 	{
 		return "BayLang.OpCodes.BaseOpCode";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -74,24 +74,24 @@ Object.assign(BayLang.OpCodes.OpAssignStruct,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

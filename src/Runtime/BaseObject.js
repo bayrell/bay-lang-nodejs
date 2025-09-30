@@ -18,49 +18,49 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.BaseObject = function(ctx)
+Runtime.BaseObject = function()
 {
 	/* Init object */
-	this._init(ctx);
+	this._init();
 };
 Object.assign(Runtime.BaseObject.prototype,
 {
 	/**
 	 * Init function
 	 */
-	_init: function(ctx)
+	_init: function()
 	{
 	},
 	/**
 	 * Init struct data
 	 */
-	_changes: function(ctx, changes)
+	_changes: function(changes)
 	{
 	},
 	/**
 	 * Assign new values
 	 */
-	_assign_values: function(ctx, changes)
+	_assign_values: function(changes)
 	{
 		if (changes == undefined) changes = null;
 		if (typeof changes == 'object' && !(changes instanceof Runtime.Dict))
 		{
-			changes = new Runtime.Map(ctx, changes);
+			changes = new Runtime.Map(changes);
 		}
 		if (changes == null)
 		{
 			return ;
 		}
-		if (changes.keys(ctx).count(ctx) == 0)
+		if (changes.keys().count() == 0)
 		{
 			return ;
 		}
 		var __v0 = use("Runtime.Map");
 		if (!(changes instanceof __v0))
 		{
-			changes = changes.toMap(ctx);
+			changes = changes.toMap();
 		}
-		this._changes(ctx, changes);
+		this._changes(changes);
 		var _Dict = use("Runtime.Dict");
 		var rtl = use("Runtime.rtl");
 		if (changes instanceof _Dict) changes = changes.toObject();
@@ -86,7 +86,7 @@ Object.assign(Runtime.BaseObject,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -95,24 +95,24 @@ Object.assign(Runtime.BaseObject,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

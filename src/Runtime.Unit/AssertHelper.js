@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
-Runtime.Unit.AssertHelper = function(ctx)
+Runtime.Unit.AssertHelper = function()
 {
 };
 Object.assign(Runtime.Unit.AssertHelper.prototype,
@@ -30,90 +30,90 @@ Object.assign(Runtime.Unit.AssertHelper,
 	/**
 	 * Check equals of types
 	 */
-	equalValueType: function(ctx, value1, value2, message)
+	equalValueType: function(value1, value2, message)
 	{
 		var __v0 = use("Runtime.rtl");
-		var type1 = __v0.getType(ctx, value1);
+		var type1 = __v0.getType(value1);
 		var __v1 = use("Runtime.rtl");
-		var type2 = __v1.getType(ctx, value2);
+		var type2 = __v1.getType(value2);
 		var __v2 = use("Runtime.rtl");
-		__v2.assert(ctx, type1 == type2, message);
+		__v2.assert(type1 == type2, message);
 	},
 	/**
 	 * Check equals of values
 	 */
-	equalValue: function(ctx, value1, value2, message)
+	equalValue: function(value1, value2, message)
 	{
-		this.equalValueType(ctx, value1, value2, message);
+		this.equalValueType(value1, value2, message);
 		var __v0 = use("Runtime.rtl");
-		var value_type1 = __v0.getType(ctx, value1);
+		var value_type1 = __v0.getType(value1);
 		var __v1 = use("Runtime.rtl");
-		var value_type2 = __v1.getType(ctx, value2);
+		var value_type2 = __v1.getType(value2);
 		var __v2 = use("Runtime.rtl");
-		__v2.assert(ctx, value_type1 == value_type2, message);
+		__v2.assert(value_type1 == value_type2, message);
 		var __v3 = use("Runtime.rtl");
-		if (__v3.isScalarValue(ctx, value1))
+		if (__v3.isScalarValue(value1))
 		{
 			var __v4 = use("Runtime.rtl");
-			__v4.assert(ctx, value1 === value2, message);
+			__v4.assert(value1 === value2, message);
 			return ;
 		}
 		if (value_type1 == "collection")
 		{
-			this.equalCollection(ctx, value1, value2, message);
+			this.equalCollection(value1, value2, message);
 			return ;
 		}
 		if (value_type1 == "dict")
 		{
-			this.equalDict(ctx, value1, value2, message);
+			this.equalDict(value1, value2, message);
 			return ;
 		}
 		var __v3 = use("Runtime.rtl");
-		__v3.assert(ctx, false, message);
+		__v3.assert(false, message);
 	},
 	/**
 	 * Check equals of two collections
 	 */
-	equalCollection: function(ctx, c1, c2, message)
+	equalCollection: function(c1, c2, message)
 	{
-		if (c1.count(ctx) != c2.count(ctx))
+		if (c1.count() != c2.count())
 		{
 			var __v0 = use("Runtime.rtl");
-			__v0.assert(ctx, false, message);
+			__v0.assert(false, message);
 		}
-		for (var i = 0; i < c1.count(ctx); i++)
+		for (var i = 0; i < c1.count(); i++)
 		{
-			var value1 = c1.get(ctx, i);
-			var value2 = c2.get(ctx, i);
-			this.equalValue(ctx, value1, value2, message);
+			var value1 = c1.get(i);
+			var value2 = c2.get(i);
+			this.equalValue(value1, value2, message);
 		}
 	},
 	/**
 	 * Check equals of two dicts
 	 */
-	equalDict: function(ctx, d1, d2, message)
+	equalDict: function(d1, d2, message)
 	{
-		var d1_keys = d1.keys(ctx);
-		var d2_keys = d2.keys(ctx);
-		for (var i = 0; i < d1_keys.count(ctx); i++)
+		var d1_keys = d1.keys();
+		var d2_keys = d2.keys();
+		for (var i = 0; i < d1_keys.count(); i++)
 		{
-			var key1 = d1_keys.get(ctx, i);
-			if (!d2.has(ctx, key1))
+			var key1 = d1_keys.get(i);
+			if (!d2.has(key1))
 			{
 				var __v0 = use("Runtime.rtl");
-				__v0.assert(ctx, false, message);
+				__v0.assert(false, message);
 			}
-			var value1 = d1.get(ctx, key1);
-			var value2 = d2.get(ctx, key1);
-			this.equalValue(ctx, value1, value2, message);
+			var value1 = d1.get(key1);
+			var value2 = d2.get(key1);
+			this.equalValue(value1, value2, message);
 		}
-		for (var i = 0; i < d2_keys.count(ctx); i++)
+		for (var i = 0; i < d2_keys.count(); i++)
 		{
-			var key2 = d2_keys.get(ctx, i);
-			if (!d1.has(ctx, key2))
+			var key2 = d2_keys.get(i);
+			if (!d1.has(key2))
 			{
 				var __v0 = use("Runtime.rtl");
-				__v0.assert(ctx, false, message);
+				__v0.assert(false, message);
 			}
 		}
 	},
@@ -130,7 +130,7 @@ Object.assign(Runtime.Unit.AssertHelper,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -139,24 +139,24 @@ Object.assign(Runtime.Unit.AssertHelper,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

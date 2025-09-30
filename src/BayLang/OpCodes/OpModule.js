@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpModule = function(ctx)
+BayLang.OpCodes.OpModule = function()
 {
 	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
 };
@@ -30,35 +30,35 @@ Object.assign(BayLang.OpCodes.OpModule.prototype,
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize: function(serializer, data)
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
-		serializer.process(ctx, this, "is_component", data);
-		serializer.process(ctx, this, "items", data);
-		serializer.process(ctx, this, "uses", data);
+		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, serializer, data);
+		serializer.process(this, "is_component", data);
+		serializer.process(this, "items", data);
+		serializer.process(this, "uses", data);
 	},
 	/**
 	 * Add module
 	 */
-	addModule: function(ctx, class_name, alias_name, is_component)
+	addModule: function(class_name, alias_name, is_component)
 	{
 		if (alias_name == undefined) alias_name = "";
 		if (is_component == undefined) is_component = true;
 		if (alias_name != "")
 		{
-			this.uses.set(ctx, alias_name, class_name);
+			this.uses.set(alias_name, class_name);
 		}
 		/* Add op_code */
 		var __v0 = use("Runtime.lib");
-		var pos = this.items.find(ctx, __v0.isInstance(ctx, "BayLang.OpCodes.OpNamespace"));
+		var pos = this.items.find(__v0.isInstance("BayLang.OpCodes.OpNamespace"));
 		var __v1 = use("BayLang.OpCodes.OpUse");
-		var op_code = new __v1(ctx, use("Runtime.Map").from({"alias":alias_name,"name":class_name,"is_component":is_component}));
+		var op_code = new __v1(use("Runtime.Map").from({"alias":alias_name,"name":class_name,"is_component":is_component}));
 		if (pos != -1)
 		{
 			pos = pos + 1;
-			while (pos < this.items.count(ctx))
+			while (pos < this.items.count())
 			{
-				var item = this.items.get(ctx, pos);
+				var item = this.items.get(pos);
 				if (item == null)
 				{
 					break;
@@ -69,36 +69,36 @@ Object.assign(BayLang.OpCodes.OpModule.prototype,
 					break;
 				}
 				var __v2 = use("Runtime.rs");
-				if (__v2.compare(ctx, class_name, item.name) == -1)
+				if (__v2.compare(class_name, item.name) == -1)
 				{
 					break;
 				}
 				pos = pos + 1;
 			}
-			this.items.insert(ctx, pos, op_code);
+			this.items.insert(pos, op_code);
 		}
 		else
 		{
-			this.items.prepend(ctx, op_code);
+			this.items.prepend(op_code);
 		}
 	},
 	/**
 	 * Has module
 	 */
-	hasModule: function(ctx, alias_name)
+	hasModule: function(alias_name)
 	{
-		return this.uses.has(ctx, alias_name);
+		return this.uses.has(alias_name);
 	},
 	/**
 	 * Find alias name
 	 */
-	findModule: function(ctx, class_name)
+	findModule: function(class_name)
 	{
-		var keys = this.uses.keys(ctx);
-		for (var i = 0; i < keys.count(ctx); i++)
+		var keys = this.uses.keys();
+		for (var i = 0; i < keys.count(); i++)
 		{
-			var key_name = keys.get(ctx, i);
-			if (this.uses.get(ctx, key_name) == class_name)
+			var key_name = keys.get(i);
+			if (this.uses.get(key_name) == class_name)
 			{
 				return key_name;
 			}
@@ -108,17 +108,17 @@ Object.assign(BayLang.OpCodes.OpModule.prototype,
 	/**
 	 * Find class
 	 */
-	findClass: function(ctx)
+	findClass: function()
 	{
 		var __v0 = use("Runtime.lib");
-		return (this.items) ? (this.items.findItem(ctx, __v0.isInstance(ctx, "BayLang.OpCodes.OpDeclareClass"))) : (null);
+		return (this.items) ? (this.items.findItem(__v0.isInstance("BayLang.OpCodes.OpDeclareClass"))) : (null);
 	},
 	/**
 	 * Find class by name
 	 */
-	findClassByName: function(ctx, name)
+	findClassByName: function(name)
 	{
-		return this.items.findItem(ctx, (ctx, item) =>
+		return this.items.findItem((item) =>
 		{
 			var __v0 = use("BayLang.OpCodes.OpDeclareClass");
 			if (!(item instanceof __v0))
@@ -132,9 +132,9 @@ Object.assign(BayLang.OpCodes.OpModule.prototype,
 			return true;
 		});
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this);
 		this.uses = null;
 		this.items = null;
 		this.is_component = false;
@@ -156,7 +156,7 @@ Object.assign(BayLang.OpCodes.OpModule,
 	{
 		return "BayLang.OpCodes.BaseOpCode";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -165,24 +165,24 @@ Object.assign(BayLang.OpCodes.OpModule,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

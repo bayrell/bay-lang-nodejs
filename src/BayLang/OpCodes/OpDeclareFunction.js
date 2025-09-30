@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpDeclareFunction = function(ctx)
+BayLang.OpCodes.OpDeclareFunction = function()
 {
 	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
 };
@@ -30,40 +30,40 @@ Object.assign(BayLang.OpCodes.OpDeclareFunction.prototype,
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize: function(serializer, data)
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
-		serializer.process(ctx, this, "annotations", data);
-		serializer.process(ctx, this, "args", data);
-		serializer.process(ctx, this, "comments", data);
-		serializer.process(ctx, this, "expression", data);
-		serializer.process(ctx, this, "flags", data);
-		serializer.process(ctx, this, "is_context", data);
-		serializer.process(ctx, this, "is_html", data);
-		serializer.process(ctx, this, "is_html_default_args", data);
-		serializer.process(ctx, this, "items", data);
-		serializer.process(ctx, this, "name", data);
-		serializer.process(ctx, this, "result_type", data);
-		serializer.process(ctx, this, "vars", data);
+		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, serializer, data);
+		serializer.process(this, "annotations", data);
+		serializer.process(this, "args", data);
+		serializer.process(this, "comments", data);
+		serializer.process(this, "expression", data);
+		serializer.process(this, "flags", data);
+		serializer.process(this, "is_context", data);
+		serializer.process(this, "is_html", data);
+		serializer.process(this, "is_html_default_args", data);
+		serializer.process(this, "items", data);
+		serializer.process(this, "name", data);
+		serializer.process(this, "result_type", data);
+		serializer.process(this, "vars", data);
 	},
 	/**
 	 * Returns true if static function
 	 */
-	isStatic: function(ctx)
+	isStatic: function()
 	{
-		return this.flags != null && (this.flags.isFlag(ctx, "static") || this.flags.isFlag(ctx, "lambda") || this.flags.isFlag(ctx, "pure"));
+		return this.flags != null && (this.flags.isFlag("static") || this.flags.isFlag("lambda") || this.flags.isFlag("pure"));
 	},
 	/**
 	 * Returns true if is flag
 	 */
-	isFlag: function(ctx, flag_name)
+	isFlag: function(flag_name)
 	{
-		return this.flags != null && this.flags.isFlag(ctx, flag_name);
+		return this.flags != null && this.flags.isFlag(flag_name);
 	},
 	/**
 	 * Returns function expression
 	 */
-	getExpression: function(ctx)
+	getExpression: function()
 	{
 		if (this.expression != null)
 		{
@@ -74,7 +74,7 @@ Object.assign(BayLang.OpCodes.OpDeclareFunction.prototype,
 		{
 			return null;
 		}
-		var op_code_item = this.items.items.get(ctx, 0);
+		var op_code_item = this.items.items.get(0);
 		var __v0 = use("BayLang.OpCodes.OpReturn");
 		if (!(op_code_item instanceof __v0))
 		{
@@ -82,9 +82,9 @@ Object.assign(BayLang.OpCodes.OpDeclareFunction.prototype,
 		}
 		return op_code_item.expression;
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this);
 		this.op = "op_function";
 		this.name = "";
 		this.annotations = null;
@@ -116,7 +116,7 @@ Object.assign(BayLang.OpCodes.OpDeclareFunction,
 	{
 		return "BayLang.OpCodes.BaseOpCode";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -125,24 +125,24 @@ Object.assign(BayLang.OpCodes.OpDeclareFunction,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.io = function(ctx)
+Runtime.io = function()
 {
 };
 Object.assign(Runtime.io.prototype,
@@ -29,44 +29,44 @@ Object.assign(Runtime.io,
 	/**
 	 * Print message to output
 	 */
-	print: function(ctx, message, new_line, type)
+	print: function(message, new_line, type)
 	{
 		if (new_line == undefined) new_line = true;
 		if (type == undefined) type = "";
-		var output = ctx.provider(ctx, "output");
-		output.print(ctx, message, new_line, type);
+		var output = use("Runtime.rtl").getContext().provider("output");
+		output.print(message, new_line, type);
 	},
 	/**
 	 * Print error message to output
 	 */
-	print_error: function(ctx, message)
+	print_error: function(message)
 	{
-		var output = ctx.provider(ctx, "output");
-		output.print_error(ctx, message);
+		var output = use("Runtime.rtl").getContext().provider("output");
+		output.print_error(message);
 	},
 	/**
 	 * Color message to output
 	 */
-	color: function(ctx, color, message)
+	color: function(color, message)
 	{
-		var output = ctx.provider(ctx, "output");
-		return output.color(ctx, color, message);
+		var output = use("Runtime.rtl").getContext().provider("output");
+		return output.color(color, message);
 	},
 	/**
 	 * Log message
 	 */
-	log: function(ctx, type, message)
+	log: function(type, message)
 	{
-		var p = ctx.provider(ctx, "log");
-		p.log(ctx, type, message);
+		var p = use("Runtime.rtl").getContext().provider("log");
+		p.log(type, message);
 	},
 	/**
 	 * Read line from input
 	 */
-	input: function(ctx)
+	input: function()
 	{
-		var input = ctx.provider(ctx, "input");
-		return input.input(ctx);
+		var input = use("Runtime.rtl").getContext().provider("input");
+		return input.input();
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
@@ -81,7 +81,7 @@ Object.assign(Runtime.io,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -90,24 +90,24 @@ Object.assign(Runtime.io,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

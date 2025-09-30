@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Exceptions == 'undefined') Runtime.Exceptions = {};
-Runtime.Exceptions.ItemNotFound = function(ctx, name, object, prev)
+Runtime.Exceptions.ItemNotFound = function(name, object, prev)
 {
 	if (name == undefined) name = "";
 	if (object == undefined) object = "Item";
@@ -28,15 +28,15 @@ Runtime.Exceptions.ItemNotFound = function(ctx, name, object, prev)
 	if (name != "")
 	{
 		var __v0 = use("Runtime.rs");
-		message = __v0.format(ctx, "%object% '%name%' not found", use("Runtime.Map").from({"name":name,"object":object}));
+		message = __v0.format("%object% '%name%' not found", use("Runtime.Map").from({"name":name,"object":object}));
 	}
 	else
 	{
 		var __v1 = use("Runtime.rs");
-		message = __v1.format(ctx, "%object% not found", use("Runtime.Map").from({"object":object}));
+		message = __v1.format("%object% not found", use("Runtime.Map").from({"object":object}));
 	}
 	var __v0 = use("Runtime.rtl");
-	use("Runtime.Exceptions.AbstractException").call(this, ctx, message, __v0.ERROR_ITEM_NOT_FOUND, prev);
+	use("Runtime.Exceptions.AbstractException").call(this, message, __v0.ERROR_ITEM_NOT_FOUND, prev);
 };
 Runtime.Exceptions.ItemNotFound.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
 Runtime.Exceptions.ItemNotFound.prototype.constructor = Runtime.Exceptions.ItemNotFound;
@@ -59,7 +59,7 @@ Object.assign(Runtime.Exceptions.ItemNotFound,
 	{
 		return "Runtime.Exceptions.AbstractException";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -68,24 +68,24 @@ Object.assign(Runtime.Exceptions.ItemNotFound,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

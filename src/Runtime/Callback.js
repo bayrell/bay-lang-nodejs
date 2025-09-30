@@ -18,11 +18,11 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Callback = function(ctx, obj, name, tag)
+Runtime.Callback = function(obj, name, tag)
 {
 	if (tag == undefined) tag = null;
 	/* Init object */
-	this._init(ctx);
+	this._init();
 	/* Set variables */
 	this.obj = obj;
 	this.name = name;
@@ -33,10 +33,10 @@ Object.assign(Runtime.Callback.prototype,
 	/**
 	 * Check if method exists
 	 */
-	exists: function(ctx)
+	exists: function()
 	{
 		var __v0 = use("Runtime.rtl");
-		if (!__v0.method_exists(ctx, this.obj, this.name))
+		if (!__v0.method_exists(this.obj, this.name))
 		{
 			return false;
 		}
@@ -45,13 +45,13 @@ Object.assign(Runtime.Callback.prototype,
 	/**
 	 * Apply
 	 */
-	apply: function(ctx, args)
+	apply: function(args)
 	{
 		if (args == undefined) args = null;
 		var __v0 = use("Runtime.rtl");
-		return __v0.apply(ctx, this, args);
+		return __v0.apply(this, args);
 	},
-	_init: function(ctx)
+	_init: function()
 	{
 		this.obj = null;
 		this.name = null;
@@ -73,7 +73,7 @@ Object.assign(Runtime.Callback,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -82,24 +82,24 @@ Object.assign(Runtime.Callback,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

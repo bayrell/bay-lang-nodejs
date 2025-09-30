@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Console == 'undefined') Runtime.Console = {};
-Runtime.Console.CommandsList = function(ctx)
+Runtime.Console.CommandsList = function()
 {
 	use("Runtime.BaseProvider").apply(this, arguments);
 };
@@ -30,45 +30,45 @@ Object.assign(Runtime.Console.CommandsList.prototype,
 	/**
 	 * Start provider
 	 */
-	start: async function(ctx)
+	start: async function()
 	{
 		var __v0 = use("Runtime.Map");
-		var commands_list = new __v0(ctx);
-		var commands = ctx.getEntities(ctx, "Runtime.Console.Annotations.ConsoleCommand");
-		for (var i = 0; i < commands.count(ctx); i++)
+		var commands_list = new __v0();
+		var commands = use("Runtime.rtl").getContext().getEntities("Runtime.Console.Annotations.ConsoleCommand");
+		for (var i = 0; i < commands.count(); i++)
 		{
-			var info = commands.get(ctx, i);
+			var info = commands.get(i);
 			var command_class_name = info.name;
 			if (command_class_name)
 			{
 				/* Get method getRoutes */
 				var __v1 = use("Runtime.Callback");
-				var getName = new __v1(ctx, command_class_name, "getName");
+				var getName = new __v1(command_class_name, "getName");
 				/* Returns command name */
-				var name = getName.apply(ctx);
+				var name = getName.apply();
 				/* Add to list */
-				commands_list.set(ctx, name, command_class_name);
+				commands_list.set(name, command_class_name);
 			}
 		}
-		this.commands_list = commands_list.toDict(ctx);
+		this.commands_list = commands_list.toDict();
 	},
 	/**
 	 * Returns command by name
 	 */
-	getCommandByName: function(ctx, name)
+	getCommandByName: function(name)
 	{
-		return this.commands_list.get(ctx, name);
+		return this.commands_list.get(name);
 	},
 	/**
 	 * Returns commands list
 	 */
-	getCommands: function(ctx)
+	getCommands: function()
 	{
-		return this.commands_list.keys(ctx).sort(ctx);
+		return this.commands_list.keys().sort();
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseProvider").prototype._init.call(this,ctx);
+		use("Runtime.BaseProvider").prototype._init.call(this);
 		this.commands_list = use("Runtime.Map").from({});
 	},
 });
@@ -88,7 +88,7 @@ Object.assign(Runtime.Console.CommandsList,
 	{
 		return "Runtime.BaseProvider";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -97,24 +97,24 @@ Object.assign(Runtime.Console.CommandsList,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

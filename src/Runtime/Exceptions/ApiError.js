@@ -19,11 +19,11 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Exceptions == 'undefined') Runtime.Exceptions = {};
-Runtime.Exceptions.ApiError = function(ctx, prev)
+Runtime.Exceptions.ApiError = function(prev)
 {
 	if (prev == undefined) prev = null;
 	var __v0 = use("Runtime.rtl");
-	use("Runtime.Exceptions.AbstractException").call(this, ctx, prev.getErrorMessage(ctx), __v0.ERROR_API_ERROR, prev);
+	use("Runtime.Exceptions.AbstractException").call(this, prev.getErrorMessage(), __v0.ERROR_API_ERROR, prev);
 };
 Runtime.Exceptions.ApiError.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
 Runtime.Exceptions.ApiError.prototype.constructor = Runtime.Exceptions.ApiError;
@@ -32,37 +32,37 @@ Object.assign(Runtime.Exceptions.ApiError.prototype,
 	/**
 	 * Returns error message
 	 */
-	getErrorMessage: function(ctx)
+	getErrorMessage: function()
 	{
-		return this.prev.getErrorMessage(ctx);
+		return this.prev.getErrorMessage();
 	},
 	/**
 	 * Returns error code
 	 */
-	getErrorCode: function(ctx)
+	getErrorCode: function()
 	{
-		return this.prev.getErrorCode(ctx);
+		return this.prev.getErrorCode();
 	},
 	/**
 	 * Returns error file name
 	 */
-	getFileName: function(ctx)
+	getFileName: function()
 	{
-		return this.prev.getFileName(ctx);
+		return this.prev.getFileName();
 	},
 	/**
 	 * Returns error line
 	 */
-	getErrorLine: function(ctx)
+	getErrorLine: function()
 	{
-		return this.prev.getErrorLine(ctx);
+		return this.prev.getErrorLine();
 	},
 	/**
 	 * Returns error position
 	 */
-	getErrorPos: function(ctx)
+	getErrorPos: function()
 	{
-		return this.prev.getErrorPos(ctx);
+		return this.prev.getErrorPos();
 	},
 });
 Object.assign(Runtime.Exceptions.ApiError, use("Runtime.Exceptions.AbstractException"));
@@ -81,7 +81,7 @@ Object.assign(Runtime.Exceptions.ApiError,
 	{
 		return "Runtime.Exceptions.AbstractException";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -90,24 +90,24 @@ Object.assign(Runtime.Exceptions.ApiError,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

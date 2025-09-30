@@ -83,7 +83,7 @@ Object.assign(Runtime._Collection,
 	getParentClassName: function(){ return ""; },
 });
 use.add(Runtime._Collection);
-Runtime.Collection = function(ctx)
+Runtime.Collection = function()
 {
 	use("Runtime._Collection").apply(this, arguments);
 };
@@ -95,20 +95,20 @@ Object.assign(Runtime.Collection.prototype,
 	 * Returns copy of Collection
 	 * @param int pos - position
 	 */
-	cp: function(ctx)
+	cp: function()
 	{
 		var arr = Array.prototype.slice.call(this);
 		Object.setPrototypeOf(arr, this.constructor.prototype);
 		return arr;
 	},
-	copy: function(ctx)
+	copy: function()
 	{
-		return this.cp(ctx);
+		return this.cp();
 	},
 	/**
 	 * Convert to collection
 	 */
-	toCollection: function(ctx)
+	toCollection: function()
 	{
 		var obj = Array.prototype.slice.call(this);
 		Object.setPrototypeOf(obj, Runtime.Collection.prototype);
@@ -117,7 +117,7 @@ Object.assign(Runtime.Collection.prototype,
 	/**
 	 * Convert to vector
 	 */
-	toVector: function(ctx)
+	toVector: function()
 	{
 		var obj = Array.prototype.slice.call(this);
 		Object.setPrototypeOf(obj, use("Runtime.Vector").prototype);
@@ -127,7 +127,7 @@ Object.assign(Runtime.Collection.prototype,
 	 * Returns value from position
 	 * @param int pos - position
 	 */
-	get: function(ctx, pos, default_value)
+	get: function(pos, default_value)
 	{
 		if (default_value == undefined) default_value = null;
 		if (pos < 0 || pos >= this.length) return default_value;
@@ -138,7 +138,7 @@ Object.assign(Runtime.Collection.prototype,
 	 * Returns value from position. Throw exception, if position does not exists
 	 * @param int pos - position
 	 */
-	item: function(ctx, pos)
+	item: function(pos)
 	{
 		if (pos < 0 || pos >= this.length)
 		{
@@ -150,7 +150,7 @@ Object.assign(Runtime.Collection.prototype,
 	/**
 	 * Returns count items in vector
 	 */
-	count: function(ctx)
+	count: function()
 	{
 		return this.length;
 	},
@@ -159,7 +159,7 @@ Object.assign(Runtime.Collection.prototype,
 	 * @param T value
 	 * @return  int
 	 */
-	indexOf: function(ctx, value)
+	indexOf: function(value)
 	{
 		for (var i=0; i<this.count(); i++)
 		{
@@ -175,7 +175,7 @@ Object.assign(Runtime.Collection.prototype,
 	 * @param int pos_end - end position
 	 * @return  int
 	 */
-	indexOfRange: function(ctx, value, pos_begin, pos_end)
+	indexOfRange: function(value, pos_begin, pos_end)
 	{
 		var pos = Array.prototype.indexOf.call(this, value, pos_begin);
 		if (pos == -1 || pos > pos_end)
@@ -185,7 +185,7 @@ Object.assign(Runtime.Collection.prototype,
 	/**
 	 * Get first item
 	 */
-	first: function(ctx, default_value)
+	first: function(default_value)
 	{
 		if (default_value == undefined) default_value = null;
 		if (this.length == 0) return default_value;
@@ -194,7 +194,7 @@ Object.assign(Runtime.Collection.prototype,
 	/**
 	 * Get last item
 	 */
-	last: function(ctx, default_value, pos)
+	last: function(default_value, pos)
 	{
 		if (default_value == undefined) default_value = null;
 		if (pos == undefined) pos = -1;
@@ -207,39 +207,39 @@ Object.assign(Runtime.Collection.prototype,
 	 * Append value to the end of the Collection and return new Collection
 	 * @param T value
 	 */
-	pushIm: function(ctx, value)
+	pushIm: function(value)
 	{
 		var arr = this.cp();
 		Array.prototype.push.call(arr, value);
 		return arr;
 	},
-	push: function(ctx, value)
+	push: function(value)
 	{
 		var __v0 = use("Runtime.Exceptions.RuntimeException");
-		throw new __v0(ctx, "Deprecated Collection push")
+		throw new __v0("Deprecated Collection push")
 	},
 	/**
 	 * Insert value to position
 	 * @param T value
 	 * @param int pos - position
 	 */
-	insertIm: function(ctx, pos, value)
+	insertIm: function(pos, value)
 	{
 		var arr = this.cp();
 		arr.splice(pos, 0, value);
 		return arr;
 	},
-	insert: function(ctx, pos, value)
+	insert: function(pos, value)
 	{
 		var __v0 = use("Runtime.Exceptions.RuntimeException");
-		throw new __v0(ctx, "Deprecated Collection insert")
+		throw new __v0("Deprecated Collection insert")
 	},
 	/**
 	 * Set value size_to position
 	 * @param int pos - position
 	 * @param T value 
 	 */
-	setIm: function(ctx, pos, value)
+	setIm: function(pos, value)
 	{
 		if (pos < 0 || pos >= this.length)
 		{
@@ -250,23 +250,23 @@ Object.assign(Runtime.Collection.prototype,
 		arr[pos] = value;
 		return arr;
 	},
-	set: function(ctx, pos, value)
+	set: function(pos, value)
 	{
 		var __v0 = use("Runtime.Exceptions.RuntimeException");
-		throw new __v0(ctx, "Deprecated Collection set")
+		throw new __v0("Deprecated Collection set")
 	},
 	/**
 	 * Append vector to the end of the vector
 	 * @param Collection<T> arr
 	 */
-	concat: function(ctx, arr)
+	concat: function(arr)
 	{
 		if (arr == null)
 		{
 			return this;
 		}
 		var __v0 = use("Runtime.rtl");
-		if (!__v0.is_instanceof(ctx, arr, "Runtime.Collection"))
+		if (!__v0.is_instanceof(arr, "Runtime.Collection"))
 		{
 			arr = use("Runtime.Vector").from([arr]);
 		}
@@ -283,13 +283,13 @@ Object.assign(Runtime.Collection.prototype,
 	 * @param fn f
 	 * @return Collection
 	 */
-	map: function(ctx, f)
+	map: function(f)
 	{
 		var arr = this.cp();
 		var Callback = use("Runtime.Callback");
 		for (var i=0; i<arr.length; i++)
 		{
-			arr[i] = Runtime.rtl.apply(ctx, f, [arr[i], i]);
+			arr[i] = Runtime.rtl.apply(f, [arr[i], i]);
 		}
 		return arr;
 	},
@@ -298,14 +298,14 @@ Object.assign(Runtime.Collection.prototype,
 	 * @param fn f
 	 * @return Collection
 	 */
-	filter: function(ctx, f)
+	filter: function(f)
 	{
 		var res = this.constructor.Instance();
 		var Callback = use("Runtime.Callback");
 		for (var i=0; i<this.length; i++)
 		{
 			var item = this[i];
-			var flag = Runtime.rtl.apply(ctx, f, [item, i]);
+			var flag = Runtime.rtl.apply(f, [item, i]);
 			if (flag)
 			{
 				Array.prototype.push.call(res, item);
@@ -318,14 +318,14 @@ Object.assign(Runtime.Collection.prototype,
 	 * @param fn f
 	 * @return Dict
 	 */
-	transition: function(ctx, f)
+	transition: function(f)
 	{
 		var Dict = use("Runtime.Dict");
 		var d = new Dict();
 		for (var i=0; i<this.length; i++)
 		{
 			var value = this[i];
-			var p = Runtime.rtl.apply(ctx, f, [value, i]);
+			var p = Runtime.rtl.apply(f, [value, i]);
 			d[p[1]] = p[0];
 		}
 		return d;
@@ -333,12 +333,12 @@ Object.assign(Runtime.Collection.prototype,
 	/**
 	 * Flatten Collection
 	 */
-	flatten: function(ctx)
+	flatten: function()
 	{
 		var res = use("Runtime.Vector").from([]);
-		for (var i = 0; i < this.count(ctx); i++)
+		for (var i = 0; i < this.count(); i++)
 		{
-			res.appendItems(ctx, this.get(ctx, i));
+			res.appendItems(this.get(i));
 		}
 		return res;
 	},
@@ -348,12 +348,12 @@ Object.assign(Runtime.Collection.prototype,
 	 * @param var init_value
 	 * @return init_value
 	 */
-	reduce: function(ctx, f, init_value)
+	reduce: function(f, init_value)
 	{
 		for (var i=0; i<this.length; i++)
 		{
 			var item = this[i];
-			init_value = Runtime.rtl.apply(ctx, f, [init_value, item, i]);
+			init_value = Runtime.rtl.apply(f, [init_value, item, i]);
 		}
 		return init_value;
 	},
@@ -361,12 +361,12 @@ Object.assign(Runtime.Collection.prototype,
 	 * Call function for each item
 	 * @param fn f
 	 */
-	each: function(ctx, f)
+	each: function(f)
 	{
 		for (var i=0; i<this.length; i++)
 		{
 			var item = this[i];
-			Runtime.rtl.apply(ctx, f, [item, i]);
+			Runtime.rtl.apply(f, [item, i]);
 		}
 	},
 	/**
@@ -375,7 +375,7 @@ Object.assign(Runtime.Collection.prototype,
 	 * @param int lenght
 	 * @return Collection<T>
 	 */
-	slice: function(ctx, offset, length)
+	slice: function(offset, length)
 	{
 		if (offset == undefined) offset = 0;
 		if (length == undefined) length = null;
@@ -399,7 +399,7 @@ Object.assign(Runtime.Collection.prototype,
 	/**
 	 * Reverse array
 	 */
-	reverse: function(ctx)
+	reverse: function()
 	{
 		var arr = this.cp();
 		Array.prototype.reverse.call(arr);
@@ -409,14 +409,14 @@ Object.assign(Runtime.Collection.prototype,
 	 * Sort vector
 	 * @param fn f - Sort user function
 	 */
-	sort: function(ctx, f)
+	sort: function(f)
 	{
 		if (f == undefined) f = null;
 		var arr = this.cp();
 		if (f == undefined) Array.prototype.sort.call(arr);
 		else
 		{
-			var f1 = (a, b) => { return Runtime.rtl.apply(ctx, f, [a, b]); };
+			var f1 = (a, b) => { return Runtime.rtl.apply(f, [a, b]); };
 			Array.prototype.sort.call(arr, f1);
 		}
 		return arr;
@@ -424,7 +424,7 @@ Object.assign(Runtime.Collection.prototype,
 	/**
 	 * Remove dublicate values
 	 */
-	removeDuplicates: function(ctx)
+	removeDuplicates: function()
 	{
 		var res = this.constructor.Instance();
 		for (var i=0; i<this.length; i++)
@@ -442,11 +442,11 @@ Object.assign(Runtime.Collection.prototype,
 	 * @param fn f - Find function
 	 * @return int - position
 	 */
-	find: function(ctx, f)
+	find: function(f)
 	{
 		for (var i=0; i<this.length; i++)
 		{
-			var flag = f(ctx, this[i]);
+			var flag = f(this[i]);
 			if (flag) return i;
 		}
 		return -1;
@@ -458,19 +458,19 @@ Object.assign(Runtime.Collection.prototype,
 	 * @param T def_value - Find function
 	 * @return item
 	 */
-	findItem: function(ctx, f, def_value)
+	findItem: function(f, def_value)
 	{
 		if (def_value == undefined) def_value = null;
-		var pos = this.find(ctx, f);
-		return this.get(ctx, pos, def_value);
+		var pos = this.find(f);
+		return this.get(pos, def_value);
 	},
 	/**
 	 * Join collection to string
 	 */
-	join: function(ctx, ch)
+	join: function(ch)
 	{
 		var __v0 = use("Runtime.rs");
-		return __v0.join(ctx, ch, this);
+		return __v0.join(ch, this);
 	},
 });
 Object.assign(Runtime.Collection, use("Runtime._Collection"));
@@ -480,16 +480,16 @@ Object.assign(Runtime.Collection,
 	 * Returns new Instance
 	 * @return Object
 	 */
-	Instance: function(ctx)
+	Instance: function()
 	{
 		var __v0 = use("Runtime.Collection");
-		return new __v0(ctx);
+		return new __v0();
 	},
 	/**
 	 * Returns new Instance
 	 * @return Object
 	 */
-	create: function(ctx, arr)
+	create: function(arr)
 	{
 		return this.from(arr);
 	},
@@ -506,7 +506,7 @@ Object.assign(Runtime.Collection,
 	{
 		return "Runtime._Collection";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -515,24 +515,24 @@ Object.assign(Runtime.Collection,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

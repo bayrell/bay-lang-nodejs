@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.CoreTranslator = function(ctx)
+BayLang.CoreTranslator = function()
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
@@ -29,38 +29,38 @@ Object.assign(BayLang.CoreTranslator.prototype,
 	/**
 	 * Set preprocessor flag
 	 */
-	setFlag: function(ctx, flag_name, value)
+	setFlag: function(flag_name, value)
 	{
 		var t = this;
-		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["preprocessor_flags", flag_name]), value);
+		t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["preprocessor_flags", flag_name]), value);
 		return t;
 	},
 	/**
 	 * Find save op code
 	 */
-	findSaveOpCode: function(ctx, op_code)
+	findSaveOpCode: function(op_code)
 	{
 		var __v0 = use("Runtime.lib");
-		return this.save_op_codes.findItem(ctx, __v0.equalAttr(ctx, "op_code", op_code));
+		return this.save_op_codes.findItem(__v0.equalAttr("op_code", op_code));
 	},
 	/**
 	 * Increment indent level
 	 */
-	levelInc: function(ctx)
+	levelInc: function()
 	{
-		return this.copy(ctx, use("Runtime.Map").from({"indent_level":this.indent_level + 1}));
+		return this.copy(use("Runtime.Map").from({"indent_level":this.indent_level + 1}));
 	},
 	/**
 	 * Decrease indent level
 	 */
-	levelDec: function(ctx)
+	levelDec: function()
 	{
-		return this.copy(ctx, use("Runtime.Map").from({"indent_level":this.indent_level - 1}));
+		return this.copy(use("Runtime.Map").from({"indent_level":this.indent_level - 1}));
 	},
 	/**
 	 * Output content with indent
 	 */
-	s: function(ctx, s, content)
+	s: function(s, content)
 	{
 		if (content == undefined) content = null;
 		if (s == "")
@@ -72,20 +72,20 @@ Object.assign(BayLang.CoreTranslator.prototype,
 			return s;
 		}
 		var __v0 = use("Runtime.rs");
-		return this.crlf + use("Runtime.rtl").toStr(__v0.str_repeat(ctx, this.indent, this.indent_level)) + use("Runtime.rtl").toStr(s);
+		return this.crlf + use("Runtime.rtl").toStr(__v0.str_repeat(this.indent, this.indent_level)) + use("Runtime.rtl").toStr(s);
 	},
 	/**
 	 * Output content with indent
 	 */
-	s2: function(ctx, s)
+	s2: function(s)
 	{
 		var __v0 = use("Runtime.rs");
-		return this.crlf + use("Runtime.rtl").toStr(__v0.str_repeat(ctx, this.indent, this.indent_level)) + use("Runtime.rtl").toStr(s);
+		return this.crlf + use("Runtime.rtl").toStr(__v0.str_repeat(this.indent, this.indent_level)) + use("Runtime.rtl").toStr(s);
 	},
 	/**
 	 * Output content with opcode level
 	 */
-	o: function(ctx, s, opcode_level_in, opcode_level_out)
+	o: function(s, opcode_level_in, opcode_level_out)
 	{
 		if (opcode_level_in < opcode_level_out)
 		{
@@ -93,9 +93,9 @@ Object.assign(BayLang.CoreTranslator.prototype,
 		}
 		return s;
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseStruct").prototype._init.call(this,ctx);
+		use("Runtime.BaseStruct").prototype._init.call(this);
 		this.current_namespace_name = "";
 		this.current_class_name = "";
 		this.current_class_full_name = "";
@@ -116,7 +116,7 @@ Object.assign(BayLang.CoreTranslator.prototype,
 		this.flag_struct_check_types = false;
 		this.preprocessor_flags = null;
 	},
-	takeValue: function(ctx,k,d)
+	takeValue: function(k,d)
 	{
 		if (d == undefined) d = null;
 		if (k == "current_namespace_name")return this.current_namespace_name;
@@ -138,7 +138,7 @@ Object.assign(BayLang.CoreTranslator.prototype,
 		else if (k == "crlf")return this.crlf;
 		else if (k == "flag_struct_check_types")return this.flag_struct_check_types;
 		else if (k == "preprocessor_flags")return this.preprocessor_flags;
-		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
+		return use("Runtime.BaseStruct").prototype.takeValue.call(this,k,d);
 	},
 });
 Object.assign(BayLang.CoreTranslator, use("Runtime.BaseStruct"));
@@ -147,61 +147,61 @@ Object.assign(BayLang.CoreTranslator,
 	/**
 	 * Translate BaseOpCode
 	 */
-	translate: function(ctx, t, op_code)
+	translate: function(t, op_code)
 	{
 		return "";
 	},
 	/**
 	 * Inc save op code
 	 */
-	nextSaveOpCode: function(ctx, t)
+	nextSaveOpCode: function(t)
 	{
 		return "__v" + use("Runtime.rtl").toStr(t.save_op_code_inc);
 	},
 	/**
 	 * Inc save op code
 	 */
-	incSaveOpCode: function(ctx, t)
+	incSaveOpCode: function(t)
 	{
-		var var_name = this.nextSaveOpCode(ctx, t);
+		var var_name = this.nextSaveOpCode(t);
 		var save_op_code_inc = t.save_op_code_inc + 1;
-		t = t.copy(ctx, use("Runtime.Map").from({"save_op_code_inc":save_op_code_inc}));
+		t = t.copy(use("Runtime.Map").from({"save_op_code_inc":save_op_code_inc}));
 		return use("Runtime.Vector").from([t,var_name]);
 	},
 	/**
 	 * Add save op code
 	 */
-	addSaveOpCode: function(ctx, t, data)
+	addSaveOpCode: function(t, data)
 	{
-		var var_name = data.get(ctx, "var_name", "");
-		var content = data.get(ctx, "content", "");
-		var var_content = data.get(ctx, "var_content", "");
+		var var_name = data.get("var_name", "");
+		var content = data.get("content", "");
+		var var_content = data.get("var_content", "");
 		var save_op_code_inc = t.save_op_code_inc;
 		if (var_name == "" && content == "")
 		{
-			var_name = this.nextSaveOpCode(ctx, t);
-			data = data.setIm(ctx, "var_name", var_name);
+			var_name = this.nextSaveOpCode(t);
+			data = data.setIm("var_name", var_name);
 			save_op_code_inc += 1;
 		}
 		var __v0 = use("BayLang.SaveOpCode");
-		var s = new __v0(ctx, data);
-		t = t.copy(ctx, use("Runtime.Map").from({"save_op_codes":t.save_op_codes.pushIm(ctx, s),"save_op_code_inc":save_op_code_inc}));
+		var s = new __v0(data);
+		t = t.copy(use("Runtime.Map").from({"save_op_codes":t.save_op_codes.pushIm(s),"save_op_code_inc":save_op_code_inc}));
 		return use("Runtime.Vector").from([t,var_name]);
 	},
 	/**
 	 * Clear save op code
 	 */
-	clearSaveOpCode: function(ctx, t)
+	clearSaveOpCode: function(t)
 	{
 		var __v0 = use("Runtime.Collection");
-		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["save_op_codes"]), new __v0(ctx));
-		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["save_op_code_inc"]), 0);
+		t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["save_op_codes"]), new __v0());
+		t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["save_op_code_inc"]), 0);
 		return t;
 	},
 	/**
 	 * Output save op code content
 	 */
-	outputSaveOpCode: function(ctx, t, save_op_code_value)
+	outputSaveOpCode: function(t, save_op_code_value)
 	{
 		if (save_op_code_value == undefined) save_op_code_value = 0;
 		return "";
@@ -209,20 +209,20 @@ Object.assign(BayLang.CoreTranslator,
 	/**
 	 * Call f and return result with save op codes
 	 */
-	saveOpCodeCall: function(ctx, t, f, args)
+	saveOpCodeCall: function(t, f, args)
 	{
 		/* Clear save op codes */
 		var save_op_codes = t.save_op_codes;
 		var save_op_code_inc = t.save_op_code_inc;
 		var __v0 = use("Runtime.rtl");
-		var res = __v0.apply(ctx, f, args.unshiftIm(ctx, t));
-		t = Runtime.rtl.attr(ctx, res, 0);
-		var value = Runtime.rtl.attr(ctx, res, 1);
+		var res = __v0.apply(f, args.unshiftIm(t));
+		t = Runtime.rtl.attr(res, 0);
+		var value = Runtime.rtl.attr(res, 1);
 		/* Output save op code */
-		var save = t.constructor.outputSaveOpCode(ctx, t, save_op_codes.count(ctx));
+		var save = t.constructor.outputSaveOpCode(t, save_op_codes.count());
 		/* Restore save op codes */
-		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["save_op_codes"]), save_op_codes);
-		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["save_op_code_inc"]), save_op_code_inc);
+		t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["save_op_codes"]), save_op_codes);
+		t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["save_op_code_inc"]), save_op_code_inc);
 		return use("Runtime.Vector").from([t,save,value]);
 	},
 	/* ======================= Class Init Functions ======================= */
@@ -238,7 +238,7 @@ Object.assign(BayLang.CoreTranslator,
 	{
 		return "Runtime.BaseStruct";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -247,7 +247,7 @@ Object.assign(BayLang.CoreTranslator,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		a.push("current_namespace_name");
@@ -271,19 +271,19 @@ Object.assign(BayLang.CoreTranslator,
 		a.push("preprocessor_flags");
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

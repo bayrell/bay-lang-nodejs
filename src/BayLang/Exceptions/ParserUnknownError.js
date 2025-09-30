@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Exceptions == 'undefined') BayLang.Exceptions = {};
-BayLang.Exceptions.ParserUnknownError = function(ctx, s, code, prev)
+BayLang.Exceptions.ParserUnknownError = function(s, code, prev)
 {
 	if (prev == undefined) prev = null;
 	if (code == -1)
@@ -27,7 +27,7 @@ BayLang.Exceptions.ParserUnknownError = function(ctx, s, code, prev)
 		var __v0 = use("BayLang.LangConstant");
 		code = __v0.ERROR_PARSER;
 	}
-	use("Runtime.Exceptions.AbstractException").call(this, ctx, s, code, prev);
+	use("Runtime.Exceptions.AbstractException").call(this, s, code, prev);
 };
 BayLang.Exceptions.ParserUnknownError.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
 BayLang.Exceptions.ParserUnknownError.prototype.constructor = BayLang.Exceptions.ParserUnknownError;
@@ -50,7 +50,7 @@ Object.assign(BayLang.Exceptions.ParserUnknownError,
 	{
 		return "Runtime.Exceptions.AbstractException";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -59,24 +59,24 @@ Object.assign(BayLang.Exceptions.ParserUnknownError,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

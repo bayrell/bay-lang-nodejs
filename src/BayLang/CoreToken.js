@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.CoreToken = function(ctx)
+BayLang.CoreToken = function()
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
@@ -26,16 +26,16 @@ BayLang.CoreToken.prototype = Object.create(use("Runtime.BaseStruct").prototype)
 BayLang.CoreToken.prototype.constructor = BayLang.CoreToken;
 Object.assign(BayLang.CoreToken.prototype,
 {
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseStruct").prototype._init.call(this,ctx);
+		use("Runtime.BaseStruct").prototype._init.call(this);
 		this.kind = "";
 		this.content = "";
 		this.caret_start = null;
 		this.caret_end = null;
 		this.eof = false;
 	},
-	takeValue: function(ctx,k,d)
+	takeValue: function(k,d)
 	{
 		if (d == undefined) d = null;
 		if (k == "kind")return this.kind;
@@ -43,7 +43,7 @@ Object.assign(BayLang.CoreToken.prototype,
 		else if (k == "caret_start")return this.caret_start;
 		else if (k == "caret_end")return this.caret_end;
 		else if (k == "eof")return this.eof;
-		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
+		return use("Runtime.BaseStruct").prototype.takeValue.call(this,k,d);
 	},
 });
 Object.assign(BayLang.CoreToken, use("Runtime.BaseStruct"));
@@ -62,7 +62,7 @@ Object.assign(BayLang.CoreToken,
 	{
 		return "Runtime.BaseStruct";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -71,7 +71,7 @@ Object.assign(BayLang.CoreToken,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		a.push("kind");
@@ -81,19 +81,19 @@ Object.assign(BayLang.CoreToken,
 		a.push("eof");
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

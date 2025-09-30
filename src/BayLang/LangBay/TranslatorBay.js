@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.TranslatorBay = function(ctx)
+BayLang.LangBay.TranslatorBay = function()
 {
 	use("Runtime.BaseObject").apply(this, arguments);
 };
@@ -30,7 +30,7 @@ Object.assign(BayLang.LangBay.TranslatorBay.prototype,
 	/**
 	 * Reset translator
 	 */
-	reset: function(ctx)
+	reset: function()
 	{
 		this.opcode_level = 0;
 		this.indent_level = 0;
@@ -39,53 +39,53 @@ Object.assign(BayLang.LangBay.TranslatorBay.prototype,
 	/**
 	 * Set flag
 	 */
-	setFlag: function(ctx, flag_name, value)
+	setFlag: function(flag_name, value)
 	{
-		this.preprocessor_flags.set(ctx, flag_name, value);
+		this.preprocessor_flags.set(flag_name, value);
 		return this;
 	},
 	/**
 	 * Increment indent level
 	 */
-	levelInc: function(ctx)
+	levelInc: function()
 	{
 		this.indent_level = this.indent_level + 1;
 	},
 	/**
 	 * Decrease indent level
 	 */
-	levelDec: function(ctx)
+	levelDec: function()
 	{
 		this.indent_level = this.indent_level - 1;
 	},
 	/**
 	 * Returns new line with indent
 	 */
-	newLine: function(ctx)
+	newLine: function()
 	{
 		var __v0 = use("Runtime.rs");
-		return this.crlf + use("Runtime.rtl").toStr(__v0.str_repeat(ctx, this.indent, this.indent_level));
+		return this.crlf + use("Runtime.rtl").toStr(__v0.str_repeat(this.indent, this.indent_level));
 	},
 	/**
 	 * Returns string
 	 */
-	toString: function(ctx, s)
+	toString: function(s)
 	{
 		var __v0 = use("Runtime.re");
-		s = __v0.replace(ctx, "\\\\", "\\\\", s);
+		s = __v0.replace("\\\\", "\\\\", s);
 		var __v1 = use("Runtime.re");
-		s = __v1.replace(ctx, "\"", "\\\"", s);
+		s = __v1.replace("\"", "\\\"", s);
 		var __v2 = use("Runtime.re");
-		s = __v2.replace(ctx, "\n", "\\n", s);
+		s = __v2.replace("\n", "\\n", s);
 		var __v3 = use("Runtime.re");
-		s = __v3.replace(ctx, "\r", "\\r", s);
+		s = __v3.replace("\r", "\\r", s);
 		var __v4 = use("Runtime.re");
-		s = __v4.replace(ctx, "\t", "\\t", s);
+		s = __v4.replace("\t", "\\t", s);
 		return "\"" + use("Runtime.rtl").toStr(s) + use("Runtime.rtl").toStr("\"");
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		var __v0 = use("BayLang.LangBay.TranslatorBayExpression");
 		var __v1 = use("BayLang.LangBay.TranslatorBayOperator");
 		var __v2 = use("BayLang.LangBay.TranslatorBayProgram");
@@ -95,10 +95,10 @@ Object.assign(BayLang.LangBay.TranslatorBay.prototype,
 		this.indent = "\t";
 		this.crlf = "\n";
 		this.preprocessor_flags = use("Runtime.Map").from({});
-		this.expression = new __v0(ctx, this);
-		this.operator = new __v1(ctx, this);
-		this.program = new __v2(ctx, this);
-		this.html = new __v3(ctx, this);
+		this.expression = new __v0(this);
+		this.operator = new __v1(this);
+		this.program = new __v2(this);
+		this.html = new __v3(this);
 	},
 });
 Object.assign(BayLang.LangBay.TranslatorBay, use("Runtime.BaseObject"));
@@ -107,19 +107,19 @@ Object.assign(BayLang.LangBay.TranslatorBay,
 	/**
 	 * Translate BaseOpCode
 	 */
-	translate: function(ctx, t, op_code)
+	translate: function(t, op_code)
 	{
 		var content = use("Runtime.Vector").from([]);
 		if (op_code.is_component)
 		{
-			t.html.translate(ctx, op_code, content);
+			t.html.translate(op_code, content);
 		}
 		else
 		{
-			t.program.translate(ctx, op_code, content);
+			t.program.translate(op_code, content);
 		}
 		var __v0 = use("Runtime.rs");
-		var result = __v0.join(ctx, "", content);
+		var result = __v0.join("", content);
 		return use("Runtime.Vector").from([t,result]);
 	},
 	/* ======================= Class Init Functions ======================= */
@@ -135,7 +135,7 @@ Object.assign(BayLang.LangBay.TranslatorBay,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -144,24 +144,24 @@ Object.assign(BayLang.LangBay.TranslatorBay,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

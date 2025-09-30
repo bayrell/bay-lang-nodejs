@@ -19,11 +19,11 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Exceptions == 'undefined') Runtime.Exceptions = {};
-Runtime.Exceptions.IndexOutOfRange = function(ctx, pos, prev)
+Runtime.Exceptions.IndexOutOfRange = function(pos, prev)
 {
 	if (prev == undefined) prev = null;
 	var __v0 = use("Runtime.rtl");
-	use("Runtime.Exceptions.AbstractException").call(this, ctx, ctx.constructor.translate(ctx, "Runtime", "Index out of range. Pos: %pos%", use("Runtime.Map").from({"pos":pos})), __v0.ERROR_INDEX_OUT_OF_RANGE, prev);
+	use("Runtime.Exceptions.AbstractException").call(this.constructor.translate("Runtime", "Index out of range. Pos: %pos%", use("Runtime.Map").from({"pos":pos})), __v0.ERROR_INDEX_OUT_OF_RANGE, prev);
 };
 Runtime.Exceptions.IndexOutOfRange.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
 Runtime.Exceptions.IndexOutOfRange.prototype.constructor = Runtime.Exceptions.IndexOutOfRange;
@@ -46,7 +46,7 @@ Object.assign(Runtime.Exceptions.IndexOutOfRange,
 	{
 		return "Runtime.Exceptions.AbstractException";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -55,24 +55,24 @@ Object.assign(Runtime.Exceptions.IndexOutOfRange,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

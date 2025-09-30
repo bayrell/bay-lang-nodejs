@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpAssign = function(ctx)
+BayLang.OpCodes.OpAssign = function()
 {
 	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
 };
@@ -30,23 +30,23 @@ Object.assign(BayLang.OpCodes.OpAssign.prototype,
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize: function(serializer, data)
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
-		serializer.process(ctx, this, "annotations", data);
-		serializer.process(ctx, this, "comments", data);
-		serializer.process(ctx, this, "condition", data);
-		serializer.process(ctx, this, "expression", data);
-		serializer.process(ctx, this, "flags", data);
-		serializer.process(ctx, this, "kind", data);
-		serializer.process(ctx, this, "names", data);
-		serializer.process(ctx, this, "pattern", data);
-		serializer.process(ctx, this, "values", data);
-		serializer.process(ctx, this, "var_name", data);
+		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, serializer, data);
+		serializer.process(this, "annotations", data);
+		serializer.process(this, "comments", data);
+		serializer.process(this, "condition", data);
+		serializer.process(this, "expression", data);
+		serializer.process(this, "flags", data);
+		serializer.process(this, "kind", data);
+		serializer.process(this, "names", data);
+		serializer.process(this, "pattern", data);
+		serializer.process(this, "values", data);
+		serializer.process(this, "var_name", data);
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this);
 		this.kind = "";
 		this.var_name = "";
 		this.flags = null;
@@ -78,7 +78,7 @@ Object.assign(BayLang.OpCodes.OpAssign,
 	{
 		return "BayLang.OpCodes.BaseOpCode";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -87,24 +87,24 @@ Object.assign(BayLang.OpCodes.OpAssign,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

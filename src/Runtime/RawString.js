@@ -18,11 +18,11 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.RawString = function(ctx, s)
+Runtime.RawString = function(s)
 {
 	this.s = "";
 	var __v0 = use("Runtime.rtl");
-	if (__v0.isString(ctx, s))
+	if (__v0.isString(s))
 	{
 		this.s = s;
 	}
@@ -32,11 +32,11 @@ Object.assign(Runtime.RawString.prototype,
 	/**
 	 * To string
 	 */
-	toString: function(ctx)
+	toString: function()
 	{
 		return this.s;
 	},
-	_init: function(ctx)
+	_init: function()
 	{
 		this.s = null;
 	},
@@ -46,12 +46,12 @@ Object.assign(Runtime.RawString,
 	/**
 	 * Normalize array
 	 */
-	normalize: function(ctx, item)
+	normalize: function(item)
 	{
 		var __v0 = use("Runtime.rtl");
 		var __v1 = use("Runtime.RawString");
 		var __v2 = use("Runtime.Collection");
-		if (__v0.isString(ctx, item))
+		if (__v0.isString(item))
 		{
 			return item;
 		}
@@ -61,12 +61,12 @@ Object.assign(Runtime.RawString,
 		}
 		else if (item instanceof __v2)
 		{
-			item = item.map(ctx, (ctx, item) =>
+			item = item.map((item) =>
 			{
-				return this.normalize(ctx, item);
+				return this.normalize(item);
 			});
 			var __v3 = use("Runtime.rs");
-			return __v3.join(ctx, "", item);
+			return __v3.join("", item);
 		}
 		return "";
 	},
@@ -83,7 +83,7 @@ Object.assign(Runtime.RawString,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -92,24 +92,24 @@ Object.assign(Runtime.RawString,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

@@ -33,7 +33,7 @@ Runtime.Exceptions.ClassException.prototype = Object.create(Error.prototype);
 Runtime.Exceptions.ClassException.prototype.constructor = Runtime.Exceptions.ClassException;
 Object.assign(Runtime.Exceptions.ClassException.prototype,
 {
-	_init: function(ctx){},
+	_init: function(){},
 });
 Object.assign(Runtime.Exceptions.ClassException,
 {
@@ -42,13 +42,13 @@ Object.assign(Runtime.Exceptions.ClassException,
 	getParentClassName: function(){ return ""; },
 });
 use.add(Runtime.Exceptions.ClassException);
-Runtime.Exceptions.AbstractException = function(ctx, message, code, prev)
+Runtime.Exceptions.AbstractException = function(message, code, prev)
 {
 	if (message == undefined) message = "";
 	if (code == undefined) code = -1;
 	if (prev == undefined) prev = null;
 	Runtime.Exceptions.ClassException.call(this, message, code, prev);
-	this._init(ctx);
+	this._init();
 	this.error_message = message;
 	this.error_code = code;
 	this.prev = prev;
@@ -60,74 +60,74 @@ Object.assign(Runtime.Exceptions.AbstractException.prototype,
 	/**
 	 * Returns previous exception
 	 */
-	getPreviousException: function(ctx)
+	getPreviousException: function()
 	{
 		return this.prev;
 	},
 	/**
 	 * Build error message
 	 */
-	buildErrorMessage: function(ctx)
+	buildErrorMessage: function()
 	{
 		return this.error_message;
 	},
 	/**
 	 * Returns error message
 	 */
-	getErrorMessage: function(ctx)
+	getErrorMessage: function()
 	{
 		return this.error_message;
 	},
 	/**
 	 * Returns error code
 	 */
-	getErrorCode: function(ctx)
+	getErrorCode: function()
 	{
 		return this.error_code;
 	},
 	/**
 	 * Returns error file name
 	 */
-	getFileName: function(ctx)
+	getFileName: function()
 	{
 		return this.error_file;
 	},
 	/**
 	 * Returns error line
 	 */
-	getErrorLine: function(ctx)
+	getErrorLine: function()
 	{
 		return this.error_line;
 	},
 	/**
 	 * Returns error position
 	 */
-	getErrorPos: function(ctx)
+	getErrorPos: function()
 	{
 		return this.error_pos;
 	},
 	/**
 	 * Convert exception to string
 	 */
-	toString: function(ctx)
+	toString: function()
 	{
-		return this.buildErrorMessage(ctx);
+		return this.buildErrorMessage();
 	},
 	/**
 	 * Returns trace
 	 */
-	getTraceStr: function(ctx)
+	getTraceStr: function()
 	{
 	},
 	/**
 	 * Returns trace
 	 */
-	getTraceCollection: function(ctx)
+	getTraceCollection: function()
 	{
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.Exceptions.ClassException").prototype._init.call(this,ctx);
+		use("Runtime.Exceptions.ClassException").prototype._init.call(this);
 		this.prev = null;
 		this.error_message = "";
 		this.error_code = 0;
@@ -152,7 +152,7 @@ Object.assign(Runtime.Exceptions.AbstractException,
 	{
 		return "Runtime.Exceptions.ClassException";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -161,24 +161,24 @@ Object.assign(Runtime.Exceptions.AbstractException,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.SerializerJson = function(ctx)
+Runtime.SerializerJson = function()
 {
 	use("Runtime.SerializerNative").apply(this, arguments);
 };
@@ -29,10 +29,10 @@ Object.assign(Runtime.SerializerJson.prototype,
 	/**
 	 * Export object to data
 	 */
-	encode: function(ctx, object)
+	encode: function(object)
 	{
-		this.setFlag(ctx, this.constructor.ENCODE);
-		value = this.encodeItem(ctx, object);
+		this.setFlag(this.constructor.ENCODE);
+		value = this.encodeItem(object);
 		return JSON.stringify(value, (key, value) => {
 			return value;
 		});
@@ -40,16 +40,16 @@ Object.assign(Runtime.SerializerJson.prototype,
 	/**
 	 * Import from string
 	 */
-	decode: function(ctx, s)
+	decode: function(s)
 	{
-		this.setFlag(ctx, this.constructor.DECODE);
+		this.setFlag(this.constructor.DECODE);
 		try{
 			var res = null;
 			try
 			{
 				res = JSON.parse(s, (key, value) => {
 					if (value == null) return value;
-					var object = this.decodeItem(ctx, value);
+					var object = this.decodeItem(value);
 					return object;
 				});
 			}
@@ -89,7 +89,7 @@ Object.assign(Runtime.SerializerJson,
 	{
 		return "Runtime.SerializerNative";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -98,24 +98,24 @@ Object.assign(Runtime.SerializerJson,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

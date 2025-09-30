@@ -20,7 +20,7 @@ var use = require('bay-lang').use;
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
-BayLang.Compiler.Commands.Watch = function(ctx)
+BayLang.Compiler.Commands.Watch = function()
 {
 	use("Runtime.Console.BaseCommand").apply(this, arguments);
 };
@@ -31,7 +31,7 @@ Object.assign(BayLang.Compiler.Commands.Watch.prototype,
 	/**
 	 * On change file
 	 */
-	onChangeFile: async function(ctx, changed_file_path)
+	onChangeFile: async function(changed_file_path)
 	{
 		var __v0 = use("BayLang.Exceptions.ParserUnknownError");
 		try
@@ -39,27 +39,27 @@ Object.assign(BayLang.Compiler.Commands.Watch.prototype,
 			if (changed_file_path == this.settings.project_json_path)
 			{
 				var __v0 = use("Runtime.io");
-				__v0.print(ctx, "Reload project.json");
-				await this.settings.reload(ctx);
+				__v0.print("Reload project.json");
+				await this.settings.reload();
 				return Promise.resolve();
 			}
-			var file_info = await this.settings.compileFile(ctx, changed_file_path, "", 3);
+			var file_info = await this.settings.compileFile(changed_file_path, "", 3);
 			if (!file_info)
 			{
 				return Promise.resolve();
 			}
-			var module = file_info.get(ctx, "module");
-			var assets = module.config.get(ctx, "assets");
-			var src_file_name = file_info.get(ctx, "src_file_name");
-			if (file_info.get(ctx, "file_name") == "/module.json")
+			var module = file_info.get("module");
+			var assets = module.config.get("assets");
+			var src_file_name = file_info.get("src_file_name");
+			if (file_info.get("file_name") == "/module.json")
 			{
 				var __v0 = use("Runtime.io");
-				__v0.print(ctx, "Reload module.json");
-				await this.settings.reload(ctx);
+				__v0.print("Reload module.json");
+				await this.settings.reload();
 			}
-			else if (assets.indexOf(ctx, src_file_name) >= 0)
+			else if (assets.indexOf(src_file_name) >= 0)
 			{
-				await this.settings.updateModule(ctx, module.name);
+				await this.settings.updateModule(module.name);
 			}
 		}
 		catch (_ex)
@@ -69,14 +69,14 @@ Object.assign(BayLang.Compiler.Commands.Watch.prototype,
 				var e = _ex;
 				
 				var __v1 = use("Runtime.io");
-				__v1.print_error(ctx, "Error: " + e.toString(ctx));
+				__v1.print_error("Error: " + e.toString());
 			}
 			else if (true)
 			{
 				var e = _ex;
 				
 				var __v2 = use("Runtime.io");
-				__v2.print_error(ctx, e);
+				__v2.print_error(e);
 			}
 			else
 			{
@@ -87,31 +87,31 @@ Object.assign(BayLang.Compiler.Commands.Watch.prototype,
 	/**
 	 * Run task
 	 */
-	run: async function(ctx)
+	run: async function()
 	{
-		this.settings = ctx.provider(ctx, "BayLang.Compiler.SettingsProvider");
-		let watch_dir = (ctx) =>
+		this.settings = use("Runtime.rtl").getContext().provider("BayLang.Compiler.SettingsProvider");
+		let watch_dir = () =>
 		{
 			let io = use("Runtime.io");
 			let chokidar = require("chokidar");
 			return new Promise(() => {
-				io.print(ctx, "Start watch");
+				io.print("Start watch");
 				chokidar
 					.watch(ctx.base_path)
 					.on('change', (path, stat) => {
-						setTimeout(()=>{ this.onChangeFile(ctx, path); }, 500);
+						setTimeout(()=>{ this.onChangeFile(path); }, 500);
 					})
 				;
 				
 			});
 		};
 		
-		await watch_dir(ctx);
+		await watch_dir();
 		return Promise.resolve(this.constructor.SUCCESS);
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.Console.BaseCommand").prototype._init.call(this,ctx);
+		use("Runtime.Console.BaseCommand").prototype._init.call(this);
 		this.settings = null;
 	},
 });
@@ -121,14 +121,14 @@ Object.assign(BayLang.Compiler.Commands.Watch,
 	/**
 	 * Returns name
 	 */
-	getName: function(ctx)
+	getName: function()
 	{
 		return "watch";
 	},
 	/**
 	 * Returns description
 	 */
-	getDescription: function(ctx)
+	getDescription: function()
 	{
 		return "Watch changes";
 	},
@@ -145,7 +145,7 @@ Object.assign(BayLang.Compiler.Commands.Watch,
 	{
 		return "Runtime.Console.BaseCommand";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -154,24 +154,24 @@ Object.assign(BayLang.Compiler.Commands.Watch,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

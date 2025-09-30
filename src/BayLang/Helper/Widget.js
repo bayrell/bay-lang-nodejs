@@ -19,9 +19,9 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Helper == 'undefined') BayLang.Helper = {};
-BayLang.Helper.Widget = function(ctx, module)
+BayLang.Helper.Widget = function(module)
 {
-	use("Runtime.BaseObject").call(this, ctx);
+	use("Runtime.BaseObject").call(this);
 	this.module = module;
 };
 BayLang.Helper.Widget.prototype = Object.create(use("Runtime.BaseObject").prototype);
@@ -31,135 +31,135 @@ Object.assign(BayLang.Helper.Widget.prototype,
 	/**
 	 * Is model based widget
 	 */
-	isModelBased: function(ctx)
+	isModelBased: function()
 	{
 		var __v0 = use("Runtime.rs");
-		return __v0.substr(ctx, this.name, -5) == "Model";
+		return __v0.substr(this.name, -5) == "Model";
 	},
 	/**
 	 * Process project cache
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize: function(serializer, data)
 	{
-		serializer.process(ctx, this, "kind", data);
-		serializer.process(ctx, this, "name", data);
+		serializer.process(this, "kind", data);
+		serializer.process(this, "name", data);
 	},
 	/**
 	 * Returns project
 	 */
-	getProject: function(ctx)
+	getProject: function()
 	{
-		return (this.module) ? (this.module.getProject(ctx)) : (null);
+		return (this.module) ? (this.module.getProject()) : (null);
 	},
 	/**
 	 * Load widget
 	 */
-	load: async function(ctx, is_force)
+	load: async function(is_force)
 	{
 		if (is_force == undefined) is_force = false;
 		var is_loaded = false;
 		if (!is_force)
 		{
-			is_loaded = await this.readCache(ctx);
+			is_loaded = await this.readCache();
 		}
 		if (!is_loaded)
 		{
 			/* Load widget */
-			await this.loadWidget(ctx);
+			await this.loadWidget();
 			/* Save to cache */
-			await this.saveCache(ctx);
+			await this.saveCache();
 		}
 	},
 	/**
 	 * Read widget from cache
 	 */
-	readCache: async function(ctx)
+	readCache: async function()
 	{
-		if (this.isModelBased(ctx))
+		if (this.isModelBased())
 		{
-			await this.loadModelFromCache(ctx);
-			await this.loadComponentFromCache(ctx);
+			await this.loadModelFromCache();
+			await this.loadComponentFromCache();
 			return Promise.resolve(this.model !== null && this.component !== null);
 		}
-		await this.loadComponentFromCache(ctx);
+		await this.loadComponentFromCache();
 		return Promise.resolve(this.component !== null);
 	},
 	/**
 	 * Save widget to cache
 	 */
-	saveCache: async function(ctx)
+	saveCache: async function()
 	{
 	},
 	/**
 	 * Load widget from file system
 	 */
-	loadWidget: async function(ctx)
+	loadWidget: async function()
 	{
-		if (this.isModelBased(ctx))
+		if (this.isModelBased())
 		{
-			await this.loadModelFromFile(ctx);
+			await this.loadModelFromFile();
 		}
-		await this.loadComponentFromFile(ctx);
+		await this.loadComponentFromFile();
 	},
 	/** Model **/
 	/**
 	 * Returns model name
 	 */
-	getModelName: function(ctx)
+	getModelName: function()
 	{
-		return (this.isModelBased(ctx)) ? (this.name) : ("");
+		return (this.isModelBased()) ? (this.name) : ("");
 	},
 	/**
 	 * Returns model path
 	 */
-	getModelPath: function(ctx)
+	getModelPath: function()
 	{
-		if (!this.isModelBased(ctx))
+		if (!this.isModelBased())
 		{
 			return "";
 		}
-		return this.module.resolveClassName(ctx, this.getModelName(ctx));
+		return this.module.resolveClassName(this.getModelName());
 	},
 	/**
 	 * Returns model content
 	 */
-	getModelContent: async function(ctx)
+	getModelContent: async function()
 	{
 		return this.model_content;
 	},
 	/**
 	 * Read model op_code
 	 */
-	loadModelFromCache: async function(ctx)
+	loadModelFromCache: async function()
 	{
 	},
 	/**
 	 * Read model op_code
 	 */
-	loadModelFromFile: async function(ctx)
+	loadModelFromFile: async function()
 	{
 		if (this.model_content !== null)
 		{
 			return Promise.resolve();
 		}
 		this.model_content = "";
-		var file_path = this.getModelPath(ctx);
+		var file_path = this.getModelPath();
 		var __v0 = use("Runtime.fs");
-		if (!await __v0.isFile(ctx, file_path))
+		if (!await __v0.isFile(file_path))
 		{
 			return Promise.resolve();
 		}
 		var __v0 = use("Runtime.fs");
-		this.model_content = await __v0.readFile(ctx, file_path);
+		this.model_content = await __v0.readFile(file_path);
 		/* Parse model */
 		var __v2 = use("BayLang.Exceptions.ParserUnknownError");
 		try
 		{
 			/* Parse file */
 			var __v1 = use("BayLang.LangBay.ParserBay");
-			var parser = new __v1(ctx);
-			var res = parser.constructor.parse(ctx, parser, this.model_content);
-			this.model = res.get(ctx, 1);
+			var parser = new __v1();
+			var res = parser.constructor.parse(parser, this.model_content);
+			this.model = res.get(1);
 		}
 		catch (_ex)
 		{
@@ -176,12 +176,12 @@ Object.assign(BayLang.Helper.Widget.prototype,
 			}
 		}
 		/* Get component name */
-		this.component_name = this.getComponentNameFromModel(ctx);
+		this.component_name = this.getComponentNameFromModel();
 	},
 	/**
 	 * Returns model op code
 	 */
-	getModelOpCode: async function(ctx)
+	getModelOpCode: async function()
 	{
 		return this.model;
 	},
@@ -189,22 +189,22 @@ Object.assign(BayLang.Helper.Widget.prototype,
 	/**
 	 * Returns component name from model
 	 */
-	getComponentNameFromModel: function(ctx)
+	getComponentNameFromModel: function()
 	{
 		if (this.model == null)
 		{
 			return "";
 		}
-		var op_code_class = this.constructor.findClass(ctx, this.model);
-		var op_code_assign = this.constructor.findComponentName(ctx, op_code_class);
-		return this.constructor.extractComponentName(ctx, this.model, op_code_assign);
+		var op_code_class = this.constructor.findClass(this.model);
+		var op_code_assign = this.constructor.findComponentName(op_code_class);
+		return this.constructor.extractComponentName(this.model, op_code_assign);
 	},
 	/**
 	 * Returns component name
 	 */
-	getComponentName: function(ctx)
+	getComponentName: function()
 	{
-		if (!this.isModelBased(ctx))
+		if (!this.isModelBased())
 		{
 			return this.name;
 		}
@@ -213,50 +213,50 @@ Object.assign(BayLang.Helper.Widget.prototype,
 	/**
 	 * Returns component path
 	 */
-	getComponentPath: function(ctx)
+	getComponentPath: function()
 	{
-		return this.module.resolveClassName(ctx, this.getComponentName(ctx));
+		return this.module.resolveClassName(this.getComponentName());
 	},
 	/**
 	 * Returns component content
 	 */
-	getComponentContent: async function(ctx)
+	getComponentContent: async function()
 	{
 		return this.component_content;
 	},
 	/**
 	 * Read component op_code
 	 */
-	loadComponentFromCache: async function(ctx)
+	loadComponentFromCache: async function()
 	{
 	},
 	/**
 	 * Read component op_code
 	 */
-	loadComponentFromFile: async function(ctx)
+	loadComponentFromFile: async function()
 	{
 		if (this.component_content !== null)
 		{
 			return Promise.resolve();
 		}
 		this.component_content = "";
-		var file_path = this.getComponentPath(ctx);
+		var file_path = this.getComponentPath();
 		var __v0 = use("Runtime.fs");
-		if (!await __v0.isFile(ctx, file_path))
+		if (!await __v0.isFile(file_path))
 		{
 			return Promise.resolve();
 		}
 		var __v0 = use("Runtime.fs");
-		this.component_content = await __v0.readFile(ctx, file_path);
+		this.component_content = await __v0.readFile(file_path);
 		/* Parse component */
 		var __v2 = use("BayLang.Exceptions.ParserUnknownError");
 		try
 		{
 			/* Parse file */
 			var __v1 = use("BayLang.LangBay.ParserBay");
-			var parser = new __v1(ctx);
-			var res = parser.constructor.parse(ctx, parser, this.component_content);
-			this.component = res.get(ctx, 1);
+			var parser = new __v1();
+			var res = parser.constructor.parse(parser, this.component_content);
+			this.component = res.get(1);
 		}
 		catch (_ex)
 		{
@@ -276,13 +276,13 @@ Object.assign(BayLang.Helper.Widget.prototype,
 	/**
 	 * Returns component op code
 	 */
-	getComponentOpCode: async function(ctx)
+	getComponentOpCode: async function()
 	{
 		return this.component;
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		this.module = null;
 		this.kind = "";
 		this.name = "";
@@ -301,16 +301,16 @@ Object.assign(BayLang.Helper.Widget,
 	/**
 	 * Find class
 	 */
-	findClass: function(ctx, op_code)
+	findClass: function(op_code)
 	{
 		var __v0 = use("BayLang.OpCodes.OpModule");
 		var __v1 = use("Runtime.lib");
-		return (op_code instanceof __v0) ? (op_code.items.findItem(ctx, __v1.isInstance(ctx, "BayLang.OpCodes.OpDeclareClass"))) : (null);
+		return (op_code instanceof __v0) ? (op_code.items.findItem(__v1.isInstance("BayLang.OpCodes.OpDeclareClass"))) : (null);
 	},
 	/**
 	 * Find component name
 	 */
-	findComponentName: function(ctx, op_code)
+	findComponentName: function(op_code)
 	{
 		if (op_code == null)
 		{
@@ -321,15 +321,15 @@ Object.assign(BayLang.Helper.Widget,
 		{
 			return null;
 		}
-		var items = op_code.items.filter(ctx, (ctx, op_code) =>
+		var items = op_code.items.filter((op_code) =>
 		{
 			var __v0 = use("BayLang.OpCodes.OpAssign");
 			return op_code instanceof __v0;
-		}).map(ctx, (ctx, op_code) =>
+		}).map((op_code) =>
 		{
 			return op_code.values;
-		}).flatten(ctx);
-		var op_code_component = items.findItem(ctx, (ctx, op_code) =>
+		}).flatten();
+		var op_code_component = items.findItem((op_code) =>
 		{
 			return op_code.var_name == "component";
 		});
@@ -338,7 +338,7 @@ Object.assign(BayLang.Helper.Widget,
 	/**
 	 * Extract component name
 	 */
-	extractComponentName: function(ctx, component, op_code)
+	extractComponentName: function(component, op_code)
 	{
 		if (op_code == null)
 		{
@@ -348,8 +348,8 @@ Object.assign(BayLang.Helper.Widget,
 		var __v1 = use("BayLang.OpCodes.OpString");
 		if (op_code.expression instanceof __v0)
 		{
-			var class_name = op_code.expression.entity_name.names.get(ctx, 0);
-			return component.uses.get(ctx, class_name);
+			var class_name = op_code.expression.entity_name.names.get(0);
+			return component.uses.get(class_name);
 		}
 		else if (op_code.expression instanceof __v1)
 		{
@@ -370,7 +370,7 @@ Object.assign(BayLang.Helper.Widget,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -379,24 +379,24 @@ Object.assign(BayLang.Helper.Widget,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

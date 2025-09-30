@@ -19,10 +19,10 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Exceptions == 'undefined') BayLang.Exceptions = {};
-BayLang.Exceptions.DeclaredClass = function(ctx, prev)
+BayLang.Exceptions.DeclaredClass = function(prev)
 {
 	if (prev == undefined) prev = null;
-	use("Runtime.Exceptions.AbstractException").call(this, ctx, "Declared class", -1, prev);
+	use("Runtime.Exceptions.AbstractException").call(this, "Declared class", -1, prev);
 };
 BayLang.Exceptions.DeclaredClass.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
 BayLang.Exceptions.DeclaredClass.prototype.constructor = BayLang.Exceptions.DeclaredClass;
@@ -45,7 +45,7 @@ Object.assign(BayLang.Exceptions.DeclaredClass,
 	{
 		return "Runtime.Exceptions.AbstractException";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -54,24 +54,24 @@ Object.assign(BayLang.Exceptions.DeclaredClass,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

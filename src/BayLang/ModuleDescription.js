@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.ModuleDescription = function(ctx)
+BayLang.ModuleDescription = function()
 {
 };
 Object.assign(BayLang.ModuleDescription.prototype,
@@ -30,7 +30,7 @@ Object.assign(BayLang.ModuleDescription,
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleName: function(ctx)
+	getModuleName: function()
 	{
 		return "BayLang";
 	},
@@ -38,22 +38,22 @@ Object.assign(BayLang.ModuleDescription,
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleVersion: function(ctx)
+	getModuleVersion: function()
 	{
-		return "0.12.5";
+		return "0.12.6";
 	},
 	/**
 	 * Returns required modules
 	 * @return Map<string>
 	 */
-	requiredModules: function(ctx)
+	requiredModules: function()
 	{
 		return use("Runtime.Map").from({"Runtime":">=0.11 <1.0"});
 	},
 	/**
 	 * Returns enities
 	 */
-	entities: function(ctx)
+	entities: function()
 	{
 		return null;
 	},
@@ -70,7 +70,7 @@ Object.assign(BayLang.ModuleDescription,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -79,24 +79,24 @@ Object.assign(BayLang.ModuleDescription,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

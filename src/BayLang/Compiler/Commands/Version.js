@@ -20,7 +20,7 @@ var use = require('bay-lang').use;
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
-BayLang.Compiler.Commands.Version = function(ctx)
+BayLang.Compiler.Commands.Version = function()
 {
 	use("Runtime.Console.BaseCommand").apply(this, arguments);
 };
@@ -35,30 +35,30 @@ Object.assign(BayLang.Compiler.Commands.Version,
 	/**
 	 * Returns name
 	 */
-	getName: function(ctx)
+	getName: function()
 	{
 		return "version";
 	},
 	/**
 	 * Returns description
 	 */
-	getDescription: function(ctx)
+	getDescription: function()
 	{
 		return "Show version";
 	},
 	/**
 	 * Run task
 	 */
-	run: async function(ctx)
+	run: async function()
 	{
 		var __v0 = use("Runtime.Callback");
-		var runtime_version = new __v0(ctx, "Runtime.ModuleDescription", "getModuleVersion");
+		var runtime_version = new __v0("Runtime.ModuleDescription", "getModuleVersion");
 		var __v1 = use("Runtime.Callback");
-		var lang_version = new __v1(ctx, "BayLang.ModuleDescription", "getModuleVersion");
+		var lang_version = new __v1("BayLang.ModuleDescription", "getModuleVersion");
 		var __v2 = use("Runtime.io");
-		__v2.print(ctx, "Lang version: " + use("Runtime.rtl").toStr(lang_version.apply(ctx)));
+		__v2.print("Lang version: " + use("Runtime.rtl").toStr(lang_version.apply()));
 		var __v3 = use("Runtime.io");
-		__v3.print(ctx, "Runtime version: " + use("Runtime.rtl").toStr(runtime_version.apply(ctx)));
+		__v3.print("Runtime version: " + use("Runtime.rtl").toStr(runtime_version.apply()));
 		return Promise.resolve(this.SUCCESS);
 	},
 	/* ======================= Class Init Functions ======================= */
@@ -74,7 +74,7 @@ Object.assign(BayLang.Compiler.Commands.Version,
 	{
 		return "Runtime.Console.BaseCommand";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -83,24 +83,24 @@ Object.assign(BayLang.Compiler.Commands.Version,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

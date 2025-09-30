@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangPHP == 'undefined') BayLang.LangPHP = {};
-BayLang.LangPHP.TranslatorPHP = function(ctx)
+BayLang.LangPHP.TranslatorPHP = function()
 {
 	use("BayLang.CoreTranslator").apply(this, arguments);
 };
@@ -27,9 +27,9 @@ BayLang.LangPHP.TranslatorPHP.prototype = Object.create(use("BayLang.CoreTransla
 BayLang.LangPHP.TranslatorPHP.prototype.constructor = BayLang.LangPHP.TranslatorPHP;
 Object.assign(BayLang.LangPHP.TranslatorPHP.prototype,
 {
-	_init: function(ctx)
+	_init: function()
 	{
-		use("BayLang.CoreTranslator").prototype._init.call(this,ctx);
+		use("BayLang.CoreTranslator").prototype._init.call(this);
 		this.is_pipe = false;
 		this.pipe_var_name = "";
 		this.html_var_name = "";
@@ -44,7 +44,7 @@ Object.assign(BayLang.LangPHP.TranslatorPHP.prototype,
 		this.enable_check_types = false;
 		this.enable_introspection = true;
 	},
-	takeValue: function(ctx,k,d)
+	takeValue: function(k,d)
 	{
 		if (d == undefined) d = null;
 		if (k == "is_pipe")return this.is_pipe;
@@ -60,7 +60,7 @@ Object.assign(BayLang.LangPHP.TranslatorPHP.prototype,
 		else if (k == "enable_context")return this.enable_context;
 		else if (k == "enable_check_types")return this.enable_check_types;
 		else if (k == "enable_introspection")return this.enable_introspection;
-		return use("BayLang.CoreTranslator").prototype.takeValue.call(this,ctx,k,d);
+		return use("BayLang.CoreTranslator").prototype.takeValue.call(this,k,d);
 	},
 });
 Object.assign(BayLang.LangPHP.TranslatorPHP, use("BayLang.CoreTranslator"));
@@ -69,7 +69,7 @@ Object.assign(BayLang.LangPHP.TranslatorPHP,
 	/**
 	 * Reset translator
 	 */
-	reset: function(ctx, t)
+	reset: function(t)
 	{
 		var __v0 = use("Runtime.Dict");
 		var __v1 = use("BayLang.LangPHP.TranslatorPHPExpression");
@@ -78,38 +78,38 @@ Object.assign(BayLang.LangPHP.TranslatorPHP,
 		var __v4 = use("BayLang.LangPHP.TranslatorPHPProgram");
 		var __v5 = use("Runtime.Collection");
 		var __v6 = use("Runtime.Collection");
-		return t.copy(ctx, use("Runtime.Map").from({"value":"","current_namespace_name":"","modules":new __v0(ctx),"expression":new __v1(ctx),"html":new __v2(ctx),"operator":new __v3(ctx),"program":new __v4(ctx),"save_vars":new __v5(ctx),"save_op_codes":new __v6(ctx),"save_op_code_inc":0,"preprocessor_flags":use("Runtime.Map").from({"PHP":true,"FRONTEND":t.frontend,"BACKEND":t.backend,"ENABLE_CONTEXT":t.enable_context,"ENABLE_CHECK_TYPES":t.enable_check_types})}));
+		return t.copy(use("Runtime.Map").from({"value":"","current_namespace_name":"","modules":new __v0(),"expression":new __v1(),"html":new __v2(),"operator":new __v3(),"program":new __v4(),"save_vars":new __v5(),"save_op_codes":new __v6(),"save_op_code_inc":0,"preprocessor_flags":use("Runtime.Map").from({"PHP":true,"FRONTEND":t.frontend,"BACKEND":t.backend,"ENABLE_CONTEXT":t.enable_context,"ENABLE_CHECK_TYPES":t.enable_check_types})}));
 	},
 	/**
 	 * Translate BaseOpCode
 	 */
-	translate: function(ctx, t, op_code)
+	translate: function(t, op_code)
 	{
-		t = this.reset(ctx, t);
-		return t.program.constructor.translateProgram(ctx, t, op_code);
+		t = this.reset(t);
+		return t.program.constructor.translateProgram(t, op_code);
 	},
 	/**
 	 * Inc save op code
 	 */
-	nextSaveOpCode: function(ctx, t)
+	nextSaveOpCode: function(t)
 	{
 		return "$__v" + use("Runtime.rtl").toStr(t.save_op_code_inc);
 	},
 	/**
 	 * Output save op code content
 	 */
-	outputSaveOpCode: function(ctx, t, save_op_code_value)
+	outputSaveOpCode: function(t, save_op_code_value)
 	{
 		if (save_op_code_value == undefined) save_op_code_value = 0;
 		var content = "";
-		for (var i = 0; i < t.save_op_codes.count(ctx); i++)
+		for (var i = 0; i < t.save_op_codes.count(); i++)
 		{
 			if (i < save_op_code_value)
 			{
 				continue;
 			}
-			var save = t.save_op_codes.item(ctx, i);
-			var s = (save.content == "") ? (t.s(ctx, save.var_name + use("Runtime.rtl").toStr(" = ") + use("Runtime.rtl").toStr(save.var_content) + use("Runtime.rtl").toStr(";"))) : (save.content);
+			var save = t.save_op_codes.item(i);
+			var s = (save.content == "") ? (t.s(save.var_name + use("Runtime.rtl").toStr(" = ") + use("Runtime.rtl").toStr(save.var_content) + use("Runtime.rtl").toStr(";"))) : (save.content);
 			content += use("Runtime.rtl").toStr(s);
 		}
 		return content;
@@ -127,7 +127,7 @@ Object.assign(BayLang.LangPHP.TranslatorPHP,
 	{
 		return "BayLang.CoreTranslator";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -136,7 +136,7 @@ Object.assign(BayLang.LangPHP.TranslatorPHP,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		a.push("is_pipe");
@@ -154,19 +154,19 @@ Object.assign(BayLang.LangPHP.TranslatorPHP,
 		a.push("enable_introspection");
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBayProgram = function(ctx)
+BayLang.LangBay.ParserBayProgram = function()
 {
 };
 Object.assign(BayLang.LangBay.ParserBayProgram.prototype,
@@ -30,111 +30,111 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 	/**
 	 * Read namespace
 	 */
-	readNamespace: function(ctx, parser)
+	readNamespace: function(parser)
 	{
 		var token = null;
 		var name = null;
-		var res = parser.parser_base.constructor.matchToken(ctx, parser, "namespace");
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
+		var res = parser.parser_base.constructor.matchToken(parser, "namespace");
+		parser = Runtime.rtl.attr(res, 0);
+		token = Runtime.rtl.attr(res, 1);
 		var caret_start = token.caret_start;
-		var res = parser.parser_base.constructor.readEntityName(ctx, parser, false);
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		name = Runtime.rtl.attr(ctx, res, 1);
+		var res = parser.parser_base.constructor.readEntityName(parser, false);
+		parser = Runtime.rtl.attr(res, 0);
+		name = Runtime.rtl.attr(res, 1);
 		var __v0 = use("Runtime.rs");
-		var current_namespace_name = __v0.join(ctx, ".", name.names);
+		var current_namespace_name = __v0.join(".", name.names);
 		var __v1 = use("BayLang.OpCodes.OpNamespace");
-		var current_namespace = new __v1(ctx, use("Runtime.Map").from({"name":current_namespace_name,"caret_start":caret_start,"caret_end":parser.caret}));
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["current_namespace"]), current_namespace);
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["current_namespace_name"]), current_namespace_name);
+		var current_namespace = new __v1(use("Runtime.Map").from({"name":current_namespace_name,"caret_start":caret_start,"caret_end":parser.caret}));
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["current_namespace"]), current_namespace);
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["current_namespace_name"]), current_namespace_name);
 		return use("Runtime.Vector").from([parser,current_namespace]);
 	},
 	/**
 	 * Read use
 	 */
-	readUse: function(ctx, parser)
+	readUse: function(parser)
 	{
 		var look = null;
 		var token = null;
 		var name = null;
 		var alias = "";
-		var res = parser.parser_base.constructor.matchToken(ctx, parser, "use");
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
+		var res = parser.parser_base.constructor.matchToken(parser, "use");
+		parser = Runtime.rtl.attr(res, 0);
+		token = Runtime.rtl.attr(res, 1);
 		var caret_start = token.caret_start;
-		var res = parser.parser_base.constructor.readEntityName(ctx, parser, false);
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		name = Runtime.rtl.attr(ctx, res, 1);
-		var res = parser.parser_base.constructor.readToken(ctx, parser);
-		look = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
+		var res = parser.parser_base.constructor.readEntityName(parser, false);
+		parser = Runtime.rtl.attr(res, 0);
+		name = Runtime.rtl.attr(res, 1);
+		var res = parser.parser_base.constructor.readToken(parser);
+		look = Runtime.rtl.attr(res, 0);
+		token = Runtime.rtl.attr(res, 1);
 		if (token.content == "as")
 		{
 			var parser_value = null;
 			parser = look;
-			var res = parser.parser_base.constructor.readIdentifier(ctx, parser);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			parser_value = Runtime.rtl.attr(ctx, res, 1);
+			var res = parser.parser_base.constructor.readIdentifier(parser);
+			parser = Runtime.rtl.attr(res, 0);
+			parser_value = Runtime.rtl.attr(res, 1);
 			alias = parser_value.value;
 		}
 		var __v0 = use("BayLang.OpCodes.OpUse");
 		var __v1 = use("Runtime.rs");
-		return use("Runtime.Vector").from([parser,new __v0(ctx, use("Runtime.Map").from({"name":__v1.join(ctx, ".", name.names),"alias":alias,"caret_start":caret_start,"caret_end":parser.caret}))]);
+		return use("Runtime.Vector").from([parser,new __v0(use("Runtime.Map").from({"name":__v1.join(".", name.names),"alias":alias,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/**
 	 * Read class body
 	 */
-	readClassBody: function(ctx, parser, end_tag)
+	readClassBody: function(parser, end_tag)
 	{
 		if (end_tag == undefined) end_tag = "}";
 		var look = null;
 		var token = null;
 		var __v0 = use("Runtime.Vector");
-		var items = new __v0(ctx);
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["skip_comments"]), false);
-		var res = parser.parser_base.constructor.readToken(ctx, parser);
-		look = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["skip_comments"]), true);
+		var items = new __v0();
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["skip_comments"]), false);
+		var res = parser.parser_base.constructor.readToken(parser);
+		look = Runtime.rtl.attr(res, 0);
+		token = Runtime.rtl.attr(res, 1);
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["skip_comments"]), true);
 		while (!token.eof && token.content != end_tag)
 		{
 			var item = null;
 			if (token.content == "/")
 			{
-				var res = parser.parser_base.constructor.readComment(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				item = Runtime.rtl.attr(ctx, res, 1);
+				var res = parser.parser_base.constructor.readComment(parser);
+				parser = Runtime.rtl.attr(res, 0);
+				item = Runtime.rtl.attr(res, 1);
 				if (item != null)
 				{
-					items.push(ctx, item);
+					items.push(item);
 				}
 			}
 			else if (token.content == "@")
 			{
-				var res = parser.parser_operator.constructor.readAnnotation(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				item = Runtime.rtl.attr(ctx, res, 1);
-				items.push(ctx, item);
+				var res = parser.parser_operator.constructor.readAnnotation(parser);
+				parser = Runtime.rtl.attr(res, 0);
+				item = Runtime.rtl.attr(res, 1);
+				items.push(item);
 			}
 			else if (token.content == "#switch" || token.content == "#ifcode")
 			{
-				var res = parser.parser_preprocessor.constructor.readPreprocessor(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				item = Runtime.rtl.attr(ctx, res, 1);
+				var res = parser.parser_preprocessor.constructor.readPreprocessor(parser);
+				parser = Runtime.rtl.attr(res, 0);
+				item = Runtime.rtl.attr(res, 1);
 				if (item != null)
 				{
-					items.push(ctx, item);
+					items.push(item);
 				}
 			}
 			else if (token.content == "#ifdef")
 			{
 				var __v1 = use("BayLang.OpCodes.OpPreprocessorIfDef");
-				var res = parser.parser_preprocessor.constructor.readPreprocessorIfDef(ctx, parser, __v1.KIND_CLASS_BODY);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				item = Runtime.rtl.attr(ctx, res, 1);
+				var res = parser.parser_preprocessor.constructor.readPreprocessorIfDef(parser, __v1.KIND_CLASS_BODY);
+				parser = Runtime.rtl.attr(res, 0);
+				item = Runtime.rtl.attr(res, 1);
 				if (item != null)
 				{
-					items.push(ctx, item);
+					items.push(item);
 				}
 			}
 			else if (token.content == "<")
@@ -144,26 +144,26 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 			else
 			{
 				var flags = null;
-				var res = parser.parser_operator.constructor.readFlags(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				flags = Runtime.rtl.attr(ctx, res, 1);
-				if (parser.parser_operator.constructor.tryReadFunction(ctx, parser, true, flags))
+				var res = parser.parser_operator.constructor.readFlags(parser);
+				parser = Runtime.rtl.attr(res, 0);
+				flags = Runtime.rtl.attr(res, 1);
+				if (parser.parser_operator.constructor.tryReadFunction(parser, true, flags))
 				{
-					var res = parser.parser_operator.constructor.readDeclareFunction(ctx, parser, true);
-					parser = Runtime.rtl.attr(ctx, res, 0);
-					item = Runtime.rtl.attr(ctx, res, 1);
+					var res = parser.parser_operator.constructor.readDeclareFunction(parser, true);
+					parser = Runtime.rtl.attr(res, 0);
+					item = Runtime.rtl.attr(res, 1);
 					if (item.expression != null)
 					{
 						if (!item.is_html)
 						{
-							var res = parser.parser_base.constructor.matchToken(ctx, parser, ";");
-							parser = Runtime.rtl.attr(ctx, res, 0);
+							var res = parser.parser_base.constructor.matchToken(parser, ";");
+							parser = Runtime.rtl.attr(res, 0);
 						}
 						else
 						{
-							var res = parser.parser_base.constructor.readToken(ctx, parser);
-							look = Runtime.rtl.attr(ctx, res, 0);
-							token = Runtime.rtl.attr(ctx, res, 1);
+							var res = parser.parser_base.constructor.readToken(parser);
+							look = Runtime.rtl.attr(res, 0);
+							token = Runtime.rtl.attr(res, 1);
 							if (token.content == ";")
 							{
 								parser = look;
@@ -173,48 +173,48 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 				}
 				else
 				{
-					var res = parser.parser_operator.constructor.readAssign(ctx, parser);
-					parser = Runtime.rtl.attr(ctx, res, 0);
-					item = Runtime.rtl.attr(ctx, res, 1);
-					var res = parser.parser_base.constructor.matchToken(ctx, parser, ";");
-					parser = Runtime.rtl.attr(ctx, res, 0);
+					var res = parser.parser_operator.constructor.readAssign(parser);
+					parser = Runtime.rtl.attr(res, 0);
+					item = Runtime.rtl.attr(res, 1);
+					var res = parser.parser_base.constructor.matchToken(parser, ";");
+					parser = Runtime.rtl.attr(res, 0);
 				}
-				item = Runtime.rtl.setAttr(ctx, item, Runtime.Collection.from(["flags"]), flags);
+				item = Runtime.rtl.setAttr(item, Runtime.Collection.from(["flags"]), flags);
 				if (item != null)
 				{
-					items.push(ctx, item);
+					items.push(item);
 				}
 			}
-			parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["skip_comments"]), false);
-			var res = parser.parser_base.constructor.readToken(ctx, parser);
-			look = Runtime.rtl.attr(ctx, res, 0);
-			token = Runtime.rtl.attr(ctx, res, 1);
-			parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["skip_comments"]), true);
+			parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["skip_comments"]), false);
+			var res = parser.parser_base.constructor.readToken(parser);
+			look = Runtime.rtl.attr(res, 0);
+			token = Runtime.rtl.attr(res, 1);
+			parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["skip_comments"]), true);
 		}
 		return use("Runtime.Vector").from([parser,items]);
 	},
 	/**
 	 * Class body analyze
 	 */
-	classBodyAnalyze: function(ctx, parser, arr)
+	classBodyAnalyze: function(parser, arr)
 	{
 		var __v0 = use("Runtime.Map");
-		var names = new __v0(ctx);
+		var names = new __v0();
 		var __v1 = use("Runtime.Vector");
-		var vars = new __v1(ctx);
+		var vars = new __v1();
 		var __v2 = use("Runtime.Vector");
-		var functions = new __v2(ctx);
+		var functions = new __v2();
 		var __v3 = use("Runtime.Vector");
-		var items = new __v3(ctx);
+		var items = new __v3();
 		var __v4 = use("Runtime.Vector");
-		var annotations = new __v4(ctx);
+		var annotations = new __v4();
 		var __v5 = use("Runtime.Vector");
-		var comments = new __v5(ctx);
+		var comments = new __v5();
 		var fn_create = null;
 		var fn_destroy = null;
-		for (var i = 0; i < arr.count(ctx); i++)
+		for (var i = 0; i < arr.count(); i++)
 		{
-			var item = arr.item(ctx, i);
+			var item = arr.item(i);
 			var __v6 = use("BayLang.OpCodes.OpAnnotation");
 			var __v7 = use("BayLang.OpCodes.OpComment");
 			var __v8 = use("BayLang.OpCodes.OpAssign");
@@ -222,39 +222,39 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 			var __v10 = use("BayLang.OpCodes.OpPreprocessorIfDef");
 			if (item instanceof __v6)
 			{
-				annotations.push(ctx, item);
+				annotations.push(item);
 			}
 			else if (item instanceof __v7)
 			{
-				comments.push(ctx, item);
+				comments.push(item);
 			}
 			else if (item instanceof __v8)
 			{
-				for (var j = 0; j < item.values.count(ctx); j++)
+				for (var j = 0; j < item.values.count(); j++)
 				{
-					var assign_value = item.values.item(ctx, j);
+					var assign_value = item.values.item(j);
 					var value_name = assign_value.var_name;
-					if (names.has(ctx, value_name))
+					if (names.has(value_name))
 					{
 						var __v9 = use("BayLang.Exceptions.ParserError");
-						throw new __v9(ctx, "Dublicate identifier " + use("Runtime.rtl").toStr(value_name), assign_value.caret_start, parser.file_name)
+						throw new __v9("Dublicate identifier " + use("Runtime.rtl").toStr(value_name), assign_value.caret_start, parser.file_name)
 					}
-					names.set(ctx, value_name, true);
+					names.set(value_name, true);
 				}
-				item = item.copy(ctx, use("Runtime.Map").from({"annotations":annotations.slice(ctx),"comments":comments.slice(ctx)}));
-				vars.push(ctx, item);
-				annotations.clear(ctx);
-				comments.clear(ctx);
+				item = item.copy(use("Runtime.Map").from({"annotations":annotations.slice(),"comments":comments.slice()}));
+				vars.push(item);
+				annotations.clear();
+				comments.clear();
 			}
 			else if (item instanceof __v9)
 			{
-				item = item.copy(ctx, use("Runtime.Map").from({"annotations":annotations.slice(ctx),"comments":comments.slice(ctx)}));
-				if (names.has(ctx, item.name))
+				item = item.copy(use("Runtime.Map").from({"annotations":annotations.slice(),"comments":comments.slice()}));
+				if (names.has(item.name))
 				{
 					var __v10 = use("BayLang.Exceptions.ParserError");
-					throw new __v10(ctx, "Dublicate identifier " + use("Runtime.rtl").toStr(item.name), item.caret_start, parser.file_name)
+					throw new __v10("Dublicate identifier " + use("Runtime.rtl").toStr(item.name), item.caret_start, parser.file_name)
 				}
-				names.set(ctx, item.name, true);
+				names.set(item.name, true);
 				if (item.name == "constructor")
 				{
 					fn_create = item;
@@ -265,34 +265,34 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 				}
 				else
 				{
-					functions.push(ctx, item);
+					functions.push(item);
 				}
-				annotations.clear(ctx);
-				comments.clear(ctx);
+				annotations.clear();
+				comments.clear();
 			}
 			else if (item instanceof __v10)
 			{
-				var d = this.classBodyAnalyze(ctx, parser, item.items);
-				var d_vars = Runtime.rtl.attr(ctx, d, "vars");
-				d_vars = d_vars.map(ctx, (ctx, v) =>
+				var d = this.classBodyAnalyze(parser, item.items);
+				var d_vars = Runtime.rtl.attr(d, "vars");
+				d_vars = d_vars.map((v) =>
 				{
-					v = Runtime.rtl.setAttr(ctx, v, Runtime.Collection.from(["condition"]), item.condition);
+					v = Runtime.rtl.setAttr(v, Runtime.Collection.from(["condition"]), item.condition);
 					return v;
 				});
-				vars.appendItems(ctx, d_vars);
+				vars.appendItems(d_vars);
 			}
 			else
 			{
-				items.push(ctx, item);
+				items.push(item);
 			}
 		}
-		items.appendItems(ctx, comments);
+		items.appendItems(comments);
 		return use("Runtime.Map").from({"annotations":annotations,"comments":comments,"functions":functions,"items":items,"vars":vars,"fn_create":fn_create,"fn_destroy":fn_destroy});
 	},
 	/**
 	 * Read class
 	 */
-	readClass: function(ctx, parser)
+	readClass: function(parser)
 	{
 		var look = null;
 		var token = null;
@@ -303,296 +303,296 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 		var is_static = false;
 		var is_struct = false;
 		var class_kind = "";
-		var res = parser.parser_base.constructor.readToken(ctx, parser);
-		look = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
+		var res = parser.parser_base.constructor.readToken(parser);
+		look = Runtime.rtl.attr(res, 0);
+		token = Runtime.rtl.attr(res, 1);
 		var caret_start = token.caret_start;
 		if (token.content == "abstract")
 		{
 			parser = look;
-			var res = parser.parser_base.constructor.readToken(ctx, parser);
-			look = Runtime.rtl.attr(ctx, res, 0);
-			token = Runtime.rtl.attr(ctx, res, 1);
+			var res = parser.parser_base.constructor.readToken(parser);
+			look = Runtime.rtl.attr(res, 0);
+			token = Runtime.rtl.attr(res, 1);
 			is_abstract = true;
 		}
 		if (token.content == "declare")
 		{
 			parser = look;
-			var res = parser.parser_base.constructor.readToken(ctx, parser);
-			look = Runtime.rtl.attr(ctx, res, 0);
-			token = Runtime.rtl.attr(ctx, res, 1);
+			var res = parser.parser_base.constructor.readToken(parser);
+			look = Runtime.rtl.attr(res, 0);
+			token = Runtime.rtl.attr(res, 1);
 			is_declare = true;
 		}
 		if (token.content == "static")
 		{
 			parser = look;
-			var res = parser.parser_base.constructor.readToken(ctx, parser);
-			look = Runtime.rtl.attr(ctx, res, 0);
-			token = Runtime.rtl.attr(ctx, res, 1);
+			var res = parser.parser_base.constructor.readToken(parser);
+			look = Runtime.rtl.attr(res, 0);
+			token = Runtime.rtl.attr(res, 1);
 			is_static = true;
 		}
 		if (token.content == "class")
 		{
-			var res = parser.parser_base.constructor.matchToken(ctx, parser, "class");
-			parser = Runtime.rtl.attr(ctx, res, 0);
+			var res = parser.parser_base.constructor.matchToken(parser, "class");
+			parser = Runtime.rtl.attr(res, 0);
 			var __v0 = use("BayLang.OpCodes.OpDeclareClass");
 			class_kind = __v0.KIND_CLASS;
 		}
 		else if (token.content == "struct")
 		{
-			var res = parser.parser_base.constructor.matchToken(ctx, parser, "struct");
-			parser = Runtime.rtl.attr(ctx, res, 0);
+			var res = parser.parser_base.constructor.matchToken(parser, "struct");
+			parser = Runtime.rtl.attr(res, 0);
 			var __v1 = use("BayLang.OpCodes.OpDeclareClass");
 			class_kind = __v1.KIND_STRUCT;
 		}
 		else if (token.content == "interface")
 		{
-			var res = parser.parser_base.constructor.matchToken(ctx, parser, "interface");
-			parser = Runtime.rtl.attr(ctx, res, 0);
+			var res = parser.parser_base.constructor.matchToken(parser, "interface");
+			parser = Runtime.rtl.attr(res, 0);
 			var __v2 = use("BayLang.OpCodes.OpDeclareClass");
 			class_kind = __v2.KIND_INTERFACE;
 		}
 		else
 		{
-			var res = parser.parser_base.constructor.matchToken(ctx, parser, "class");
+			var res = parser.parser_base.constructor.matchToken(parser, "class");
 		}
-		var res = parser.parser_base.constructor.readIdentifier(ctx, parser);
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		op_code = Runtime.rtl.attr(ctx, res, 1);
+		var res = parser.parser_base.constructor.readIdentifier(parser);
+		parser = Runtime.rtl.attr(res, 0);
+		op_code = Runtime.rtl.attr(res, 1);
 		var class_name = op_code.value;
 		/* Set class name */
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["current_class_abstract"]), is_abstract);
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["current_class_declare"]), is_declare);
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["current_class_name"]), class_name);
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["current_class_kind"]), class_kind);
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["current_class_abstract"]), is_abstract);
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["current_class_declare"]), is_declare);
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["current_class_name"]), class_name);
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["current_class_kind"]), class_kind);
 		/* Register module in parser */
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["uses"]), parser.uses.setIm(ctx, class_name, parser.current_namespace_name + use("Runtime.rtl").toStr(".") + use("Runtime.rtl").toStr(class_name)));
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["uses"]), parser.uses.setIm(class_name, parser.current_namespace_name + use("Runtime.rtl").toStr(".") + use("Runtime.rtl").toStr(class_name)));
 		var save_uses = parser.uses;
-		var res = parser.parser_base.constructor.readToken(ctx, parser);
-		look = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
+		var res = parser.parser_base.constructor.readToken(parser);
+		look = Runtime.rtl.attr(res, 0);
+		token = Runtime.rtl.attr(res, 1);
 		if (token.content == "<")
 		{
 			var __v0 = use("Runtime.Vector");
-			template = new __v0(ctx);
-			var res = parser.parser_base.constructor.matchToken(ctx, parser, "<");
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			var res = parser.parser_base.constructor.readToken(ctx, parser);
-			look = Runtime.rtl.attr(ctx, res, 0);
-			token = Runtime.rtl.attr(ctx, res, 1);
+			template = new __v0();
+			var res = parser.parser_base.constructor.matchToken(parser, "<");
+			parser = Runtime.rtl.attr(res, 0);
+			var res = parser.parser_base.constructor.readToken(parser);
+			look = Runtime.rtl.attr(res, 0);
+			token = Runtime.rtl.attr(res, 1);
 			while (!token.eof && token.content != ">")
 			{
 				var parser_value = null;
-				var res = parser.parser_base.constructor.readIdentifier(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				parser_value = Runtime.rtl.attr(ctx, res, 1);
-				template.push(ctx, parser_value);
-				parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["uses"]), parser.uses.setIm(ctx, parser_value.value, parser_value.value));
-				var res = parser.parser_base.constructor.readToken(ctx, parser);
-				look = Runtime.rtl.attr(ctx, res, 0);
-				token = Runtime.rtl.attr(ctx, res, 1);
+				var res = parser.parser_base.constructor.readIdentifier(parser);
+				parser = Runtime.rtl.attr(res, 0);
+				parser_value = Runtime.rtl.attr(res, 1);
+				template.push(parser_value);
+				parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["uses"]), parser.uses.setIm(parser_value.value, parser_value.value));
+				var res = parser.parser_base.constructor.readToken(parser);
+				look = Runtime.rtl.attr(res, 0);
+				token = Runtime.rtl.attr(res, 1);
 				if (token.content != ">")
 				{
-					var res = parser.parser_base.constructor.matchToken(ctx, parser, ",");
-					parser = Runtime.rtl.attr(ctx, res, 0);
-					var res = parser.parser_base.constructor.readToken(ctx, parser);
-					look = Runtime.rtl.attr(ctx, res, 0);
-					token = Runtime.rtl.attr(ctx, res, 1);
+					var res = parser.parser_base.constructor.matchToken(parser, ",");
+					parser = Runtime.rtl.attr(res, 0);
+					var res = parser.parser_base.constructor.readToken(parser);
+					look = Runtime.rtl.attr(res, 0);
+					token = Runtime.rtl.attr(res, 1);
 				}
 			}
-			var res = parser.parser_base.constructor.matchToken(ctx, parser, ">");
-			parser = Runtime.rtl.attr(ctx, res, 0);
+			var res = parser.parser_base.constructor.matchToken(parser, ">");
+			parser = Runtime.rtl.attr(res, 0);
 		}
 		var class_extends = null;
 		var class_implements = null;
-		var res = parser.parser_base.constructor.readToken(ctx, parser);
-		look = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
+		var res = parser.parser_base.constructor.readToken(parser);
+		look = Runtime.rtl.attr(res, 0);
+		token = Runtime.rtl.attr(res, 1);
 		if (token.content == "extends")
 		{
-			var res = parser.parser_base.constructor.readTypeIdentifier(ctx, look);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			class_extends = Runtime.rtl.attr(ctx, res, 1);
+			var res = parser.parser_base.constructor.readTypeIdentifier(look);
+			parser = Runtime.rtl.attr(res, 0);
+			class_extends = Runtime.rtl.attr(res, 1);
 		}
-		var res = parser.parser_base.constructor.readToken(ctx, parser);
-		look = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
+		var res = parser.parser_base.constructor.readToken(parser);
+		look = Runtime.rtl.attr(res, 0);
+		token = Runtime.rtl.attr(res, 1);
 		if (token.content == "implements")
 		{
 			var __v0 = use("Runtime.Vector");
-			class_implements = new __v0(ctx);
-			var res = parser.parser_base.constructor.readTypeIdentifier(ctx, look);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			op_code = Runtime.rtl.attr(ctx, res, 1);
-			class_implements.push(ctx, op_code);
-			var res = parser.parser_base.constructor.readToken(ctx, parser);
-			look = Runtime.rtl.attr(ctx, res, 0);
-			token = Runtime.rtl.attr(ctx, res, 1);
+			class_implements = new __v0();
+			var res = parser.parser_base.constructor.readTypeIdentifier(look);
+			parser = Runtime.rtl.attr(res, 0);
+			op_code = Runtime.rtl.attr(res, 1);
+			class_implements.push(op_code);
+			var res = parser.parser_base.constructor.readToken(parser);
+			look = Runtime.rtl.attr(res, 0);
+			token = Runtime.rtl.attr(res, 1);
 			while (!token.eof && token.content == ",")
 			{
 				parser = look;
-				var res = parser.parser_base.constructor.readTypeIdentifier(ctx, look);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				op_code = Runtime.rtl.attr(ctx, res, 1);
-				class_implements.push(ctx, op_code);
-				var res = parser.parser_base.constructor.readToken(ctx, parser);
-				look = Runtime.rtl.attr(ctx, res, 0);
-				token = Runtime.rtl.attr(ctx, res, 1);
+				var res = parser.parser_base.constructor.readTypeIdentifier(look);
+				parser = Runtime.rtl.attr(res, 0);
+				op_code = Runtime.rtl.attr(res, 1);
+				class_implements.push(op_code);
+				var res = parser.parser_base.constructor.readToken(parser);
+				look = Runtime.rtl.attr(res, 0);
+				token = Runtime.rtl.attr(res, 1);
 			}
 		}
 		var arr = null;
-		var res = parser.parser_base.constructor.matchToken(ctx, parser, "{");
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		var res = this.readClassBody(ctx, parser);
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		arr = Runtime.rtl.attr(ctx, res, 1);
-		var d = this.classBodyAnalyze(ctx, parser, arr);
-		var res = parser.parser_base.constructor.matchToken(ctx, parser, "}");
-		parser = Runtime.rtl.attr(ctx, res, 0);
+		var res = parser.parser_base.constructor.matchToken(parser, "{");
+		parser = Runtime.rtl.attr(res, 0);
+		var res = this.readClassBody(parser);
+		parser = Runtime.rtl.attr(res, 0);
+		arr = Runtime.rtl.attr(res, 1);
+		var d = this.classBodyAnalyze(parser, arr);
+		var res = parser.parser_base.constructor.matchToken(parser, "}");
+		parser = Runtime.rtl.attr(res, 0);
 		var __v0 = use("BayLang.OpCodes.OpDeclareClass");
-		var current_class = new __v0(ctx, use("Runtime.Map").from({"kind":class_kind,"name":class_name,"is_abstract":is_abstract,"is_static":is_static,"is_declare":is_declare,"class_extends":class_extends,"class_implements":(class_implements != null) ? (class_implements) : (null),"template":(template != null) ? (template) : (null),"vars":d.item(ctx, "vars"),"functions":d.item(ctx, "functions"),"fn_create":d.item(ctx, "fn_create"),"fn_destroy":d.item(ctx, "fn_destroy"),"items":arr,"caret_start":caret_start,"caret_end":parser.caret}));
+		var current_class = new __v0(use("Runtime.Map").from({"kind":class_kind,"name":class_name,"is_abstract":is_abstract,"is_static":is_static,"is_declare":is_declare,"class_extends":class_extends,"class_implements":(class_implements != null) ? (class_implements) : (null),"template":(template != null) ? (template) : (null),"vars":d.item("vars"),"functions":d.item("functions"),"fn_create":d.item("fn_create"),"fn_destroy":d.item("fn_destroy"),"items":arr,"caret_start":caret_start,"caret_end":parser.caret}));
 		/* Restore uses */
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["uses"]), save_uses);
-		return use("Runtime.Vector").from([parser.copy(ctx, use("Runtime.Map").from({"current_class":current_class})),current_class]);
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["uses"]), save_uses);
+		return use("Runtime.Vector").from([parser.copy(use("Runtime.Map").from({"current_class":current_class})),current_class]);
 	},
 	/**
 	 * Read program
 	 */
-	readProgram: function(ctx, parser, end_tag)
+	readProgram: function(parser, end_tag)
 	{
 		if (end_tag == undefined) end_tag = "";
 		var look = null;
 		var token = null;
 		var op_code = null;
 		var __v0 = use("Runtime.Vector");
-		var annotations = new __v0(ctx);
+		var annotations = new __v0();
 		var __v1 = use("Runtime.Vector");
-		var comments = new __v1(ctx);
+		var comments = new __v1();
 		var __v2 = use("Runtime.Vector");
-		var items = new __v2(ctx);
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["skip_comments"]), false);
-		var res = parser.parser_base.constructor.readToken(ctx, parser);
-		look = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
+		var items = new __v2();
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["skip_comments"]), false);
+		var res = parser.parser_base.constructor.readToken(parser);
+		look = Runtime.rtl.attr(res, 0);
+		token = Runtime.rtl.attr(res, 1);
 		var caret_start = token.caret_start;
-		parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["skip_comments"]), true);
+		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["skip_comments"]), true);
 		if (token.eof)
 		{
 			return use("Runtime.Vector").from([parser,null]);
 		}
 		if (token.content == "<")
 		{
-			return parser.parser_html.constructor.readUI(ctx, parser);
+			return parser.parser_html.constructor.readUI(parser);
 		}
 		while (!token.eof && (end_tag == "" || end_tag != "" && token.content == end_tag))
 		{
 			if (token.content == "/")
 			{
-				var res = parser.parser_base.constructor.readComment(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				op_code = Runtime.rtl.attr(ctx, res, 1);
+				var res = parser.parser_base.constructor.readComment(parser);
+				parser = Runtime.rtl.attr(res, 0);
+				op_code = Runtime.rtl.attr(res, 1);
 				if (op_code != null)
 				{
-					comments.push(ctx, op_code);
+					comments.push(op_code);
 				}
 			}
 			else if (token.content == "@")
 			{
-				var res = parser.parser_operator.constructor.readAnnotation(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				op_code = Runtime.rtl.attr(ctx, res, 1);
-				annotations.push(ctx, op_code);
+				var res = parser.parser_operator.constructor.readAnnotation(parser);
+				parser = Runtime.rtl.attr(res, 0);
+				op_code = Runtime.rtl.attr(res, 1);
+				annotations.push(op_code);
 			}
 			else if (token.content == "#switch" || token.content == "#ifcode")
 			{
 				/* Append comments */
-				items.appendItems(ctx, comments);
-				comments.clear(ctx);
-				var res = parser.parser_preprocessor.constructor.readPreprocessor(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				op_code = Runtime.rtl.attr(ctx, res, 1);
+				items.appendItems(comments);
+				comments.clear();
+				var res = parser.parser_preprocessor.constructor.readPreprocessor(parser);
+				parser = Runtime.rtl.attr(res, 0);
+				op_code = Runtime.rtl.attr(res, 1);
 				if (op_code != null)
 				{
-					items.appendItems(ctx, comments);
-					items.push(ctx, op_code);
+					items.appendItems(comments);
+					items.push(op_code);
 				}
 			}
 			else if (token.content == "#ifdef")
 			{
 				/* Append comments */
-				items.appendItems(ctx, comments);
-				comments.clear(ctx);
+				items.appendItems(comments);
+				comments.clear();
 				var __v3 = use("BayLang.OpCodes.OpPreprocessorIfDef");
-				var res = parser.parser_preprocessor.constructor.readPreprocessorIfDef(ctx, parser, __v3.KIND_PROGRAM);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				op_code = Runtime.rtl.attr(ctx, res, 1);
+				var res = parser.parser_preprocessor.constructor.readPreprocessorIfDef(parser, __v3.KIND_PROGRAM);
+				parser = Runtime.rtl.attr(res, 0);
+				op_code = Runtime.rtl.attr(res, 1);
 				if (op_code != null)
 				{
-					items.appendItems(ctx, comments);
-					items.push(ctx, op_code);
+					items.appendItems(comments);
+					items.push(op_code);
 				}
 			}
 			else if (token.content == "namespace")
 			{
 				/* Append comments */
-				items.appendItems(ctx, comments);
-				comments.clear(ctx);
-				var res = this.readNamespace(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				op_code = Runtime.rtl.attr(ctx, res, 1);
-				items.push(ctx, op_code);
-				var res = parser.parser_base.constructor.matchToken(ctx, parser, ";");
-				parser = Runtime.rtl.attr(ctx, res, 0);
+				items.appendItems(comments);
+				comments.clear();
+				var res = this.readNamespace(parser);
+				parser = Runtime.rtl.attr(res, 0);
+				op_code = Runtime.rtl.attr(res, 1);
+				items.push(op_code);
+				var res = parser.parser_base.constructor.matchToken(parser, ";");
+				parser = Runtime.rtl.attr(res, 0);
 			}
 			else if (token.content == "use")
 			{
 				/* Append comments */
-				items.appendItems(ctx, comments);
-				comments.clear(ctx);
-				var res = this.readUse(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				op_code = Runtime.rtl.attr(ctx, res, 1);
+				items.appendItems(comments);
+				comments.clear();
+				var res = this.readUse(parser);
+				parser = Runtime.rtl.attr(res, 0);
+				op_code = Runtime.rtl.attr(res, 1);
 				var full_name = op_code.name;
 				var short_name = "";
 				if (op_code.alias == "")
 				{
 					var __v4 = use("Runtime.rs");
-					short_name = __v4.split(ctx, ".", full_name).last(ctx);
+					short_name = __v4.split(".", full_name).last();
 				}
 				else
 				{
 					short_name = op_code.alias;
 				}
 				/* Register module in parser */
-				parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["uses"]), parser.uses.setIm(ctx, short_name, full_name));
-				items.push(ctx, op_code);
-				var res = parser.parser_base.constructor.matchToken(ctx, parser, ";");
-				parser = Runtime.rtl.attr(ctx, res, 0);
+				parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["uses"]), parser.uses.setIm(short_name, full_name));
+				items.push(op_code);
+				var res = parser.parser_base.constructor.matchToken(parser, ";");
+				parser = Runtime.rtl.attr(res, 0);
 			}
 			else if (token.content == "class" || token.content == "struct" || token.content == "static" || token.content == "declare" || token.content == "interface" || token.content == "abstract")
 			{
 				var item = null;
-				var res = this.readClass(ctx, parser);
-				parser = Runtime.rtl.attr(ctx, res, 0);
-				item = Runtime.rtl.attr(ctx, res, 1);
-				item = item.copy(ctx, use("Runtime.Map").from({"annotations":annotations,"comments":comments}));
-				items.push(ctx, item);
-				annotations.clear(ctx);
-				comments.clear(ctx);
+				var res = this.readClass(parser);
+				parser = Runtime.rtl.attr(res, 0);
+				item = Runtime.rtl.attr(res, 1);
+				item = item.copy(use("Runtime.Map").from({"annotations":annotations,"comments":comments}));
+				items.push(item);
+				annotations.clear();
+				comments.clear();
 			}
 			else
 			{
 				break;
 			}
-			parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["skip_comments"]), false);
-			var res = parser.parser_base.constructor.readToken(ctx, parser);
-			look = Runtime.rtl.attr(ctx, res, 0);
-			token = Runtime.rtl.attr(ctx, res, 1);
-			parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["skip_comments"]), true);
+			parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["skip_comments"]), false);
+			var res = parser.parser_base.constructor.readToken(parser);
+			look = Runtime.rtl.attr(res, 0);
+			token = Runtime.rtl.attr(res, 1);
+			parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["skip_comments"]), true);
 		}
-		items.appendItems(ctx, comments);
+		items.appendItems(comments);
 		var __v3 = use("BayLang.OpCodes.OpModule");
-		return use("Runtime.Vector").from([parser,new __v3(ctx, use("Runtime.Map").from({"uses":parser.uses.toDict(ctx),"items":items,"caret_start":caret_start,"caret_end":parser.caret}))]);
+		return use("Runtime.Vector").from([parser,new __v3(use("Runtime.Map").from({"uses":parser.uses.toDict(),"items":items,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
@@ -607,7 +607,7 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -616,24 +616,24 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

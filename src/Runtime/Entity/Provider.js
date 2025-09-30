@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Entity == 'undefined') Runtime.Entity = {};
-Runtime.Entity.Provider = function(ctx, name, value, params)
+Runtime.Entity.Provider = function(name, value, params)
 {
 	if (value == undefined) value = null;
 	if (params == undefined) params = null;
@@ -33,7 +33,7 @@ Runtime.Entity.Provider = function(ctx, name, value, params)
 	{
 		value = name;
 	}
-	use("Runtime.Entity.Entity").call(this, ctx, use("Runtime.Map").from({"name":name,"value":value,"params":params}));
+	use("Runtime.Entity.Entity").call(this, use("Runtime.Map").from({"name":name,"value":value,"params":params}));
 };
 Runtime.Entity.Provider.prototype = Object.create(use("Runtime.Entity.Entity").prototype);
 Runtime.Entity.Provider.prototype.constructor = Runtime.Entity.Provider;
@@ -42,7 +42,7 @@ Object.assign(Runtime.Entity.Provider.prototype,
 	/**
 	 * Create provider
 	 */
-	createProvider: function(ctx)
+	createProvider: function()
 	{
 		var provider = null;
 		var class_name = this.value;
@@ -56,25 +56,25 @@ Object.assign(Runtime.Entity.Provider.prototype,
 		{
 			provider = class_name;
 		}
-		else if (__v1.isString(ctx, class_name))
+		else if (__v1.isString(class_name))
 		{
 			var __v2 = use("Runtime.rtl");
-			provider = __v2.newInstance(ctx, class_name, use("Runtime.Vector").from([this.params]));
+			provider = __v2.newInstance(class_name, use("Runtime.Vector").from([this.params]));
 		}
 		return provider;
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.Entity.Entity").prototype._init.call(this,ctx);
+		use("Runtime.Entity.Entity").prototype._init.call(this);
 		this.value = null;
 		this.params = null;
 	},
-	takeValue: function(ctx,k,d)
+	takeValue: function(k,d)
 	{
 		if (d == undefined) d = null;
 		if (k == "value")return this.value;
 		else if (k == "params")return this.params;
-		return use("Runtime.Entity.Entity").prototype.takeValue.call(this,ctx,k,d);
+		return use("Runtime.Entity.Entity").prototype.takeValue.call(this,k,d);
 	},
 });
 Object.assign(Runtime.Entity.Provider, use("Runtime.Entity.Entity"));
@@ -93,7 +93,7 @@ Object.assign(Runtime.Entity.Provider,
 	{
 		return "Runtime.Entity.Entity";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -102,26 +102,26 @@ Object.assign(Runtime.Entity.Provider,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		a.push("value");
 		a.push("params");
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

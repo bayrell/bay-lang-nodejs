@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.SerializerNative = function(ctx)
+Runtime.SerializerNative = function()
 {
 	use("Runtime.Serializer").apply(this, arguments);
 };
@@ -29,7 +29,7 @@ Object.assign(Runtime.SerializerNative.prototype,
 	/**
 	 * Decode item
 	 */
-	decodeItem: function(ctx, value, object_value, create)
+	decodeItem: function(value, object_value, create)
 	{
 		if (object_value == undefined) object_value = null;
 		if (create == undefined) create = null;
@@ -54,19 +54,19 @@ Object.assign(Runtime.SerializerNative.prototype,
 			var _Map = use("Runtime.Map");
 			value = _Map.from(value);
 		}
-		value = use("Runtime.Serializer").prototype.decodeItem.call(this, ctx, value, object_value, create);
+		value = use("Runtime.Serializer").prototype.decodeItem.call(this, value, object_value, create);
 		return value;
 	},
 	/**
 	 * Encode item
 	 */
-	encodeItem: function(ctx, encode_value)
+	encodeItem: function(encode_value)
 	{
 		if (encode_value === null)
 		{
 			return null;
 		}
-		var value = use("Runtime.Serializer").prototype.encodeItem.call(this, ctx, encode_value);
+		var value = use("Runtime.Serializer").prototype.encodeItem.call(this, encode_value);
 		var __v0 = use("Runtime.Collection");
 		if (value instanceof __v0)
 		{
@@ -96,7 +96,7 @@ Object.assign(Runtime.SerializerNative,
 	{
 		return "Runtime.Serializer";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -105,24 +105,24 @@ Object.assign(Runtime.SerializerNative,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

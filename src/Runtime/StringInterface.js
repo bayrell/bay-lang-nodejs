@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.StringInterface = function(ctx)
+Runtime.StringInterface = function()
 {
 };
 Object.assign(Runtime.StringInterface.prototype,
@@ -26,7 +26,7 @@ Object.assign(Runtime.StringInterface.prototype,
 	/**
 	 * Returns string
 	 */
-	toString: function(ctx)
+	toString: function()
 	{
 	},
 });

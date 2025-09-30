@@ -18,12 +18,12 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.BaseHook = function(ctx, params)
+Runtime.BaseHook = function(params)
 {
 	if (params == undefined) params = null;
-	use("Runtime.BaseObject").call(this, ctx);
+	use("Runtime.BaseObject").call(this);
 	/* Setup hook params */
-	this.setup(ctx, params);
+	this.setup(params);
 };
 Runtime.BaseHook.prototype = Object.create(use("Runtime.BaseObject").prototype);
 Runtime.BaseHook.prototype.constructor = Runtime.BaseHook;
@@ -32,7 +32,7 @@ Object.assign(Runtime.BaseHook.prototype,
 	/**
 	 * Setup hook params
 	 */
-	setup: function(ctx, params)
+	setup: function(params)
 	{
 		if (params == null)
 		{
@@ -42,42 +42,42 @@ Object.assign(Runtime.BaseHook.prototype,
 	/**
 	 * Returns method name by hook name
 	 */
-	getMethodName: function(ctx, hook_name)
+	getMethodName: function(hook_name)
 	{
 		return "";
 	},
 	/**
 	 * Register hook
 	 */
-	register: function(ctx, hook_name, method_name, priority)
+	register: function(hook_name, method_name, priority)
 	{
 		if (method_name == undefined) method_name = "";
 		if (priority == undefined) priority = 100;
 		var __v0 = use("Runtime.rtl");
-		if (__v0.isInt(ctx, method_name))
+		if (__v0.isInt(method_name))
 		{
 			priority = method_name;
 			method_name = "";
 		}
 		if (method_name == "")
 		{
-			method_name = this.getMethodName(ctx, hook_name);
+			method_name = this.getMethodName(hook_name);
 		}
 		if (method_name == "")
 		{
 			return ;
 		}
-		this.provider.register(ctx, hook_name, this, method_name, priority);
+		this.provider.register(hook_name, this, method_name, priority);
 	},
 	/**
 	 * Register hooks
 	 */
-	register_hooks: function(ctx)
+	register_hooks: function()
 	{
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		this.hook = null;
 		this.provider = null;
 	},
@@ -98,7 +98,7 @@ Object.assign(Runtime.BaseHook,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -107,24 +107,24 @@ Object.assign(Runtime.BaseHook,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

@@ -19,11 +19,11 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Exceptions == 'undefined') Runtime.Exceptions = {};
-Runtime.Exceptions.CurlException = function(ctx, http_code, http_content, prev)
+Runtime.Exceptions.CurlException = function(http_code, http_content, prev)
 {
 	if (prev == undefined) prev = null;
 	var __v0 = use("Runtime.rtl");
-	use("Runtime.Exceptions.AbstractException").call(this, ctx, "HTTP error code: " + use("Runtime.rtl").toStr(http_code), __v0.ERROR_CURL_ERROR, prev);
+	use("Runtime.Exceptions.AbstractException").call(this, "HTTP error code: " + use("Runtime.rtl").toStr(http_code), __v0.ERROR_CURL_ERROR, prev);
 	this.http_code = http_code;
 	this.http_content = http_content;
 };
@@ -31,9 +31,9 @@ Runtime.Exceptions.CurlException.prototype = Object.create(use("Runtime.Exceptio
 Runtime.Exceptions.CurlException.prototype.constructor = Runtime.Exceptions.CurlException;
 Object.assign(Runtime.Exceptions.CurlException.prototype,
 {
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.Exceptions.AbstractException").prototype._init.call(this,ctx);
+		use("Runtime.Exceptions.AbstractException").prototype._init.call(this);
 		this.http_code = -1;
 		this.http_content = "";
 	},
@@ -54,7 +54,7 @@ Object.assign(Runtime.Exceptions.CurlException,
 	{
 		return "Runtime.Exceptions.AbstractException";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -63,24 +63,24 @@ Object.assign(Runtime.Exceptions.CurlException,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

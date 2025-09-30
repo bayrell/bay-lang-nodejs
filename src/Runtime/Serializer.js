@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Serializer = function(ctx)
+Runtime.Serializer = function()
 {
 	use("Runtime.BaseObject").apply(this, arguments);
 };
@@ -26,131 +26,131 @@ Runtime.Serializer.prototype = Object.create(use("Runtime.BaseObject").prototype
 Runtime.Serializer.prototype.constructor = Runtime.Serializer;
 Object.assign(Runtime.Serializer.prototype,
 {
-	allowObjects: function(ctx)
+	allowObjects: function()
 	{
 		return (this.flags & this.constructor.ALLOW_OBJECTS) == this.constructor.ALLOW_OBJECTS;
 	},
-	isDecode: function(ctx)
+	isDecode: function()
 	{
 		return (this.flags & this.constructor.DECODE) == this.constructor.DECODE;
 	},
-	isEncode: function(ctx)
+	isEncode: function()
 	{
 		return (this.flags & this.constructor.ENCODE) == this.constructor.ENCODE;
 	},
 	/**
 	 * Set flag
 	 */
-	setFlag: function(ctx, flag)
+	setFlag: function(flag)
 	{
 		this.flags = this.flags | flag;
 	},
 	/**
 	 * Remove flag
 	 */
-	removeFlag: function(ctx, flag)
+	removeFlag: function(flag)
 	{
 		this.flags = this.flags & ~flag;
 	},
 	/**
 	 * Check flag
 	 */
-	hasFlag: function(ctx, flag)
+	hasFlag: function(flag)
 	{
 		return (this.flags & flag) == flag;
 	},
 	/**
 	 * Set callback
 	 */
-	setCallback: function(ctx, value)
+	setCallback: function(value)
 	{
 		this.callback_name = value;
 	},
 	/**
 	 * Serialize item
 	 */
-	process: function(ctx, object, field_name, data, create)
+	process: function(object, field_name, data, create)
 	{
 		if (create == undefined) create = null;
-		if (this.isDecode(ctx))
+		if (this.isDecode())
 		{
-			var value = data.get(ctx, field_name);
-			var object_value = this.constructor.getAttr(ctx, object, field_name);
-			var new_value = this.decodeItem(ctx, value, object_value, create);
-			this.constructor.setAttr(ctx, object, field_name, new_value);
+			var value = data.get(field_name);
+			var object_value = this.constructor.getAttr(object, field_name);
+			var new_value = this.decodeItem(value, object_value, create);
+			this.constructor.setAttr(object, field_name, new_value);
 		}
-		else if (this.isEncode(ctx))
+		else if (this.isEncode())
 		{
-			var value = this.constructor.getAttr(ctx, object, field_name);
-			var new_value = this.encodeItem(ctx, value);
-			data.set(ctx, field_name, new_value);
+			var value = this.constructor.getAttr(object, field_name);
+			var new_value = this.encodeItem(value);
+			data.set(field_name, new_value);
 		}
 	},
 	/**
 	 * Process items
 	 */
-	processItems: function(ctx, object, field_name, data, create)
+	processItems: function(object, field_name, data, create)
 	{
 		if (create == undefined) create = null;
-		if (this.isDecode(ctx))
+		if (this.isDecode())
 		{
-			var value = data.get(ctx, field_name);
-			var object_value = this.constructor.getAttr(ctx, object, field_name);
-			var new_value = this.decodeItems(ctx, value, object_value, create);
-			this.constructor.setAttr(ctx, object, field_name, new_value);
+			var value = data.get(field_name);
+			var object_value = this.constructor.getAttr(object, field_name);
+			var new_value = this.decodeItems(value, object_value, create);
+			this.constructor.setAttr(object, field_name, new_value);
 		}
-		if (this.isEncode(ctx))
+		if (this.isEncode())
 		{
-			var value = this.constructor.getAttr(ctx, object, field_name);
-			var new_value = this.encodeItem(ctx, value);
-			data.set(ctx, field_name, new_value);
+			var value = this.constructor.getAttr(object, field_name);
+			var new_value = this.encodeItem(value);
+			data.set(field_name, new_value);
 		}
 	},
 	/**
 	 * Decode collection
 	 */
-	decodeCollection: function(ctx, value, object_value, create)
+	decodeCollection: function(value, object_value, create)
 	{
 		if (object_value == undefined) object_value = null;
 		if (create == undefined) create = null;
 		var new_value = use("Runtime.Vector").from([]);
-		for (var i = 0; i < value.count(ctx); i++)
+		for (var i = 0; i < value.count(); i++)
 		{
-			var item = value.get(ctx, i);
+			var item = value.get(i);
 			var __v0 = use("Runtime.Collection");
-			var old_item = (object_value instanceof __v0) ? (object_value.get(ctx, i)) : (null);
-			var new_item = this.decodeItem(ctx, item, old_item, create);
-			new_value.push(ctx, new_item);
+			var old_item = (object_value instanceof __v0) ? (object_value.get(i)) : (null);
+			var new_item = this.decodeItem(item, old_item, create);
+			new_value.push(new_item);
 		}
 		return new_value;
 	},
 	/**
 	 * Decode dict
 	 */
-	decodeDict: function(ctx, value, object_value, create)
+	decodeDict: function(value, object_value, create)
 	{
 		if (object_value == undefined) object_value = null;
 		if (create == undefined) create = null;
 		var new_value = use("Runtime.Map").from({});
-		var keys = value.keys(ctx);
-		for (var i = 0; i < keys.count(ctx); i++)
+		var keys = value.keys();
+		for (var i = 0; i < keys.count(); i++)
 		{
-			var key = keys.get(ctx, i);
-			var item = value.get(ctx, key);
-			var old_item = this.constructor.getAttr(ctx, object_value, key);
-			var new_item = this.decodeItem(ctx, item, old_item, create);
-			new_value.set(ctx, key, new_item);
+			var key = keys.get(i);
+			var item = value.get(key);
+			var old_item = this.constructor.getAttr(object_value, key);
+			var new_item = this.decodeItem(item, old_item, create);
+			new_value.set(key, new_item);
 		}
 		return new_value;
 	},
 	/**
 	 * Create object
 	 */
-	createObject: function(ctx, value, object_value, create)
+	createObject: function(value, object_value, create)
 	{
 		if (object_value == undefined) object_value = null;
 		if (create == undefined) create = null;
-		var class_name = value.get(ctx, "__class_name__");
+		var class_name = value.get("__class_name__");
 		/* Create instance */
 		var instance = object_value;
 		if (object_value != null)
@@ -159,12 +159,12 @@ Object.assign(Runtime.Serializer.prototype,
 		}
 		else if (create != null)
 		{
-			instance = create(ctx, this, value);
+			instance = create(this, value);
 		}
 		else
 		{
 			var __v0 = use("Runtime.rtl");
-			instance = __v0.newInstance(ctx, class_name);
+			instance = __v0.newInstance(class_name);
 		}
 		/* If instance is null */
 		if (instance == null)
@@ -176,8 +176,8 @@ Object.assign(Runtime.Serializer.prototype,
 		if (this.callback_name != null)
 		{
 			var __v0 = use("Runtime.Callback");
-			var callback = new __v0(ctx, instance, this.callback_name);
-			if (callback.exists(ctx))
+			var callback = new __v0(instance, this.callback_name);
+			if (callback.exists())
 			{
 				callback = null;
 			}
@@ -187,11 +187,11 @@ Object.assign(Runtime.Serializer.prototype,
 		if (callback)
 		{
 			var __v0 = use("Runtime.rtl");
-			__v0.apply(ctx, callback, use("Runtime.Vector").from([this,value]));
+			__v0.apply(callback, use("Runtime.Vector").from([this,value]));
 		}
 		else if (Runtime.rtl.is_implements(instance, __v1))
 		{
-			instance.serialize(ctx, this, value);
+			instance.serialize(this, value);
 		}
 		/* Return instance */
 		return instance;
@@ -199,61 +199,61 @@ Object.assign(Runtime.Serializer.prototype,
 	/**
 	 * Decode object
 	 */
-	decodeObject: function(ctx, value, object_value, create)
+	decodeObject: function(value, object_value, create)
 	{
 		if (object_value == undefined) object_value = null;
 		if (create == undefined) create = null;
 		/* Convert to Dict if objects is not allowed */
-		if (!this.allowObjects(ctx))
+		if (!this.allowObjects())
 		{
-			return this.decodeDict(ctx, value);
+			return this.decodeDict(value);
 		}
 		/* Create object by create */
 		if (create != null)
 		{
-			return this.createObject(ctx, value, object_value, create);
+			return this.createObject(value, object_value, create);
 		}
 		/* Convert Dict if does not has class name */
-		if (!value.has(ctx, "__class_name__"))
+		if (!value.has("__class_name__"))
 		{
-			return this.decodeDict(ctx, value);
+			return this.decodeDict(value);
 		}
-		var class_name = value.get(ctx, "__class_name__");
+		var class_name = value.get("__class_name__");
 		/* Is date */
 		if (class_name == "Runtime.Date")
 		{
 			var __v0 = use("Runtime.Date");
-			return new __v0(ctx, value);
+			return new __v0(value);
 		}
 		else if (class_name == "Runtime.DateTime")
 		{
 			var __v1 = use("Runtime.DateTime");
-			return new __v1(ctx, value);
+			return new __v1(value);
 		}
 		/* Struct */
 		var __v0 = use("Runtime.rtl");
-		if (__v0.is_instanceof(ctx, class_name, "Runtime.BaseStruct"))
+		if (__v0.is_instanceof(class_name, "Runtime.BaseStruct"))
 		{
-			value.remove(ctx, "__class_name__");
-			value = this.decodeDict(ctx, value);
+			value.remove("__class_name__");
+			value = this.decodeDict(value);
 			var __v1 = use("Runtime.rtl");
-			var object = __v1.newInstance(ctx, class_name, use("Runtime.Vector").from([value]));
+			var object = __v1.newInstance(class_name, use("Runtime.Vector").from([value]));
 			return object;
 		}
 		/* Create object by class name */
 		var __v0 = use("Runtime.rtl");
 		var __v1 = use("Runtime.rtl");
 		var __v2 = use("Runtime.rtl");
-		if (__v0.exists(ctx, __v1.find_class(ctx, class_name)) && __v2.is_instanceof(ctx, class_name, "Runtime.BaseObject"))
+		if (__v0.exists(__v1.find_class(class_name)) && __v2.is_instanceof(class_name, "Runtime.BaseObject"))
 		{
-			return this.createObject(ctx, value, object_value, create);
+			return this.createObject(value, object_value, create);
 		}
-		return this.decodeDict(ctx, value);
+		return this.decodeDict(value);
 	},
 	/**
 	 * Decode item from primitive data
 	 */
-	decodeItem: function(ctx, value, object_value, create)
+	decodeItem: function(value, object_value, create)
 	{
 		if (object_value == undefined) object_value = null;
 		if (create == undefined) create = null;
@@ -262,7 +262,7 @@ Object.assign(Runtime.Serializer.prototype,
 			return null;
 		}
 		var __v0 = use("Runtime.rtl");
-		if (__v0.isScalarValue(ctx, value))
+		if (__v0.isScalarValue(value))
 		{
 			return value;
 		}
@@ -273,16 +273,16 @@ Object.assign(Runtime.Serializer.prototype,
 		}
 		/* Decode object */
 		var __v0 = use("Runtime.Dict");
-		if (this.allowObjects(ctx) && value instanceof __v0 && (value.has(ctx, "__class_name__") || create))
+		if (this.allowObjects() && value instanceof __v0 && (value.has("__class_name__") || create))
 		{
-			return this.decodeObject(ctx, value, object_value, create);
+			return this.decodeObject(value, object_value, create);
 		}
-		return this.decodeItems(ctx, value, object_value);
+		return this.decodeItems(value, object_value);
 	},
 	/**
 	 * Decode items
 	 */
-	decodeItems: function(ctx, value, object_value, create)
+	decodeItems: function(value, object_value, create)
 	{
 		if (object_value == undefined) object_value = null;
 		if (create == undefined) create = null;
@@ -291,42 +291,42 @@ Object.assign(Runtime.Serializer.prototype,
 		var __v1 = use("Runtime.Dict");
 		if (value instanceof __v0)
 		{
-			return this.decodeCollection(ctx, value, object_value, create);
+			return this.decodeCollection(value, object_value, create);
 		}
 		else if (value instanceof __v1)
 		{
-			return this.decodeDict(ctx, value, object_value, create);
+			return this.decodeDict(value, object_value, create);
 		}
 		return null;
 	},
 	/**
 	 * Encode object
 	 */
-	encodeObject: function(ctx, value)
+	encodeObject: function(value)
 	{
 		var new_value = null;
 		/* Get new value */
 		var __v0 = use("Runtime.BaseStruct");
 		if (value instanceof __v0)
 		{
-			new_value = value.toMap(ctx);
+			new_value = value.toMap();
 		}
 		else
 		{
 			new_value = use("Runtime.Map").from({});
 		}
 		/* Add class_name */
-		if (this.allowObjects(ctx))
+		if (this.allowObjects())
 		{
-			new_value.set(ctx, "__class_name__", value.constructor.getClassName(ctx));
+			new_value.set("__class_name__", value.constructor.getClassName());
 		}
 		/* Get callback */
 		var callback = null;
 		if (this.callback_name != null)
 		{
 			var __v0 = use("Runtime.Callback");
-			var callback = new __v0(ctx, value, this.callback_name);
-			if (callback.exists(ctx))
+			var callback = new __v0(value, this.callback_name);
+			if (callback.exists())
 			{
 				callback = null;
 			}
@@ -336,76 +336,76 @@ Object.assign(Runtime.Serializer.prototype,
 		if (callback)
 		{
 			var __v0 = use("Runtime.rtl");
-			__v0.apply(ctx, callback, use("Runtime.Vector").from([this,new_value]));
+			__v0.apply(callback, use("Runtime.Vector").from([this,new_value]));
 		}
 		else if (Runtime.rtl.is_implements(value, __v1))
 		{
-			value.serialize(ctx, this, new_value);
+			value.serialize(this, new_value);
 		}
 		return new_value;
 	},
 	/**
 	 * Encode date
 	 */
-	encodeDate: function(ctx, value)
+	encodeDate: function(value)
 	{
-		value = value.toMap(ctx);
-		if (this.allowObjects(ctx))
+		value = value.toMap();
+		if (this.allowObjects())
 		{
-			value.set(ctx, "__class_name__", "Runtime.Date");
+			value.set("__class_name__", "Runtime.Date");
 		}
 		return value;
 	},
 	/**
 	 * Encode date time
 	 */
-	encodeDateTime: function(ctx, value)
+	encodeDateTime: function(value)
 	{
-		value = value.toMap(ctx);
-		if (this.allowObjects(ctx))
+		value = value.toMap();
+		if (this.allowObjects())
 		{
-			value.set(ctx, "__class_name__", "Runtime.DateTime");
+			value.set("__class_name__", "Runtime.DateTime");
 		}
 		return value;
 	},
 	/**
 	 * Encode collection
 	 */
-	encodeCollection: function(ctx, value)
+	encodeCollection: function(value)
 	{
 		var new_value = use("Runtime.Vector").from([]);
-		for (var i = 0; i < value.count(ctx); i++)
+		for (var i = 0; i < value.count(); i++)
 		{
-			var item = value.get(ctx, i);
-			var new_item = this.encodeItem(ctx, item);
-			new_value.push(ctx, new_item);
+			var item = value.get(i);
+			var new_item = this.encodeItem(item);
+			new_value.push(new_item);
 		}
 		return new_value;
 	},
 	/**
 	 * Encode dict
 	 */
-	encodeDict: function(ctx, value)
+	encodeDict: function(value)
 	{
 		var new_value = use("Runtime.Map").from({});
-		value.each(ctx, (ctx, item, key) =>
+		value.each((item, key) =>
 		{
-			var new_item = this.encodeItem(ctx, item);
-			new_value.set(ctx, key, new_item);
+			var new_item = this.encodeItem(item);
+			new_value.set(key, new_item);
 		});
 		return new_value;
 	},
 	/**
 	 * Encode item to primitive data
 	 */
-	encodeItem: function(ctx, value)
+	encodeItem: function(value)
 	{
 		if (value === null)
 		{
 			return null;
 		}
 		var __v0 = use("Runtime.rtl");
-		if (__v0.isScalarValue(ctx, value))
+		if (__v0.isScalarValue(value))
 		{
 			return value;
 		}
@@ -413,12 +413,12 @@ Object.assign(Runtime.Serializer.prototype,
 		var __v0 = use("Runtime.Collection");
 		if (value instanceof __v0)
 		{
-			return this.encodeCollection(ctx, value);
+			return this.encodeCollection(value);
 		}
 		var __v0 = use("Runtime.Dict");
 		if (value instanceof __v0)
 		{
-			return this.encodeDict(ctx, value);
+			return this.encodeDict(value);
 		}
 		/* Encode Object */
 		var __v0 = use("Runtime.Date");
@@ -426,41 +426,41 @@ Object.assign(Runtime.Serializer.prototype,
 		var __v2 = use("Runtime.BaseObject");
 		if (value instanceof __v0)
 		{
-			return this.encodeDate(ctx, value);
+			return this.encodeDate(value);
 		}
 		else if (value instanceof __v1)
 		{
-			return this.encodeDateTime(ctx, value);
+			return this.encodeDateTime(value);
 		}
 		else if (value instanceof __v2)
 		{
-			return this.encodeObject(ctx, value);
+			return this.encodeObject(value);
 		}
 		return null;
 	},
 	/**
 	 * Export object to data
 	 */
-	encode: function(ctx, object)
+	encode: function(object)
 	{
-		this.setFlag(ctx, this.constructor.ENCODE);
-		var res = this.encodeItem(ctx, object);
-		this.removeFlag(ctx, this.constructor.ENCODE);
+		this.setFlag(this.constructor.ENCODE);
+		var res = this.encodeItem(object);
+		this.removeFlag(this.constructor.ENCODE);
 		return res;
 	},
 	/**
 	 * Import from object
 	 */
-	decode: function(ctx, object)
+	decode: function(object)
 	{
-		this.setFlag(ctx, this.constructor.DECODE);
-		var res = this.decodeItem(ctx, object);
-		this.removeFlag(ctx, this.constructor.DECODE);
+		this.setFlag(this.constructor.DECODE);
+		var res = this.decodeItem(object);
+		this.removeFlag(this.constructor.DECODE);
 		return res;
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		this.flags = 0;
 		this.callback_name = null;
 	},
@@ -475,7 +475,7 @@ Object.assign(Runtime.Serializer,
 	/**
 	 * Get attr
 	 */
-	getAttr: function(ctx, object, field_name)
+	getAttr: function(object, field_name)
 	{
 		if (object == null)
 		{
@@ -487,20 +487,20 @@ Object.assign(Runtime.Serializer,
 	/**
 	 * Set attr
 	 */
-	setAttr: function(ctx, object, field_name, value)
+	setAttr: function(object, field_name, value)
 	{
 		object[field_name] = value;
 	},
 	/**
 	 * Copy object
 	 */
-	copy: function(ctx, obj)
+	copy: function(obj)
 	{
 		var __v0 = use("Runtime.rtl");
-		var serializer = __v0.newInstance(ctx, this.getClassName(ctx));
-		serializer.setFlag(ctx, this.ALLOW_OBJECTS);
-		var encoded = serializer.encode(ctx, obj);
-		return serializer.decode(ctx, encoded);
+		var serializer = __v0.newInstance(this.getClassName());
+		serializer.setFlag(this.ALLOW_OBJECTS);
+		var encoded = serializer.encode(obj);
+		return serializer.decode(encoded);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
@@ -515,7 +515,7 @@ Object.assign(Runtime.Serializer,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -524,24 +524,24 @@ Object.assign(Runtime.Serializer,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

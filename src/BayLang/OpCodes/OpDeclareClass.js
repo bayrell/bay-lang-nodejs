@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpDeclareClass = function(ctx)
+BayLang.OpCodes.OpDeclareClass = function()
 {
 	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
 };
@@ -30,42 +30,42 @@ Object.assign(BayLang.OpCodes.OpDeclareClass.prototype,
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize: function(serializer, data)
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
-		serializer.process(ctx, this, "annotations", data);
-		serializer.process(ctx, this, "class_extends", data);
-		serializer.process(ctx, this, "class_implements", data);
-		serializer.process(ctx, this, "comments", data);
-		serializer.process(ctx, this, "extend_name", data);
-		serializer.process(ctx, this, "flags", data);
-		serializer.process(ctx, this, "fn_create", data);
-		serializer.process(ctx, this, "fn_destroy", data);
-		serializer.process(ctx, this, "functions", data);
-		serializer.process(ctx, this, "is_abstract", data);
-		serializer.process(ctx, this, "is_component", data);
-		serializer.process(ctx, this, "is_declare", data);
-		serializer.process(ctx, this, "is_model", data);
-		serializer.process(ctx, this, "items", data);
-		serializer.process(ctx, this, "kind", data);
-		serializer.process(ctx, this, "name", data);
-		serializer.process(ctx, this, "template", data);
-		serializer.process(ctx, this, "vars", data);
+		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, serializer, data);
+		serializer.process(this, "annotations", data);
+		serializer.process(this, "class_extends", data);
+		serializer.process(this, "class_implements", data);
+		serializer.process(this, "comments", data);
+		serializer.process(this, "extend_name", data);
+		serializer.process(this, "flags", data);
+		serializer.process(this, "fn_create", data);
+		serializer.process(this, "fn_destroy", data);
+		serializer.process(this, "functions", data);
+		serializer.process(this, "is_abstract", data);
+		serializer.process(this, "is_component", data);
+		serializer.process(this, "is_declare", data);
+		serializer.process(this, "is_model", data);
+		serializer.process(this, "items", data);
+		serializer.process(this, "kind", data);
+		serializer.process(this, "name", data);
+		serializer.process(this, "template", data);
+		serializer.process(this, "vars", data);
 	},
 	/**
 	 * Find function
 	 */
-	findFunction: function(ctx, name)
+	findFunction: function(name)
 	{
-		return this.items.findItem(ctx, (ctx, op_code) =>
+		return this.items.findItem((op_code) =>
 		{
 			var __v0 = use("BayLang.OpCodes.OpDeclareFunction");
 			return op_code instanceof __v0 && op_code.name == name;
 		});
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this);
 		this.op = "op_class";
 		this.kind = "";
 		this.name = "";
@@ -107,7 +107,7 @@ Object.assign(BayLang.OpCodes.OpDeclareClass,
 	{
 		return "BayLang.OpCodes.BaseOpCode";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -116,24 +116,24 @@ Object.assign(BayLang.OpCodes.OpDeclareClass,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

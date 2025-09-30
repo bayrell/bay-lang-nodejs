@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Entity == 'undefined') Runtime.Entity = {};
-Runtime.Entity.Entity = function(ctx)
+Runtime.Entity.Entity = function()
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
@@ -27,16 +27,16 @@ Runtime.Entity.Entity.prototype = Object.create(use("Runtime.BaseStruct").protot
 Runtime.Entity.Entity.prototype.constructor = Runtime.Entity.Entity;
 Object.assign(Runtime.Entity.Entity.prototype,
 {
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseStruct").prototype._init.call(this,ctx);
+		use("Runtime.BaseStruct").prototype._init.call(this);
 		this.name = "";
 	},
-	takeValue: function(ctx,k,d)
+	takeValue: function(k,d)
 	{
 		if (d == undefined) d = null;
 		if (k == "name")return this.name;
-		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
+		return use("Runtime.BaseStruct").prototype.takeValue.call(this,k,d);
 	},
 });
 Object.assign(Runtime.Entity.Entity, use("Runtime.BaseStruct"));
@@ -55,7 +55,7 @@ Object.assign(Runtime.Entity.Entity,
 	{
 		return "Runtime.BaseStruct";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -64,25 +64,25 @@ Object.assign(Runtime.Entity.Entity,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		a.push("name");
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

@@ -20,7 +20,7 @@ var use = require('bay-lang').use;
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
 if (typeof Runtime.Unit.Commands == 'undefined') Runtime.Unit.Commands = {};
-Runtime.Unit.Commands.TestRun = function(ctx)
+Runtime.Unit.Commands.TestRun = function()
 {
 	use("Runtime.Console.BaseCommand").apply(this, arguments);
 };
@@ -35,54 +35,54 @@ Object.assign(Runtime.Unit.Commands.TestRun,
 	/**
 	 * Returns name
 	 */
-	getName: function(ctx)
+	getName: function()
 	{
 		return "test::run";
 	},
 	/**
 	 * Returns description
 	 */
-	getDescription: function(ctx)
+	getDescription: function()
 	{
 		return "Run test";
 	},
 	/**
 	 * Run task
 	 */
-	run: async function(ctx)
+	run: async function()
 	{
-		var test_name = Runtime.rtl.attr(ctx, ctx.cli_args, 2);
+		var test_name = Runtime.rtl.attr(use("Runtime.rtl").getContext().cli_args, 2);
 		var error_code = this.SUCCESS;
 		if (test_name == null)
 		{
 			/* List all tests */
 			var __v0 = use("Runtime.io");
-			__v0.print(ctx, "List of all tests:");
-			var tests = ctx.provider(ctx, "Runtime.Unit.TestProvider");
-			for (var i = 0; i < tests.count(ctx); i++)
+			__v0.print("List of all tests:");
+			var tests = use("Runtime.rtl").getContext().provider("Runtime.Unit.TestProvider");
+			for (var i = 0; i < tests.count(); i++)
 			{
-				var test = tests.get(ctx, i);
+				var test = tests.get(i);
 				var __v1 = use("Runtime.io");
 				var __v2 = use("Runtime.io");
-				__v1.print(ctx, i + 1 + use("Runtime.rtl").toStr(") ") + use("Runtime.rtl").toStr(__v2.color(ctx, "yellow", test.name)));
+				__v1.print(i + 1 + use("Runtime.rtl").toStr(") ") + use("Runtime.rtl").toStr(__v2.color("yellow", test.name)));
 			}
 		}
 		else
 		{
 			/* Run current test */
-			var tests = ctx.provider(ctx, "Runtime.Unit.TestProvider");
-			error_code = await tests.runTestByName(ctx, test_name);
+			var tests = use("Runtime.rtl").getContext().provider("Runtime.Unit.TestProvider");
+			error_code = await tests.runTestByName(test_name);
 			if (error_code == 1)
 			{
 				var __v1 = use("Runtime.io");
 				var __v2 = use("Runtime.io");
-				__v1.print(ctx, __v2.color(ctx, "green", "OK"));
+				__v1.print(__v2.color("green", "OK"));
 			}
 			else
 			{
 				var __v3 = use("Runtime.io");
 				var __v4 = use("Runtime.io");
-				__v3.print(ctx, __v4.color(ctx, "red", "Fail"));
+				__v3.print(__v4.color("red", "Fail"));
 			}
 		}
 		return Promise.resolve(error_code);
@@ -100,7 +100,7 @@ Object.assign(Runtime.Unit.Commands.TestRun,
 	{
 		return "Runtime.Console.BaseCommand";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -109,24 +109,24 @@ Object.assign(Runtime.Unit.Commands.TestRun,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

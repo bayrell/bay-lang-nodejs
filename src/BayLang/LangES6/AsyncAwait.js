@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
-BayLang.LangES6.AsyncAwait = function(ctx)
+BayLang.LangES6.AsyncAwait = function()
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
@@ -27,18 +27,18 @@ BayLang.LangES6.AsyncAwait.prototype = Object.create(use("Runtime.BaseStruct").p
 BayLang.LangES6.AsyncAwait.prototype.constructor = BayLang.LangES6.AsyncAwait;
 Object.assign(BayLang.LangES6.AsyncAwait.prototype,
 {
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseStruct").prototype._init.call(this,ctx);
+		use("Runtime.BaseStruct").prototype._init.call(this);
 		this.start_pos = "";
 		this.end_pos = "";
 	},
-	takeValue: function(ctx,k,d)
+	takeValue: function(k,d)
 	{
 		if (d == undefined) d = null;
 		if (k == "start_pos")return this.start_pos;
 		else if (k == "end_pos")return this.end_pos;
-		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
+		return use("Runtime.BaseStruct").prototype.takeValue.call(this,k,d);
 	},
 });
 Object.assign(BayLang.LangES6.AsyncAwait, use("Runtime.BaseStruct"));
@@ -57,7 +57,7 @@ Object.assign(BayLang.LangES6.AsyncAwait,
 	{
 		return "Runtime.BaseStruct";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -66,26 +66,26 @@ Object.assign(BayLang.LangES6.AsyncAwait,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		a.push("start_pos");
 		a.push("end_pos");
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

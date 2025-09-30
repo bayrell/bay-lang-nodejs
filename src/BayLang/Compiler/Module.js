@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
-BayLang.Compiler.Module = function(ctx)
+BayLang.Compiler.Module = function()
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
@@ -30,43 +30,43 @@ Object.assign(BayLang.Compiler.Module.prototype,
 	/**
 	 * Returns module path
 	 */
-	getModulePath: function(ctx)
+	getModulePath: function()
 	{
 		return this.path;
 	},
 	/**
 	 * Returns source path
 	 */
-	getSourcePath: function(ctx)
+	getSourcePath: function()
 	{
 		var __v0 = use("Runtime.Monad");
-		var __v1 = new __v0(ctx, Runtime.rtl.attr(ctx, this.config, "src"));
+		var __v1 = new __v0(Runtime.rtl.attr(this.config, "src"));
 		var __v2 = use("Runtime.rtl");
-		__v1 = __v1.monad(ctx, __v2.m_to(ctx, "string", ""));
-		var module_src = __v1.value(ctx);
+		__v1 = __v1.monad(__v2.m_to("string", ""));
+		var module_src = __v1.value();
 		var __v3 = use("Runtime.fs");
-		var module_src_path = __v3.join(ctx, use("Runtime.Vector").from([this.path,module_src]));
+		var module_src_path = __v3.join(use("Runtime.Vector").from([this.path,module_src]));
 		var __v4 = use("Runtime.rs");
-		return __v4.removeLastSlash(ctx, module_src_path);
+		return __v4.removeLastSlash(module_src_path);
 	},
 	/**
 	 * Has group
 	 */
-	hasGroup: function(ctx, group_name)
+	hasGroup: function(group_name)
 	{
 		var __v0 = use("Runtime.rs");
-		if (__v0.substr(ctx, group_name, 0, 1) != "@")
+		if (__v0.substr(group_name, 0, 1) != "@")
 		{
 			return false;
 		}
 		var __v0 = use("Runtime.rs");
-		group_name = __v0.substr(ctx, group_name, 1);
-		var groups = this.config.get(ctx, "groups");
+		group_name = __v0.substr(group_name, 1);
+		var groups = this.config.get("groups");
 		if (groups == null)
 		{
 			return false;
 		}
-		if (groups.indexOf(ctx, group_name) == -1)
+		if (groups.indexOf(group_name) == -1)
 		{
 			return false;
 		}
@@ -75,16 +75,16 @@ Object.assign(BayLang.Compiler.Module.prototype,
 	/**
 	 * Returns true if this module contains in module list include groups
 	 */
-	inModuleList: function(ctx, module_names)
+	inModuleList: function(module_names)
 	{
-		for (var i = 0; i < module_names.count(ctx); i++)
+		for (var i = 0; i < module_names.count(); i++)
 		{
-			var module_name = module_names.get(ctx, i);
+			var module_name = module_names.get(i);
 			if (this.name == module_name)
 			{
 				return true;
 			}
-			if (this.hasGroup(ctx, module_name))
+			if (this.hasGroup(module_name))
 			{
 				return true;
 			}
@@ -95,95 +95,95 @@ Object.assign(BayLang.Compiler.Module.prototype,
 	 * Returns full source file.
 	 * Returns file_path
 	 */
-	resolveSourceFile: function(ctx, file_name)
+	resolveSourceFile: function(file_name)
 	{
-		var first_char = Runtime.rtl.attr(ctx, file_name, 0);
+		var first_char = Runtime.rtl.attr(file_name, 0);
 		if (first_char == "@")
 		{
 			var __v0 = use("Runtime.fs");
 			var __v1 = use("Runtime.rs");
-			return __v0.join(ctx, use("Runtime.Vector").from([this.path,__v1.substr(ctx, file_name, 1)]));
+			return __v0.join(use("Runtime.Vector").from([this.path,__v1.substr(file_name, 1)]));
 		}
-		var path = this.getSourcePath(ctx);
+		var path = this.getSourcePath();
 		var __v0 = use("Runtime.fs");
-		return __v0.join(ctx, use("Runtime.Vector").from([path,file_name]));
+		return __v0.join(use("Runtime.Vector").from([path,file_name]));
 	},
 	/**
 	 * Resolve destination file
 	 */
-	resolveDestFile: function(ctx, project_path, relative_file_name, lang)
+	resolveDestFile: function(project_path, relative_file_name, lang)
 	{
-		if (!this.config.has(ctx, "dest"))
+		if (!this.config.has("dest"))
 		{
 			return "";
 		}
-		if (!this.config.get(ctx, "dest").has(ctx, lang))
+		if (!this.config.get("dest").has(lang))
 		{
 			return "";
 		}
 		var __v0 = use("Runtime.Monad");
-		var __v1 = new __v0(ctx, Runtime.rtl.attr(ctx, this.config, ["dest", lang]));
+		var __v1 = new __v0(Runtime.rtl.attr(this.config, ["dest", lang]));
 		var __v2 = use("Runtime.rtl");
-		__v1 = __v1.monad(ctx, __v2.m_to(ctx, "string", ""));
-		var dest = __v1.value(ctx);
+		__v1 = __v1.monad(__v2.m_to("string", ""));
+		var dest = __v1.value();
 		var dest_path = "";
 		var __v3 = use("Runtime.rs");
-		var is_local = __v3.substr(ctx, dest, 0, 2) == "./";
+		var is_local = __v3.substr(dest, 0, 2) == "./";
 		if (is_local)
 		{
 			var __v4 = use("Runtime.fs");
-			dest_path = __v4.join(ctx, use("Runtime.Vector").from([this.path,dest,relative_file_name]));
+			dest_path = __v4.join(use("Runtime.Vector").from([this.path,dest,relative_file_name]));
 		}
 		else
 		{
 			var __v5 = use("Runtime.fs");
-			dest_path = __v5.join(ctx, use("Runtime.Vector").from([project_path,dest,relative_file_name]));
+			dest_path = __v5.join(use("Runtime.Vector").from([project_path,dest,relative_file_name]));
 		}
 		if (lang == "php")
 		{
 			var __v4 = use("Runtime.re");
-			dest_path = __v4.replace(ctx, "\\.bay$", ".php", dest_path);
+			dest_path = __v4.replace("\\.bay$", ".php", dest_path);
 			var __v5 = use("Runtime.re");
-			dest_path = __v5.replace(ctx, "\\.ui$", ".php", dest_path);
+			dest_path = __v5.replace("\\.ui$", ".php", dest_path);
 		}
 		else if (lang == "es6")
 		{
 			var __v6 = use("Runtime.re");
-			dest_path = __v6.replace(ctx, "\\.bay$", ".js", dest_path);
+			dest_path = __v6.replace("\\.bay$", ".js", dest_path);
 			var __v7 = use("Runtime.re");
-			dest_path = __v7.replace(ctx, "\\.ui$", ".js", dest_path);
+			dest_path = __v7.replace("\\.ui$", ".js", dest_path);
 		}
 		else if (lang == "nodejs")
 		{
 			var __v8 = use("Runtime.re");
-			dest_path = __v8.replace(ctx, "\\.bay$", ".js", dest_path);
+			dest_path = __v8.replace("\\.bay$", ".js", dest_path);
 			var __v9 = use("Runtime.re");
-			dest_path = __v9.replace(ctx, "\\.ui$", ".js", dest_path);
+			dest_path = __v9.replace("\\.ui$", ".js", dest_path);
 		}
 		return dest_path;
 	},
 	/**
 	 * Check exclude
 	 */
-	checkExclude: function(ctx, file_name)
+	checkExclude: function(file_name)
 	{
-		var module_excludelist = Runtime.rtl.attr(ctx, this.config, "exclude");
+		var module_excludelist = Runtime.rtl.attr(this.config, "exclude");
 		var __v0 = use("Runtime.Collection");
 		if (module_excludelist && module_excludelist instanceof __v0)
 		{
-			for (var i = 0; i < module_excludelist.count(ctx); i++)
+			for (var i = 0; i < module_excludelist.count(); i++)
 			{
 				var __v1 = use("Runtime.Monad");
-				var __v2 = new __v1(ctx, Runtime.rtl.attr(ctx, module_excludelist, i));
+				var __v2 = new __v1(Runtime.rtl.attr(module_excludelist, i));
 				var __v3 = use("Runtime.rtl");
-				__v2 = __v2.monad(ctx, __v3.m_to(ctx, "string", ""));
-				var file_match = __v2.value(ctx);
+				__v2 = __v2.monad(__v3.m_to("string", ""));
+				var file_match = __v2.value();
 				if (file_match == "")
 				{
 					continue;
 				}
 				var __v4 = use("Runtime.re");
-				var res = __v4.match(ctx, file_match, file_name);
+				var res = __v4.match(file_match, file_name);
 				if (res)
 				{
 					return true;
@@ -195,29 +195,29 @@ Object.assign(BayLang.Compiler.Module.prototype,
 	/**
 	 * Check allow list
 	 */
-	checkAllow: function(ctx, file_name)
+	checkAllow: function(file_name)
 	{
 		var success = false;
-		var module_allowlist = Runtime.rtl.attr(ctx, this.config, "allow");
+		var module_allowlist = Runtime.rtl.attr(this.config, "allow");
 		var __v0 = use("Runtime.Collection");
 		if (module_allowlist && module_allowlist instanceof __v0)
 		{
-			for (var i = 0; i < module_allowlist.count(ctx); i++)
+			for (var i = 0; i < module_allowlist.count(); i++)
 			{
 				var __v1 = use("Runtime.Monad");
-				var __v2 = new __v1(ctx, Runtime.rtl.attr(ctx, module_allowlist, i));
+				var __v2 = new __v1(Runtime.rtl.attr(module_allowlist, i));
 				var __v3 = use("Runtime.rtl");
-				__v2 = __v2.monad(ctx, __v3.m_to(ctx, "string", ""));
-				var file_match = __v2.value(ctx);
+				__v2 = __v2.monad(__v3.m_to("string", ""));
+				var file_match = __v2.value();
 				if (file_match == "")
 				{
 					continue;
 				}
 				var __v4 = use("Runtime.re");
-				var res = __v4.match(ctx, file_match, file_name);
+				var res = __v4.match(file_match, file_name);
 				/* Ignore */
 				var __v5 = use("Runtime.rs");
-				if (__v5.charAt(ctx, file_match, 0) == "!")
+				if (__v5.charAt(file_match, 0) == "!")
 				{
 					if (res)
 					{
@@ -235,9 +235,9 @@ Object.assign(BayLang.Compiler.Module.prototype,
 		}
 		return success;
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseStruct").prototype._init.call(this,ctx);
+		use("Runtime.BaseStruct").prototype._init.call(this);
 		this.name = "";
 		this.path = "";
 		this.config = use("Runtime.Map").from({});
@@ -259,7 +259,7 @@ Object.assign(BayLang.Compiler.Module,
 	{
 		return "Runtime.BaseStruct";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -268,24 +268,24 @@ Object.assign(BayLang.Compiler.Module,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

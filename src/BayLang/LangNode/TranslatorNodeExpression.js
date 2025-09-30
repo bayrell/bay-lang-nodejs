@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangNode == 'undefined') BayLang.LangNode = {};
-BayLang.LangNode.TranslatorNodeExpression = function(ctx)
+BayLang.LangNode.TranslatorNodeExpression = function()
 {
 	use("BayLang.LangES6.TranslatorES6Expression").apply(this, arguments);
 };
@@ -34,11 +34,11 @@ Object.assign(BayLang.LangNode.TranslatorNodeExpression,
 	/**
 	 * OpIdentifier
 	 */
-	OpIdentifier: function(ctx, t, op_code)
+	OpIdentifier: function(t, op_code)
 	{
 		if (op_code.value == "@")
 		{
-			return use("Runtime.Vector").from([t,"ctx"]);
+			return use("Runtime.Vector").from([t,"use(\"Runtime.rtl\").getContext()"]);
 		}
 		if (op_code.value == "_")
 		{
@@ -49,15 +49,15 @@ Object.assign(BayLang.LangNode.TranslatorNodeExpression,
 			return use("Runtime.Vector").from([t,"console.log"]);
 		}
 		var __v0 = use("BayLang.OpCodes.OpIdentifier");
-		if (t.modules.has(ctx, op_code.value) || op_code.kind == __v0.KIND_SYS_TYPE)
+		if (t.modules.has(op_code.value) || op_code.kind == __v0.KIND_SYS_TYPE)
 		{
 			var module_name = op_code.value;
-			var new_module_name = this.findModuleName(ctx, t, module_name);
+			var new_module_name = this.findModuleName(t, module_name);
 			if (module_name != new_module_name)
 			{
-				var res = t.constructor.addSaveOpCode(ctx, t, use("Runtime.Map").from({"op_code":op_code,"var_content":this.useModuleName(ctx, t, module_name)}));
-				t = Runtime.rtl.attr(ctx, res, 0);
-				var var_name = Runtime.rtl.attr(ctx, res, 1);
+				var res = t.constructor.addSaveOpCode(t, use("Runtime.Map").from({"op_code":op_code,"var_content":this.useModuleName(t, module_name)}));
+				t = Runtime.rtl.attr(res, 0);
+				var var_name = Runtime.rtl.attr(res, 1);
 				return use("Runtime.Vector").from([t,var_name]);
 			}
 		}
@@ -66,24 +66,24 @@ Object.assign(BayLang.LangNode.TranslatorNodeExpression,
 	/**
 	 * OpTypeIdentifier
 	 */
-	OpTypeIdentifier: function(ctx, t, op_code)
+	OpTypeIdentifier: function(t, op_code)
 	{
 		var var_name = "";
-		if (op_code.entity_name.names.count(ctx) > 0)
+		if (op_code.entity_name.names.count() > 0)
 		{
-			var module_name = op_code.entity_name.names.first(ctx);
-			var new_module_name = this.findModuleName(ctx, t, module_name);
+			var module_name = op_code.entity_name.names.first();
+			var new_module_name = this.findModuleName(t, module_name);
 			if (module_name != new_module_name)
 			{
-				var res = t.constructor.addSaveOpCode(ctx, t, use("Runtime.Map").from({"var_content":this.useModuleName(ctx, t, module_name)}));
-				t = Runtime.rtl.attr(ctx, res, 0);
-				var_name = Runtime.rtl.attr(ctx, res, 1);
+				var res = t.constructor.addSaveOpCode(t, use("Runtime.Map").from({"var_content":this.useModuleName(t, module_name)}));
+				t = Runtime.rtl.attr(res, 0);
+				var_name = Runtime.rtl.attr(res, 1);
 			}
 		}
 		if (var_name == "")
 		{
 			var __v0 = use("Runtime.rs");
-			var_name = __v0.join(ctx, ".", op_code.entity_name.names);
+			var_name = __v0.join(".", op_code.entity_name.names);
 		}
 		return use("Runtime.Vector").from([t,var_name]);
 	},
@@ -100,7 +100,7 @@ Object.assign(BayLang.LangNode.TranslatorNodeExpression,
 	{
 		return "BayLang.LangES6.TranslatorES6Expression";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -109,24 +109,24 @@ Object.assign(BayLang.LangNode.TranslatorNodeExpression,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

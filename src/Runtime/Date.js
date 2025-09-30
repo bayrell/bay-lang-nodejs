@@ -18,23 +18,23 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Date = function(ctx, data)
+Runtime.Date = function(data)
 {
 	if (data == undefined) data = null;
-	use("Runtime.BaseObject").call(this, ctx);
+	use("Runtime.BaseObject").call(this);
 	if (data != null)
 	{
-		if (data.has(ctx, "y"))
+		if (data.has("y"))
 		{
-			this.y = data.get(ctx, "y");
+			this.y = data.get("y");
 		}
-		if (data.has(ctx, "m"))
+		if (data.has("m"))
 		{
-			this.m = data.get(ctx, "m");
+			this.m = data.get("m");
 		}
-		if (data.has(ctx, "d"))
+		if (data.has("d"))
 		{
-			this.d = data.get(ctx, "d");
+			this.d = data.get("d");
 		}
 	}
 };
@@ -45,7 +45,7 @@ Object.assign(Runtime.Date.prototype,
 	/**
 	 * toMap
 	 */
-	toMap: function(ctx)
+	toMap: function()
 	{
 		return use("Runtime.Map").from({"y":this.y,"m":this.m,"d":this.d});
 	},
@@ -53,14 +53,14 @@ Object.assign(Runtime.Date.prototype,
 	 * Return date
 	 * @return string
 	 */
-	getDate: function(ctx)
+	getDate: function()
 	{
 		return this.y + use("Runtime.rtl").toStr("-") + use("Runtime.rtl").toStr(this.m) + use("Runtime.rtl").toStr("-") + use("Runtime.rtl").toStr(this.d);
 	},
 	/**
 	 * Normalize date time
 	 */
-	normalize: function(ctx)
+	normalize: function()
 	{
 		return this;
 	},
@@ -68,13 +68,13 @@ Object.assign(Runtime.Date.prototype,
 	 * Return db datetime
 	 * @return string
 	 */
-	toString: function(ctx)
+	toString: function()
 	{
 		return this.y + use("Runtime.rtl").toStr("-") + use("Runtime.rtl").toStr(this.m) + use("Runtime.rtl").toStr("-") + use("Runtime.rtl").toStr(this.d);
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		this.y = 0;
 		this.m = 0;
 		this.d = 0;
@@ -96,7 +96,7 @@ Object.assign(Runtime.Date,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -105,24 +105,24 @@ Object.assign(Runtime.Date,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},
@@ -132,12 +132,12 @@ Object.assign(Runtime.Date,
 	],
 });use.add(Runtime.Date);
 module.exports = Runtime.Date;
-Runtime.Date.prototype.toObject = function(ctx)
+Runtime.Date.prototype.toObject = function()
 {
 	var dt = new Date(this.y, this.m - 1, this.d);
 	return dt;
 }
-Runtime.Date.fromObject = function(ctx, dt)
+Runtime.Date.fromObject = function(dt)
 {
 	var Dict = use("Runtime.Dict");
 	var y = Number(dt.getFullYear());

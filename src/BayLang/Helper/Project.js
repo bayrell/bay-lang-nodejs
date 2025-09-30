@@ -19,9 +19,9 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Helper == 'undefined') BayLang.Helper = {};
-BayLang.Helper.Project = function(ctx, project_path)
+BayLang.Helper.Project = function(project_path)
 {
-	use("Runtime.BaseObject").call(this, ctx);
+	use("Runtime.BaseObject").call(this);
 	this.path = project_path;
 };
 BayLang.Helper.Project.prototype = Object.create(use("Runtime.BaseObject").prototype);
@@ -31,31 +31,31 @@ Object.assign(BayLang.Helper.Project.prototype,
 	/**
 	 * Init project
 	 */
-	init: async function(ctx)
+	init: async function()
 	{
 		this.info = null;
 		var __v0 = use("Runtime.fs");
-		var project_json_path = __v0.join(ctx, use("Runtime.Vector").from([this.path,"project.json"]));
+		var project_json_path = __v0.join(use("Runtime.Vector").from([this.path,"project.json"]));
 		var __v1 = use("Runtime.fs");
-		if (!await __v1.isFolder(ctx, this.path))
+		if (!await __v1.isFolder(this.path))
 		{
 			return Promise.resolve(false);
 		}
 		var __v1 = use("Runtime.fs");
-		if (!await __v1.isFile(ctx, project_json_path))
+		if (!await __v1.isFile(project_json_path))
 		{
 			return Promise.resolve(false);
 		}
 		/* Read file */
 		var __v1 = use("Runtime.fs");
-		var content = await __v1.readFile(ctx, project_json_path);
+		var content = await __v1.readFile(project_json_path);
 		var __v2 = use("Runtime.rtl");
-		var project_info = __v2.json_decode(ctx, content);
+		var project_info = __v2.json_decode(content);
 		if (!project_info)
 		{
 			return Promise.resolve(false);
 		}
-		if (!project_info.has(ctx, "name"))
+		if (!project_info.has("name"))
 		{
 			return Promise.resolve(false);
 		}
@@ -64,236 +64,236 @@ Object.assign(BayLang.Helper.Project.prototype,
 	/**
 	 * Returns project cache path
 	 */
-	getCachePath: function(ctx)
+	getCachePath: function()
 	{
 		var __v0 = use("Runtime.fs");
-		return (this.exists(ctx)) ? (__v0.join(ctx, use("Runtime.Vector").from([this.getPath(ctx),".cache","cache.json"]))) : ("");
+		return (this.exists()) ? (__v0.join(use("Runtime.Vector").from([this.getPath(),".cache","cache.json"]))) : ("");
 	},
 	/**
 	 * Read project from cache
 	 */
-	readCache: async function(ctx)
+	readCache: async function()
 	{
 		/* Get json path */
-		var cache_path = this.getCachePath(ctx);
+		var cache_path = this.getCachePath();
 		var __v0 = use("Runtime.fs");
-		if (!await __v0.isFile(ctx, cache_path))
+		if (!await __v0.isFile(cache_path))
 		{
 			return Promise.resolve(false);
 		}
 		/* Read file */
 		var __v0 = use("Runtime.fs");
-		var content = await __v0.readFile(ctx, cache_path);
+		var content = await __v0.readFile(cache_path);
 		var __v1 = use("Runtime.rtl");
-		var data = __v1.json_decode(ctx, content);
+		var data = __v1.json_decode(content);
 		if (!data)
 		{
 			return Promise.resolve(false);
 		}
 		/* Import data */
 		var __v2 = use("Runtime.Serializer");
-		var serializer = new __v2(ctx);
+		var serializer = new __v2();
 		var __v3 = use("Runtime.Serializer");
-		serializer.setFlag(ctx, __v3.ALLOW_OBJECTS);
+		serializer.setFlag(__v3.ALLOW_OBJECTS);
 		var __v4 = use("Runtime.Serializer");
-		serializer.setFlag(ctx, __v4.DECODE);
-		this.serialize(ctx, serializer, data);
+		serializer.setFlag(__v4.DECODE);
+		this.serialize(serializer, data);
 		return Promise.resolve(true);
 	},
 	/**
 	 * Save project to cache
 	 */
-	saveCache: async function(ctx)
+	saveCache: async function()
 	{
 		/* Get json folder */
-		var cache_path = this.getCachePath(ctx);
+		var cache_path = this.getCachePath();
 		var __v0 = use("Runtime.rs");
-		var folder_path = __v0.dirname(ctx, cache_path);
+		var folder_path = __v0.dirname(cache_path);
 		var __v1 = use("Runtime.fs");
-		if (!await __v1.isFolder(ctx, folder_path))
+		if (!await __v1.isFolder(folder_path))
 		{
 			var __v2 = use("Runtime.fs");
-			await __v2.mkdir(ctx, folder_path);
+			await __v2.mkdir(folder_path);
 		}
 		/* Create serializer */
 		var __v1 = use("Runtime.SerializerJson");
-		var serializer = new __v1(ctx);
+		var serializer = new __v1();
 		var __v2 = use("Runtime.Serializer");
-		serializer.setFlag(ctx, __v2.JSON_PRETTY);
+		serializer.setFlag(__v2.JSON_PRETTY);
 		/* Save cache to file */
-		var content = serializer.encode(ctx, this);
+		var content = serializer.encode(this);
 		var __v3 = use("Runtime.fs");
-		await __v3.saveFile(ctx, cache_path, content);
+		await __v3.saveFile(cache_path, content);
 	},
 	/**
 	 * Process project cache
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize: function(serializer, data)
 	{
-		serializer.processItems(ctx, this, "modules", data, (ctx, serializer, module) =>
+		serializer.processItems(this, "modules", data, (serializer, module) =>
 		{
 			var __v0 = use("BayLang.Helper.Module");
-			return new __v0(ctx, this, module.get(ctx, "path"));
+			return new __v0(this, module.get("path"));
 		});
 	},
 	/**
 	 * Load object
 	 */
-	load: async function(ctx, is_force)
+	load: async function(is_force)
 	{
 		if (is_force == undefined) is_force = false;
-		if (!this.exists(ctx))
+		if (!this.exists())
 		{
 			return Promise.resolve();
 		}
 		var is_loaded = false;
 		if (!is_force)
 		{
-			is_loaded = await this.readCache(ctx);
+			is_loaded = await this.readCache();
 		}
 		if (!is_loaded)
 		{
 			/* Read and load modules */
-			await this.readModules(ctx);
-			await this.loadModules(ctx);
+			await this.readModules();
+			await this.loadModules();
 			/* Save to cache */
-			await this.saveCache(ctx);
+			await this.saveCache();
 		}
 	},
 	/**
 	 * Returns true if project is exists
 	 */
-	exists: function(ctx)
+	exists: function()
 	{
 		return this.info != null;
 	},
 	/**
 	 * Returns project path
 	 */
-	getPath: function(ctx)
+	getPath: function()
 	{
-		return (this.exists(ctx)) ? (this.path) : ("");
+		return (this.exists()) ? (this.path) : ("");
 	},
 	/**
 	 * Returns project file_name
 	 */
-	getID: function(ctx)
+	getID: function()
 	{
 		var __v0 = use("Runtime.rs");
-		return (this.exists(ctx)) ? (__v0.basename(ctx, this.path)) : ("");
+		return (this.exists()) ? (__v0.basename(this.path)) : ("");
 	},
 	/**
 	 * Returns project name
 	 */
-	getName: function(ctx)
+	getName: function()
 	{
-		return (this.exists(ctx)) ? (this.info.get(ctx, "name")) : ("");
+		return (this.exists()) ? (this.info.get("name")) : ("");
 	},
 	/**
 	 * Set project name
 	 */
-	setName: function(ctx, name)
+	setName: function(name)
 	{
-		if (!this.exists(ctx))
+		if (!this.exists())
 		{
 			return ;
 		}
-		this.info.set(ctx, "name", name);
+		this.info.set("name", name);
 	},
 	/**
 	 * Returns project description
 	 */
-	getDescription: function(ctx)
+	getDescription: function()
 	{
-		return (this.exists(ctx)) ? (this.info.get(ctx, "description")) : ("");
+		return (this.exists()) ? (this.info.get("description")) : ("");
 	},
 	/**
 	 * Set project description
 	 */
-	setDescription: function(ctx, description)
+	setDescription: function(description)
 	{
-		if (!this.exists(ctx))
+		if (!this.exists())
 		{
 			return ;
 		}
-		this.info.set(ctx, "description", description);
+		this.info.set("description", description);
 	},
 	/**
 	 * Returns project type
 	 */
-	getType: function(ctx)
+	getType: function()
 	{
-		return (this.exists(ctx)) ? (this.info.get(ctx, "type")) : ("");
+		return (this.exists()) ? (this.info.get("type")) : ("");
 	},
 	/**
 	 * Set project type
 	 */
-	setType: function(ctx, project_type)
+	setType: function(project_type)
 	{
-		if (!this.exists(ctx))
+		if (!this.exists())
 		{
 			return ;
 		}
-		this.info.set(ctx, "type", project_type);
+		this.info.set("type", project_type);
 	},
 	/**
 	 * Returns assets
 	 */
-	getAssets: function(ctx)
+	getAssets: function()
 	{
-		return (this.exists(ctx)) ? (this.info.get(ctx, "assets")) : (use("Runtime.Vector").from([]));
+		return (this.exists()) ? (this.info.get("assets")) : (use("Runtime.Vector").from([]));
 	},
 	/**
 	 * Returns languages
 	 */
-	getLanguages: function(ctx)
+	getLanguages: function()
 	{
-		return (this.exists(ctx)) ? (this.info.get(ctx, "languages")) : (use("Runtime.Vector").from([]));
+		return (this.exists()) ? (this.info.get("languages")) : (use("Runtime.Vector").from([]));
 	},
 	/**
 	 * Returns module
 	 */
-	getModule: function(ctx, module_name)
+	getModule: function(module_name)
 	{
-		return this.modules.get(ctx, module_name);
+		return this.modules.get(module_name);
 	},
 	/**
 	 * Returns modules by group name
 	 */
-	getModulesByGroupName: function(ctx, group_name)
+	getModulesByGroupName: function(group_name)
 	{
 		/* Get modules */
-		var modules = this.modules.transition(ctx, (ctx, module, module_name) =>
+		var modules = this.modules.transition((module, module_name) =>
 		{
 			return module;
 		});
 		/* Filter modules by group */
-		modules = modules.filter(ctx, (ctx, module) =>
+		modules = modules.filter((module) =>
 		{
-			return module.hasGroup(ctx, group_name);
+			return module.hasGroup(group_name);
 		});
 		/* Get names */
 		var __v0 = use("Runtime.lib");
-		modules = modules.map(ctx, __v0.attr(ctx, "name"));
+		modules = modules.map(__v0.attr("name"));
 		/* Return modules */
 		return modules;
 	},
 	/**
 	 * Returns widget
 	 */
-	getWidget: async function(ctx, widget_name)
+	getWidget: async function(widget_name)
 	{
 		if (!this.modules)
 		{
 			return Promise.resolve(null);
 		}
 		/* Find widget by name */
-		var modules = this.modules.keys(ctx).sort(ctx);
-		for (var i = 0; i < modules.count(ctx); i++)
+		var modules = this.modules.keys().sort();
+		for (var i = 0; i < modules.count(); i++)
 		{
-			var module_name = modules.get(ctx, i);
-			var module = this.modules.get(ctx, module_name);
-			var widget = module.getWidget(ctx, widget_name);
+			var module_name = modules.get(i);
+			var module = this.modules.get(module_name);
+			var widget = module.getWidget(widget_name);
 			if (widget)
 			{
 				return Promise.resolve(widget);
@@ -304,32 +304,32 @@ Object.assign(BayLang.Helper.Project.prototype,
 	/**
 	 * Save project
 	 */
-	saveInfo: async function(ctx)
+	saveInfo: async function()
 	{
 		var __v0 = use("Runtime.fs");
-		var project_json_path = __v0.join(ctx, use("Runtime.Vector").from([this.path,"project.json"]));
+		var project_json_path = __v0.join(use("Runtime.Vector").from([this.path,"project.json"]));
 		var __v1 = use("Runtime.rtl");
 		var __v2 = use("Runtime.rtl");
-		var content = __v1.json_encode(ctx, this.info, __v2.JSON_PRETTY);
+		var content = __v1.json_encode(this.info, __v2.JSON_PRETTY);
 		var __v3 = use("Runtime.fs");
-		await __v3.saveFile(ctx, project_json_path, content);
+		await __v3.saveFile(project_json_path, content);
 	},
 	/**
 	 * Find module by file name
 	 */
-	findModuleByFileName: function(ctx, file_name)
+	findModuleByFileName: function(file_name)
 	{
 		var res = null;
 		var module_path_sz = -1;
-		var module_names = this.modules.keys(ctx);
-		for (var i = 0; i < module_names.count(ctx); i++)
+		var module_names = this.modules.keys();
+		for (var i = 0; i < module_names.count(); i++)
 		{
-			var module_name = module_names.get(ctx, i);
-			var module = this.modules.get(ctx, module_name);
-			if (module.checkFile(ctx, file_name))
+			var module_name = module_names.get(i);
+			var module = this.modules.get(module_name);
+			if (module.checkFile(file_name))
 			{
 				var __v0 = use("Runtime.rs");
-				var sz = __v0.strlen(ctx, module.path);
+				var sz = __v0.strlen(module.path);
 				if (module_path_sz < sz)
 				{
 					module_path_sz = sz;
@@ -342,60 +342,60 @@ Object.assign(BayLang.Helper.Project.prototype,
 	/**
 	 * Load modules
 	 */
-	loadModules: async function(ctx)
+	loadModules: async function()
 	{
-		var modules = this.modules.keys(ctx).sort(ctx);
-		for (var i = 0; i < modules.count(ctx); i++)
+		var modules = this.modules.keys().sort();
+		for (var i = 0; i < modules.count(); i++)
 		{
-			var module_name = modules.get(ctx, i);
-			var module = this.modules.get(ctx, module_name);
-			await module.loadRoutes(ctx);
+			var module_name = modules.get(i);
+			var module = this.modules.get(module_name);
+			await module.loadRoutes();
 		}
 	},
 	/**
 	 * Read modules
 	 */
-	readModules: async function(ctx)
+	readModules: async function()
 	{
-		if (!this.exists(ctx))
+		if (!this.exists())
 		{
 			return Promise.resolve();
 		}
 		this.modules = use("Runtime.Map").from({});
 		/* Read sub modules */
-		await this.readSubModules(ctx, this.path, this.info.get(ctx, "modules"));
+		await this.readSubModules(this.path, this.info.get("modules"));
 	},
 	/**
 	 * Read sub modules
 	 */
-	readSubModules: async function(ctx, path, items)
+	readSubModules: async function(path, items)
 	{
 		if (!items)
 		{
 			return Promise.resolve();
 		}
-		for (var i = 0; i < items.count(ctx); i++)
+		for (var i = 0; i < items.count(); i++)
 		{
-			var item = items.get(ctx, i);
-			var module_src = item.get(ctx, "src");
-			var module_type = item.get(ctx, "type");
+			var item = items.get(i);
+			var module_src = item.get("src");
+			var module_type = item.get("type");
 			var __v0 = use("Runtime.fs");
-			var folder_path = __v0.join(ctx, use("Runtime.Vector").from([path,module_src]));
+			var folder_path = __v0.join(use("Runtime.Vector").from([path,module_src]));
 			/* Read from folder */
 			if (module_type == "folder")
 			{
-				await this.readModuleFromFolder(ctx, folder_path);
+				await this.readModuleFromFolder(folder_path);
 			}
 			else
 			{
 				var __v1 = use("BayLang.Helper.Module");
-				var module = __v1.readModule(ctx, this, folder_path);
+				var module = __v1.readModule(this, folder_path);
 				if (module)
 				{
 					/* Set module */
-					this.modules.set(ctx, module.getName(ctx), module);
+					this.modules.set(module.getName(), module);
 					/* Read sub modules */
-					await this.readSubModules(ctx, module.getPath(ctx), module.submodules);
+					await this.readSubModules(module.getPath(), module.submodules);
 				}
 			}
 		}
@@ -403,18 +403,18 @@ Object.assign(BayLang.Helper.Project.prototype,
 	/**
 	 * Read sub modules
 	 */
-	readModuleFromFolder: async function(ctx, folder_path)
+	readModuleFromFolder: async function(folder_path)
 	{
 		var __v0 = use("Runtime.fs");
-		if (!await __v0.isFolder(ctx, folder_path))
+		if (!await __v0.isFolder(folder_path))
 		{
 			return Promise.resolve();
 		}
 		var __v0 = use("Runtime.fs");
-		var items = await __v0.listDir(ctx, folder_path);
-		for (var i = 0; i < items.count(ctx); i++)
+		var items = await __v0.listDir(folder_path);
+		for (var i = 0; i < items.count(); i++)
 		{
-			var file_name = items.get(ctx, i);
+			var file_name = items.get(i);
 			if (file_name == ".")
 			{
 				continue;
@@ -426,31 +426,31 @@ Object.assign(BayLang.Helper.Project.prototype,
 			/* Read module */
 			var __v1 = use("BayLang.Helper.Module");
 			var __v2 = use("Runtime.fs");
-			var module = __v1.readModule(ctx, this, __v2.join(ctx, use("Runtime.Vector").from([folder_path,file_name])));
+			var module = __v1.readModule(this, __v2.join(use("Runtime.Vector").from([folder_path,file_name])));
 			if (module)
 			{
 				/* Set module */
-				this.modules.set(ctx, module.getName(ctx), module);
+				this.modules.set(module.getName(), module);
 				/* Read sub modules */
-				this.readSubModules(ctx, module.getPath(ctx), module.submodules);
+				this.readSubModules(module.getPath(), module.submodules);
 			}
 		}
 	},
 	/**
 	 * Sort modules
 	 */
-	sortRequiredModules: function(ctx, modules)
+	sortRequiredModules: function(modules)
 	{
 		var result = use("Runtime.Vector").from([]);
 		var add_module;
-		add_module = (ctx, module_name) =>
+		add_module = (module_name) =>
 		{
-			if (modules.indexOf(ctx, module_name) == -1)
+			if (modules.indexOf(module_name) == -1)
 			{
 				return ;
 			}
 			/* Get module by name */
-			var module = this.modules.get(ctx, module_name);
+			var module = this.modules.get(module_name);
 			if (!module)
 			{
 				return ;
@@ -458,100 +458,100 @@ Object.assign(BayLang.Helper.Project.prototype,
 			/* Add required modules */
 			if (module.required_modules != null)
 			{
-				for (var i = 0; i < module.required_modules.count(ctx); i++)
+				for (var i = 0; i < module.required_modules.count(); i++)
 				{
-					add_module(ctx, module.required_modules.get(ctx, i));
+					add_module(module.required_modules.get(i));
 				}
 			}
 			/* Add module if not exists */
-			if (result.indexOf(ctx, module_name) == -1)
+			if (result.indexOf(module_name) == -1)
 			{
-				result.push(ctx, module_name);
+				result.push(module_name);
 			}
 		};
-		for (var i = 0; i < modules.count(ctx); i++)
+		for (var i = 0; i < modules.count(); i++)
 		{
-			add_module(ctx, modules.get(ctx, i));
+			add_module(modules.get(i));
 		}
 		return result;
 	},
 	/**
 	 * Returns assets modules
 	 */
-	getAssetModules: function(ctx, asset)
+	getAssetModules: function(asset)
 	{
-		var modules = asset.get(ctx, "modules");
+		var modules = asset.get("modules");
 		/* Extends modules */
 		var new_modules = use("Runtime.Vector").from([]);
-		modules.each(ctx, (ctx, module_name) =>
+		modules.each((module_name) =>
 		{
 			var __v0 = use("Runtime.rs");
-			if (__v0.substr(ctx, module_name, 0, 1) == "@")
+			if (__v0.substr(module_name, 0, 1) == "@")
 			{
 				/* Get group modules by name */
-				var group_modules = this.getModulesByGroupName(ctx, module_name);
+				var group_modules = this.getModulesByGroupName(module_name);
 				/* Append group modules */
-				new_modules.appendItems(ctx, group_modules);
+				new_modules.appendItems(group_modules);
 			}
 			else
 			{
-				new_modules.push(ctx, module_name);
+				new_modules.push(module_name);
 			}
 		});
-		modules = new_modules.removeDuplicates(ctx);
+		modules = new_modules.removeDuplicates();
 		/* Sort modules by requires */
-		modules = this.sortRequiredModules(ctx, modules);
+		modules = this.sortRequiredModules(modules);
 		return modules;
 	},
 	/**
 	 * Build asset
 	 */
-	buildAsset: async function(ctx, asset)
+	buildAsset: async function(asset)
 	{
 		var __v0 = use("Runtime.Monad");
-		var __v1 = new __v0(ctx, Runtime.rtl.attr(ctx, asset, "dest"));
+		var __v1 = new __v0(Runtime.rtl.attr(asset, "dest"));
 		var __v2 = use("Runtime.rtl");
-		__v1 = __v1.monad(ctx, __v2.m_to(ctx, "string", ""));
-		var asset_path_relative = __v1.value(ctx);
+		__v1 = __v1.monad(__v2.m_to("string", ""));
+		var asset_path_relative = __v1.value();
 		if (asset_path_relative == "")
 		{
 			return Promise.resolve();
 		}
 		/* Get asset dest path */
 		var __v3 = use("Runtime.fs");
-		var asset_path = __v3.join(ctx, use("Runtime.Vector").from([this.path,asset_path_relative]));
+		var asset_path = __v3.join(use("Runtime.Vector").from([this.path,asset_path_relative]));
 		var asset_content = "";
 		/* Get modules names in asset */
-		var modules = this.getAssetModules(ctx, asset);
-		for (var i = 0; i < modules.count(ctx); i++)
+		var modules = this.getAssetModules(asset);
+		for (var i = 0; i < modules.count(); i++)
 		{
-			var module_name = modules.get(ctx, i);
-			var module = this.modules.get(ctx, module_name);
+			var module_name = modules.get(i);
+			var module = this.modules.get(module_name);
 			if (!module)
 			{
 				continue;
 			}
 			/* Get files */
-			for (var j = 0; j < module.assets.count(ctx); j++)
+			for (var j = 0; j < module.assets.count(); j++)
 			{
-				var file_name = module.assets.get(ctx, j);
-				var file_source_path = module.resolveSourceFilePath(ctx, file_name);
-				var file_dest_path = module.resolveDestFilePath(ctx, file_name, "es6");
+				var file_name = module.assets.get(j);
+				var file_source_path = module.resolveSourceFilePath(file_name);
+				var file_dest_path = module.resolveDestFilePath(file_name, "es6");
 				if (file_dest_path)
 				{
 					var __v4 = use("Runtime.fs");
 					var __v6 = use("Runtime.fs");
 					var __v7 = use("Runtime.rs");
-					if (await __v4.isFile(ctx, file_dest_path))
+					if (await __v4.isFile(file_dest_path))
 					{
 						var __v5 = use("Runtime.fs");
-						var content = await __v5.readFile(ctx, file_dest_path);
+						var content = await __v5.readFile(file_dest_path);
 						asset_content += use("Runtime.rtl").toStr(content + use("Runtime.rtl").toStr("\n"));
 					}
-					else if (await __v6.isFile(ctx, file_source_path) && __v7.extname(ctx, file_source_path) == "js")
+					else if (await __v6.isFile(file_source_path) && __v7.extname(file_source_path) == "js")
 					{
 						var __v8 = use("Runtime.fs");
-						var content = await __v8.readFile(ctx, file_source_path);
+						var content = await __v8.readFile(file_source_path);
 						asset_content += use("Runtime.rtl").toStr(content + use("Runtime.rtl").toStr("\n"));
 					}
 				}
@@ -559,20 +559,20 @@ Object.assign(BayLang.Helper.Project.prototype,
 		}
 		/* Create directory if does not exists */
 		var __v4 = use("Runtime.rs");
-		var dir_name = __v4.dirname(ctx, asset_path);
+		var dir_name = __v4.dirname(asset_path);
 		var __v5 = use("Runtime.fs");
-		if (!await __v5.isDir(ctx, dir_name))
+		if (!await __v5.isDir(dir_name))
 		{
 			var __v6 = use("Runtime.fs");
-			await __v6.mkdir(ctx, dir_name);
+			await __v6.mkdir(dir_name);
 		}
 		/* Save file */
 		var __v5 = use("Runtime.fs");
-		await __v5.saveFile(ctx, asset_path, asset_content);
+		await __v5.saveFile(asset_path, asset_content);
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		this.path = "";
 		this.info = null;
 		this.modules = null;
@@ -584,19 +584,19 @@ Object.assign(BayLang.Helper.Project,
 	/**
 	 * Read projects
 	 */
-	readProjects: async function(ctx, projects_path)
+	readProjects: async function(projects_path)
 	{
 		var __v0 = use("Runtime.fs");
-		if (!await __v0.isFolder(ctx, projects_path))
+		if (!await __v0.isFolder(projects_path))
 		{
 			return Promise.resolve(use("Runtime.Vector").from([]));
 		}
 		var result = use("Runtime.Vector").from([]);
 		var __v0 = use("Runtime.fs");
-		var items = await __v0.listDir(ctx, projects_path);
-		for (var i = 0; i < items.count(ctx); i++)
+		var items = await __v0.listDir(projects_path);
+		for (var i = 0; i < items.count(); i++)
 		{
-			var file_name = items.get(ctx, i);
+			var file_name = items.get(i);
 			if (file_name == ".")
 			{
 				continue;
@@ -606,10 +606,10 @@ Object.assign(BayLang.Helper.Project,
 				continue;
 			}
 			var __v1 = use("Runtime.fs");
-			var project = await this.readProject(ctx, __v1.join(ctx, use("Runtime.Vector").from([projects_path,file_name])));
+			var project = await this.readProject(__v1.join(use("Runtime.Vector").from([projects_path,file_name])));
 			if (project)
 			{
-				result.push(ctx, project);
+				result.push(project);
 			}
 		}
 		return Promise.resolve(result);
@@ -617,12 +617,12 @@ Object.assign(BayLang.Helper.Project,
 	/**
 	 * Read project from folder
 	 */
-	readProject: async function(ctx, project_path)
+	readProject: async function(project_path)
 	{
 		var __v0 = use("BayLang.Helper.Project");
-		var project = new __v0(ctx, project_path);
-		await project.init(ctx);
-		if (!project.exists(ctx))
+		var project = new __v0(project_path);
+		await project.init();
+		if (!project.exists())
 		{
 			return Promise.resolve(null);
 		}
@@ -641,7 +641,7 @@ Object.assign(BayLang.Helper.Project,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -650,24 +650,24 @@ Object.assign(BayLang.Helper.Project,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

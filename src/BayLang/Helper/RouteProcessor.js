@@ -19,9 +19,9 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Helper == 'undefined') BayLang.Helper = {};
-BayLang.Helper.RouteProcessor = function(ctx, module)
+BayLang.Helper.RouteProcessor = function(module)
 {
-	use("Runtime.BaseObject").call(this, ctx);
+	use("Runtime.BaseObject").call(this);
 	this.module = module;
 };
 BayLang.Helper.RouteProcessor.prototype = Object.create(use("Runtime.BaseObject").prototype);
@@ -31,33 +31,33 @@ Object.assign(BayLang.Helper.RouteProcessor.prototype,
 	/**
 	 * Returns file path
 	 */
-	getRoutesFilePath: function(ctx)
+	getRoutesFilePath: function()
 	{
 		var __v0 = use("Runtime.fs");
-		return __v0.join(ctx, use("Runtime.Vector").from([this.module.getSourceFolderPath(ctx),"Routes.bay"]));
+		return __v0.join(use("Runtime.Vector").from([this.module.getSourceFolderPath(),"Routes.bay"]));
 	},
 	/**
 	 * Load routes
 	 */
-	load: async function(ctx)
+	load: async function()
 	{
-		var file_path = this.getRoutesFilePath(ctx);
+		var file_path = this.getRoutesFilePath();
 		/* Read file */
 		var __v0 = use("Runtime.fs");
-		if (!await __v0.isFile(ctx, file_path))
+		if (!await __v0.isFile(file_path))
 		{
 			return Promise.resolve();
 		}
 		var __v0 = use("Runtime.fs");
-		var content = await __v0.readFile(ctx, file_path);
+		var content = await __v0.readFile(file_path);
 		var __v2 = use("BayLang.Exceptions.ParserUnknownError");
 		try
 		{
 			/* Parse file */
 			var __v1 = use("BayLang.LangBay.ParserBay");
-			var parser = new __v1(ctx);
-			var res = parser.constructor.parse(ctx, parser, content);
-			var op_code = res.get(ctx, 1);
+			var parser = new __v1();
+			var res = parser.constructor.parse(parser, content);
+			var op_code = res.get(1);
 		}
 		catch (_ex)
 		{
@@ -74,23 +74,23 @@ Object.assign(BayLang.Helper.RouteProcessor.prototype,
 	/**
 	 * Returns routes
 	 */
-	getRoutes: function(ctx)
+	getRoutes: function()
 	{
-		var class_op_code = this.constructor.findClass(ctx, this.op_code);
+		var class_op_code = this.constructor.findClass(this.op_code);
 		if (!class_op_code)
 		{
 			return use("Runtime.Vector").from([]);
 		}
-		var routes_op_code = this.constructor.findFunction(ctx, class_op_code);
+		var routes_op_code = this.constructor.findFunction(class_op_code);
 		if (!routes_op_code)
 		{
 			return use("Runtime.Vector").from([]);
 		}
-		return this.constructor.findRoutes(ctx, routes_op_code);
+		return this.constructor.findRoutes(routes_op_code);
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		this.module = null;
 		this.op_code = null;
 	},
@@ -101,19 +101,19 @@ Object.assign(BayLang.Helper.RouteProcessor,
 	/**
 	 * Find class
 	 */
-	findClass: function(ctx, op_code)
+	findClass: function(op_code)
 	{
 		var __v0 = use("BayLang.OpCodes.OpModule");
 		var __v1 = use("Runtime.lib");
-		return (op_code instanceof __v0) ? (op_code.items.findItem(ctx, __v1.isInstance(ctx, "BayLang.OpCodes.OpDeclareClass"))) : (null);
+		return (op_code instanceof __v0) ? (op_code.items.findItem(__v1.isInstance("BayLang.OpCodes.OpDeclareClass"))) : (null);
 	},
 	/**
 	 * Find function
 	 */
-	findFunction: function(ctx, op_code)
+	findFunction: function(op_code)
 	{
 		var __v0 = use("BayLang.OpCodes.OpDeclareClass");
-		return (op_code instanceof __v0) ? (op_code.items.findItem(ctx, (ctx, op_code) =>
+		return (op_code instanceof __v0) ? (op_code.items.findItem((op_code) =>
 		{
 			var __v1 = use("BayLang.OpCodes.OpDeclareFunction");
 			return op_code instanceof __v1 && op_code.name == "getRoutes";
@@ -122,7 +122,7 @@ Object.assign(BayLang.Helper.RouteProcessor,
 	/**
 	 * Find expression
 	 */
-	findExpression: function(ctx, op_code)
+	findExpression: function(op_code)
 	{
 		if (op_code.expression != null)
 		{
@@ -133,7 +133,7 @@ Object.assign(BayLang.Helper.RouteProcessor,
 		{
 			return null;
 		}
-		var op_code_item = op_code.items.items.get(ctx, 0);
+		var op_code_item = op_code.items.items.get(0);
 		var __v0 = use("BayLang.OpCodes.OpReturn");
 		if (!(op_code_item instanceof __v0))
 		{
@@ -144,9 +144,9 @@ Object.assign(BayLang.Helper.RouteProcessor,
 	/**
 	 * Find routes
 	 */
-	findRoutes: function(ctx, op_code)
+	findRoutes: function(op_code)
 	{
-		var expression = this.findExpression(ctx, op_code);
+		var expression = this.findExpression(op_code);
 		if (expression == null)
 		{
 			return use("Runtime.Vector").from([]);
@@ -160,20 +160,20 @@ Object.assign(BayLang.Helper.RouteProcessor,
 		{
 			return use("Runtime.Vector").from([]);
 		}
-		return expression.values.filter(ctx, (ctx, op_code) =>
+		return expression.values.filter((op_code) =>
 		{
-			return this.isRoute(ctx, op_code);
-		}).map(ctx, (ctx, op_code) =>
+			return this.isRoute(op_code);
+		}).map((op_code) =>
 		{
 			var res = use("Runtime.Map").from({});
-			var values = op_code.args.get(ctx, 0).values;
-			for (var i = 0; i < values.count(ctx); i++)
+			var values = op_code.args.get(0).values;
+			for (var i = 0; i < values.count(); i++)
 			{
-				var value = values.get(ctx, i);
+				var value = values.get(i);
 				var __v0 = use("BayLang.OpCodes.OpString");
 				if (value.value instanceof __v0)
 				{
-					res.set(ctx, value.key, value.value.value);
+					res.set(value.key, value.value.value);
 				}
 			}
 			return res;
@@ -182,7 +182,7 @@ Object.assign(BayLang.Helper.RouteProcessor,
 	/**
 	 * Returns true if op_code is route
 	 */
-	isRoute: function(ctx, op_code)
+	isRoute: function(op_code)
 	{
 		var __v0 = use("BayLang.OpCodes.OpNew");
 		if (!(op_code instanceof __v0))
@@ -194,20 +194,20 @@ Object.assign(BayLang.Helper.RouteProcessor,
 		{
 			return false;
 		}
-		if (op_code.value.entity_name.names.count(ctx) != 1)
+		if (op_code.value.entity_name.names.count() != 1)
 		{
 			return false;
 		}
-		if (op_code.value.entity_name.names.get(ctx, 0) != "RouteInfo")
+		if (op_code.value.entity_name.names.get(0) != "RouteInfo")
 		{
 			return false;
 		}
-		if (op_code.args.count(ctx) != 1)
+		if (op_code.args.count() != 1)
 		{
 			return false;
 		}
 		var __v0 = use("BayLang.OpCodes.OpDict");
-		if (!(op_code.args.get(ctx, 0) instanceof __v0))
+		if (!(op_code.args.get(0) instanceof __v0))
 		{
 			return false;
 		}
@@ -226,7 +226,7 @@ Object.assign(BayLang.Helper.RouteProcessor,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -235,24 +235,24 @@ Object.assign(BayLang.Helper.RouteProcessor,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

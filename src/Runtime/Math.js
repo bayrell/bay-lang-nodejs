@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Math = function(ctx)
+Runtime.Math = function()
 {
 };
 Object.assign(Runtime.Math.prototype,
@@ -31,7 +31,7 @@ Object.assign(Runtime.Math,
 	 * @param double value
 	 * @return int
 	 */
-	ceil: function(ctx, value)
+	ceil: function(value)
 	{
 		return Math.ceil(value);
 	},
@@ -40,7 +40,7 @@ Object.assign(Runtime.Math,
 	 * @param double value
 	 * @return int
 	 */
-	floor: function(ctx, value)
+	floor: function(value)
 	{
 		return Math.floor(value);
 	},
@@ -49,14 +49,14 @@ Object.assign(Runtime.Math,
 	 * @param double value
 	 * @return int
 	 */
-	round: function(ctx, value)
+	round: function(value)
 	{
 		return Math.round(value);
 	},
 	/**
 	 * Returns abs
 	 */
-	abs: function(ctx, a)
+	abs: function(a)
 	{
 		if (a < 0)
 		{
@@ -70,7 +70,7 @@ Object.assign(Runtime.Math,
 	/**
 	 * Returns max
 	 */
-	max: function(ctx, a, b)
+	max: function(a, b)
 	{
 		if (a > b)
 		{
@@ -84,7 +84,7 @@ Object.assign(Runtime.Math,
 	/**
 	 * Returns min
 	 */
-	min: function(ctx, a, b)
+	min: function(a, b)
 	{
 		if (a < b)
 		{
@@ -99,7 +99,7 @@ Object.assign(Runtime.Math,
 	 * Returns random value x, where 0 <= x < 1
 	 * @return double
 	 */
-	urandom: function(ctx)
+	urandom: function()
 	{
 		if (
 			window != undefined && window.crypto != undefined &&
@@ -118,9 +118,9 @@ Object.assign(Runtime.Math,
 	 * @param int b
 	 * @return int
 	 */
-	random: function(ctx, a, b)
+	random: function(a, b)
 	{
-		return this.round(ctx, this.urandom(ctx) * (b - a) + a);
+		return this.round(this.urandom() * (b - a) + a);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
@@ -135,7 +135,7 @@ Object.assign(Runtime.Math,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -144,24 +144,24 @@ Object.assign(Runtime.Math,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

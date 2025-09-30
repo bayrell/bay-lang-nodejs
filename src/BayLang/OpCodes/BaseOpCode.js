@@ -19,11 +19,11 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.BaseOpCode = function(ctx, params)
+BayLang.OpCodes.BaseOpCode = function(params)
 {
 	if (params == undefined) params = null;
-	use("Runtime.BaseObject").call(this, ctx);
-	this._assign_values(ctx, params);
+	use("Runtime.BaseObject").call(this);
+	this._assign_values(params);
 };
 BayLang.OpCodes.BaseOpCode.prototype = Object.create(use("Runtime.BaseObject").prototype);
 BayLang.OpCodes.BaseOpCode.prototype.constructor = BayLang.OpCodes.BaseOpCode;
@@ -32,15 +32,15 @@ Object.assign(BayLang.OpCodes.BaseOpCode.prototype,
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize: function(serializer, data)
 	{
-		serializer.process(ctx, this, "caret_start", data);
-		serializer.process(ctx, this, "caret_end", data);
+		serializer.process(this, "caret_start", data);
+		serializer.process(this, "caret_end", data);
 	},
 	/**
 	 * Is multiline
 	 */
-	isMultiLine: function(ctx)
+	isMultiLine: function()
 	{
 		if (!this.caret_start)
 		{
@@ -57,7 +57,7 @@ Object.assign(BayLang.OpCodes.BaseOpCode.prototype,
 	 * @param Map obj = null
 	 * @return BaseStruct
 	 */
-	clone: function(ctx, obj)
+	clone: function(obj)
 	{
 		if (obj == undefined) obj = null;
 		if (obj == null)
@@ -67,7 +67,7 @@ Object.assign(BayLang.OpCodes.BaseOpCode.prototype,
 		var proto = Object.getPrototypeOf(this);
 		var item = Object.create(proto);
 		item = Object.assign(item, this);
-		item._assign_values(ctx, obj);
+		item._assign_values(obj);
 		
 		return item;
 		return this;
@@ -77,14 +77,14 @@ Object.assign(BayLang.OpCodes.BaseOpCode.prototype,
 	 * @param Map obj = null
 	 * @return BaseStruct
 	 */
-	copy: function(ctx, obj)
+	copy: function(obj)
 	{
 		if (obj == undefined) obj = null;
-		return this.clone(ctx, obj);
+		return this.clone(obj);
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		this.caret_start = null;
 		this.caret_end = null;
 	},
@@ -106,7 +106,7 @@ Object.assign(BayLang.OpCodes.BaseOpCode,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -115,24 +115,24 @@ Object.assign(BayLang.OpCodes.BaseOpCode,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

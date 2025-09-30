@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.CoreParser = function(ctx)
+BayLang.CoreParser = function()
 {
 	use("Runtime.BaseStruct").apply(this, arguments);
 };
@@ -29,20 +29,20 @@ Object.assign(BayLang.CoreParser.prototype,
 	/**
 	 * Returns true if eof
 	 */
-	isEof: function(ctx)
+	isEof: function()
 	{
 		return this.caret.pos >= this.content_sz;
 	},
 	/**
 	 * Returns caret
 	 */
-	getCaret: function(ctx)
+	getCaret: function()
 	{
-		return this.caret.clone(ctx, use("Runtime.Map").from({"file_name":this.file_name,"content":this.content,"content_sz":this.content_sz}));
+		return this.caret.clone(use("Runtime.Map").from({"file_name":this.file_name,"content":this.content,"content_sz":this.content_sz}));
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseStruct").prototype._init.call(this,ctx);
+		use("Runtime.BaseStruct").prototype._init.call(this);
 		this.tab_size = 4;
 		this.file_name = "";
 		this.content = null;
@@ -50,7 +50,7 @@ Object.assign(BayLang.CoreParser.prototype,
 		this.caret = null;
 		this.find_ident = true;
 	},
-	takeValue: function(ctx,k,d)
+	takeValue: function(k,d)
 	{
 		if (d == undefined) d = null;
 		if (k == "tab_size")return this.tab_size;
@@ -59,7 +59,7 @@ Object.assign(BayLang.CoreParser.prototype,
 		else if (k == "content_sz")return this.content_sz;
 		else if (k == "caret")return this.caret;
 		else if (k == "find_ident")return this.find_ident;
-		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
+		return use("Runtime.BaseStruct").prototype.takeValue.call(this,k,d);
 	},
 });
 Object.assign(BayLang.CoreParser, use("Runtime.BaseStruct"));
@@ -68,30 +68,30 @@ Object.assign(BayLang.CoreParser,
 	/**
 	 * Reset parser
 	 */
-	reset: function(ctx, parser)
+	reset: function(parser)
 	{
 		var __v0 = use("BayLang.Caret");
-		return parser.copy(ctx, use("Runtime.Map").from({"caret":new __v0(ctx, use("Runtime.Map").from({})),"token":null}));
+		return parser.copy(use("Runtime.Map").from({"caret":new __v0(use("Runtime.Map").from({})),"token":null}));
 	},
 	/**
 	 * Set content
 	 */
-	setContent: function(ctx, parser, content)
+	setContent: function(parser, content)
 	{
 		var __v0 = use("Runtime.Reference");
 		var __v1 = use("Runtime.rs");
-		return parser.copy(ctx, use("Runtime.Map").from({"content":new __v0(ctx, content),"content_sz":__v1.strlen(ctx, content)}));
+		return parser.copy(use("Runtime.Map").from({"content":new __v0(content),"content_sz":__v1.strlen(content)}));
 	},
 	/**
 	 * Parse file and convert to BaseOpCode
 	 */
-	parse: function(ctx, parser, content)
+	parse: function(parser, content)
 	{
-		parser = this.reset(ctx, parser);
-		parser = this.setContent(ctx, parser, content);
+		parser = this.reset(parser);
+		parser = this.setContent(parser, content);
 		while (parser.caret.pos < parser.content_sz)
 		{
-			parser = parser.constructor.nextToken(ctx, parser);
+			parser = parser.constructor.nextToken(parser);
 		}
 		return parser;
 	},
@@ -108,7 +108,7 @@ Object.assign(BayLang.CoreParser,
 	{
 		return "Runtime.BaseStruct";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -117,7 +117,7 @@ Object.assign(BayLang.CoreParser,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		a.push("tab_size");
@@ -128,19 +128,19 @@ Object.assign(BayLang.CoreParser,
 		a.push("find_ident");
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

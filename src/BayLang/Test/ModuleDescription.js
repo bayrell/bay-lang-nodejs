@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Test == 'undefined') BayLang.Test = {};
-BayLang.Test.ModuleDescription = function(ctx)
+BayLang.Test.ModuleDescription = function()
 {
 };
 Object.assign(BayLang.Test.ModuleDescription.prototype,
@@ -31,7 +31,7 @@ Object.assign(BayLang.Test.ModuleDescription,
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleName: function(ctx)
+	getModuleName: function()
 	{
 		return "BayLang.Test";
 	},
@@ -39,23 +39,23 @@ Object.assign(BayLang.Test.ModuleDescription,
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleVersion: function(ctx)
+	getModuleVersion: function()
 	{
 		var __v0 = use("BayLang.ModuleDescription");
-		return __v0.getModuleVersion(ctx);
+		return __v0.getModuleVersion();
 	},
 	/**
 	 * Returns required modules
 	 * @return Map<string>
 	 */
-	requiredModules: function(ctx)
+	requiredModules: function()
 	{
 		return use("Runtime.Map").from({"BayLang":">=0.12"});
 	},
 	/**
 	 * Returns enities
 	 */
-	entities: function(ctx)
+	entities: function()
 	{
 		var __v0 = use("Runtime.Unit.UnitTest");
 		var __v1 = use("Runtime.Unit.UnitTest");
@@ -63,7 +63,7 @@ Object.assign(BayLang.Test.ModuleDescription,
 		var __v3 = use("Runtime.Unit.UnitTest");
 		var __v4 = use("Runtime.Unit.UnitTest");
 		var __v5 = use("Runtime.Unit.UnitTest");
-		return use("Runtime.Vector").from([new __v0(ctx, "BayLang.Test.LangBay.Base"),new __v1(ctx, "BayLang.Test.LangBay.Expression"),new __v2(ctx, "BayLang.Test.LangBay.Html"),new __v3(ctx, "BayLang.Test.LangBay.Operator"),new __v4(ctx, "BayLang.Test.LangBay.Program"),new __v5(ctx, "BayLang.Test.LangBay.Style")]);
+		return use("Runtime.Vector").from([new __v0("BayLang.Test.LangBay.Base"),new __v1("BayLang.Test.LangBay.Expression"),new __v2("BayLang.Test.LangBay.Html"),new __v3("BayLang.Test.LangBay.Operator"),new __v4("BayLang.Test.LangBay.Program"),new __v5("BayLang.Test.LangBay.Style")]);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
@@ -78,7 +78,7 @@ Object.assign(BayLang.Test.ModuleDescription,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -87,24 +87,24 @@ Object.assign(BayLang.Test.ModuleDescription,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

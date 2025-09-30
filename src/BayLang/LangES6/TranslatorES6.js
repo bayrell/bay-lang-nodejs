@@ -19,7 +19,7 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
-BayLang.LangES6.TranslatorES6 = function(ctx)
+BayLang.LangES6.TranslatorES6 = function()
 {
 	use("BayLang.CoreTranslator").apply(this, arguments);
 };
@@ -30,20 +30,20 @@ Object.assign(BayLang.LangES6.TranslatorES6.prototype,
 	/**
 	 * Returns true if emulate async await
 	 */
-	isEmulateAsyncAwait: function(ctx)
+	isEmulateAsyncAwait: function()
 	{
 		return this.enable_async_await && this.emulate_async_await;
 	},
 	/**
 	 * Returns true if async await
 	 */
-	isAsyncAwait: function(ctx)
+	isAsyncAwait: function()
 	{
 		return this.enable_async_await && !this.emulate_async_await;
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("BayLang.CoreTranslator").prototype._init.call(this,ctx);
+		use("BayLang.CoreTranslator").prototype._init.call(this);
 		this.is_pipe = false;
 		this.is_call = false;
 		this.pipe_var_name = "";
@@ -65,7 +65,7 @@ Object.assign(BayLang.LangES6.TranslatorES6.prototype,
 		this.enable_check_types = false;
 		this.enable_introspection = true;
 	},
-	takeValue: function(ctx,k,d)
+	takeValue: function(k,d)
 	{
 		if (d == undefined) d = null;
 		if (k == "is_pipe")return this.is_pipe;
@@ -88,7 +88,7 @@ Object.assign(BayLang.LangES6.TranslatorES6.prototype,
 		else if (k == "enable_context")return this.enable_context;
 		else if (k == "enable_check_types")return this.enable_check_types;
 		else if (k == "enable_introspection")return this.enable_introspection;
-		return use("BayLang.CoreTranslator").prototype.takeValue.call(this,ctx,k,d);
+		return use("BayLang.CoreTranslator").prototype.takeValue.call(this,k,d);
 	},
 });
 Object.assign(BayLang.LangES6.TranslatorES6, use("BayLang.CoreTranslator"));
@@ -97,7 +97,7 @@ Object.assign(BayLang.LangES6.TranslatorES6,
 	/**
 	 * Reset translator
 	 */
-	reset: function(ctx, t)
+	reset: function(t)
 	{
 		var __v0 = use("Runtime.Dict");
 		var __v1 = use("BayLang.LangES6.TranslatorES6AsyncAwait");
@@ -107,37 +107,37 @@ Object.assign(BayLang.LangES6.TranslatorES6,
 		var __v5 = use("BayLang.LangES6.TranslatorES6Program");
 		var __v6 = use("Runtime.Collection");
 		var __v7 = use("Runtime.Collection");
-		return t.copy(ctx, use("Runtime.Map").from({"value":"","current_namespace_name":"","debug_component":use("Runtime.Vector").from([]),"modules":new __v0(ctx),"async_await":new __v1(ctx),"expression":new __v2(ctx),"html":new __v3(ctx),"operator":new __v4(ctx),"program":new __v5(ctx),"save_vars":new __v6(ctx),"save_op_codes":new __v7(ctx),"save_op_code_inc":0,"preprocessor_flags":use("Runtime.Map").from({"ES6":true,"JAVASCRIPT":true,"FRONTEND":t.frontend,"BACKEND":t.backend,"USE_MODULE_NAME":t.use_module_name,"USE_STRICT":t.use_strict,"ENABLE_ASYNC_AWAIT":t.enable_async_await,"EMULATE_ASYNC_AWAIT":t.emulate_async_await,"ENABLE_CONTEXT":t.enable_context,"ENABLE_CHECK_TYPES":t.enable_check_types})}));
+		return t.copy(use("Runtime.Map").from({"value":"","current_namespace_name":"","debug_component":use("Runtime.Vector").from([]),"modules":new __v0(),"async_await":new __v1(),"expression":new __v2(),"html":new __v3(),"operator":new __v4(),"program":new __v5(),"save_vars":new __v6(),"save_op_codes":new __v7(),"save_op_code_inc":0,"preprocessor_flags":use("Runtime.Map").from({"ES6":true,"JAVASCRIPT":true,"FRONTEND":t.frontend,"BACKEND":t.backend,"USE_MODULE_NAME":t.use_module_name,"USE_STRICT":t.use_strict,"ENABLE_ASYNC_AWAIT":t.enable_async_await,"EMULATE_ASYNC_AWAIT":t.emulate_async_await,"ENABLE_CONTEXT":t.enable_context,"ENABLE_CHECK_TYPES":t.enable_check_types})}));
 	},
 	/**
 	 * Translate BaseOpCode
 	 */
-	translate: function(ctx, t, op_code)
+	translate: function(t, op_code)
 	{
-		return t.program.constructor.translateProgram(ctx, t, op_code);
+		return t.program.constructor.translateProgram(t, op_code);
 	},
 	/**
 	 * Output save op code content
 	 */
-	outputSaveOpCode: function(ctx, t, save_op_code_value)
+	outputSaveOpCode: function(t, save_op_code_value)
 	{
 		if (save_op_code_value == undefined) save_op_code_value = 0;
 		var content = "";
-		for (var i = 0; i < t.save_op_codes.count(ctx); i++)
+		for (var i = 0; i < t.save_op_codes.count(); i++)
 		{
 			if (i < save_op_code_value)
 			{
 				continue;
 			}
-			var save = t.save_op_codes.item(ctx, i);
+			var save = t.save_op_codes.item(i);
 			var s = "";
 			if (t.is_html)
 			{
-				s = (save.content == "") ? (t.s(ctx, "let " + use("Runtime.rtl").toStr(save.var_name) + use("Runtime.rtl").toStr(" = ") + use("Runtime.rtl").toStr(save.var_content) + use("Runtime.rtl").toStr(";"))) : (save.content);
+				s = (save.content == "") ? (t.s("let " + use("Runtime.rtl").toStr(save.var_name) + use("Runtime.rtl").toStr(" = ") + use("Runtime.rtl").toStr(save.var_content) + use("Runtime.rtl").toStr(";"))) : (save.content);
 			}
 			else
 			{
-				s = (save.content == "") ? (t.s(ctx, "var " + use("Runtime.rtl").toStr(save.var_name) + use("Runtime.rtl").toStr(" = ") + use("Runtime.rtl").toStr(save.var_content) + use("Runtime.rtl").toStr(";"))) : (save.content);
+				s = (save.content == "") ? (t.s("var " + use("Runtime.rtl").toStr(save.var_name) + use("Runtime.rtl").toStr(" = ") + use("Runtime.rtl").toStr(save.var_content) + use("Runtime.rtl").toStr(";"))) : (save.content);
 			}
 			content += use("Runtime.rtl").toStr(s);
 		}
@@ -156,7 +156,7 @@ Object.assign(BayLang.LangES6.TranslatorES6,
 	{
 		return "BayLang.CoreTranslator";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -165,7 +165,7 @@ Object.assign(BayLang.LangES6.TranslatorES6,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		a.push("is_pipe");
@@ -190,19 +190,19 @@ Object.assign(BayLang.LangES6.TranslatorES6,
 		a.push("enable_introspection");
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

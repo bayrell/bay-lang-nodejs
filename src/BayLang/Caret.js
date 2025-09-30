@@ -18,44 +18,44 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.Caret = function(ctx, items)
+BayLang.Caret = function(items)
 {
 	if (items == undefined) items = null;
-	use("Runtime.BaseObject").call(this, ctx);
+	use("Runtime.BaseObject").call(this);
 	if (items)
 	{
-		if (items.has(ctx, "file_name"))
+		if (items.has("file_name"))
 		{
-			this.file_name = items.get(ctx, "file_name");
+			this.file_name = items.get("file_name");
 		}
-		if (items.has(ctx, "content"))
+		if (items.has("content"))
 		{
-			this.content = items.get(ctx, "content");
+			this.content = items.get("content");
 		}
-		if (items.has(ctx, "content_sz"))
+		if (items.has("content_sz"))
 		{
-			this.content_sz = items.get(ctx, "content_sz");
+			this.content_sz = items.get("content_sz");
 		}
-		if (items.has(ctx, "content") && !items.has(ctx, "content_sz"))
+		if (items.has("content") && !items.has("content_sz"))
 		{
 			var __v0 = use("Runtime.rs");
-			this.content_sz = __v0.strlen(ctx, this.content.ref);
+			this.content_sz = __v0.strlen(this.content.ref);
 		}
-		if (items.has(ctx, "tab_size"))
+		if (items.has("tab_size"))
 		{
-			this.tab_size = items.get(ctx, "tab_size");
+			this.tab_size = items.get("tab_size");
 		}
-		if (items.has(ctx, "pos"))
+		if (items.has("pos"))
 		{
-			this.pos = items.get(ctx, "pos");
+			this.pos = items.get("pos");
 		}
-		if (items.has(ctx, "x"))
+		if (items.has("x"))
 		{
-			this.x = items.get(ctx, "x");
+			this.x = items.get("x");
 		}
-		if (items.has(ctx, "y"))
+		if (items.has("y"))
 		{
-			this.y = items.get(ctx, "y");
+			this.y = items.get("y");
 		}
 	}
 };
@@ -66,33 +66,33 @@ Object.assign(BayLang.Caret.prototype,
 	/**
 	 * Clone
 	 */
-	clone: function(ctx, items)
+	clone: function(items)
 	{
 		if (items == undefined) items = null;
 		var __v0 = use("BayLang.Caret");
-		return new __v0(ctx, use("Runtime.Map").from({"file_name":(items) ? (items.get(ctx, "file_name", this.file_name)) : (this.file_name),"content":(items) ? (items.get(ctx, "content", this.content)) : (this.content),"content_sz":(items) ? (items.get(ctx, "content_sz", this.content_sz)) : (this.content_sz),"tab_size":(items) ? (items.get(ctx, "tab_size", this.tab_size)) : (this.tab_size),"pos":(items) ? (items.get(ctx, "pos", this.pos)) : (this.pos),"x":(items) ? (items.get(ctx, "x", this.x)) : (this.x),"y":(items) ? (items.get(ctx, "y", this.y)) : (this.y)}));
+		return new __v0(use("Runtime.Map").from({"file_name":(items) ? (items.get("file_name", this.file_name)) : (this.file_name),"content":(items) ? (items.get("content", this.content)) : (this.content),"content_sz":(items) ? (items.get("content_sz", this.content_sz)) : (this.content_sz),"tab_size":(items) ? (items.get("tab_size", this.tab_size)) : (this.tab_size),"pos":(items) ? (items.get("pos", this.pos)) : (this.pos),"x":(items) ? (items.get("x", this.x)) : (this.x),"y":(items) ? (items.get("y", this.y)) : (this.y)}));
 	},
 	/**
 	 * Copy caret
 	 */
-	copy: function(ctx, items)
+	copy: function(items)
 	{
 		if (items == undefined) items = null;
-		return this.clone(ctx, items);
+		return this.clone(items);
 	},
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize: function(serializer, data)
 	{
-		serializer.process(ctx, this, "pos", data);
-		serializer.process(ctx, this, "x", data);
-		serializer.process(ctx, this, "y", data);
+		serializer.process(this, "pos", data);
+		serializer.process(this, "x", data);
+		serializer.process(this, "y", data);
 	},
 	/**
 	 * Seek caret
 	 */
-	seek: function(ctx, caret)
+	seek: function(caret)
 	{
 		this.pos = caret.pos;
 		this.x = caret.x;
@@ -101,14 +101,14 @@ Object.assign(BayLang.Caret.prototype,
 	/**
 	 * Returns true if eof
 	 */
-	eof: function(ctx)
+	eof: function()
 	{
 		return this.pos >= this.content_sz;
 	},
 	/**
 	 * Returns next X
 	 */
-	nextX: function(ctx, ch, direction)
+	nextX: function(ch, direction)
 	{
 		if (direction == undefined) direction = 1;
 		if (ch == "\t")
@@ -124,7 +124,7 @@ Object.assign(BayLang.Caret.prototype,
 	/**
 	 * Returns next Y
 	 */
-	nextY: function(ctx, ch, direction)
+	nextY: function(ch, direction)
 	{
 		if (direction == undefined) direction = 1;
 		if (ch == "\n")
@@ -136,113 +136,113 @@ Object.assign(BayLang.Caret.prototype,
 	/**
 	 * Returns next char
 	 */
-	nextChar: function(ctx)
+	nextChar: function()
 	{
 		var __v0 = use("Runtime.rs");
-		return __v0.charAt(ctx, this.content.ref, this.pos, 1);
+		return __v0.charAt(this.content.ref, this.pos, 1);
 	},
 	/**
 	 * Returns string
 	 */
-	getString: function(ctx, start_pos, count)
+	getString: function(start_pos, count)
 	{
 		var __v0 = use("Runtime.rs");
-		return __v0.substr(ctx, this.content.ref, start_pos, count);
+		return __v0.substr(this.content.ref, start_pos, count);
 	},
 	/**
 	 * Returns next string
 	 */
-	nextString: function(ctx, count)
+	nextString: function(count)
 	{
 		var __v0 = use("Runtime.rs");
-		return __v0.substr(ctx, this.content.ref, this.pos, count);
+		return __v0.substr(this.content.ref, this.pos, count);
 	},
 	/**
 	 * Returns true if next char
 	 */
-	isNextChar: function(ctx, ch)
+	isNextChar: function(ch)
 	{
-		return this.nextChar(ctx) == ch;
+		return this.nextChar() == ch;
 	},
 	/**
 	 * Returns true if next string
 	 */
-	isNextString: function(ctx, s)
+	isNextString: function(s)
 	{
 		var __v0 = use("Runtime.rs");
-		return this.nextString(ctx, __v0.strlen(ctx, s)) == s;
+		return this.nextString(__v0.strlen(s)) == s;
 	},
 	/**
 	 * Shift by char
 	 */
-	shift: function(ctx, ch)
+	shift: function(ch)
 	{
-		this.x = this.nextX(ctx, ch);
-		this.y = this.nextY(ctx, ch);
+		this.x = this.nextX(ch);
+		this.y = this.nextY(ch);
 		this.pos = this.pos + 1;
 	},
 	/**
 	 * Read char
 	 */
-	readChar: function(ctx)
+	readChar: function()
 	{
 		var __v0 = use("Runtime.rs");
-		var ch = __v0.charAt(ctx, this.content.ref, this.pos);
-		this.shift(ctx, ch);
+		var ch = __v0.charAt(this.content.ref, this.pos);
+		this.shift(ch);
 		return ch;
 	},
 	/**
 	 * Read char
 	 */
-	readString: function(ctx, count)
+	readString: function(count)
 	{
-		var s = this.nextString(ctx, count);
+		var s = this.nextString(count);
 		var __v0 = use("Runtime.rs");
-		var count = __v0.strlen(ctx, s);
+		var count = __v0.strlen(s);
 		for (var i = 0; i < count; i++)
 		{
 			var __v1 = use("Runtime.rs");
-			var ch = __v1.charAt(ctx, s, i);
-			this.shift(ctx, ch);
+			var ch = __v1.charAt(s, i);
+			this.shift(ch);
 		}
 		return s;
 	},
 	/**
 	 * Match char
 	 */
-	matchChar: function(ctx, ch)
+	matchChar: function(ch)
 	{
-		var next = this.nextChar(ctx);
+		var next = this.nextChar();
 		if (next != ch)
 		{
 			var __v0 = use("BayLang.Exceptions.ParserExpected");
-			throw new __v0(ctx, ch, this, this.file_name)
+			throw new __v0(ch, this, this.file_name)
 		}
-		this.readChar(ctx);
+		this.readChar();
 	},
 	/**
 	 * Match string
 	 */
-	matchString: function(ctx, s)
+	matchString: function(s)
 	{
 		var __v0 = use("Runtime.rs");
-		var count = __v0.strlen(ctx, s);
-		var next_string = this.nextString(ctx, count);
+		var count = __v0.strlen(s);
+		var next_string = this.nextString(count);
 		if (next_string != s)
 		{
 			var __v1 = use("BayLang.Exceptions.ParserExpected");
-			throw new __v1(ctx, s, this, this.file_name)
+			throw new __v1(s, this, this.file_name)
 		}
-		this.readString(ctx, count);
+		this.readString(count);
 	},
 	/**
 	 * Skip chars
 	 */
-	skipChar: function(ctx, ch)
+	skipChar: function(ch)
 	{
-		if (this.nextChar(ctx) == ch)
+		if (this.nextChar() == ch)
 		{
-			this.readChar(ctx);
+			this.readChar();
 			return true;
 		}
 		return false;
@@ -250,47 +250,47 @@ Object.assign(BayLang.Caret.prototype,
 	/**
 	 * Skip space
 	 */
-	skipSpace: function(ctx)
+	skipSpace: function()
 	{
-		while (!this.eof(ctx) && this.constructor.isSkipChar(ctx, this.nextChar(ctx)))
+		while (!this.eof() && this.constructor.isSkipChar(this.nextChar()))
 		{
-			this.readChar(ctx);
+			this.readChar();
 		}
 	},
 	/**
 	 * Returns true if token char
 	 */
-	isTokenChar: function(ctx, ch)
+	isTokenChar: function(ch)
 	{
 		var __v0 = use("Runtime.rs");
 		var __v1 = use("Runtime.rs");
-		return __v0.indexOf(ctx, "qazwsxedcrfvtgbyhnujmikolp0123456789_", __v1.lower(ctx, ch)) !== -1;
+		return __v0.indexOf("qazwsxedcrfvtgbyhnujmikolp0123456789_", __v1.lower(ch)) !== -1;
 	},
 	/**
 	 * Read next token
 	 */
-	readToken: function(ctx)
+	readToken: function()
 	{
 		var items = use("Runtime.Vector").from([]);
-		this.skipSpace(ctx);
-		if (this.eof(ctx))
+		this.skipSpace();
+		if (this.eof())
 		{
 			return "";
 		}
-		if (!this.isTokenChar(ctx, this.nextChar(ctx)))
+		if (!this.isTokenChar(this.nextChar()))
 		{
-			return this.readChar(ctx);
+			return this.readChar();
 		}
-		while (!this.eof(ctx) && this.isTokenChar(ctx, this.nextChar(ctx)))
+		while (!this.eof() && this.isTokenChar(this.nextChar()))
 		{
-			items.push(ctx, this.readChar(ctx));
+			items.push(this.readChar());
 		}
 		var __v0 = use("Runtime.rs");
-		return __v0.join(ctx, "", items);
+		return __v0.join("", items);
 	},
-	_init: function(ctx)
+	_init: function()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		use("Runtime.BaseObject").prototype._init.call(this);
 		this.file_name = null;
 		this.content = null;
 		this.content_sz = 0;
@@ -308,13 +308,13 @@ Object.assign(BayLang.Caret,
 	 * @param char ch
 	 * @return boolean
 	 */
-	isChar: function(ctx, ch)
+	isChar: function(ch)
 	{
 		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isChar", arguments);
 		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
 		var __v1 = use("Runtime.rs");
-		var __memorize_value = __v0.indexOf(ctx, "qazwsxedcrfvtgbyhnujmikolp", __v1.lower(ctx, ch)) !== -1;
+		var __memorize_value = __v0.indexOf("qazwsxedcrfvtgbyhnujmikolp", __v1.lower(ch)) !== -1;
 		use("Runtime.rtl")._memorizeSave("BayLang.Caret.isChar", arguments, __memorize_value);
 		return __memorize_value;
 	},
@@ -323,12 +323,12 @@ Object.assign(BayLang.Caret,
 	 * @param char ch
 	 * @return boolean
 	 */
-	isNumber: function(ctx, ch)
+	isNumber: function(ch)
 	{
 		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isNumber", arguments);
 		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
-		var __memorize_value = __v0.indexOf(ctx, "0123456789", ch) !== -1;
+		var __memorize_value = __v0.indexOf("0123456789", ch) !== -1;
 		use("Runtime.rtl")._memorizeSave("BayLang.Caret.isNumber", arguments, __memorize_value);
 		return __memorize_value;
 	},
@@ -337,13 +337,13 @@ Object.assign(BayLang.Caret,
 	 * @param char ch
 	 * @return boolean
 	 */
-	isHexChar: function(ctx, ch)
+	isHexChar: function(ch)
 	{
 		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isHexChar", arguments);
 		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
 		var __v1 = use("Runtime.rs");
-		var __memorize_value = __v0.indexOf(ctx, "0123456789abcdef", __v1.lower(ctx, ch)) !== -1;
+		var __memorize_value = __v0.indexOf("0123456789abcdef", __v1.lower(ch)) !== -1;
 		use("Runtime.rtl")._memorizeSave("BayLang.Caret.isHexChar", arguments, __memorize_value);
 		return __memorize_value;
 	},
@@ -352,16 +352,16 @@ Object.assign(BayLang.Caret,
 	 * @param string s
 	 * @return boolean
 	 */
-	isStringOfNumbers: function(ctx, s)
+	isStringOfNumbers: function(s)
 	{
 		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isStringOfNumbers", arguments);
 		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
-		var sz = __v0.strlen(ctx, s);
+		var sz = __v0.strlen(s);
 		for (var i = 0; i < sz; i++)
 		{
 			var __v1 = use("Runtime.rs");
-			if (!this.isNumber(ctx, __v1.charAt(ctx, s, i)))
+			if (!this.isNumber(__v1.charAt(s, i)))
 			{
 				var __memorize_value = false;
 				use("Runtime.rtl")._memorizeSave("BayLang.Caret.isStringOfNumbers", arguments, __memorize_value);
@@ -377,12 +377,12 @@ Object.assign(BayLang.Caret,
 	 * @param char ch
 	 * @return boolean
 	 */
-	isSkipChar: function(ctx, ch)
+	isSkipChar: function(ch)
 	{
 		var __memorize_value = use("Runtime.rtl")._memorizeValue("BayLang.Caret.isSkipChar", arguments);
 		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
 		var __v0 = use("Runtime.rs");
-		if (__v0.ord(ctx, ch) <= 32)
+		if (__v0.ord(ch) <= 32)
 		{
 			var __memorize_value = true;
 			use("Runtime.rtl")._memorizeSave("BayLang.Caret.isSkipChar", arguments, __memorize_value);
@@ -405,7 +405,7 @@ Object.assign(BayLang.Caret,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -414,24 +414,24 @@ Object.assign(BayLang.Caret,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.BuilderOpCode = function(ctx)
+BayLang.BuilderOpCode = function()
 {
 	use("Runtime.BaseObject").apply(this, arguments);
 };
@@ -29,23 +29,23 @@ Object.assign(BayLang.BuilderOpCode.prototype,
 	/**
 	 * Add slot
 	 */
-	addSlot: function(ctx, op_code, name)
+	addSlot: function(op_code, name)
 	{
 		var __v0 = use("BayLang.OpCodes.OpHtmlSlot");
 		var __v1 = use("BayLang.OpCodes.OpHtmlItems");
-		var slot = new __v0(ctx, use("Runtime.Map").from({"name":name,"items":new __v1(ctx)}));
-		op_code.items.items.push(ctx, slot);
+		var slot = new __v0(use("Runtime.Map").from({"name":name,"items":new __v1()}));
+		op_code.items.items.push(slot);
 		return slot;
 	},
 	/**
 	 * Add tag
 	 */
-	addTag: function(ctx, op_code, name)
+	addTag: function(op_code, name)
 	{
 		var __v0 = use("BayLang.OpCodes.OpHtmlTag");
 		var __v1 = use("BayLang.OpCodes.OpHtmlItems");
-		var tag = new __v0(ctx, use("Runtime.Map").from({"attrs":use("Runtime.Vector").from([]),"items":new __v1(ctx),"tag_name":name}));
-		op_code.items.items.push(ctx, tag);
+		var tag = new __v0(use("Runtime.Map").from({"attrs":use("Runtime.Vector").from([]),"items":new __v1(),"tag_name":name}));
+		op_code.items.items.push(tag);
 		return tag;
 	},
 });
@@ -65,7 +65,7 @@ Object.assign(BayLang.BuilderOpCode,
 	{
 		return "Runtime.BaseObject";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -74,24 +74,24 @@ Object.assign(BayLang.BuilderOpCode,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

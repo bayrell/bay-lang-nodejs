@@ -20,7 +20,7 @@ var use = require('bay-lang').use;
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
-BayLang.Compiler.Commands.Make = function(ctx)
+BayLang.Compiler.Commands.Make = function()
 {
 	use("Runtime.Console.BaseCommand").apply(this, arguments);
 };
@@ -31,20 +31,20 @@ Object.assign(BayLang.Compiler.Commands.Make.prototype,
 	/**
 	 * Run task
 	 */
-	run: async function(ctx)
+	run: async function()
 	{
-		var module_name = Runtime.rtl.attr(ctx, ctx.cli_args, 2);
-		var lang = Runtime.rtl.attr(ctx, ctx.cli_args, 3);
+		var module_name = Runtime.rtl.attr(use("Runtime.rtl").getContext().cli_args, 2);
+		var lang = Runtime.rtl.attr(use("Runtime.rtl").getContext().cli_args, 3);
 		var __v0 = use("Runtime.rtl");
-		if (__v0.isEmpty(ctx, module_name))
+		if (__v0.isEmpty(module_name))
 		{
 			var __v1 = use("BayLang.Compiler.Commands.Modules");
-			__v1.showModules(ctx);
+			__v1.showModules();
 			return Promise.resolve(0);
 		}
 		/* Compile module */
-		var settings = ctx.provider(ctx, "BayLang.Compiler.SettingsProvider");
-		var result = await settings.compileModule(ctx, module_name, lang);
+		var settings = use("Runtime.rtl").getContext().provider("BayLang.Compiler.SettingsProvider");
+		var result = await settings.compileModule(module_name, lang);
 		if (!result)
 		{
 			return Promise.resolve(this.constructor.FAIL);
@@ -58,14 +58,14 @@ Object.assign(BayLang.Compiler.Commands.Make,
 	/**
 	 * Returns name
 	 */
-	getName: function(ctx)
+	getName: function()
 	{
 		return "make";
 	},
 	/**
 	 * Returns description
 	 */
-	getDescription: function(ctx)
+	getDescription: function()
 	{
 		return "Make module";
 	},
@@ -82,7 +82,7 @@ Object.assign(BayLang.Compiler.Commands.Make,
 	{
 		return "Runtime.Console.BaseCommand";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -91,24 +91,24 @@ Object.assign(BayLang.Compiler.Commands.Make,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

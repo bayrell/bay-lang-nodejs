@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Map = function(ctx)
+Runtime.Map = function()
 {
 	use("Runtime.Dict").apply(this, arguments);
 };
@@ -32,7 +32,7 @@ Object.assign(Runtime.Map.prototype,
 	 * @param T value 
 	 * @return self
 	 */
-	set: function(ctx, key, value)
+	set: function(key, value)
 	{
 		key = this.toStr(key);
 		this._map["|" + key] = value;
@@ -43,7 +43,7 @@ Object.assign(Runtime.Map.prototype,
 	 * @param string key
 	 * @return self
 	 */
-	remove: function(ctx, key)
+	remove: function(key)
 	{
 		key = this.toStr(key);
 		if (typeof this._map["|" + key] != "undefined")
@@ -56,7 +56,7 @@ Object.assign(Runtime.Map.prototype,
 	 * Clear all values from vector
 	 * @return self
 	 */
-	clear: function(ctx)
+	clear: function()
 	{
 		this._map = {};
 		return this;
@@ -69,11 +69,11 @@ Object.assign(Runtime.Map,
 	 * Returns new Instance
 	 * @return Object
 	 */
-	Instance: function(ctx, val)
+	Instance: function(val)
 	{
 		if (val == undefined) val = null;
 		var __v0 = use("Runtime.Map");
-		return new __v0(ctx, val);
+		return new __v0(val);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
@@ -88,7 +88,7 @@ Object.assign(Runtime.Map,
 	{
 		return "Runtime.Dict";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -97,24 +97,24 @@ Object.assign(Runtime.Map,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},

@@ -18,7 +18,7 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.MapInterface = function(ctx)
+Runtime.MapInterface = function()
 {
 };
 Object.assign(Runtime.MapInterface.prototype,
@@ -26,14 +26,14 @@ Object.assign(Runtime.MapInterface.prototype,
 	/**
 	 * Returns string
 	 */
-	get: function(ctx, name, def_value)
+	get: function(name, def_value)
 	{
 		if (def_value == undefined) def_value = null;
 	},
 	/**
 	 * Set new value
 	 */
-	set: function(ctx, name, value)
+	set: function(name, value)
 	{
 	},
 });

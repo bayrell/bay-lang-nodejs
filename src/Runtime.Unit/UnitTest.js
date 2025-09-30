@@ -19,9 +19,9 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
-Runtime.Unit.UnitTest = function(ctx, api_name)
+Runtime.Unit.UnitTest = function(api_name)
 {
-	use("Runtime.Entity.Entity").call(this, ctx, use("Runtime.Map").from({"name":api_name}));
+	use("Runtime.Entity.Entity").call(this, use("Runtime.Map").from({"name":api_name}));
 };
 Runtime.Unit.UnitTest.prototype = Object.create(use("Runtime.Entity.Entity").prototype);
 Runtime.Unit.UnitTest.prototype.constructor = Runtime.Unit.UnitTest;
@@ -44,7 +44,7 @@ Object.assign(Runtime.Unit.UnitTest,
 	{
 		return "Runtime.Entity.Entity";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -53,24 +53,24 @@ Object.assign(Runtime.Unit.UnitTest,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		return null;
 	},
