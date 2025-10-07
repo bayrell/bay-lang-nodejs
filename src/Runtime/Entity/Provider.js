@@ -1,5 +1,7 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const Entity = use("Runtime.Entity.Entity");
 /*!
  *  BayLang Technology
  *
@@ -19,115 +21,62 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Entity == 'undefined') Runtime.Entity = {};
-Runtime.Entity.Provider = function(ctx, name, value, params)
+Runtime.Entity.Provider = class extends Entity
 {
-	if (value == undefined) value = null;
-	if (params == undefined) params = null;
-	var __v0 = use("Runtime.Dict");
-	if (value instanceof __v0)
+	/* Provider class name */
+	
+	/* Factory params */
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(name, value, params)
 	{
-		params = value;
-		value = null;
+		if (value == undefined) value = null;
+		if (params == undefined) params = null;
+		super(Map.create({
+			"name": name,
+			"value": value,
+			"params": params,
+		}));
 	}
-	if (value == null)
-	{
-		value = name;
-	}
-	use("Runtime.Entity.Entity").call(this, ctx, use("Runtime.Map").from({"name":name,"value":value,"params":params}));
-};
-Runtime.Entity.Provider.prototype = Object.create(use("Runtime.Entity.Entity").prototype);
-Runtime.Entity.Provider.prototype.constructor = Runtime.Entity.Provider;
-Object.assign(Runtime.Entity.Provider.prototype,
-{
+	
+	
 	/**
 	 * Create provider
 	 */
-	createInstance: function(ctx)
+	createInstance()
 	{
+		const BaseProvider = use("Runtime.BaseProvider");
 		var provider = null;
 		var class_name = this.value;
-		if (class_name == null)
-		{
-			class_name = this.name;
-		}
-		var __v0 = use("Runtime.BaseProvider");
-		var __v1 = use("Runtime.rtl");
-		if (class_name instanceof __v0)
+		if (class_name == null) class_name = this.name;
+		if (class_name instanceof BaseProvider)
 		{
 			provider = class_name;
 		}
-		else if (__v1.isString(ctx, class_name))
+		else if (rtl.isString(class_name))
 		{
-			var __v2 = use("Runtime.rtl");
-			provider = __v2.newInstance(ctx, class_name, use("Runtime.Vector").from([this.params]));
+			provider = rtl.newInstance(class_name, [this.params]);
 		}
 		return provider;
-	},
-	_init: function(ctx)
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.Entity.Entity").prototype._init.call(this,ctx);
+		super._init();
 		this.value = null;
 		this.params = null;
-	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "value")return this.value;
-		else if (k == "params")return this.params;
-		return use("Runtime.Entity.Entity").prototype.takeValue.call(this,ctx,k,d);
-	},
-});
-Object.assign(Runtime.Entity.Provider, use("Runtime.Entity.Entity"));
-Object.assign(Runtime.Entity.Provider,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime.Entity";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Entity.Provider";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Entity.Entity";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		a.push("value");
-		a.push("params");
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-	__implements__:
-	[
-		use("Runtime.FactoryInterface"),
-	],
-});use.add(Runtime.Entity.Provider);
-module.exports = Runtime.Entity.Provider;
+	}
+	static getClassName(){ return "Runtime.Entity.Provider"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return ["Runtime.FactoryInterface"]; }
+};
+use.add(Runtime.Entity.Provider);
+module.exports = {
+	"Provider": Runtime.Entity.Provider,
+};

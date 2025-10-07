@@ -1,5 +1,7 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
@@ -18,78 +20,41 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Factory = function(ctx, name, args)
+Runtime.Factory = class extends BaseObject
 {
-	if (args == undefined) args = null;
-	use("Runtime.BaseObject").call(this, ctx, use("Runtime.Map").from({"name":name,"args":args}));
-};
-Runtime.Factory.prototype = Object.create(use("Runtime.BaseObject").prototype);
-Runtime.Factory.prototype.constructor = Runtime.Factory;
-Object.assign(Runtime.Factory.prototype,
-{
+	
+	
+	/**
+	 * Create factory
+	 */
+	constructor(name, args)
+	{
+		if (args == undefined) args = null;
+		super(Map.create({
+			"name": name,
+			"args": args,
+		}));
+	}
+	
+	
 	/**
 	 * Create new object
 	 */
-	createInstance: function(ctx)
+	createInstance(){ return rtl.newInstance(this.name, this.args); }
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		var __v0 = use("Runtime.rtl");
-		return __v0.newInstance(ctx, this.name, this.args);
-	},
-	_init: function(ctx)
-	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.args = null;
-	},
-});
-Object.assign(Runtime.Factory, use("Runtime.BaseObject"));
-Object.assign(Runtime.Factory,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Factory";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-	__implements__:
-	[
-		use("Runtime.FactoryInterface"),
-	],
-});use.add(Runtime.Factory);
-module.exports = Runtime.Factory;
+	}
+	static getClassName(){ return "Runtime.Factory"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return ["Runtime.FactoryInterface"]; }
+};
+use.add(Runtime.Factory);
+module.exports = {
+	"Factory": Runtime.Factory,
+};

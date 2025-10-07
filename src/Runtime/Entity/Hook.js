@@ -1,5 +1,7 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const Entity = use("Runtime.Entity.Entity");
 /*!
  *  BayLang Technology
  *
@@ -19,81 +21,44 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Entity == 'undefined') Runtime.Entity = {};
-Runtime.Entity.Hook = function(ctx, name, params)
+Runtime.Entity.Hook = class extends Entity
 {
-	if (params == undefined) params = null;
-	use("Runtime.Entity.Entity").call(this, ctx, use("Runtime.Map").from({"name":name,"params":params}));
-};
-Runtime.Entity.Hook.prototype = Object.create(use("Runtime.Entity.Entity").prototype);
-Runtime.Entity.Hook.prototype.constructor = Runtime.Entity.Hook;
-Object.assign(Runtime.Entity.Hook.prototype,
-{
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(name, params)
+	{
+		if (params == undefined) params = null;
+		super(Map.create({
+			"name": name,
+			"params": params,
+		}));
+	}
+	
+	
 	/**
 	 * Create hook instance
 	 */
-	createHook: function(ctx)
+	createInstance()
 	{
-		var __v0 = use("Runtime.rtl");
-		return __v0.newInstance(ctx, this.name, use("Runtime.Vector").from([this.params]));
-	},
-	_init: function(ctx)
+		return rtl.newInstance(this.name, [this.params]);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.Entity.Entity").prototype._init.call(this,ctx);
+		super._init();
 		this.params = null;
-	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "params")return this.params;
-		return use("Runtime.Entity.Entity").prototype.takeValue.call(this,ctx,k,d);
-	},
-});
-Object.assign(Runtime.Entity.Hook, use("Runtime.Entity.Entity"));
-Object.assign(Runtime.Entity.Hook,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime.Entity";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Entity.Hook";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Entity.Entity";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		a.push("params");
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Entity.Hook);
-module.exports = Runtime.Entity.Hook;
+	}
+	static getClassName(){ return "Runtime.Entity.Hook"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return ["Runtime.FactoryInterface"]; }
+};
+use.add(Runtime.Entity.Hook);
+module.exports = {
+	"Hook": Runtime.Entity.Hook,
+};

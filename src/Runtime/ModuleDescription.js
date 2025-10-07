@@ -1,5 +1,5 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
 /*!
  *  BayLang Technology
  *
@@ -18,89 +18,52 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.ModuleDescription = function(ctx)
-{
-};
-Object.assign(Runtime.ModuleDescription.prototype,
-{
-});
-Object.assign(Runtime.ModuleDescription,
+Runtime.ModuleDescription = class
 {
 	/**
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleName: function(ctx)
-	{
-		return "Runtime";
-	},
+	static getModuleName(){ return "Runtime"; }
+	
+	
 	/**
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleVersion: function(ctx)
-	{
-		return "0.12.1";
-	},
+	static getModuleVersion(){ return "1.0"; }
+	
+	
 	/**
 	 * Returns required modules
 	 * @return Map<string>
 	 */
-	requiredModules: function(ctx)
-	{
-		return null;
-	},
+	static requiredModules(){ return null; }
+	
+	
 	/**
 	 * Returns enities
 	 */
-	entities: function(ctx)
+	static entities()
 	{
-		var __v0 = use("Runtime.Entity.Provider");
-		var __v1 = use("Runtime.Entity.Provider");
-		return use("Runtime.Vector").from([new __v0(ctx, "output", "Runtime.Providers.OutputProvider"),new __v1(ctx, "hook", "Runtime.Providers.HookProvider")]);
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.ModuleDescription";
-	},
-	getParentClassName: function()
-	{
-		return "";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
+		
+		const Provider = use("Runtime.Entity.Provider");return [
+			new Provider("output", "Runtime.Providers.OutputProvider"),
+			new Provider("hook", "Runtime.Providers.HookProvider"),
 		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return null;
-	},
-});use.add(Runtime.ModuleDescription);
-module.exports = Runtime.ModuleDescription;
+	}
+	static getClassName(){ return "Runtime.ModuleDescription"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.ModuleDescription);
+module.exports = {
+	"ModuleDescription": Runtime.ModuleDescription,
+};

@@ -1,7 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const rs = use("Runtime.rs");
+const BaseProvider = use("Runtime.BaseProvider");
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -19,93 +22,153 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
-Runtime.Unit.TestProvider = function(ctx)
+Runtime.Unit.TestProvider = class extends BaseProvider
 {
-	use("Runtime.BaseProvider").apply(this, arguments);
-};
-Runtime.Unit.TestProvider.prototype = Object.create(use("Runtime.BaseProvider").prototype);
-Runtime.Unit.TestProvider.prototype.constructor = Runtime.Unit.TestProvider;
-Object.assign(Runtime.Unit.TestProvider.prototype,
-{
+	
+	
 	/**
 	 * Start provider
 	 */
-	start: async function(ctx)
+	async start()
 	{
-		var __v0 = use("Runtime.lib");
-		this.tests_list = ctx.entities.filter(ctx, __v0.isInstance(ctx, "Runtime.Unit.UnitTest"));
-	},
+		this.tests_list = Runtime.rtl.getContext().getEntities("Runtime.Unit.UnitTest");
+	}
+	
+	
 	/**
 	 * Returns commands list
 	 */
-	getTests: function(ctx)
-	{
-		return this.tests_list;
-	},
+	getTests(){ return this.tests_list; }
+	
+	
 	/**
 	 * Returns unit test by pos
 	 */
-	get: function(ctx, pos)
-	{
-		return this.tests_list.get(ctx, pos);
-	},
+	get(pos){ return this.tests_list.get(pos); }
+	
+	
 	/**
 	 * Returns count of unit tests
 	 */
-	count: function(ctx)
+	count(){ return this.tests_list.count(); }
+	
+	
+	/**
+	 * Run
+	 */
+	static async run(test_name)
 	{
-		return this.tests_list.count(ctx);
-	},
+		const TestProvider = use("Runtime.Unit.TestProvider");
+		if (test_name == undefined) test_name = "";
+		var provider = new TestProvider();
+		await provider.start();
+		if (test_name == "")
+		{
+			rtl.print("List of all tests:");
+			for (var i = 0; i < provider.count(); i++)
+			{
+				var test = provider.get(i);
+				rtl.print(i + 1 + String(") ") + String(test.name));
+			}
+			return;
+		}
+		await provider.runTestByName(test_name);
+	}
+	
+	
+	/**
+	 * Run
+	 */
+	static async runAll()
+	{
+		const TestProvider = use("Runtime.Unit.TestProvider");
+		var provider = new TestProvider();
+		await provider.start();
+		for (var i = 0; i < provider.count(); i++)
+		{
+			var test = provider.get(i);
+			rtl.print("Run " + String(test.name));
+			var error_code = await provider.runTestByName(test.name);
+			if (error_code != 1)
+			{
+				return;
+			}
+		}
+	}
+	
+	
 	/**
 	 * Run test
 	 */
-	runTestByName: async function(ctx, test_name)
+	async runTestByName(test_name)
 	{
 		var error_code = 0;
-		var __v0 = use("Runtime.rs");
-		var arr = __v0.split(ctx, "::", test_name);
-		if (arr.count(ctx) == 1)
+		var arr = rs.split("::", test_name);
+		if (arr.count() == 1)
 		{
 			/* Run all test in class */
-			error_code = await this.runTestClass(ctx, arr.get(ctx, 0));
+			error_code = await this.runTestClass(arr.get(0));
 		}
 		else
 		{
 			/* Run specific test */
-			error_code = await this.runTestMethod(ctx, arr.get(ctx, 0), arr.get(ctx, 1));
+			error_code = await this.runTestMethod(arr.get(0), arr.get(1));
 		}
-		return Promise.resolve(error_code);
-	},
+		return error_code;
+	}
+	
+	
+	/**
+	 * Returns true if TestMethod
+	 */
+	static isTestMethod(method_info)
+	{
+		const Test = use("Runtime.Unit.Test");
+		var annotations = method_info["annotations"];
+		if (annotations)
+		{
+			for (var j = 0; j < annotations.count(); j++)
+			{
+				var annotation = annotations.get(j);
+				if (annotation instanceof Test)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	
 	/**
 	 * Returns all test methods
 	 */
-	getTestMethods: function(ctx, class_name)
+	getTestMethods(class_name)
 	{
-		var __v0 = use("Runtime.Callback");
-		var getMethodsList = new __v0(ctx, class_name, "getMethodsList");
-		var __v1 = use("Runtime.Callback");
-		var getMethodInfoByName = new __v1(ctx, class_name, "getMethodInfoByName");
-		var __v2 = use("Runtime.rtl");
-		var methods = __v2.apply(ctx, getMethodsList);
-		methods = methods.filter(ctx, (ctx, method_name) =>
+		const Callback = use("Runtime.Callback");
+		var getMethodsList = new Callback(class_name, "getMethodsList");
+		var getMethodInfoByName = new Callback(class_name, "getMethodInfoByName");
+		var methods = getMethodsList.apply();
+		methods = methods.filter((method_name) =>
 		{
-			var __v3 = use("Runtime.rtl");
-			var method_info = __v3.apply(ctx, getMethodInfoByName, use("Runtime.Vector").from([method_name]));
-			return this.constructor.isTestMethod(ctx, method_info);
+			var method_info = getMethodInfoByName.apply([method_name]);
+			return this.constructor.isTestMethod(method_info);
 		});
 		return methods;
-	},
+	}
+	
+	
 	/**
 	 * Run all test in class
 	 */
-	runTestClass: async function(ctx, class_name)
+	async runTestClass(class_name)
 	{
 		var error_code = 1;
-		var methods = this.getTestMethods(ctx, class_name);
-		for (var i = 0; i < methods.count(ctx); i++)
+		var methods = this.getTestMethods(class_name);
+		for (var i = 0; i < methods.count(); i++)
 		{
-			var method_name = methods.get(ctx, i);
-			var result = await this.runTestMethod(ctx, class_name, method_name);
+			var method_name = methods.get(i);
+			var result = await this.runTestMethod(class_name, method_name);
 			if (result != 1)
 			{
 				error_code = -1;
@@ -114,177 +177,69 @@ Object.assign(Runtime.Unit.TestProvider.prototype,
 		}
 		if (error_code == 1)
 		{
-			var __v0 = use("Runtime.io");
-			var __v1 = use("Runtime.io");
-			__v0.print(ctx, __v1.color(ctx, "green", "Success"));
+			rtl.print(rtl.color("green", "Success"));
 		}
-		return Promise.resolve(error_code);
-	},
+		return error_code;
+	}
+	
+	
 	/**
 	 * Run test method
 	 */
-	runTestMethod: async function(ctx, class_name, method_name)
+	async runTestMethod(class_name, method_name)
 	{
+		const Callback = use("Runtime.Callback");
+		const ItemNotFound = use("Runtime.Exceptions.ItemNotFound");
+		const AssertException = use("Runtime.Exceptions.AssertException");
 		var error_code = 0;
-		var __v1 = use("Runtime.Exceptions.AssertException");
 		try
 		{
-			var __v0 = use("Runtime.Callback");
-			var callback = new __v0(ctx, class_name, method_name);
-			if (!callback.exists(ctx))
+			var callback = new Callback(class_name, method_name);
+			if (!callback.exists())
 			{
-				var __v1 = use("Runtime.rtl");
-				var obj = __v1.newInstance(ctx, class_name);
-				var __v2 = use("Runtime.Callback");
-				callback = new __v2(ctx, obj, method_name);
+				var obj = rtl.newInstance(class_name);
+				callback = new Callback(obj, method_name);
 			}
-			if (callback.exists(ctx))
+			if (callback.exists())
 			{
-				var __v1 = use("Runtime.rtl");
-				await __v1.apply(ctx, callback);
+				await rtl.apply(callback);
 				error_code = 1;
-				var __v2 = use("Runtime.io");
-				var __v3 = use("Runtime.io");
-				__v2.print(ctx, class_name + use("Runtime.rtl").toStr("::") + use("Runtime.rtl").toStr(method_name) + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(__v3.color(ctx, "green", "Ok")));
+				rtl.print(class_name + String("::") + String(method_name) + String(" ") + String(rtl.color("green", "Ok")));
 			}
 			else
 			{
-				var __v4 = use("Runtime.Exceptions.ItemNotFound");
-				throw new __v4(ctx, class_name + use("Runtime.rtl").toStr("::") + use("Runtime.rtl").toStr(method_name), "Method")
+				throw new ItemNotFound(class_name + String("::") + String(method_name), "Method");
 			}
 		}
 		catch (_ex)
 		{
-			if (_ex instanceof __v1)
+			if (_ex instanceof AssertException)
 			{
 				var e = _ex;
-				
-				var __v2 = use("Runtime.io");
-				var __v3 = use("Runtime.io");
-				__v2.print(ctx, class_name + use("Runtime.rtl").toStr("::") + use("Runtime.rtl").toStr(method_name) + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(__v3.color(ctx, "red", "Error: " + use("Runtime.rtl").toStr(e.getErrorMessage(ctx)))));
-				error_code = e.getErrorCode(ctx);
+				rtl.print(class_name + String("::") + String(method_name) + String(" ") + String(rtl.color("red", "Error: " + String(e.getErrorMessage()))));
+				error_code = e.getErrorCode();
 			}
 			else
 			{
 				throw _ex;
 			}
 		}
-		return Promise.resolve(error_code);
-	},
-	_init: function(ctx)
+		return error_code;
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseProvider").prototype._init.call(this,ctx);
-		this.tests_list = use("Runtime.Vector").from([]);
-	},
-});
-Object.assign(Runtime.Unit.TestProvider, use("Runtime.BaseProvider"));
-Object.assign(Runtime.Unit.TestProvider,
-{
-	/**
-	 * Run
-	 */
-	run: async function(ctx, test_name)
-	{
-		if (test_name == undefined) test_name = "";
-		var __v0 = use("Runtime.Unit.TestProvider");
-		var provider = new __v0(ctx);
-		await provider.start(ctx);
-		if (test_name == "")
-		{
-			var __v1 = use("Runtime.io");
-			__v1.print(ctx, "List of all tests:");
-			for (var i = 0; i < provider.count(ctx); i++)
-			{
-				var test = provider.get(ctx, i);
-				var __v2 = use("Runtime.io");
-				__v2.print(ctx, i + 1 + use("Runtime.rtl").toStr(") ") + use("Runtime.rtl").toStr(test.name));
-			}
-			return Promise.resolve();
-		}
-		await provider.runTestByName(ctx, test_name);
-	},
-	/**
-	 * Run
-	 */
-	runAll: async function(ctx)
-	{
-		var __v0 = use("Runtime.Unit.TestProvider");
-		var provider = new __v0(ctx);
-		await provider.start(ctx);
-		for (var i = 0; i < provider.count(ctx); i++)
-		{
-			var test = provider.get(ctx, i);
-			var __v1 = use("Runtime.io");
-			__v1.print(ctx, "Run " + use("Runtime.rtl").toStr(test.name));
-			var error_code = await provider.runTestByName(ctx, test.name);
-			if (error_code != 1)
-			{
-				return Promise.resolve();
-			}
-		}
-	},
-	/**
-	 * Returns true if TestMethod
-	 */
-	isTestMethod: function(ctx, method_info)
-	{
-		var annotations = Runtime.rtl.attr(ctx, method_info, "annotations");
-		if (annotations)
-		{
-			for (var j = 0; j < annotations.count(ctx); j++)
-			{
-				var annotation = annotations.get(ctx, j);
-				var __v0 = use("Runtime.Unit.Test");
-				if (annotation instanceof __v0)
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime.Unit";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Unit.TestProvider";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseProvider";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Unit.TestProvider);
-module.exports = Runtime.Unit.TestProvider;
+		super._init();
+		this.tests_list = [];
+	}
+	static getClassName(){ return "Runtime.Unit.TestProvider"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Unit.TestProvider);
+module.exports = {
+	"TestProvider": Runtime.Unit.TestProvider,
+};

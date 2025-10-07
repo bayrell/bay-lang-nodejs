@@ -1,5 +1,6 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseHook = use("Runtime.BaseHook");
 /*!
  *  BayLang Technology
  *
@@ -19,127 +20,85 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Hooks == 'undefined') Runtime.Hooks = {};
-Runtime.Hooks.RuntimeHook = function(ctx)
+Runtime.Hooks.RuntimeHook = class extends BaseHook
 {
-	use("Runtime.BaseHook").apply(this, arguments);
-};
-Runtime.Hooks.RuntimeHook.prototype = Object.create(use("Runtime.BaseHook").prototype);
-Runtime.Hooks.RuntimeHook.prototype.constructor = Runtime.Hooks.RuntimeHook;
-Object.assign(Runtime.Hooks.RuntimeHook.prototype,
-{
+	static INIT = "runtime::init";
+	static START = "runtime::start";
+	static LAUNCHED = "runtime::launched";
+	static RUN = "runtime::run";
+	static ENV = "runtime::env";
+	
+	
 	/**
 	 * Returns method name by hook name
 	 */
-	getMethodName: function(ctx, hook_name)
+	getMethodName(hook_name)
 	{
-		if (hook_name == this.constructor.INIT)
-		{
-			return "init";
-		}
-		if (hook_name == this.constructor.START)
-		{
-			return "start";
-		}
-		if (hook_name == this.constructor.LAUNCHED)
-		{
-			return "launched";
-		}
-		if (hook_name == this.constructor.RUN)
-		{
-			return "run";
-		}
-		if (hook_name == this.constructor.ENV)
-		{
-			return "env";
-		}
+		if (hook_name == this.constructor.INIT) return "init";
+		if (hook_name == this.constructor.START) return "start";
+		if (hook_name == this.constructor.LAUNCHED) return "launched";
+		if (hook_name == this.constructor.RUN) return "run";
+		if (hook_name == this.constructor.ENV) return "env";
 		return "";
-	},
+	}
+	
+	
 	/**
 	 * Init context
 	 */
-	init: async function(ctx, d)
+	async init(d)
 	{
-		return Promise.resolve(d);
-	},
+		return d;
+	}
+	
+	
 	/**
 	 * Start context
 	 */
-	start: async function(ctx, d)
+	async start(d)
 	{
-		return Promise.resolve(d);
-	},
+		return d;
+	}
+	
+	
 	/**
 	 * Launched context
 	 */
-	launched: async function(ctx, d)
+	async launched(d)
 	{
-		return Promise.resolve(d);
-	},
+		return d;
+	}
+	
+	
 	/**
 	 * Run entry point
 	 */
-	run: async function(ctx, d)
+	async run(d)
 	{
-		return Promise.resolve(d);
-	},
+		return d;
+	}
+	
+	
 	/**
 	 * Init context
 	 */
-	env: function(ctx, d)
+	env(d)
 	{
 		return d;
-	},
-});
-Object.assign(Runtime.Hooks.RuntimeHook, use("Runtime.BaseHook"));
-Object.assign(Runtime.Hooks.RuntimeHook,
-{
-	INIT: "runtime::init",
-	START: "runtime::start",
-	LAUNCHED: "runtime::launched",
-	RUN: "runtime::run",
-	ENV: "runtime::env",
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "Runtime.Hooks";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Hooks.RuntimeHook";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseHook";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Hooks.RuntimeHook);
-module.exports = Runtime.Hooks.RuntimeHook;
+		super._init();
+	}
+	static getClassName(){ return "Runtime.Hooks.RuntimeHook"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Hooks.RuntimeHook);
+module.exports = {
+	"RuntimeHook": Runtime.Hooks.RuntimeHook,
+};

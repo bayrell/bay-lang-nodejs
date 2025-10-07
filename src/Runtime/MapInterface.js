@@ -1,5 +1,5 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
 /*!
  *  BayLang Technology
  *
@@ -18,34 +18,6 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.MapInterface = function(ctx)
-{
+
+module.exports = {
 };
-Object.assign(Runtime.MapInterface.prototype,
-{
-	/**
-	 * Returns string
-	 */
-	get: function(ctx, name, def_value)
-	{
-		if (def_value == undefined) def_value = null;
-	},
-	/**
-	 * Set new value
-	 */
-	set: function(ctx, name, value)
-	{
-	},
-});
-Object.assign(Runtime.MapInterface,
-{
-	getNamespace: function()
-	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.MapInterface";
-	},
-});use.add(Runtime.MapInterface);
-module.exports = Runtime.MapInterface;

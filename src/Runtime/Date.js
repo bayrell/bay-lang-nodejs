@@ -1,5 +1,6 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
@@ -18,131 +19,93 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Date = function(ctx, data)
+Runtime.Date = class extends BaseObject
 {
-	if (data == undefined) data = null;
-	use("Runtime.BaseObject").call(this, ctx);
-	if (data != null)
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(data)
 	{
-		if (data.has(ctx, "y"))
+		if (data == undefined) data = null;
+		super();
+		if (data != null)
 		{
-			this.y = data.get(ctx, "y");
-		}
-		if (data.has(ctx, "m"))
-		{
-			this.m = data.get(ctx, "m");
-		}
-		if (data.has(ctx, "d"))
-		{
-			this.d = data.get(ctx, "d");
+			if (data.has("y")) this.y = data.get("y");
+			if (data.has("m")) this.m = data.get("m");
+			if (data.has("d")) this.d = data.get("d");
 		}
 	}
-};
-Runtime.Date.prototype = Object.create(use("Runtime.BaseObject").prototype);
-Runtime.Date.prototype.constructor = Runtime.Date;
-Object.assign(Runtime.Date.prototype,
-{
+	
+	
 	/**
 	 * toMap
 	 */
-	toMap: function(ctx)
+	toMap()
 	{
-		return use("Runtime.Map").from({"y":this.y,"m":this.m,"d":this.d});
-	},
+		return Map.create({
+			"y": this.y,
+			"m": this.m,
+			"d": this.d,
+		});
+	}
+	
+	
 	/**
 	 * Return date
 	 * @return string
 	 */
-	getDate: function(ctx)
+	getDate()
 	{
-		return this.y + use("Runtime.rtl").toStr("-") + use("Runtime.rtl").toStr(this.m) + use("Runtime.rtl").toStr("-") + use("Runtime.rtl").toStr(this.d);
-	},
+		return this.y + String("-") + String(this.m) + String("-") + String(this.d);
+	}
+	
+	
 	/**
 	 * Normalize date time
 	 */
-	normalize: function(ctx)
-	{
-		return this;
-	},
+	normalize(){ return this; }
+	
+	
 	/**
 	 * Return db datetime
 	 * @return string
 	 */
-	toString: function(ctx)
+	toString()
 	{
-		return this.y + use("Runtime.rtl").toStr("-") + use("Runtime.rtl").toStr(this.m) + use("Runtime.rtl").toStr("-") + use("Runtime.rtl").toStr(this.d);
-	},
-	_init: function(ctx)
+		return this.y + String("-") + String(this.m) + String("-") + String(this.d);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.y = 0;
 		this.m = 0;
 		this.d = 0;
-	},
-});
-Object.assign(Runtime.Date, use("Runtime.BaseObject"));
-Object.assign(Runtime.Date,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Date";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-	__implements__:
-	[
-		use("Runtime.StringInterface"),
-	],
-});use.add(Runtime.Date);
-module.exports = Runtime.Date;
-Runtime.Date.prototype.toObject = function(ctx)
+	}
+	static getClassName(){ return "Runtime.Date"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return ["Runtime.StringInterface"]; }
+};
+use.add(Runtime.Date);
+Runtime.Date.prototype.toObject = function()
 {
 	var dt = new Date(this.y, this.m - 1, this.d);
 	return dt;
 }
-Runtime.Date.fromObject = function(ctx, dt)
+Runtime.Date.fromObject = function(dt)
 {
 	var Dict = use("Runtime.Dict");
 	var y = Number(dt.getFullYear());
 	var m = Number(dt.getMonth()) + 1;
 	var d = Number(dt.getDate());
-	var dt = new Runtime.Date( ctx, Dict.from({"y":y,"m":m,"d":d}) );
+	var dt = new Runtime.Date(Dict.from({"y":y,"m":m,"d":d}));
 	return dt;
 }
+module.exports = {
+	"Date": Runtime.Date,
+};

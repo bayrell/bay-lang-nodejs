@@ -1,5 +1,7 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
@@ -18,108 +20,79 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Callback = function(ctx, obj, name, tag)
+Runtime.Callback = class extends BaseObject
 {
-	if (tag == undefined) tag = null;
-	/* Init object */
-	this._init(ctx);
-	/* Set variables */
-	this.obj = obj;
-	this.name = name;
-	this.tag = tag;
-};
-Object.assign(Runtime.Callback.prototype,
-{
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(obj, name, tag)
+	{
+		if (tag == undefined) tag = null;
+		super();
+		/* Init object */
+		this._init();
+		/* Set variables */
+		this.obj = obj;
+		this.name = name;
+		this.tag = tag;
+	}
+	
+	
 	/**
 	 * Check if method exists
 	 */
-	exists: function(ctx)
+	exists()
 	{
-		var __v0 = use("Runtime.rtl");
-		if (!__v0.method_exists(ctx, this.obj, this.name))
+		if (!rtl.methodExists(this.obj, this.name))
 		{
 			return false;
 		}
 		return true;
-	},
+	}
+	
+	
 	/**
 	 * Check callback
 	 */
-	check: function(ctx)
+	check()
 	{
-		if (!this.exists(ctx))
+		const RuntimeException = use("Runtime.Exceptions.RuntimeException");
+		if (!this.exists())
 		{
-			var __v0 = use("Runtime.Exceptions.RuntimeException");
-			var __v1 = use("Runtime.rtl");
-			throw new __v0(ctx, "Method '" + use("Runtime.rtl").toStr(this.name) + use("Runtime.rtl").toStr("' not found in ") + use("Runtime.rtl").toStr(__v1.get_class_name(ctx, this.obj)))
+			throw new RuntimeException("Method '" + String(this.name) + String("' not found in ") + String(rtl.className(this.obj)));
 		}
-	},
+	}
+	
+	
 	/**
 	 * Apply
 	 */
-	apply: function(ctx, args)
+	apply(args)
 	{
 		if (args == undefined) args = null;
-		this.check(ctx);
+		this.check();
 		if (args == null) args = [];
-		else args = Array.prototype.slice.call(args);
-		if (typeof ctx != "undefined") args.unshift(ctx);
 		
 		var obj = this.obj;
-		if (typeof obj == "string") obj = Runtime.rtl.find_class(obj);
+		if (typeof obj == "string") obj = Runtime.rtl.findClass(obj);
 		return obj[this.name].bind(obj).apply(null, args);
-	},
-	_init: function(ctx)
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		this.obj = null;
-		this.name = null;
+		super._init();
 		this.tag = null;
-	},
-});
-Object.assign(Runtime.Callback,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Callback";
-	},
-	getParentClassName: function()
-	{
-		return "";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Callback);
-module.exports = Runtime.Callback;
+	}
+	static getClassName(){ return "Runtime.Callback"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Callback);
+module.exports = {
+	"Callback": Runtime.Callback,
+};

@@ -1,5 +1,7 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const RuntimeException = use("Runtime.Exceptions.RuntimeException");
 /*!
  *  BayLang Technology
  *
@@ -19,70 +21,31 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Exceptions == 'undefined') Runtime.Exceptions = {};
-Runtime.Exceptions.CurlException = function(ctx, http_code, http_content, prev)
+Runtime.Exceptions.CurlException = class extends RuntimeException
 {
-	if (prev == undefined) prev = null;
-	var __v0 = use("Runtime.rtl");
-	use("Runtime.Exceptions.AbstractException").call(this, ctx, "HTTP error code: " + use("Runtime.rtl").toStr(http_code), __v0.ERROR_CURL_ERROR, prev);
-	this.http_code = http_code;
-	this.http_content = http_content;
-};
-Runtime.Exceptions.CurlException.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
-Runtime.Exceptions.CurlException.prototype.constructor = Runtime.Exceptions.CurlException;
-Object.assign(Runtime.Exceptions.CurlException.prototype,
-{
-	_init: function(ctx)
+	
+	constructor(http_code, http_content, prev)
 	{
-		use("Runtime.Exceptions.AbstractException").prototype._init.call(this,ctx);
+		if (prev == undefined) prev = null;
+		super("HTTP error code: " + String(http_code), rtl.ERROR_CURL_ERROR, prev);
+		this.http_code = http_code;
+		this.http_content = http_content;
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
+	{
+		super._init();
 		this.http_code = -1;
 		this.http_content = "";
-	},
-});
-Object.assign(Runtime.Exceptions.CurlException, use("Runtime.Exceptions.AbstractException"));
-Object.assign(Runtime.Exceptions.CurlException,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime.Exceptions";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Exceptions.CurlException";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Exceptions.AbstractException";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Exceptions.CurlException);
-module.exports = Runtime.Exceptions.CurlException;
+	}
+	static getClassName(){ return "Runtime.Exceptions.CurlException"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Exceptions.CurlException);
+module.exports = {
+	"CurlException": Runtime.Exceptions.CurlException,
+};

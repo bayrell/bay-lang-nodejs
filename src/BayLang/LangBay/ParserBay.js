@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const CoreParser = use("BayLang.CoreParser");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,177 +20,177 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBay = function(ctx)
+BayLang.LangBay.ParserBay = class extends CoreParser
 {
-	use("BayLang.CoreParser").apply(this, arguments);
-};
-BayLang.LangBay.ParserBay.prototype = Object.create(use("BayLang.CoreParser").prototype);
-BayLang.LangBay.ParserBay.prototype.constructor = BayLang.LangBay.ParserBay;
-Object.assign(BayLang.LangBay.ParserBay.prototype,
-{
+	/* Parsers */
+	
+	
 	/**
 	 * Returns true if registered variable
 	 */
-	isRegisteredVariable: function(ctx, name)
+	isRegisteredVariable(name)
 	{
-		var variables = use("Runtime.Vector").from(["print","rs","rtl"]);
-		if (variables.indexOf(ctx, name) == -1)
-		{
-			return false;
-		}
+		var variables = [
+			"print",
+			"rs",
+			"rtl",
+			"parent",
+			"this",
+			"@",
+			"null",
+			"true",
+			"false",
+		];
+		if (variables.indexOf(name) == -1) return false;
 		return true;
-	},
+	}
+	
+	
 	/**
 	 * Returns true if system type
 	 */
-	isSystemType: function(ctx, name)
+	isSystemType(name)
 	{
-		var variables = use("Runtime.Vector").from(["var","void","bool","byte","int","char","string","list","scalar","primitive","html","Error","Object","DateTime","Collection","Dict","Vector","Map","ArrayInterface"]);
-		if (variables.indexOf(ctx, name) == -1)
-		{
-			return false;
-		}
+		var variables = [
+			"var",
+			"void",
+			"bool",
+			"byte",
+			"int",
+			"char",
+			"real",
+			"double",
+			"string",
+			"list",
+			"scalar",
+			"primitive",
+			"html",
+			"fn",
+			"Error",
+			"Object",
+			"DateTime",
+			"Collection",
+			"Dict",
+			"Vector",
+			"Map",
+			"ArrayInterface",
+		];
+		if (variables.indexOf(name) == -1) return false;
 		return true;
-	},
-	/**
-	 * Add variable
-	 */
-	addVariable: function(ctx, op_code)
-	{
-		var name = op_code.value;
-		this.vars.set(ctx, name, true);
-	},
+	}
+	
+	
 	/**
 	 * Find identifier
 	 */
-	findIdentifier: function(ctx, op_code)
+	findIdentifier(op_code)
 	{
+		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
 		var name = op_code.value;
-		if (this.vars.has(ctx, name) || this.isRegisteredVariable(ctx, name))
+		if (this.vars.has(name) || this.isRegisteredVariable(name))
 		{
-			var __v0 = use("BayLang.OpCodes.OpIdentifier");
-			op_code.kind = __v0.KIND_VARIABLE;
+			op_code.kind = OpIdentifier.KIND_VARIABLE;
 		}
-		if (this.uses.has(ctx, name) || this.isSystemType(ctx, name))
+		if (this.uses.has(name) || this.isSystemType(name))
 		{
-			var __v0 = use("BayLang.OpCodes.OpIdentifier");
-			op_code.kind = __v0.KIND_TYPE;
+			op_code.kind = OpIdentifier.KIND_TYPE;
 		}
-	},
+	}
+	
+	
 	/**
 	 * Find variable
 	 */
-	findVariable: function(ctx, op_code)
+	findVariable(op_code)
 	{
+		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
 		var name = op_code.value;
-		this.findIdentifier(ctx, op_code);
-		var __v0 = use("BayLang.OpCodes.OpIdentifier");
-		if (op_code.kind == __v0.KIND_VARIABLE)
-		{
-			return ;
-		}
-		throw op_code.caret_end.error(ctx, "Unknown identifier '" + use("Runtime.rtl").toStr(name) + use("Runtime.rtl").toStr("'"))
-	},
+		this.findIdentifier(op_code);
+		if (op_code.kind == OpIdentifier.KIND_VARIABLE) return;
+		throw op_code.caret_end.error("Unknown variable '" + String(name) + String("'"));
+	}
+	
+	
 	/**
 	 * Find type
 	 */
-	findType: function(ctx, op_code)
+	findType(op_code)
 	{
+		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
 		var name = op_code.value;
-		var __v0 = use("BayLang.OpCodes.OpIdentifier");
-		if (op_code.kind == __v0.KIND_TYPE)
+		if (op_code.kind == OpIdentifier.KIND_TYPE) return;
+		throw op_code.caret_end.error("Unknown type '" + String(name) + String("'"));
+	}
+	
+	
+	/**
+	 * Find entity
+	 */
+	findEntity(op_code)
+	{
+		/* Find name */
+		if (op_code.items.count() != 1) return;
+		var op_code_item = op_code.items.get(0);
+		if (this.uses.has(op_code_item.value)) return;
+		if (this.isSystemType(op_code_item.value)) return;
+		throw op_code.caret_end.error("Unknown identifier '" + String(op_code_item.value) + String("'"));
+	}
+	
+	
+	/**
+	 * Add use
+	 */
+	addGenericUse(items)
+	{
+		if (items && items.count() > 0)
 		{
-			return ;
+			for (var i = 0; i < items.count(); i++)
+			{
+				var item = items.get(i);
+				this.uses.set(item.entity_name.getName(), item);
+				this.addGenericUse(item.generics);
+			}
 		}
-		throw op_code.caret_end.error(ctx, "Unknown type '" + use("Runtime.rtl").toStr(name) + use("Runtime.rtl").toStr("'"))
-	},
+	}
+	
+	
 	/**
 	 * Parse file and convert to BaseOpCode
 	 */
-	parse: function(ctx)
+	parse()
 	{
-		var reader = this.createReader(ctx);
-		return this.parser_program.parse(ctx, reader);
-	},
-	_init: function(ctx)
+		var reader = this.createReader();
+		return this.parser_program.parse(reader);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("BayLang.CoreParser").prototype._init.call(this,ctx);
-		var __v0 = use("BayLang.LangBay.ParserBayBase");
-		var __v1 = use("BayLang.LangBay.ParserBayExpression");
-		var __v2 = use("BayLang.LangBay.ParserBayFunction");
-		var __v3 = use("BayLang.LangBay.ParserBayHtml");
-		var __v4 = use("BayLang.LangBay.ParserBayOperator");
-		var __v5 = use("BayLang.LangBay.ParserBayPreprocessor");
-		var __v6 = use("BayLang.LangBay.ParserBayProgram");
-		this.vars = use("Runtime.Map").from({});
-		this.uses = use("Runtime.Map").from({});
-		this.current_namespace = null;
-		this.current_class = null;
-		this.current_namespace_name = "";
-		this.current_class_name = "";
-		this.current_class_kind = "";
-		this.current_class_abstract = false;
-		this.current_class_declare = false;
-		this.find_identifier = true;
-		this.skip_comments = true;
-		this.pipe_kind = "";
-		this.is_pipe = false;
-		this.is_html = false;
-		this.is_local_css = false;
-		this.parser_base = new __v0(ctx, this);
-		this.parser_expression = new __v1(ctx, this);
-		this.parser_function = new __v2(ctx, this);
-		this.parser_html = new __v3(ctx, this);
-		this.parser_operator = new __v4(ctx, this);
-		this.parser_preprocessor = new __v5(ctx, this);
-		this.parser_program = new __v6(ctx, this);
-	},
-});
-Object.assign(BayLang.LangBay.ParserBay, use("BayLang.CoreParser"));
-Object.assign(BayLang.LangBay.ParserBay,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.LangBay";
-	},
-	getClassName: function()
-	{
-		return "BayLang.LangBay.ParserBay";
-	},
-	getParentClassName: function()
-	{
-		return "BayLang.CoreParser";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.LangBay.ParserBay);
-module.exports = BayLang.LangBay.ParserBay;
+		super._init();
+		const ParserBayBase = use("BayLang.LangBay.ParserBayBase");
+		const ParserBayClass = use("BayLang.LangBay.ParserBayClass");
+		const ParserBayExpression = use("BayLang.LangBay.ParserBayExpression");
+		const ParserBayFunction = use("BayLang.LangBay.ParserBayFunction");
+		const ParserBayHtml = use("BayLang.LangBay.ParserBayHtml");
+		const ParserBayOperator = use("BayLang.LangBay.ParserBayOperator");
+		const ParserBayPreprocessor = use("BayLang.LangBay.ParserBayPreprocessor");
+		const ParserBayProgram = use("BayLang.LangBay.ParserBayProgram");
+		this.parser_base = new ParserBayBase(this);
+		this.parser_class = new ParserBayClass(this);
+		this.parser_expression = new ParserBayExpression(this);
+		this.parser_function = new ParserBayFunction(this);
+		this.parser_html = new ParserBayHtml(this);
+		this.parser_operator = new ParserBayOperator(this);
+		this.parser_preprocessor = new ParserBayPreprocessor(this);
+		this.parser_program = new ParserBayProgram(this);
+	}
+	static getClassName(){ return "BayLang.LangBay.ParserBay"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.LangBay.ParserBay);
+module.exports = {
+	"ParserBay": BayLang.LangBay.ParserBay,
+};

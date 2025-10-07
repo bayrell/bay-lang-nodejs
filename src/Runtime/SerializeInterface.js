@@ -1,5 +1,5 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
 /*!
  *  BayLang Technology
  *
@@ -18,27 +18,6 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.SerializeInterface = function(ctx)
-{
+
+module.exports = {
 };
-Object.assign(Runtime.SerializeInterface.prototype,
-{
-	/**
-	 * Serialize object
-	 */
-	serialize: function(ctx, serializer, data)
-	{
-	},
-});
-Object.assign(Runtime.SerializeInterface,
-{
-	getNamespace: function()
-	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.SerializeInterface";
-	},
-});use.add(Runtime.SerializeInterface);
-module.exports = Runtime.SerializeInterface;

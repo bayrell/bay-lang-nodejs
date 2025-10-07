@@ -1,5 +1,6 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
@@ -18,94 +19,60 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Money = function(ctx, value, currency)
+Runtime.Money = class extends BaseObject
 {
-	use("Runtime.BaseObject").call(this, ctx);
-	this.value = value;
-	this.currency = currency;
-};
-Runtime.Money.prototype = Object.create(use("Runtime.BaseObject").prototype);
-Runtime.Money.prototype.constructor = Runtime.Money;
-Object.assign(Runtime.Money.prototype,
-{
+	
+	
+	/**
+	 * Create new instance
+	 */
+	constructor(value, currency)
+	{
+		super();
+		this.value = value;
+		this.currency = currency;
+	}
+	
+	
 	/**
 	 * Returns value
 	 */
-	getValue: function(ctx)
-	{
-		return this.value;
-	},
+	getValue(){ return this.value; }
+	
+	
 	/**
 	 * Returns currency
 	 */
-	getCurrency: function(ctx)
-	{
-		return this.currency;
-	},
+	getCurrency(){ return this.currency; }
+	
+	
 	/**
 	 * Add money
 	 */
-	add: function(ctx, money)
+	add(money)
 	{
+		const RuntimeException = use("Runtime.Exceptions.RuntimeException");
 		if (this.currency != money.currency)
 		{
-			var __v0 = use("Runtime.Exceptions.RuntimeException");
-			throw new __v0(ctx, "Money currency mismatch")
+			throw new RuntimeException("Money currency mismatch");
 		}
-		this.value = Runtime.rtl.attr(ctx, this.value, ["value"]) + money.currency;
-	},
-	_init: function(ctx)
+		this.value += money.currency;
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.value = 0;
 		this.currency = "";
-	},
-});
-Object.assign(Runtime.Money, use("Runtime.BaseObject"));
-Object.assign(Runtime.Money,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Money";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Money);
-module.exports = Runtime.Money;
+	}
+	static getClassName(){ return "Runtime.Money"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Money);
+module.exports = {
+	"Money": Runtime.Money,
+};

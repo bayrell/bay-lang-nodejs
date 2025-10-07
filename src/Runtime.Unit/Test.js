@@ -1,7 +1,8 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const Entity = use("Runtime.Entity.Entity");
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -19,60 +20,19 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
-Runtime.Unit.Test = function(ctx)
+Runtime.Unit.Test = class extends Entity
 {
-	use("Runtime.Entity.Entity").apply(this, arguments);
+	/* ========= Class init functions ========= */
+	_init()
+	{
+		super._init();
+	}
+	static getClassName(){ return "Runtime.Unit.Test"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
 };
-Runtime.Unit.Test.prototype = Object.create(use("Runtime.Entity.Entity").prototype);
-Runtime.Unit.Test.prototype.constructor = Runtime.Unit.Test;
-Object.assign(Runtime.Unit.Test.prototype,
-{
-});
-Object.assign(Runtime.Unit.Test, use("Runtime.Entity.Entity"));
-Object.assign(Runtime.Unit.Test,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime.Unit";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Unit.Test";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Entity.Entity";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Unit.Test);
-module.exports = Runtime.Unit.Test;
+use.add(Runtime.Unit.Test);
+module.exports = {
+	"Test": Runtime.Unit.Test,
+};

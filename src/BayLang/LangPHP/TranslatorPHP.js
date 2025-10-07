@@ -1,9 +1,11 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rs = use("Runtime.rs");
+const CoreTranslator = use("BayLang.CoreTranslator");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,114 +21,86 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangPHP == 'undefined') BayLang.LangPHP = {};
-BayLang.LangPHP.TranslatorPHP = function(ctx)
+BayLang.LangPHP.TranslatorPHP = class extends CoreTranslator
 {
-	use("BayLang.CoreTranslator").apply(this, arguments);
-};
-BayLang.LangPHP.TranslatorPHP.prototype = Object.create(use("BayLang.CoreTranslator").prototype);
-BayLang.LangPHP.TranslatorPHP.prototype.constructor = BayLang.LangPHP.TranslatorPHP;
-Object.assign(BayLang.LangPHP.TranslatorPHP.prototype,
-{
+	/* Translators */
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor()
+	{
+		super();
+		this.uses.set("BaseObject", "Runtime.BaseObject");
+		this.preprocessor_flags.set("BACKEND", true);
+		this.preprocessor_flags.set("PHP", true);
+	}
+	
+	
 	/**
 	 * Returns string
 	 */
-	toString: function(ctx, s)
+	toString(s)
 	{
-		var __v0 = use("Runtime.re");
-		s = __v0.replace(ctx, "\\\\", "\\\\", s);
-		var __v1 = use("Runtime.re");
-		s = __v1.replace(ctx, "\"", "\\\"", s);
-		var __v2 = use("Runtime.re");
-		s = __v2.replace(ctx, "\n", "\\n", s);
-		var __v3 = use("Runtime.re");
-		s = __v3.replace(ctx, "\r", "\\r", s);
-		var __v4 = use("Runtime.re");
-		s = __v4.replace(ctx, "\t", "\\t", s);
-		return "\"" + use("Runtime.rtl").toStr(s) + use("Runtime.rtl").toStr("\"");
-	},
+		const re = use("Runtime.re");
+		s = re.replace("\\\\", "\\\\", s);
+		s = re.replace("\"", "\\\"", s);
+		s = re.replace("\n", "\\n", s);
+		s = re.replace("\r", "\\r", s);
+		s = re.replace("\t", "\\t", s);
+		return "\"" + String(s) + String("\"");
+	}
+	
+	
 	/**
 	 * Returns module name
 	 */
-	getModuleName: function(ctx, module_name)
+	getModuleName(module_name)
 	{
-		var __v0 = use("Runtime.rs");
-		return __v0.replace(ctx, ".", "\\", module_name);
-	},
+		return rs.replace(".", "\\", module_name);
+	}
+	
+	
 	/**
 	 * Translate BaseOpCode
 	 */
-	translate: function(ctx, op_code)
+	translate(op_code)
 	{
-		var content = use("Runtime.Vector").from([]);
+		var content = [];
 		if (op_code.is_component)
 		{
-			this.html.translate(ctx, op_code, content);
+			this.html.translate(op_code, content);
 		}
 		else
 		{
-			this.program.translate(ctx, op_code, content);
+			content.push("<?php");
+			content.push(this.newLine());
+			this.program.translate(op_code, content);
 		}
-		var __v0 = use("Runtime.rs");
-		return __v0.join(ctx, "", content);
-	},
-	_init: function(ctx)
+		return rs.join("", content);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("BayLang.CoreTranslator").prototype._init.call(this,ctx);
-		var __v0 = use("BayLang.LangPHP.TranslatorPHPExpression");
-		var __v1 = use("BayLang.LangPHP.TranslatorPHPOperator");
-		var __v2 = use("BayLang.LangPHP.TranslatorPHPProgram");
-		var __v3 = use("BayLang.LangPHP.TranslatorPHPHtml");
-		this.expression = new __v0(ctx, this);
-		this.operator = new __v1(ctx, this);
-		this.program = new __v2(ctx, this);
-		this.html = new __v3(ctx, this);
-	},
-});
-Object.assign(BayLang.LangPHP.TranslatorPHP, use("BayLang.CoreTranslator"));
-Object.assign(BayLang.LangPHP.TranslatorPHP,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.LangPHP";
-	},
-	getClassName: function()
-	{
-		return "BayLang.LangPHP.TranslatorPHP";
-	},
-	getParentClassName: function()
-	{
-		return "BayLang.CoreTranslator";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.LangPHP.TranslatorPHP);
-module.exports = BayLang.LangPHP.TranslatorPHP;
+		super._init();
+		const TranslatorPHPExpression = use("BayLang.LangPHP.TranslatorPHPExpression");
+		const TranslatorPHPOperator = use("BayLang.LangPHP.TranslatorPHPOperator");
+		const TranslatorPHPProgram = use("BayLang.LangPHP.TranslatorPHPProgram");
+		const TranslatorPHPHtml = use("BayLang.LangPHP.TranslatorPHPHtml");
+		this.expression = new TranslatorPHPExpression(this);
+		this.operator = new TranslatorPHPOperator(this);
+		this.program = new TranslatorPHPProgram(this);
+		this.html = new TranslatorPHPHtml(this);
+	}
+	static getClassName(){ return "BayLang.LangPHP.TranslatorPHP"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.LangPHP.TranslatorPHP);
+module.exports = {
+	"TranslatorPHP": BayLang.LangPHP.TranslatorPHP,
+};

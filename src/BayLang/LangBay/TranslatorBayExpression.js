@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,377 +20,354 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.TranslatorBayExpression = function(ctx, translator)
+BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 {
-	use("Runtime.BaseObject").call(this, ctx);
-	this.translator = translator;
-};
-BayLang.LangBay.TranslatorBayExpression.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.LangBay.TranslatorBayExpression.prototype.constructor = BayLang.LangBay.TranslatorBayExpression;
-Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
-{
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(translator)
+	{
+		super();
+		this.translator = translator;
+	}
+	
+	
 	/**
 	 * OpIdentifier
 	 */
-	OpIdentifier: function(ctx, op_code, result)
+	OpIdentifier(op_code, result)
 	{
-		result.push(ctx, op_code.value);
+		result.push(op_code.value);
 		this.translator.opcode_level = 20;
-	},
+	}
+	
+	
 	/**
 	 * OpNumber
 	 */
-	OpNumber: function(ctx, op_code, result)
+	OpNumber(op_code, result)
 	{
-		result.push(ctx, op_code.value);
+		result.push(op_code.value);
 		this.translator.opcode_level = 20;
-	},
+	}
+	
+	
 	/**
 	 * OpString
 	 */
-	OpString: function(ctx, op_code, result)
+	OpString(op_code, result)
 	{
-		result.push(ctx, this.translator.toString(ctx, op_code.value));
+		result.push(this.translator.toString(op_code.value));
 		this.translator.opcode_level = 20;
-	},
+	}
+	
+	
 	/**
 	 * OpCode generics
 	 */
-	OpCodeGenerics: function(ctx, items, result)
+	OpCodeGenerics(items, result)
 	{
-		if (!items)
-		{
-			return ;
-		}
+		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
+		const OpTypeIdentifier = use("BayLang.OpCodes.OpTypeIdentifier");
+		if (!items) return;
 		/* Get items count */
-		var items_count = items.count(ctx);
-		if (items_count == 0)
-		{
-			return ;
-		}
+		var items_count = items.count();
+		if (items_count == 0) return;
 		/* Output generics */
-		result.push(ctx, "<");
+		result.push("<");
 		for (var i = 0; i < items_count; i++)
 		{
-			var op_code_item = items.get(ctx, i);
-			var __v0 = use("BayLang.OpCodes.OpIdentifier");
-			var __v1 = use("BayLang.OpCodes.OpTypeIdentifier");
-			if (op_code_item instanceof __v0)
+			var op_code_item = items.get(i);
+			if (op_code_item instanceof OpIdentifier)
 			{
-				this.OpIdentifier(ctx, op_code_item, result);
+				this.OpIdentifier(op_code_item, result);
 			}
-			else if (op_code_item instanceof __v1)
+			else if (op_code_item instanceof OpTypeIdentifier)
 			{
-				this.OpTypeIdentifier(ctx, op_code_item, result);
+				this.OpTypeIdentifier(op_code_item, result);
 			}
-			if (i < items_count - 1)
-			{
-				result.push(ctx, ", ");
-			}
+			if (i < items_count - 1) result.push(", ");
 		}
-		result.push(ctx, ">");
-	},
+		result.push(">");
+	}
+	
+	
 	/**
 	 * OpTypeIdentifier
 	 */
-	OpTypeIdentifier: function(ctx, op_code, result)
+	OpTypeIdentifier(op_code, result)
 	{
-		var pattern = op_code.entity_name.items.last(ctx);
-		result.push(ctx, pattern.value);
-		this.OpCodeGenerics(ctx, op_code.generics, result);
-	},
+		var pattern = op_code.entity_name.items.last();
+		result.push(pattern.value);
+		this.OpCodeGenerics(op_code.generics, result);
+	}
+	
+	
 	/**
 	 * OpCollection
 	 */
-	OpCollection: function(ctx, op_code, result)
+	OpCollection(op_code, result)
 	{
-		var is_multiline = op_code.isMultiLine(ctx);
-		result.push(ctx, "[");
+		const OpPreprocessorIfDef = use("BayLang.OpCodes.OpPreprocessorIfDef");
+		var is_multiline = op_code.isMultiLine();
+		result.push("[");
 		if (is_multiline)
 		{
-			this.translator.levelInc(ctx);
+			this.translator.levelInc();
 		}
 		var i = 0;
-		var values_count = op_code.values.count(ctx);
-		while (i < values_count)
+		var items_count = op_code.items.count();
+		while (i < items_count)
 		{
-			var op_code_item = op_code.values.get(ctx, i);
+			var op_code_item = op_code.items.get(i);
 			if (is_multiline)
 			{
-				result.push(ctx, this.translator.newLine(ctx));
+				result.push(this.translator.newLine());
 			}
 			/* Preprocessor */
-			var __v0 = use("BayLang.OpCodes.OpPreprocessorIfDef");
-			if (op_code_item instanceof __v0)
+			if (op_code_item instanceof OpPreprocessorIfDef)
 			{
-				var items = use("Runtime.Vector").from([]);
+				var items = [];
 				var condition = op_code_item.condition.value;
-				var __v1 = use("BayLang.OpCodes.OpPreprocessorIfDef");
-				while (op_code_item != null && op_code_item instanceof __v1 && op_code_item.condition.value == condition)
+				while (op_code_item != null && op_code_item instanceof OpPreprocessorIfDef && op_code_item.condition.value == condition)
 				{
-					items.push(ctx, op_code_item);
+					items.push(op_code_item);
 					/* Get next item */
 					i++;
-					op_code_item = op_code.values.get(ctx, i);
+					op_code_item = op_code.items.get(i);
 				}
-				this.OpPreprocessorCollection(ctx, items, result);
+				this.OpPreprocessorCollection(items, result);
 				continue;
 			}
 			/* Translate item */
-			this.translate(ctx, op_code_item, result);
-			var __v0 = use("BayLang.OpCodes.OpPreprocessorIfDef");
-			if (!(op_code_item instanceof __v0))
+			this.translate(op_code_item, result);
+			if (!(op_code_item instanceof OpPreprocessorIfDef))
 			{
-				if (is_multiline)
-				{
-					result.push(ctx, ",");
-				}
-				else if (i < values_count - 1)
-				{
-					result.push(ctx, ", ");
-				}
+				if (is_multiline) result.push(",");
+				else if (i < items_count - 1) result.push(", ");
 			}
 			i++;
 		}
 		if (is_multiline)
 		{
-			this.translator.levelDec(ctx);
-			result.push(ctx, this.translator.newLine(ctx));
+			this.translator.levelDec();
+			result.push(this.translator.newLine());
 		}
-		result.push(ctx, "]");
-	},
+		result.push("]");
+	}
+	
+	
 	/**
 	 * Collection preprocessor
 	 */
-	OpPreprocessorCollection: function(ctx, items, result)
+	OpPreprocessorCollection(items, result)
 	{
-		var condition = items.get(ctx, 0).condition.value;
-		result.push(ctx, "#ifdef " + use("Runtime.rtl").toStr(condition) + use("Runtime.rtl").toStr(" then"));
-		for (var i = 0; i < items.count(ctx); i++)
+		var condition = items.get(0).condition.value;
+		result.push("#ifdef " + String(condition) + String(" then"));
+		for (var i = 0; i < items.count(); i++)
 		{
-			var op_code_item = items.get(ctx, i);
-			result.push(ctx, this.translator.newLine(ctx));
-			this.translate(ctx, op_code_item.items, result);
-			result.push(ctx, ",");
+			var op_code_item = items.get(i);
+			result.push(this.translator.newLine());
+			this.translate(op_code_item.items, result);
+			result.push(",");
 		}
-		result.push(ctx, this.translator.newLine(ctx));
-		result.push(ctx, "#endif");
-	},
+		result.push(this.translator.newLine());
+		result.push("#endif");
+	}
+	
+	
 	/**
 	 * OpDict
 	 */
-	OpDict: function(ctx, op_code, result)
+	OpDict(op_code, result)
 	{
-		var is_multiline = op_code.isMultiLine(ctx);
-		if (op_code.values.count(ctx) == 0 && !is_multiline)
+		var is_multiline = op_code.isMultiLine();
+		if (op_code.items.count() == 0 && !is_multiline)
 		{
-			result.push(ctx, "{");
-			result.push(ctx, "}");
-			return ;
+			result.push("{");
+			result.push("}");
+			return;
 		}
 		/* Begin bracket */
-		result.push(ctx, "{");
+		result.push("{");
 		if (is_multiline)
 		{
-			this.translator.levelInc(ctx);
+			this.translator.levelInc();
 		}
 		/* Items */
 		var i = 0;
-		var values_count = op_code.values.count(ctx);
-		while (i < values_count)
+		var items_count = op_code.items.count();
+		while (i < items_count)
 		{
-			var op_code_item = op_code.values.get(ctx, i);
+			var op_code_item = op_code.items.get(i);
 			if (is_multiline)
 			{
-				result.push(ctx, this.translator.newLine(ctx));
+				result.push(this.translator.newLine());
 			}
 			/* Preprocessor */
 			if (op_code_item.condition != null)
 			{
-				var items = use("Runtime.Vector").from([]);
+				var items = [];
 				var condition = op_code_item.condition.value;
 				while (op_code_item != null && op_code_item.condition != null)
 				{
-					items.push(ctx, op_code_item);
+					items.push(op_code_item);
 					/* Get next item */
 					i++;
-					op_code_item = op_code.values.get(ctx, i);
+					op_code_item = op_code.items.get(i);
 				}
-				this.OpPreprocessorDict(ctx, items, result);
+				this.OpPreprocessorDict(items, result);
 				continue;
 			}
 			/* Translate item */
-			result.push(ctx, this.translator.toString(ctx, op_code_item.key));
-			result.push(ctx, ": ");
-			this.translate(ctx, op_code_item.value, result);
-			if (is_multiline)
-			{
-				result.push(ctx, ",");
-			}
-			else if (i < values_count - 1)
-			{
-				result.push(ctx, ", ");
-			}
+			result.push(this.translator.toString(op_code_item.key.value));
+			result.push(": ");
+			this.translate(op_code_item.expression, result);
+			if (is_multiline) result.push(",");
+			else if (i < items_count - 1) result.push(", ");
 			i++;
 		}
 		/* End bracket */
 		if (is_multiline)
 		{
-			this.translator.levelDec(ctx);
-			result.push(ctx, this.translator.newLine(ctx));
+			this.translator.levelDec();
+			result.push(this.translator.newLine());
 		}
-		result.push(ctx, "}");
-	},
+		result.push("}");
+	}
+	
+	
 	/**
 	 * Dict preprocessor
 	 */
-	OpPreprocessorDict: function(ctx, items, result)
+	OpPreprocessorDict(items, result)
 	{
-		var condition = items.get(ctx, 0).condition.value;
-		result.push(ctx, "#ifdef " + use("Runtime.rtl").toStr(condition) + use("Runtime.rtl").toStr(" then"));
-		for (var i = 0; i < items.count(ctx); i++)
+		var condition = items.get(0).condition.value;
+		result.push("#ifdef " + String(condition) + String(" then"));
+		for (var i = 0; i < items.count(); i++)
 		{
-			var op_code_item = items.get(ctx, i);
-			result.push(ctx, this.translator.newLine(ctx));
-			result.push(ctx, this.translator.toString(ctx, op_code_item.key));
-			result.push(ctx, ": ");
-			this.translate(ctx, op_code_item.value, result);
-			result.push(ctx, ",");
+			var op_code_item = items.get(i);
+			result.push(this.translator.newLine());
+			result.push(this.translator.toString(op_code_item.key));
+			result.push(": ");
+			this.translate(op_code_item.value, result);
+			result.push(",");
 		}
-		result.push(ctx, this.translator.newLine(ctx));
-		result.push(ctx, "#endif");
-	},
+		result.push(this.translator.newLine());
+		result.push("#endif");
+	}
+	
+	
 	/**
 	 * OpAttr
 	 */
-	OpAttr: function(ctx, op_code, result)
+	OpAttr(op_code, result)
 	{
-		var __v0 = use("Runtime.Vector");
-		var attrs = new __v0(ctx);
+		const Vector = use("Runtime.Vector");
+		const OpAttr = use("BayLang.OpCodes.OpAttr");
+		var attrs = new Vector();
 		var op_code_first = op_code;
-		var __v1 = use("BayLang.OpCodes.OpAttr");
-		while (op_code_first instanceof __v1)
+		while (op_code_first instanceof OpAttr)
 		{
-			attrs.push(ctx, op_code_first);
-			op_code_first = op_code_first.obj;
+			attrs.push(op_code_first);
+			op_code_first = op_code_first.prev;
 		}
-		attrs = attrs.reverse(ctx);
+		attrs.reverse();
 		/* first op_code */
-		this.translateItem(ctx, op_code_first, result);
+		this.translateItem(op_code_first, result);
 		/* Attrs */
-		for (var i = 0; i < attrs.count(ctx); i++)
+		for (var i = 0; i < attrs.count(); i++)
 		{
-			var item_attr = attrs.get(ctx, i);
-			var __v1 = use("BayLang.OpCodes.OpAttr");
-			var __v2 = use("BayLang.OpCodes.OpAttr");
-			var __v3 = use("BayLang.OpCodes.OpAttr");
-			var __v4 = use("BayLang.OpCodes.OpAttr");
-			if (item_attr.kind == __v1.KIND_ATTR)
+			var item_attr = attrs.get(i);
+			if (item_attr.kind == OpAttr.KIND_ATTR)
 			{
-				result.push(ctx, ".");
-				result.push(ctx, item_attr.value.value);
+				result.push(".");
+				result.push(item_attr.next.value);
 			}
-			else if (item_attr.kind == __v2.KIND_STATIC)
+			else if (item_attr.kind == OpAttr.KIND_STATIC)
 			{
-				result.push(ctx, "::");
-				result.push(ctx, item_attr.value.value);
+				result.push("::");
+				result.push(item_attr.next.value);
 			}
-			else if (item_attr.kind == __v3.KIND_DYNAMIC)
+			else if (item_attr.kind == OpAttr.KIND_DYNAMIC)
 			{
-				result.push(ctx, "[");
-				this.translate(ctx, item_attr.value, result);
-				result.push(ctx, "]");
-			}
-			else if (item_attr.kind == __v4.KIND_DYNAMIC_ATTRS)
-			{
-				result.push(ctx, "[");
-				var item_attr_count = item_attr.attrs.count(ctx);
-				for (var j = 0; j < item_attr_count; j++)
-				{
-					var op_code_item = item_attr.attrs.get(ctx, j);
-					this.translate(ctx, op_code_item, result);
-					if (j < item_attr_count - 1)
-					{
-						result.push(ctx, ", ");
-					}
-				}
-				result.push(ctx, "]");
+				this.OpCollection(item_attr.next, result);
 			}
 		}
 		this.translator.opcode_level = 20;
-	},
+	}
+	
+	
 	/**
 	 * OpClassOf
 	 */
-	OpClassOf: function(ctx, op_code, result)
+	OpClassOf(op_code, result)
 	{
-		result.push(ctx, "classof ");
-		result.push(ctx, op_code.entity_name.names.last(ctx));
-	},
+		result.push("classof ");
+		result.push(op_code.entity_name.names.last());
+	}
+	
+	
 	/**
 	 * OpCall
 	 */
-	OpCall: function(ctx, op_code, result)
+	OpCall(op_code, result)
 	{
-		this.translateItem(ctx, op_code.item, result);
-		var __v0 = use("BayLang.OpCodes.OpDict");
-		if (op_code.args.count(ctx) == 1 && op_code.args.get(ctx, 0) instanceof __v0)
+		if (op_code.is_await)
 		{
-			this.OpDict(ctx, op_code.args.get(ctx, 0), result);
+			result.push("await ");
 		}
-		else
+		this.translateItem(op_code.item, result);
+		result.push("(");
+		var args_count = op_code.args.count();
+		for (var i = 0; i < args_count; i++)
 		{
-			result.push(ctx, "(");
-			var args_count = op_code.args.count(ctx);
-			for (var i = 0; i < args_count; i++)
-			{
-				var op_code_item = op_code.args.get(ctx, i);
-				this.Expression(ctx, op_code_item, result);
-				if (i < args_count - 1)
-				{
-					result.push(ctx, ", ");
-				}
-			}
-			result.push(ctx, ")");
+			var op_code_item = op_code.args.get(i);
+			this.Expression(op_code_item, result);
+			if (i < args_count - 1) result.push(", ");
 		}
+		result.push(")");
 		this.translator.opcode_level = 20;
-	},
+	}
+	
+	
 	/**
 	 * OpNew
 	 */
-	OpNew: function(ctx, op_code, result)
+	OpNew(op_code, result)
 	{
-		result.push(ctx, "new ");
-		this.OpTypeIdentifier(ctx, op_code.value, result);
-		var __v0 = use("BayLang.OpCodes.OpDict");
-		if (op_code.args.count(ctx) == 1 && op_code.args.get(ctx, 0) instanceof __v0)
+		const OpDict = use("BayLang.OpCodes.OpDict");
+		result.push("new ");
+		this.OpTypeIdentifier(op_code.pattern, result);
+		if (op_code.args.count() == 1 && op_code.args.get(0) instanceof OpDict)
 		{
-			this.OpDict(ctx, op_code.args.get(ctx, 0), result);
+			this.OpDict(op_code.args.get(0), result);
 		}
 		else
 		{
-			result.push(ctx, "(");
-			var args_count = op_code.args.count(ctx);
+			result.push("(");
+			var args_count = op_code.args.count();
 			for (var i = 0; i < args_count; i++)
 			{
-				var op_code_item = op_code.args.get(ctx, i);
-				this.Expression(ctx, op_code_item, result);
-				if (i < args_count - 1)
-				{
-					result.push(ctx, ", ");
-				}
+				var op_code_item = op_code.args.get(i);
+				this.Expression(op_code_item, result);
+				if (i < args_count - 1) result.push(", ");
 			}
-			result.push(ctx, ")");
+			result.push(")");
 		}
 		this.translator.opcode_level = 20;
-	},
+	}
+	
+	
 	/**
 	 * OpMath
 	 */
-	OpMath: function(ctx, op_code, result)
+	OpMath(op_code, result)
 	{
-		var result1 = use("Runtime.Vector").from([]);
-		this.Expression(ctx, op_code.value1, result1);
+		var result1 = [];
+		this.Expression(op_code.value1, result1);
 		var opcode_level1 = this.translator.opcode_level;
 		var op = "";
 		var opcode_level = 0;
@@ -523,6 +501,11 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 			opcode_level = 16;
 			op = "bitnot";
 		}
+		if (op_code.math == "neg")
+		{
+			opcode_level = 16;
+			op = "neg";
+		}
 		if (op_code.math == "not")
 		{
 			opcode_level = 16;
@@ -548,189 +531,201 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 			opcode_level = 5;
 			op = "or";
 		}
-		if (op_code.math == "not" || op_code.math == "bitnot" || op_code.math == "!")
+		if (op_code.math == "neg" || op_code.math == "not" || op_code.math == "bitnot" || op_code.math == "!")
 		{
-			if (op_code.math == "not")
-			{
-				result.push(ctx, "not ");
-			}
-			else if (op_code.math == "bitnot")
-			{
-				result.push(ctx, "bitnot ");
-			}
-			else
-			{
-				result.push(ctx, op_code.math);
-			}
+			if (op_code.math == "neg") result.push("-");
+			else if (op_code.math == "not") result.push("not ");
+			else if (op_code.math == "bitnot") result.push("bitnot ");
+			else result.push(op_code.math);
 			if (opcode_level1 < opcode_level)
 			{
-				result.push(ctx, "(");
-				result.appendItems(ctx, result1);
-				result.push(ctx, ")");
+				result.push("(");
+				result.appendItems(result1);
+				result.push(")");
 			}
 			else
 			{
-				result.appendItems(ctx, result1);
+				result.appendItems(result1);
 			}
 		}
 		else
 		{
 			if (opcode_level1 < opcode_level)
 			{
-				result.push(ctx, "(");
-				result.appendItems(ctx, result1);
-				result.push(ctx, ")");
+				result.push("(");
+				result.appendItems(result1);
+				result.push(")");
 			}
 			else
 			{
-				result.appendItems(ctx, result1);
+				result.appendItems(result1);
 			}
-			result.push(ctx, " " + use("Runtime.rtl").toStr(op) + use("Runtime.rtl").toStr(" "));
-			var result2 = use("Runtime.Vector").from([]);
-			this.Expression(ctx, op_code.value2, result2);
+			result.push(" " + String(op) + String(" "));
+			var result2 = [];
+			this.Expression(op_code.value2, result2);
 			var opcode_level2 = this.translator.opcode_level;
 			if (opcode_level2 < opcode_level)
 			{
-				result.push(ctx, "(");
-				result.appendItems(ctx, result2);
-				result.push(ctx, ")");
+				result.push("(");
+				result.appendItems(result2);
+				result.push(")");
 			}
 			else
 			{
-				result.appendItems(ctx, result2);
+				result.appendItems(result2);
 			}
 		}
 		this.translator.opcode_level = opcode_level;
-	},
+	}
+	
+	
 	/**
-	 * Translate item
+	 * OpTernary
 	 */
-	translateItem: function(ctx, op_code, result)
+	OpTernary(op_code, result)
 	{
-		var __v0 = use("BayLang.OpCodes.OpNumber");
-		if (op_code instanceof __v0)
+		var result1 = [];
+		this.translate(op_code.condition, result1);
+		if (this.translator.opcode_level < 19)
 		{
-			this.OpNumber(ctx, op_code, result);
-		}
-		var __v0 = use("BayLang.OpCodes.OpString");
-		var __v1 = use("BayLang.OpCodes.OpIdentifier");
-		var __v2 = use("BayLang.OpCodes.OpAttr");
-		var __v3 = use("BayLang.OpCodes.OpClassOf");
-		var __v4 = use("BayLang.OpCodes.OpCollection");
-		var __v5 = use("BayLang.OpCodes.OpDict");
-		var __v6 = use("BayLang.OpCodes.OpDeclareFunction");
-		var __v7 = use("BayLang.OpCodes.OpCall");
-		var __v8 = use("BayLang.OpCodes.OpNew");
-		if (op_code instanceof __v0)
-		{
-			this.OpString(ctx, op_code, result);
-		}
-		else if (op_code instanceof __v1)
-		{
-			this.OpIdentifier(ctx, op_code, result);
-		}
-		else if (op_code instanceof __v2)
-		{
-			this.OpAttr(ctx, op_code, result);
-		}
-		else if (op_code instanceof __v3)
-		{
-			this.OpClassOf(ctx, op_code, result);
-		}
-		else if (op_code instanceof __v4)
-		{
-			this.OpCollection(ctx, op_code, result);
-		}
-		else if (op_code instanceof __v5)
-		{
-			this.OpDict(ctx, op_code, result);
-		}
-		else if (op_code instanceof __v6)
-		{
-			this.translator.program.OpDeclareFunction(ctx, op_code, result);
-		}
-		else if (op_code instanceof __v7)
-		{
-			this.OpCall(ctx, op_code, result);
-		}
-		else if (op_code instanceof __v8)
-		{
-			this.OpNew(ctx, op_code, result);
-		}
-	},
-	/**
-	 * Expression
-	 */
-	Expression: function(ctx, op_code, result)
-	{
-		var __v0 = use("BayLang.OpCodes.OpMath");
-		if (op_code instanceof __v0)
-		{
-			this.OpMath(ctx, op_code, result);
+			result.push("(");
+			result.appendItems(result1);
+			result.push(")");
 		}
 		else
 		{
-			this.translateItem(ctx, op_code, result);
+			result.appendItems(result1);
 		}
-	},
+		result1 = [];
+		result.push(" ? ");
+		this.translate(op_code.if_true, result1);
+		if (this.translator.opcode_level < 19)
+		{
+			result.push("(");
+			result.appendItems(result1);
+			result.push(")");
+		}
+		else
+		{
+			result.appendItems(result1);
+		}
+		result1 = [];
+		result.push(" : ");
+		this.translate(op_code.if_false, result1);
+		if (this.translator.opcode_level < 19)
+		{
+			result.push("(");
+			result.appendItems(result1);
+			result.push(")");
+		}
+		else
+		{
+			result.appendItems(result1);
+		}
+	}
+	
+	
+	/**
+	 * Translate item
+	 */
+	translateItem(op_code, result)
+	{
+		const OpNumber = use("BayLang.OpCodes.OpNumber");
+		const OpString = use("BayLang.OpCodes.OpString");
+		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
+		const OpAttr = use("BayLang.OpCodes.OpAttr");
+		const OpClassOf = use("BayLang.OpCodes.OpClassOf");
+		const OpCollection = use("BayLang.OpCodes.OpCollection");
+		const OpDict = use("BayLang.OpCodes.OpDict");
+		const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");
+		const OpCall = use("BayLang.OpCodes.OpCall");
+		const OpNew = use("BayLang.OpCodes.OpNew");
+		const OpTernary = use("BayLang.OpCodes.OpTernary");
+		if (op_code instanceof OpNumber)
+		{
+			this.OpNumber(op_code, result);
+		}
+		if (op_code instanceof OpString)
+		{
+			this.OpString(op_code, result);
+		}
+		else if (op_code instanceof OpIdentifier)
+		{
+			this.OpIdentifier(op_code, result);
+		}
+		else if (op_code instanceof OpAttr)
+		{
+			this.OpAttr(op_code, result);
+		}
+		else if (op_code instanceof OpClassOf)
+		{
+			this.OpClassOf(op_code, result);
+		}
+		else if (op_code instanceof OpCollection)
+		{
+			this.OpCollection(op_code, result);
+		}
+		else if (op_code instanceof OpDict)
+		{
+			this.OpDict(op_code, result);
+		}
+		else if (op_code instanceof OpDeclareFunction)
+		{
+			this.translator.program.OpDeclareFunction(op_code, result);
+		}
+		else if (op_code instanceof OpCall)
+		{
+			this.OpCall(op_code, result);
+		}
+		else if (op_code instanceof OpNew)
+		{
+			this.OpNew(op_code, result);
+		}
+		else if (op_code instanceof OpTernary)
+		{
+			this.OpTernary(op_code, result);
+		}
+	}
+	
+	
+	/**
+	 * Expression
+	 */
+	Expression(op_code, result)
+	{
+		const OpMath = use("BayLang.OpCodes.OpMath");
+		if (op_code instanceof OpMath)
+		{
+			this.OpMath(op_code, result);
+		}
+		else
+		{
+			this.translateItem(op_code, result);
+		}
+	}
+	
+	
 	/**
 	 * Translate expression
 	 */
-	translate: function(ctx, op_code, result)
+	translate(op_code, result)
 	{
-		this.Expression(ctx, op_code, result);
-	},
-	_init: function(ctx)
+		this.Expression(op_code, result);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.translator = null;
-	},
-});
-Object.assign(BayLang.LangBay.TranslatorBayExpression, use("Runtime.BaseObject"));
-Object.assign(BayLang.LangBay.TranslatorBayExpression,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.LangBay";
-	},
-	getClassName: function()
-	{
-		return "BayLang.LangBay.TranslatorBayExpression";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.LangBay.TranslatorBayExpression);
-module.exports = BayLang.LangBay.TranslatorBayExpression;
+	}
+	static getClassName(){ return "BayLang.LangBay.TranslatorBayExpression"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.LangBay.TranslatorBayExpression);
+module.exports = {
+	"TranslatorBayExpression": BayLang.LangBay.TranslatorBayExpression,
+};

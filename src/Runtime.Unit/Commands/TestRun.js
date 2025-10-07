@@ -1,7 +1,9 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const BaseCommand = use("Runtime.Console.BaseCommand");
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -20,115 +22,67 @@ var use = require('bay-lang').use;
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
 if (typeof Runtime.Unit.Commands == 'undefined') Runtime.Unit.Commands = {};
-Runtime.Unit.Commands.TestRun = function(ctx)
-{
-	use("Runtime.Console.BaseCommand").apply(this, arguments);
-};
-Runtime.Unit.Commands.TestRun.prototype = Object.create(use("Runtime.Console.BaseCommand").prototype);
-Runtime.Unit.Commands.TestRun.prototype.constructor = Runtime.Unit.Commands.TestRun;
-Object.assign(Runtime.Unit.Commands.TestRun.prototype,
-{
-});
-Object.assign(Runtime.Unit.Commands.TestRun, use("Runtime.Console.BaseCommand"));
-Object.assign(Runtime.Unit.Commands.TestRun,
+Runtime.Unit.Commands.TestRun = class extends BaseCommand
 {
 	/**
 	 * Returns name
 	 */
-	getName: function(ctx)
-	{
-		return "test::run";
-	},
+	static getName(){ return "test::run"; }
+	
+	
 	/**
 	 * Returns description
 	 */
-	getDescription: function(ctx)
-	{
-		return "Run test";
-	},
+	static getDescription(){ return "Run test"; }
+	
+	
 	/**
 	 * Run task
 	 */
-	run: async function(ctx)
+	static async run()
 	{
-		var test_name = Runtime.rtl.attr(ctx, ctx.cli_args, 2);
+		var test_name = Runtime.rtl.getContext().cli_args[2];
 		var error_code = this.SUCCESS;
 		if (test_name == null)
 		{
 			/* List all tests */
-			var __v0 = use("Runtime.io");
-			__v0.print(ctx, "List of all tests:");
-			var tests = ctx.provider(ctx, "Runtime.Unit.TestProvider");
-			for (var i = 0; i < tests.count(ctx); i++)
+			rtl.print("List of all tests:");
+			var tests = Runtime.rtl.getContext().provider("Runtime.Unit.TestProvider");
+			for (var i = 0; i < tests.count(); i++)
 			{
-				var test = tests.get(ctx, i);
-				var __v1 = use("Runtime.io");
-				var __v2 = use("Runtime.io");
-				__v1.print(ctx, i + 1 + use("Runtime.rtl").toStr(") ") + use("Runtime.rtl").toStr(__v2.color(ctx, "yellow", test.name)));
+				var test = tests.get(i);
+				rtl.print(i + 1 + String(") ") + String(rtl.color("yellow", test.name)));
 			}
 		}
 		else
 		{
 			/* Run current test */
-			var tests = ctx.provider(ctx, "Runtime.Unit.TestProvider");
-			error_code = await tests.runTestByName(ctx, test_name);
+			var tests = Runtime.rtl.getContext().provider("Runtime.Unit.TestProvider");
+			error_code = await tests.runTestByName(test_name);
 			if (error_code == 1)
 			{
-				var __v1 = use("Runtime.io");
-				var __v2 = use("Runtime.io");
-				__v1.print(ctx, __v2.color(ctx, "green", "OK"));
+				rtl.print(rtl.color("green", "OK"));
 			}
 			else
 			{
-				var __v3 = use("Runtime.io");
-				var __v4 = use("Runtime.io");
-				__v3.print(ctx, __v4.color(ctx, "red", "Fail"));
+				rtl.print(rtl.color("red", "Fail"));
 			}
 		}
-		return Promise.resolve(error_code);
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+		return error_code;
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "Runtime.Unit.Commands";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Unit.Commands.TestRun";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Console.BaseCommand";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Unit.Commands.TestRun);
-module.exports = Runtime.Unit.Commands.TestRun;
+		super._init();
+	}
+	static getClassName(){ return "Runtime.Unit.Commands.TestRun"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Unit.Commands.TestRun);
+module.exports = {
+	"TestRun": Runtime.Unit.Commands.TestRun,
+};

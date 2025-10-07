@@ -1,9 +1,11 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rs = use("Runtime.rs");
+const CoreTranslator = use("BayLang.CoreTranslator");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,106 +21,63 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.TranslatorBay = function(ctx)
+BayLang.LangBay.TranslatorBay = class extends CoreTranslator
 {
-	use("BayLang.CoreTranslator").apply(this, arguments);
-};
-BayLang.LangBay.TranslatorBay.prototype = Object.create(use("BayLang.CoreTranslator").prototype);
-BayLang.LangBay.TranslatorBay.prototype.constructor = BayLang.LangBay.TranslatorBay;
-Object.assign(BayLang.LangBay.TranslatorBay.prototype,
-{
+	/* Translators */
+	
+	
 	/**
 	 * Returns string
 	 */
-	toString: function(ctx, s)
+	toString(s)
 	{
-		var __v0 = use("Runtime.re");
-		s = __v0.replace(ctx, "\\\\", "\\\\", s);
-		var __v1 = use("Runtime.re");
-		s = __v1.replace(ctx, "\"", "\\\"", s);
-		var __v2 = use("Runtime.re");
-		s = __v2.replace(ctx, "\n", "\\n", s);
-		var __v3 = use("Runtime.re");
-		s = __v3.replace(ctx, "\r", "\\r", s);
-		var __v4 = use("Runtime.re");
-		s = __v4.replace(ctx, "\t", "\\t", s);
-		return "\"" + use("Runtime.rtl").toStr(s) + use("Runtime.rtl").toStr("\"");
-	},
+		const re = use("Runtime.re");
+		s = re.replace("\\\\", "\\\\", s);
+		s = re.replace("\"", "\\\"", s);
+		s = re.replace("\n", "\\n", s);
+		s = re.replace("\r", "\\r", s);
+		s = re.replace("\t", "\\t", s);
+		return "\"" + String(s) + String("\"");
+	}
+	
+	
 	/**
 	 * Translate BaseOpCode
 	 */
-	translate: function(ctx, op_code)
+	translate(op_code)
 	{
-		var content = use("Runtime.Vector").from([]);
+		var content = [];
 		if (op_code.is_component)
 		{
-			this.html.translate(ctx, op_code, content);
+			this.html.translate(op_code, content);
 		}
 		else
 		{
-			this.program.translate(ctx, op_code, content);
+			this.program.translate(op_code, content);
 		}
-		var __v0 = use("Runtime.rs");
-		return __v0.join(ctx, "", content);
-	},
-	_init: function(ctx)
+		return rs.join("", content);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("BayLang.CoreTranslator").prototype._init.call(this,ctx);
-		var __v0 = use("BayLang.LangBay.TranslatorBayExpression");
-		var __v1 = use("BayLang.LangBay.TranslatorBayOperator");
-		var __v2 = use("BayLang.LangBay.TranslatorBayProgram");
-		var __v3 = use("BayLang.LangBay.TranslatorBayHtml");
-		this.expression = new __v0(ctx, this);
-		this.operator = new __v1(ctx, this);
-		this.program = new __v2(ctx, this);
-		this.html = new __v3(ctx, this);
-	},
-});
-Object.assign(BayLang.LangBay.TranslatorBay, use("BayLang.CoreTranslator"));
-Object.assign(BayLang.LangBay.TranslatorBay,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.LangBay";
-	},
-	getClassName: function()
-	{
-		return "BayLang.LangBay.TranslatorBay";
-	},
-	getParentClassName: function()
-	{
-		return "BayLang.CoreTranslator";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.LangBay.TranslatorBay);
-module.exports = BayLang.LangBay.TranslatorBay;
+		super._init();
+		const TranslatorBayExpression = use("BayLang.LangBay.TranslatorBayExpression");
+		const TranslatorBayOperator = use("BayLang.LangBay.TranslatorBayOperator");
+		const TranslatorBayProgram = use("BayLang.LangBay.TranslatorBayProgram");
+		const TranslatorBayHtml = use("BayLang.LangBay.TranslatorBayHtml");
+		this.expression = new TranslatorBayExpression(this);
+		this.operator = new TranslatorBayOperator(this);
+		this.program = new TranslatorBayProgram(this);
+		this.html = new TranslatorBayHtml(this);
+	}
+	static getClassName(){ return "BayLang.LangBay.TranslatorBay"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.LangBay.TranslatorBay);
+module.exports = {
+	"TranslatorBay": BayLang.LangBay.TranslatorBay,
+};

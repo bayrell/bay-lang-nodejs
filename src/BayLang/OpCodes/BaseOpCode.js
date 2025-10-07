@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,51 +20,64 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.BaseOpCode = function(ctx, params)
+BayLang.OpCodes.BaseOpCode = class extends BaseObject
 {
-	if (params == undefined) params = null;
-	use("Runtime.BaseObject").call(this, ctx);
-	this._assign_values(ctx, params);
-};
-BayLang.OpCodes.BaseOpCode.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.OpCodes.BaseOpCode.prototype.constructor = BayLang.OpCodes.BaseOpCode;
-Object.assign(BayLang.OpCodes.BaseOpCode.prototype,
-{
+	static op = "";
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(params)
+	{
+		if (params == undefined) params = null;
+		super();
+		this.assign(params);
+	}
+	
+	
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize(serializer, data)
 	{
-		serializer.process(ctx, this, "caret_start", data);
-		serializer.process(ctx, this, "caret_end", data);
-	},
+		serializer.process(this, "caret_start", data);
+		serializer.process(this, "caret_end", data);
+	}
+	
+	
 	/**
 	 * Is multiline
 	 */
-	isMultiLine: function(ctx)
+	isMultiLine()
 	{
-		if (!this.caret_start)
-		{
-			return true;
-		}
-		if (!this.caret_end)
-		{
-			return true;
-		}
+		if (!this.caret_start) return true;
+		if (!this.caret_end) return true;
 		return this.caret_start.y != this.caret_end.y;
-	},
+	}
+	
+	
+	/**
+	 * Returns offset
+	 */
+	getOffset()
+	{
+		return Map.create({
+			"start": this.caret_start ? this.caret_start.y : 0,
+			"end": this.caret_end ? this.caret_end.y : 0,
+		});
+	}
+	
+	
 	/**
 	 * Clone this struct with new values
 	 * @param Map obj = null
 	 * @return BaseStruct
 	 */
-	clone: function(ctx, obj)
+	clone(obj)
 	{
 		if (obj == undefined) obj = null;
-		if (obj == null)
-		{
-			return this;
-		}
+		if (obj == null) return this;
 		var proto = Object.getPrototypeOf(this);
 		var item = Object.create(proto);
 		item = Object.assign(item, this);
@@ -71,74 +85,34 @@ Object.assign(BayLang.OpCodes.BaseOpCode.prototype,
 		
 		return item;
 		return this;
-	},
+	}
+	
+	
 	/**
 	 * Copy this struct with new values
 	 * @param Map obj = null
 	 * @return BaseStruct
 	 */
-	copy: function(ctx, obj)
+	copy(obj)
 	{
 		if (obj == undefined) obj = null;
-		return this.clone(ctx, obj);
-	},
-	_init: function(ctx)
+		return this.clone(obj);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.caret_start = null;
 		this.caret_end = null;
-	},
-});
-Object.assign(BayLang.OpCodes.BaseOpCode, use("Runtime.BaseObject"));
-Object.assign(BayLang.OpCodes.BaseOpCode,
-{
-	op: "",
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.OpCodes";
-	},
-	getClassName: function()
-	{
-		return "BayLang.OpCodes.BaseOpCode";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-	__implements__:
-	[
-		use("Runtime.SerializeInterface"),
-	],
-});use.add(BayLang.OpCodes.BaseOpCode);
-module.exports = BayLang.OpCodes.BaseOpCode;
+	}
+	static getClassName(){ return "BayLang.OpCodes.BaseOpCode"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return ["Runtime.SerializeInterface"]; }
+};
+use.add(BayLang.OpCodes.BaseOpCode);
+module.exports = {
+	"BaseOpCode": BayLang.OpCodes.BaseOpCode,
+};

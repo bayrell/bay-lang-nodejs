@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const ParserUnknownError = use("BayLang.Exceptions.ParserUnknownError");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,82 +20,49 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Exceptions == 'undefined') BayLang.Exceptions = {};
-BayLang.Exceptions.ParserError = function(ctx, s, caret, file, code, prev)
+BayLang.Exceptions.ParserError = class extends ParserUnknownError
 {
-	if (file == undefined) file = "";
-	if (code == undefined) code = -1;
-	if (prev == undefined) prev = null;
-	use("BayLang.Exceptions.ParserUnknownError").call(this, ctx, s, code, prev);
-	this.error_line = caret.y + 1;
-	this.error_pos = caret.x + 1;
-	this.error_file = file;
-};
-BayLang.Exceptions.ParserError.prototype = Object.create(use("BayLang.Exceptions.ParserUnknownError").prototype);
-BayLang.Exceptions.ParserError.prototype.constructor = BayLang.Exceptions.ParserError;
-Object.assign(BayLang.Exceptions.ParserError.prototype,
-{
-	buildErrorMessage: function(ctx)
+	constructor(s, caret, file, code, prev)
 	{
-		var error_str = this.getErrorMessage(ctx);
-		var file = this.getFileName(ctx);
-		var line = this.getErrorLine(ctx);
-		var pos = this.getErrorPos(ctx);
+		if (file == undefined) file = "";
+		if (code == undefined) code = -1;
+		if (prev == undefined) prev = null;
+		super(s, code, prev);
+		this.error_line = caret.y + 1;
+		this.error_pos = caret.x + 1;
+		this.error_file = file;
+	}
+	
+	
+	buildErrorMessage()
+	{
+		var error_str = this.getErrorMessage();
+		var file = this.getFileName();
+		var line = this.getErrorLine();
+		var pos = this.getErrorPos();
 		if (line != -1)
 		{
-			error_str += use("Runtime.rtl").toStr(" at Ln:" + use("Runtime.rtl").toStr(line) + use("Runtime.rtl").toStr(((pos != "") ? (", Pos:" + use("Runtime.rtl").toStr(pos)) : (""))));
+			error_str += " at Ln:" + String(line) + String((pos != "") ? (", Pos:" + String(pos)) : "");
 		}
 		if (file != "")
 		{
-			error_str += use("Runtime.rtl").toStr(" in file:'" + use("Runtime.rtl").toStr(file) + use("Runtime.rtl").toStr("'"));
+			error_str += " in file:'" + String(file) + String("'");
 		}
 		return error_str;
-	},
-});
-Object.assign(BayLang.Exceptions.ParserError, use("BayLang.Exceptions.ParserUnknownError"));
-Object.assign(BayLang.Exceptions.ParserError,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "BayLang.Exceptions";
-	},
-	getClassName: function()
-	{
-		return "BayLang.Exceptions.ParserError";
-	},
-	getParentClassName: function()
-	{
-		return "BayLang.Exceptions.ParserUnknownError";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.Exceptions.ParserError);
-module.exports = BayLang.Exceptions.ParserError;
+		super._init();
+	}
+	static getClassName(){ return "BayLang.Exceptions.ParserError"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.Exceptions.ParserError);
+module.exports = {
+	"ParserError": BayLang.Exceptions.ParserError,
+};

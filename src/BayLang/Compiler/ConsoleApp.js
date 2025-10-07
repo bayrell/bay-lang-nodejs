@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const App = use("Runtime.Console.App");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,67 +20,28 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
-BayLang.Compiler.ConsoleApp = function(ctx)
-{
-	use("Runtime.Console.App").apply(this, arguments);
-};
-BayLang.Compiler.ConsoleApp.prototype = Object.create(use("Runtime.Console.App").prototype);
-BayLang.Compiler.ConsoleApp.prototype.constructor = BayLang.Compiler.ConsoleApp;
-Object.assign(BayLang.Compiler.ConsoleApp.prototype,
+BayLang.Compiler.ConsoleApp = class extends App
 {
 	/**
-	 * Init
+	 * Main entry point
 	 */
-	init: async function(ctx)
+	async main()
 	{
-		/*new SettingsProvider();*/
-	},
-});
-Object.assign(BayLang.Compiler.ConsoleApp, use("Runtime.Console.App"));
-Object.assign(BayLang.Compiler.ConsoleApp,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+		return await super.main();
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "BayLang.Compiler";
-	},
-	getClassName: function()
-	{
-		return "BayLang.Compiler.ConsoleApp";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Console.App";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.Compiler.ConsoleApp);
-module.exports = BayLang.Compiler.ConsoleApp;
+		super._init();
+	}
+	static getClassName(){ return "BayLang.Compiler.ConsoleApp"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.Compiler.ConsoleApp);
+module.exports = {
+	"ConsoleApp": BayLang.Compiler.ConsoleApp,
+};

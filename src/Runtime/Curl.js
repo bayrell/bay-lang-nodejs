@@ -1,5 +1,6 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
@@ -18,88 +19,51 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Curl = function(ctx, url, params)
+Runtime.Curl = class extends BaseObject
 {
-	if (params == undefined) params = null;
-	use("Runtime.BaseObject").call(this, ctx);
-	this.url = url;
-	/* Setup params */
-	if (params == null)
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(url, params)
 	{
-		return ;
+		if (params == undefined) params = null;
+		super();
+		this.url = url;
+		/* Setup params */
+		if (params == null) return;
+		if (params.has("post")) this.post = params.get("post");
 	}
-	if (params.has(ctx, "post"))
-	{
-		this.post = params.get(ctx, "post");
-	}
-};
-Runtime.Curl.prototype = Object.create(use("Runtime.BaseObject").prototype);
-Runtime.Curl.prototype.constructor = Runtime.Curl;
-Object.assign(Runtime.Curl.prototype,
-{
+	
+	
 	/**
 	 * Send
 	 */
-	send: async function(ctx)
+	async send()
 	{
 		this.code = 0;
 		this.response = "";
-		return Promise.resolve(this.response);
-	},
-	_init: function(ctx)
+		return this.response;
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.url = "";
 		this.post = null;
 		this.code = 0;
 		this.response = "";
-	},
-});
-Object.assign(Runtime.Curl, use("Runtime.BaseObject"));
-Object.assign(Runtime.Curl,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Curl";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Curl);
-module.exports = Runtime.Curl;
+	}
+	static getClassName(){ return "Runtime.Curl"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Curl);
+
+module.exports = {
+	"Curl": Runtime.Curl,
+};

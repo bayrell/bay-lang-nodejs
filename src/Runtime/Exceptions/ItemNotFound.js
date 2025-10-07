@@ -1,5 +1,8 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rs = use("Runtime.rs");
+const rtl = use("Runtime.rtl");
+const RuntimeException = use("Runtime.Exceptions.RuntimeException");
 /*!
  *  BayLang Technology
  *
@@ -19,75 +22,37 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Exceptions == 'undefined') Runtime.Exceptions = {};
-Runtime.Exceptions.ItemNotFound = function(ctx, object, name, prev)
+Runtime.Exceptions.ItemNotFound = class extends RuntimeException
 {
-	if (object == undefined) object = "Item";
-	if (name == undefined) name = "";
-	if (prev == undefined) prev = null;
-	var message = "";
-	if (name != "")
+	constructor(name, object, prev)
 	{
-		var __v0 = use("Runtime.rs");
-		message = __v0.format(ctx, "%object% '%name%' not found", use("Runtime.Map").from({"name":name,"object":object}));
+		if (name == undefined) name = "";
+		if (object == undefined) object = "Item";
+		if (prev == undefined) prev = null;
+		var message = "";
+		if (name != "")
+		{
+			message = rs.format("%object% '%name%' not found", Map.create({"name": name, "object": object}));
+		}
+		else
+		{
+			message = rs.format("%object% not found", Map.create({"object": object}));
+		}
+		super(message, rtl.ERROR_ITEM_NOT_FOUND, prev);
 	}
-	else
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		var __v1 = use("Runtime.rs");
-		message = __v1.format(ctx, "%object% not found", use("Runtime.Map").from({"object":object}));
+		super._init();
 	}
-	var __v0 = use("Runtime.rtl");
-	use("Runtime.Exceptions.AbstractException").call(this, ctx, message, __v0.ERROR_ITEM_NOT_FOUND, prev);
+	static getClassName(){ return "Runtime.Exceptions.ItemNotFound"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
 };
-Runtime.Exceptions.ItemNotFound.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
-Runtime.Exceptions.ItemNotFound.prototype.constructor = Runtime.Exceptions.ItemNotFound;
-Object.assign(Runtime.Exceptions.ItemNotFound.prototype,
-{
-});
-Object.assign(Runtime.Exceptions.ItemNotFound, use("Runtime.Exceptions.AbstractException"));
-Object.assign(Runtime.Exceptions.ItemNotFound,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime.Exceptions";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Exceptions.ItemNotFound";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Exceptions.AbstractException";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Exceptions.ItemNotFound);
-module.exports = Runtime.Exceptions.ItemNotFound;
+use.add(Runtime.Exceptions.ItemNotFound);
+module.exports = {
+	"ItemNotFound": Runtime.Exceptions.ItemNotFound,
+};

@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseCommand = use("Runtime.Console.BaseCommand");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,76 +21,78 @@ var use = require('bay-lang').use;
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
-BayLang.Compiler.Commands.Watch = function(ctx)
+BayLang.Compiler.Commands.Watch = class extends BaseCommand
 {
-	use("Runtime.Console.BaseCommand").apply(this, arguments);
-};
-BayLang.Compiler.Commands.Watch.prototype = Object.create(use("Runtime.Console.BaseCommand").prototype);
-BayLang.Compiler.Commands.Watch.prototype.constructor = BayLang.Compiler.Commands.Watch;
-Object.assign(BayLang.Compiler.Commands.Watch.prototype,
-{
+	
+	
+	/**
+	 * Returns name
+	 */
+	static getName(){ return "watch"; }
+	
+	
+	/**
+	 * Returns description
+	 */
+	static getDescription(){ return "Watch changes"; }
+	
+	
 	/**
 	 * On change file
 	 */
-	onChangeFile: async function(ctx, changed_file_path)
+	async onChangeFile(changed_file_path)
 	{
-		var __v0 = use("BayLang.Exceptions.ParserUnknownError");
+		const io = use("Runtime.io");
+		const ParserUnknownError = use("BayLang.Exceptions.ParserUnknownError");
 		try
 		{
 			if (changed_file_path == this.settings.project_json_path)
 			{
-				var __v0 = use("Runtime.io");
-				__v0.print(ctx, "Reload project.json");
-				await this.settings.reload(ctx);
-				return Promise.resolve();
+				io.print("Reload project.json");
+				await this.settings.reload();
+				return;
 			}
-			var file_info = await this.settings.compileFile(ctx, changed_file_path, "", 3);
-			if (!file_info)
+			var file_info = await this.settings.compileFile(changed_file_path, "", 3);
+			if (!file_info) return;
+			var module = file_info.get("module");
+			var assets = module.config.get("assets");
+			var src_file_name = file_info.get("src_file_name");
+			if (file_info.get("file_name") == "/module.json")
 			{
-				return Promise.resolve();
+				io.print("Reload module.json");
+				await this.settings.reload();
 			}
-			var module = file_info.get(ctx, "module");
-			var assets = module.config.get(ctx, "assets");
-			var src_file_name = file_info.get(ctx, "src_file_name");
-			if (file_info.get(ctx, "file_name") == "/module.json")
+			else if (assets.indexOf(src_file_name) >= 0)
 			{
-				var __v0 = use("Runtime.io");
-				__v0.print(ctx, "Reload module.json");
-				await this.settings.reload(ctx);
-			}
-			else if (assets.indexOf(ctx, src_file_name) >= 0)
-			{
-				await this.settings.updateModule(ctx, module.name);
+				await this.settings.updateModule(module.name);
 			}
 		}
 		catch (_ex)
 		{
-			if (_ex instanceof __v0)
+			if (_ex instanceof ParserUnknownError)
 			{
 				var e = _ex;
-				
-				var __v1 = use("Runtime.io");
-				__v1.print_error(ctx, "Error: " + e.toString(ctx));
+				io.print_error("Error: " + e.toString());
 			}
 			else if (true)
 			{
 				var e = _ex;
-				
-				var __v2 = use("Runtime.io");
-				__v2.print_error(ctx, e);
+				io.print_error(e);
 			}
 			else
 			{
 				throw _ex;
 			}
 		}
-	},
+	}
+	
+	
 	/**
 	 * Run task
 	 */
-	run: async function(ctx)
+	async run()
 	{
-		this.settings = ctx.provider(ctx, "BayLang.Compiler.SettingsProvider");
+		this.settings = Runtime.rtl.getContext().provider("BayLang.Compiler.SettingsProvider");
 		let watch_dir = (ctx) =>
 		{
 			let io = use("Runtime.io");
@@ -107,73 +110,21 @@ Object.assign(BayLang.Compiler.Commands.Watch.prototype,
 		};
 		
 		await watch_dir(ctx);
-		return Promise.resolve(this.constructor.SUCCESS);
-	},
-	_init: function(ctx)
+		return this.constructor.SUCCESS;
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.Console.BaseCommand").prototype._init.call(this,ctx);
-		this.settings = null;
-	},
-});
-Object.assign(BayLang.Compiler.Commands.Watch, use("Runtime.Console.BaseCommand"));
-Object.assign(BayLang.Compiler.Commands.Watch,
-{
-	/**
-	 * Returns name
-	 */
-	getName: function(ctx)
-	{
-		return "watch";
-	},
-	/**
-	 * Returns description
-	 */
-	getDescription: function(ctx)
-	{
-		return "Watch changes";
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.Compiler.Commands";
-	},
-	getClassName: function()
-	{
-		return "BayLang.Compiler.Commands.Watch";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Console.BaseCommand";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.Compiler.Commands.Watch);
-module.exports = BayLang.Compiler.Commands.Watch;
+		super._init();
+	}
+	static getClassName(){ return "BayLang.Compiler.Commands.Watch"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.Compiler.Commands.Watch);
+module.exports = {
+	"Watch": BayLang.Compiler.Commands.Watch,
+};

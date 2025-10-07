@@ -1,5 +1,6 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
@@ -18,83 +19,48 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Reference = function(ctx, ref)
+Runtime.Reference = class extends BaseObject
 {
-	if (ref == undefined) ref = null;
-	use("Runtime.BaseObject").call(this, ctx);
-	this.ref = ref;
-};
-Runtime.Reference.prototype = Object.create(use("Runtime.BaseObject").prototype);
-Runtime.Reference.prototype.constructor = Runtime.Reference;
-Object.assign(Runtime.Reference.prototype,
-{
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(ref)
+	{
+		if (ref == undefined) ref = null;
+		super();
+		this.ref = ref;
+	}
+	
+	
 	/**
 	 * Returns value
 	 */
-	setValue: function(ctx, new_value)
+	setValue(new_value)
 	{
 		this.ref = new_value;
-	},
+	}
+	
+	
 	/**
 	 * Returns value
 	 */
-	value: function(ctx)
+	value(){ return this.ref; }
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return this.ref;
-	},
-	_init: function(ctx)
-	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
-		var __v0 = use("Runtime.rtl");
-		this.uq = __v0.unique(ctx);
+		super._init();
 		this.ref = null;
-	},
-});
-Object.assign(Runtime.Reference, use("Runtime.BaseObject"));
-Object.assign(Runtime.Reference,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Reference";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Reference);
-module.exports = Runtime.Reference;
+	}
+	static getClassName(){ return "Runtime.Reference"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Reference);
+module.exports = {
+	"Reference": Runtime.Reference,
+};

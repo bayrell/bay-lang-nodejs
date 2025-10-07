@@ -42,7 +42,7 @@ Object.assign(Runtime.Exceptions.ClassException,
 	getParentClassName: function(){ return ""; },
 });
 use.add(Runtime.Exceptions.ClassException);
-Runtime.Exceptions.AbstractException = function(ctx, message, code, prev)
+Runtime.Exceptions.RuntimeException = function(ctx, message, code, prev)
 {
 	if (message == undefined) message = "";
 	if (code == undefined) code = -1;
@@ -53,9 +53,9 @@ Runtime.Exceptions.AbstractException = function(ctx, message, code, prev)
 	this.error_code = code;
 	this.prev = prev;
 };
-Runtime.Exceptions.AbstractException.prototype = Object.create(use("Runtime.Exceptions.ClassException").prototype);
-Runtime.Exceptions.AbstractException.prototype.constructor = Runtime.Exceptions.AbstractException;
-Object.assign(Runtime.Exceptions.AbstractException.prototype,
+Runtime.Exceptions.RuntimeException.prototype = Object.create(use("Runtime.Exceptions.ClassException").prototype);
+Runtime.Exceptions.RuntimeException.prototype.constructor = Runtime.Exceptions.RuntimeException;
+Object.assign(Runtime.Exceptions.RuntimeException.prototype,
 {
 	/**
 	 * Returns previous exception
@@ -136,8 +136,8 @@ Object.assign(Runtime.Exceptions.AbstractException.prototype,
 		this.error_pos = "";
 	},
 });
-Object.assign(Runtime.Exceptions.AbstractException, use("Runtime.Exceptions.ClassException"));
-Object.assign(Runtime.Exceptions.AbstractException,
+Object.assign(Runtime.Exceptions.RuntimeException, use("Runtime.Exceptions.ClassException"));
+Object.assign(Runtime.Exceptions.RuntimeException,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
@@ -146,7 +146,7 @@ Object.assign(Runtime.Exceptions.AbstractException,
 	},
 	getClassName: function()
 	{
-		return "Runtime.Exceptions.AbstractException";
+		return "Runtime.Exceptions.RuntimeException";
 	},
 	getParentClassName: function()
 	{
@@ -182,5 +182,5 @@ Object.assign(Runtime.Exceptions.AbstractException,
 	{
 		return null;
 	},
-});use.add(Runtime.Exceptions.AbstractException);
-module.exports = Runtime.Exceptions.AbstractException;
+});use.add(Runtime.Exceptions.RuntimeException);
+module.exports = Runtime.Exceptions.RuntimeException;

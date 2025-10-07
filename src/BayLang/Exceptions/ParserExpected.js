@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const ParserError = use("BayLang.Exceptions.ParserError");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,63 +20,28 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Exceptions == 'undefined') BayLang.Exceptions = {};
-BayLang.Exceptions.ParserExpected = function(ctx, s, caret, file, prev)
+BayLang.Exceptions.ParserExpected = class extends ParserError
 {
-	if (file == undefined) file = "";
-	if (prev == undefined) prev = null;
-	var __v0 = use("BayLang.LangUtils");
-	use("BayLang.Exceptions.ParserError").call(this, ctx, s + use("Runtime.rtl").toStr(" expected"), caret, file, __v0.ERROR_PARSER_EXPECTED, prev);
+	constructor(s, caret, file, prev)
+	{
+		const LangUtils = use("BayLang.LangUtils");
+		if (file == undefined) file = "";
+		if (prev == undefined) prev = null;
+		super(s + String(" expected"), caret, file, LangUtils.ERROR_PARSER_EXPECTED, prev);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
+	{
+		super._init();
+	}
+	static getClassName(){ return "BayLang.Exceptions.ParserExpected"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
 };
-BayLang.Exceptions.ParserExpected.prototype = Object.create(use("BayLang.Exceptions.ParserError").prototype);
-BayLang.Exceptions.ParserExpected.prototype.constructor = BayLang.Exceptions.ParserExpected;
-Object.assign(BayLang.Exceptions.ParserExpected.prototype,
-{
-});
-Object.assign(BayLang.Exceptions.ParserExpected, use("BayLang.Exceptions.ParserError"));
-Object.assign(BayLang.Exceptions.ParserExpected,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.Exceptions";
-	},
-	getClassName: function()
-	{
-		return "BayLang.Exceptions.ParserExpected";
-	},
-	getParentClassName: function()
-	{
-		return "BayLang.Exceptions.ParserError";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.Exceptions.ParserExpected);
-module.exports = BayLang.Exceptions.ParserExpected;
+use.add(BayLang.Exceptions.ParserExpected);
+module.exports = {
+	"ParserExpected": BayLang.Exceptions.ParserExpected,
+};

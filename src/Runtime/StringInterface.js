@@ -1,5 +1,5 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
 /*!
  *  BayLang Technology
  *
@@ -18,27 +18,6 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.StringInterface = function(ctx)
-{
+
+module.exports = {
 };
-Object.assign(Runtime.StringInterface.prototype,
-{
-	/**
-	 * Returns string
-	 */
-	toString: function(ctx)
-	{
-	},
-});
-Object.assign(Runtime.StringInterface,
-{
-	getNamespace: function()
-	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.StringInterface";
-	},
-});use.add(Runtime.StringInterface);
-module.exports = Runtime.StringInterface;

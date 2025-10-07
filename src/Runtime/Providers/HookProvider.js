@@ -1,5 +1,6 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseProvider = use("Runtime.BaseProvider");
 /*!
  *  BayLang Technology
  *
@@ -19,162 +20,120 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Providers == 'undefined') Runtime.Providers = {};
-Runtime.Providers.HookProvider = function(ctx)
+Runtime.Providers.HookProvider = class extends BaseProvider
 {
-	use("Runtime.BaseProvider").apply(this, arguments);
-};
-Runtime.Providers.HookProvider.prototype = Object.create(use("Runtime.BaseProvider").prototype);
-Runtime.Providers.HookProvider.prototype.constructor = Runtime.Providers.HookProvider;
-Object.assign(Runtime.Providers.HookProvider.prototype,
-{
+	
+	
 	/**
 	 * Init provider
 	 */
-	init: async function(ctx)
+	async init()
 	{
-		var hooks = ctx.getEntities(ctx, "Runtime.Entity.Hook");
-		var __v0 = use("Runtime.Vector");
-		this.base_hooks = new __v0(ctx);
-		for (var i = 0; i < hooks.count(ctx); i++)
+		const Vector = use("Runtime.Vector");
+		var hooks = Runtime.rtl.getContext().getEntities("Runtime.Entity.Hook");
+		this.base_hooks = new Vector();
+		for (var i = 0; i < hooks.count(); i++)
 		{
-			var hook = Runtime.rtl.attr(ctx, hooks, i);
-			var base_hook = hook.createHook(ctx);
+			var hook = hooks[i];
+			var base_hook = hook.createHook();
 			base_hook.hook = hook;
 			base_hook.provider = this;
-			base_hook.register_hooks(ctx);
-			this.base_hooks.push(ctx, base_hook);
+			base_hook.register_hooks();
+			this.base_hooks.push(base_hook);
 		}
-	},
+	}
+	
+	
 	/**
 	 * Start provider
 	 */
-	start: async function(ctx)
+	async start()
 	{
-		await use("Runtime.BaseProvider").prototype.start.bind(this)(ctx);
-	},
+		await super.start();
+	}
+	
+	
 	/**
 	 * Register hook
 	 */
-	register: function(ctx, hook_name, obj, method_name, priority)
+	register(hook_name, obj, method_name, priority)
 	{
+		const Vector = use("Runtime.Vector");
+		const Callback = use("Runtime.Callback");
 		if (priority == undefined) priority = 100;
-		if (!this.hooks.has(ctx, hook_name))
-		{
-			var __v0 = use("Runtime.Map");
-			this.hooks.set(ctx, hook_name, new __v0(ctx));
-		}
-		var priorities = Runtime.rtl.attr(ctx, this.hooks, hook_name);
-		if (!priorities.has(ctx, priority))
-		{
-			var __v0 = use("Runtime.Vector");
-			priorities.set(ctx, priority, new __v0(ctx));
-		}
-		var methods_list = priorities.get(ctx, priority);
-		var __v0 = use("Runtime.Callback");
-		methods_list.push(ctx, new __v0(ctx, obj, method_name));
-	},
+		if (!this.hooks.has(hook_name)) this.hooks.set(hook_name, new Map());
+		var priorities = this.hooks[hook_name];
+		if (!priorities.has(priority)) priorities.set(priority, new Vector());
+		var methods_list = priorities.get(priority);
+		methods_list.push(new Callback(obj, method_name));
+	}
+	
+	
 	/**
 	 * Remove hook
 	 */
-	remove: function(ctx, hook_name, obj, method_name, priority)
+	remove(hook_name, obj, method_name, priority)
 	{
+		const Vector = use("Runtime.Vector");
 		if (priority == undefined) priority = 100;
-		if (!this.hooks.has(ctx, hook_name))
-		{
-			var __v0 = use("Runtime.Map");
-			this.hooks.setValue(ctx, hook_name, new __v0(ctx));
-		}
-		var priorities = Runtime.rtl.attr(ctx, this.hooks, hook_name);
-		if (!priorities.has(ctx, priority))
-		{
-			var __v0 = use("Runtime.Vector");
-			priorities.setValue(ctx, priority, new __v0(ctx));
-		}
-		var methods_list = priorities.get(ctx, priority);
-		var index = methods_list.find(ctx, (ctx, info) =>
+		if (!this.hooks.has(hook_name)) this.hooks.setValue(hook_name, new Map());
+		var priorities = this.hooks[hook_name];
+		if (!priorities.has(priority)) priorities.setValue(priority, new Vector());
+		var methods_list = priorities.get(priority);
+		var index = methods_list.find((info) =>
 		{
 			return info.obj == obj && info.name == method_name;
 		});
 		if (index > -1)
 		{
-			methods_list.removePosition(ctx, index);
+			methods_list.removePosition(index);
 		}
-	},
+	}
+	
+	
 	/**
 	 * Returns method list
 	 */
-	getMethods: function(ctx, hook_name)
+	getMethods(hook_name)
 	{
-		if (!this.hooks.has(ctx, hook_name))
+		const Vector = use("Runtime.Vector");
+		const lib = use("Runtime.lib");
+		if (!this.hooks.has(hook_name)) return [];
+		var res = new Vector();
+		var priorities = this.hooks[hook_name];
+		var priorities_keys = priorities.keys().sort(lib.compareInt());
+		for (var i = 0; i < priorities_keys.count(); i++)
 		{
-			return use("Runtime.Vector").from([]);
+			var priority = priorities_keys[i];
+			var methods_list = priorities.get(priority);
+			res.appendItems(methods_list);
 		}
-		var __v0 = use("Runtime.Vector");
-		var res = new __v0(ctx);
-		var priorities = Runtime.rtl.attr(ctx, this.hooks, hook_name);
-		var __v1 = use("Runtime.lib");
-		var priorities_keys = priorities.keys(ctx).sort(ctx, __v1.compareInt(ctx));
-		for (var i = 0; i < priorities_keys.count(ctx); i++)
-		{
-			var priority = Runtime.rtl.attr(ctx, priorities_keys, i);
-			var methods_list = priorities.get(ctx, priority);
-			res.appendItems(ctx, methods_list);
-		}
-		return res.toCollection(ctx);
-	},
-	_init: function(ctx)
+		return res.toCollection();
+	}
+	
+	
+	/**
+	 * Apply hook
+	 */
+	apply(hook_name, params)
 	{
-		use("Runtime.BaseProvider").prototype._init.call(this,ctx);
-		var __v0 = use("Runtime.Map");
-		this.base_hooks = use("Runtime.Vector").from([]);
-		this.hooks = new __v0(ctx);
-	},
-});
-Object.assign(Runtime.Providers.HookProvider, use("Runtime.BaseProvider"));
-Object.assign(Runtime.Providers.HookProvider,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+		if (params == undefined) params = null;
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "Runtime.Providers";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Providers.HookProvider";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseProvider";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Providers.HookProvider);
-module.exports = Runtime.Providers.HookProvider;
+		super._init();
+		this.base_hooks = [];
+		this.hooks = new Map();
+	}
+	static getClassName(){ return "Runtime.Providers.HookProvider"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Providers.HookProvider);
+module.exports = {
+	"HookProvider": Runtime.Providers.HookProvider,
+};

@@ -1,5 +1,7 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const rs = use("Runtime.rs");
 /*!
  *  BayLang Technology
  *
@@ -18,104 +20,62 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.RawString = function(ctx, s)
+Runtime.RawString = class
 {
-	this.s = "";
-	var __v0 = use("Runtime.rtl");
-	if (__v0.isString(ctx, s))
+	
+	/**
+	 * Constructor
+	 */
+	constructor(s)
 	{
-		this.s = s;
+		this.s = "";
+		if (rtl.isString(s))
+		{
+			this.s = s;
+		}
 	}
-};
-Object.assign(Runtime.RawString.prototype,
-{
+	
+	
 	/**
 	 * To string
 	 */
-	toString: function(ctx)
+	toString()
 	{
 		return this.s;
-	},
-	_init: function(ctx)
-	{
-		this.s = null;
-	},
-});
-Object.assign(Runtime.RawString,
-{
-	/**
+	}/**
 	 * Normalize array
 	 */
-	normalize: function(ctx, item)
+	static normalize(item)
 	{
-		var __v0 = use("Runtime.rtl");
-		var __v1 = use("Runtime.RawString");
-		var __v2 = use("Runtime.Collection");
-		if (__v0.isString(ctx, item))
+		const RawString = use("Runtime.RawString");
+		const Collection = use("Runtime.Collection");
+		if (rtl.isString(item))
 		{
 			return item;
 		}
-		else if (item instanceof __v1)
+		else if (item instanceof RawString)
 		{
 			return item.s;
 		}
-		else if (item instanceof __v2)
+		else if (item instanceof Collection)
 		{
-			item = item.map(ctx, (ctx, item) =>
-			{
-				return this.normalize(ctx, item);
-			});
-			var __v3 = use("Runtime.rs");
-			return __v3.join(ctx, "", item);
+			item = item.map((item) => { return this.normalize(item); });
+			return rs.join("", item);
 		}
 		return "";
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.RawString";
-	},
-	getParentClassName: function()
-	{
-		return "";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-	__implements__:
-	[
-		use("Runtime.StringInterface"),
-	],
-});use.add(Runtime.RawString);
-module.exports = Runtime.RawString;
+	}
+	static getClassName(){ return "Runtime.RawString"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return ["Runtime.StringInterface"]; }
+};
+use.add(Runtime.RawString);
+module.exports = {
+	"RawString": Runtime.RawString,
+};

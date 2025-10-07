@@ -1,5 +1,7 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const RuntimeException = use("Runtime.Exceptions.RuntimeException");
 /*!
  *  BayLang Technology
  *
@@ -19,62 +21,26 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Exceptions == 'undefined') Runtime.Exceptions = {};
-Runtime.Exceptions.AssertException = function(ctx, message, prev)
+Runtime.Exceptions.AssertException = class extends RuntimeException
 {
-	if (prev == undefined) prev = null;
-	var __v0 = use("Runtime.rtl");
-	use("Runtime.Exceptions.AbstractException").call(this, ctx, message, __v0.ERROR_ASSERT, prev);
+	constructor(message, prev)
+	{
+		if (prev == undefined) prev = null;
+		super(message, rtl.ERROR_ASSERT, prev);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
+	{
+		super._init();
+	}
+	static getClassName(){ return "Runtime.Exceptions.AssertException"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
 };
-Runtime.Exceptions.AssertException.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
-Runtime.Exceptions.AssertException.prototype.constructor = Runtime.Exceptions.AssertException;
-Object.assign(Runtime.Exceptions.AssertException.prototype,
-{
-});
-Object.assign(Runtime.Exceptions.AssertException, use("Runtime.Exceptions.AbstractException"));
-Object.assign(Runtime.Exceptions.AssertException,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime.Exceptions";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Exceptions.AssertException";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Exceptions.AbstractException";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Exceptions.AssertException);
-module.exports = Runtime.Exceptions.AssertException;
+use.add(Runtime.Exceptions.AssertException);
+module.exports = {
+	"AssertException": Runtime.Exceptions.AssertException,
+};

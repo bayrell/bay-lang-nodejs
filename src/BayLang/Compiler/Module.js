@@ -1,9 +1,12 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const rs = use("Runtime.rs");
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,275 +22,403 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
-BayLang.Compiler.Module = function(ctx)
+BayLang.Compiler.Module = class extends BaseObject
 {
-	use("Runtime.BaseStruct").apply(this, arguments);
-};
-BayLang.Compiler.Module.prototype = Object.create(use("Runtime.BaseStruct").prototype);
-BayLang.Compiler.Module.prototype.constructor = BayLang.Compiler.Module;
-Object.assign(BayLang.Compiler.Module.prototype,
-{
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(project)
+	{
+		super();
+		this.project = project;
+	}
+	
+	
+	/**
+	 * Read module
+	 */
+	async read(module_path)
+	{
+		const fs = use("Runtime.fs");
+		this.is_exists = false;
+		this.path = module_path;
+		if (!await fs.isFolder(this.path)) return;
+		/* Module json file */
+		var module_json_path = this.path + String("/") + String("module.json");
+		if (!await fs.isFile(module_json_path)) return;
+		/* Read file */
+		var content = await fs.readFile(module_json_path);
+		var module_info = rtl.jsonDecode(content);
+		if (!module_info) return;
+		if (!module_info.has("name")) return;
+		this.is_exists = true;
+		this.name = module_info.get("name");
+		this.dest_path = module_info.get("dest");
+		this.src_path = module_info.get("src");
+		this.allow = module_info.get("allow");
+		this.assets = module_info.get("assets");
+		this.groups = module_info.get("groups");
+		this.required_modules = module_info.get("require");
+		this.submodules = module_info.get("modules");
+		this.exclude = module_info.get("exclude");
+	}
+	
+	
+	/**
+	 * Process project cache
+	 */
+	serialize(serializer, data)
+	{
+		serializer.process(this, "is_exists", data);
+		serializer.process(this, "assets", data);
+		serializer.process(this, "groups", data);
+		serializer.process(this, "name", data);
+		serializer.process(this, "path", data);
+		serializer.process(this, "routes", data);
+		serializer.process(this, "dest_path", data);
+		serializer.process(this, "src_path", data);
+		serializer.process(this, "required_modules", data);
+		serializer.process(this, "submodules", data);
+	}
+	
+	
+	/**
+	 * Returns true if module is exists
+	 */
+	exists(){ return this.is_exists; }
+	
+	
 	/**
 	 * Returns module path
 	 */
-	getModulePath: function(ctx)
-	{
-		return this.path;
-	},
+	getPath(){ return this.path; }
+	
+	
 	/**
-	 * Returns source path
+	 * Returns module name
 	 */
-	getSourcePath: function(ctx)
-	{
-		var __v0 = use("Runtime.Monad");
-		var __v1 = new __v0(ctx, Runtime.rtl.attr(ctx, this.config, "src"));
-		var __v2 = use("Runtime.rtl");
-		__v1 = __v1.monad(ctx, __v2.m_to(ctx, "string", ""));
-		var module_src = __v1.value(ctx);
-		var __v3 = use("Runtime.fs");
-		var module_src_path = __v3.join(ctx, use("Runtime.Vector").from([this.path,module_src]));
-		var __v4 = use("Runtime.rs");
-		return __v4.removeLastSlash(ctx, module_src_path);
-	},
+	getName(){ return this.name; }
+	
+	
 	/**
-	 * Has group
+	 * Returns source folder path
 	 */
-	hasGroup: function(ctx, group_name)
-	{
-		var __v0 = use("Runtime.rs");
-		if (__v0.substr(ctx, group_name, 0, 1) != "@")
-		{
-			return false;
-		}
-		var __v0 = use("Runtime.rs");
-		group_name = __v0.substr(ctx, group_name, 1);
-		var groups = this.config.get(ctx, "groups");
-		if (groups == null)
-		{
-			return false;
-		}
-		if (groups.indexOf(ctx, group_name) == -1)
-		{
-			return false;
-		}
-		return true;
-	},
+	getSourceFolderPath(){ const fs = use("Runtime.fs");return this.src_path ? fs.join([this.getPath(), this.src_path]) : null; }
+	
+	
+	
 	/**
-	 * Returns true if this module contains in module list include groups
+	 * Returns dest folder path
 	 */
-	inModuleList: function(ctx, module_names)
+	getDestFolderPath(lang)
 	{
-		for (var i = 0; i < module_names.count(ctx); i++)
-		{
-			var module_name = module_names.get(ctx, i);
-			if (this.name == module_name)
-			{
-				return true;
-			}
-			if (this.hasGroup(ctx, module_name))
-			{
-				return true;
-			}
-		}
-		return false;
-	},
+		const fs = use("Runtime.fs");
+		if (!this.dest_path.has(lang)) return "";
+		return fs.join([this.getPath(), this.dest_path.get(lang)]);
+	}
+	
+	
 	/**
-	 * Returns full source file.
-	 * Returns file_path
+	 * Returns relative source path
 	 */
-	resolveSourceFile: function(ctx, file_name)
+	getRelativeSourcePath(file_path)
 	{
-		var first_char = Runtime.rtl.attr(ctx, file_name, 0);
-		if (first_char == "@")
-		{
-			var __v0 = use("Runtime.fs");
-			var __v1 = use("Runtime.rs");
-			return __v0.join(ctx, use("Runtime.Vector").from([this.path,__v1.substr(ctx, file_name, 1)]));
-		}
-		var path = this.getSourcePath(ctx);
-		var __v0 = use("Runtime.fs");
-		return __v0.join(ctx, use("Runtime.Vector").from([path,file_name]));
-	},
+		var source_path = this.getSourceFolderPath();
+		if (!source_path) return null;
+		var source_path_sz = rs.strlen(source_path);
+		if (rs.substr(file_path, 0, source_path_sz) != source_path) return null;
+		return rs.addFirstSlash(rs.substr(file_path, source_path_sz));
+	}
+	
+	
 	/**
-	 * Resolve destination file
+	 * Returns true if module contains file
 	 */
-	resolveDestFile: function(ctx, project_path, relative_file_name, lang)
-	{
-		if (!this.config.has(ctx, "dest"))
-		{
-			return "";
-		}
-		if (!this.config.get(ctx, "dest").has(ctx, lang))
-		{
-			return "";
-		}
-		var __v0 = use("Runtime.Monad");
-		var __v1 = new __v0(ctx, Runtime.rtl.attr(ctx, this.config, ["dest", lang]));
-		var __v2 = use("Runtime.rtl");
-		__v1 = __v1.monad(ctx, __v2.m_to(ctx, "string", ""));
-		var dest = __v1.value(ctx);
-		var dest_path = "";
-		var __v3 = use("Runtime.rs");
-		var is_local = __v3.substr(ctx, dest, 0, 2) == "./";
-		if (is_local)
-		{
-			var __v4 = use("Runtime.fs");
-			dest_path = __v4.join(ctx, use("Runtime.Vector").from([this.path,dest,relative_file_name]));
-		}
-		else
-		{
-			var __v5 = use("Runtime.fs");
-			dest_path = __v5.join(ctx, use("Runtime.Vector").from([project_path,dest,relative_file_name]));
-		}
-		if (lang == "php")
-		{
-			var __v4 = use("Runtime.re");
-			dest_path = __v4.replace(ctx, "\\.bay$", ".php", dest_path);
-			var __v5 = use("Runtime.re");
-			dest_path = __v5.replace(ctx, "\\.ui$", ".php", dest_path);
-		}
-		else if (lang == "es6")
-		{
-			var __v6 = use("Runtime.re");
-			dest_path = __v6.replace(ctx, "\\.bay$", ".js", dest_path);
-			var __v7 = use("Runtime.re");
-			dest_path = __v7.replace(ctx, "\\.ui$", ".js", dest_path);
-		}
-		else if (lang == "nodejs")
-		{
-			var __v8 = use("Runtime.re");
-			dest_path = __v8.replace(ctx, "\\.bay$", ".js", dest_path);
-			var __v9 = use("Runtime.re");
-			dest_path = __v9.replace(ctx, "\\.ui$", ".js", dest_path);
-		}
-		return dest_path;
-	},
-	/**
-	 * Check exclude
-	 */
-	checkExclude: function(ctx, file_name)
-	{
-		var module_excludelist = Runtime.rtl.attr(ctx, this.config, "exclude");
-		var __v0 = use("Runtime.Collection");
-		if (module_excludelist && module_excludelist instanceof __v0)
-		{
-			for (var i = 0; i < module_excludelist.count(ctx); i++)
-			{
-				var __v1 = use("Runtime.Monad");
-				var __v2 = new __v1(ctx, Runtime.rtl.attr(ctx, module_excludelist, i));
-				var __v3 = use("Runtime.rtl");
-				__v2 = __v2.monad(ctx, __v3.m_to(ctx, "string", ""));
-				var file_match = __v2.value(ctx);
-				if (file_match == "")
-				{
-					continue;
-				}
-				var __v4 = use("Runtime.re");
-				var res = __v4.match(ctx, file_match, file_name);
-				if (res)
-				{
-					return true;
-				}
-			}
-		}
-		return false;
-	},
+	checkFile(file_full_path){ return rs.indexOf(file_full_path, this.path) == 0; }
+	
+	
 	/**
 	 * Check allow list
 	 */
-	checkAllow: function(ctx, file_name)
+	checkAllow(file_name)
 	{
+		const re = use("Runtime.re");
+		if (!this.allow) return false;
 		var success = false;
-		var module_allowlist = Runtime.rtl.attr(ctx, this.config, "allow");
-		var __v0 = use("Runtime.Collection");
-		if (module_allowlist && module_allowlist instanceof __v0)
+		for (var i = 0; i < this.allow.count(); i++)
 		{
-			for (var i = 0; i < module_allowlist.count(ctx); i++)
+			var file_match = this.allow.get(i);
+			if (file_match == "") continue;
+			var res = re.match(file_match, file_name);
+			/* Ignore */
+			if (rs.charAt(file_match, 0) == "!")
 			{
-				var __v1 = use("Runtime.Monad");
-				var __v2 = new __v1(ctx, Runtime.rtl.attr(ctx, module_allowlist, i));
-				var __v3 = use("Runtime.rtl");
-				__v2 = __v2.monad(ctx, __v3.m_to(ctx, "string", ""));
-				var file_match = __v2.value(ctx);
-				if (file_match == "")
+				if (res)
 				{
-					continue;
+					success = false;
 				}
-				var __v4 = use("Runtime.re");
-				var res = __v4.match(ctx, file_match, file_name);
-				/* Ignore */
-				var __v5 = use("Runtime.rs");
-				if (__v5.charAt(ctx, file_match, 0) == "!")
+			}
+			else
+			{
+				if (res)
 				{
-					if (res)
-					{
-						success = false;
-					}
-				}
-				else
-				{
-					if (res)
-					{
-						success = true;
-					}
+					success = true;
 				}
 			}
 		}
 		return success;
-	},
-	_init: function(ctx)
+	}
+	
+	
+	/**
+	 * Check exclude
+	 */
+	checkExclude(relative_src_file_path)
 	{
-		use("Runtime.BaseStruct").prototype._init.call(this,ctx);
-		this.name = "";
-		this.path = "";
-		this.config = use("Runtime.Map").from({});
-	},
-});
-Object.assign(BayLang.Compiler.Module, use("Runtime.BaseStruct"));
-Object.assign(BayLang.Compiler.Module,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+		const re = use("Runtime.re");
+		if (!this.exclude) return false;
+		for (var i = 0; i < this.exclude.count(); i++)
+		{
+			var file_match = this.exclude.get(i);
+			if (file_match == "") continue;
+			file_match = re.replace("\\/", "\\/", file_match);
+			var res = re.match(file_match, relative_src_file_path);
+			if (res)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * Returns class name file path
+	 */
+	resolveClassName(class_name)
 	{
-		return "BayLang.Compiler";
-	},
-	getClassName: function()
+		const fs = use("Runtime.fs");
+		/* Check if class name start with module name */
+		var module_name_sz = rs.strlen(this.getName());
+		if (rs.substr(class_name, 0, module_name_sz) != this.getName())
+		{
+			return "";
+		}
+		/* Remove module name from class name */
+		class_name = rs.substr(class_name, module_name_sz);
+		/* Return path to class name */
+		var path = this.getSourceFolderPath();
+		var arr = rs.split(".", class_name);
+		arr.prepend(path);
+		return fs.join(arr) + String(".bay");
+	}
+	
+	
+	/**
+	 * Resolve source path
+	 */
+	resolveSourceFilePath(relative_src_file_path){ const fs = use("Runtime.fs");return fs.join([this.getSourceFolderPath(), relative_src_file_path]); }
+	
+	
+	
+	/**
+	 * Resolve dest path
+	 */
+	resolveDestFilePath(relative_src_file_path, lang)
 	{
-		return "BayLang.Compiler.Module";
-	},
-	getParentClassName: function()
+		const fs = use("Runtime.fs");
+		const re = use("Runtime.re");
+		var dest_folder_path = this.getDestFolderPath(lang);
+		if (dest_folder_path == "") return "";
+		/* Get dest file path */
+		var dest_file_path = fs.join([dest_folder_path, relative_src_file_path]);
+		/* Resolve extension */
+		if (lang == "php")
+		{
+			dest_file_path = re.replace("\\.bay$", ".php", dest_file_path);
+			dest_file_path = re.replace("\\.ui$", ".php", dest_file_path);
+		}
+		else if (lang == "es6")
+		{
+			dest_file_path = re.replace("\\.bay$", ".js", dest_file_path);
+			dest_file_path = re.replace("\\.ui$", ".js", dest_file_path);
+		}
+		else if (lang == "nodejs")
+		{
+			dest_file_path = re.replace("\\.bay$", ".js", dest_file_path);
+			dest_file_path = re.replace("\\.ui$", ".js", dest_file_path);
+		}
+		return dest_file_path;
+	}
+	
+	
+	/**
+	 * Returns true if module has group
+	 */
+	hasGroup(group_name)
 	{
-		return "Runtime.BaseStruct";
-	},
-	getClassInfo: function(ctx)
+		if (rs.substr(group_name, 0, 1) != "@") return false;
+		group_name = rs.substr(group_name, 1);
+		if (this.groups == null) return false;
+		if (this.groups.indexOf(group_name) == -1) return false;
+		return true;
+	}
+	
+	
+	/**
+	 * Returns true if this module contains in module list include groups
+	 */
+	inModuleList(module_names)
 	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
+		for (var i = 0; i < module_names.count(); i++)
+		{
+			var module_name = module_names.get(i);
+			if (this.name == module_name) return true;
+			if (this.hasGroup(module_name)) return true;
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * Compile file
+	 */
+	async compile(relative_src_file_path, lang)
+	{
+		const fs = use("Runtime.fs");
+		const ParserBay = use("BayLang.LangBay.ParserBay");
+		if (lang == undefined) lang = "";
+		/* Get src file path */
+		var src_file_path = this.resolveSourceFilePath(relative_src_file_path);
+		if (src_file_path == "") return false;
+		if (!this.checkFile(src_file_path)) return false;
+		/* Read file */
+		if (!await fs.isFile(src_file_path)) return false;
+		var file_content = await fs.readFile(src_file_path);
+		/* Parse file */
+		var parser = new ParserBay();
+		parser.setContent(file_content);
+		var file_op_code = parser.parse();
+		if (!file_op_code) return false;
+		/* Translate project languages */
+		this.translateLanguages(relative_src_file_path, file_op_code, lang);
+		return true;
+	}
+	
+	
+	/**
+	 * Translate file
+	 */
+	async translateLanguages(relative_src_file_path, op_code, dest_lang)
+	{
+		if (dest_lang == undefined) dest_lang = "";
+		/* Translate to destination language */
+		if (dest_lang != "")
+		{
+			await this.translate(relative_src_file_path, op_code, dest_lang);
+		}
+		else
+		{
+			var languages = this.project.getLanguages();
+			for (var i = 0; i < languages.count(); i++)
+			{
+				var lang = languages.get(i);
+				if (lang == "bay") continue;
+				await this.translate(relative_src_file_path, op_code, lang);
+			}
+		}
+	}
+	
+	
+	/**
+	 * Translate file
+	 */
+	async translate(relative_src_file_path, op_code, lang)
+	{
+		const LangUtils = use("BayLang.LangUtils");
+		const fs = use("Runtime.fs");
+		/* Get dest file path */
+		var dest_file_path = this.resolveDestFilePath(relative_src_file_path, lang);
+		if (dest_file_path == "") return false;
+		/* Create translator */
+		var translator = LangUtils.createTranslator(lang);
+		if (!translator) return false;
+		/* Translate */
+		var dest_file_content = translator.translate(op_code);
+		/* Create dest folder if not exists */
+		var dest_dir_name = rs.dirname(dest_file_path);
+		if (!await fs.isFolder(dest_dir_name))
+		{
+			await fs.mkdir(dest_dir_name);
+		}
+		/* Save file */
+		await fs.saveFile(dest_file_path, dest_file_content);
+		return true;
+	}
+	
+	
+	/**
+	 * Returns projects assets
+	 */
+	getProjectAssets()
+	{
+		var project_assets = this.project.getAssets();
+		project_assets = project_assets.filter((asset) =>
+		{
+			if (!asset.has("modules")) return false;
+			/* Check module in modules names */
+			var modules = asset.get("modules");
+			if (!modules) return false;
+			if (!rtl.isCollection(modules)) return false;
+			if (!this.inModuleList(modules)) return false;
+			return true;
 		});
-	},
-	getFieldsList: function(ctx)
+		return project_assets;
+	}
+	
+	
+	/**
+	 * Update assets
+	 */
+	async updateAssets()
 	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
+		var languages = this.project.getLanguages();
+		if (languages.indexOf("es6") == -1) return;
+		/* Builds assets with current module */
+		var project_assets = this.getProjectAssets();
+		for (var i = 0; i < project_assets.count(); i++)
+		{
+			await this.project.buildAsset(project_assets.get(i));
+		}
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.Compiler.Module);
-module.exports = BayLang.Compiler.Module;
+		super._init();
+		this.project = null;
+		this.is_exists = false;
+		this.path = "";
+		this.src_path = "";
+		this.dest_path = new Map();
+		this.name = "";
+		this.submodules = null;
+		this.allow = null;
+		this.assets = null;
+		this.required_modules = null;
+		this.routes = null;
+		this.groups = null;
+		this.exclude = null;
+	}
+	static getClassName(){ return "BayLang.Compiler.Module"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return ["Runtime.Serialize.SerializeInterface"]; }
+};
+use.add(BayLang.Compiler.Module);
+module.exports = {
+	"Module": BayLang.Compiler.Module,
+};

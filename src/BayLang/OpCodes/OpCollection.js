@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,74 +20,33 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpCollection = function(ctx)
+BayLang.OpCodes.OpCollection = class extends BaseOpCode
 {
-	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
-};
-BayLang.OpCodes.OpCollection.prototype = Object.create(use("BayLang.OpCodes.BaseOpCode").prototype);
-BayLang.OpCodes.OpCollection.prototype.constructor = BayLang.OpCodes.OpCollection;
-Object.assign(BayLang.OpCodes.OpCollection.prototype,
-{
+	
+	
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize(serializer, data)
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
-		serializer.process(ctx, this, "values", data);
-	},
-	_init: function(ctx)
+		super.serialize(serializer, data);
+		serializer.process(this, "items", data);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		super._init();
 		this.op = "op_collection";
-		this.values = null;
-	},
-});
-Object.assign(BayLang.OpCodes.OpCollection, use("BayLang.OpCodes.BaseOpCode"));
-Object.assign(BayLang.OpCodes.OpCollection,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.OpCodes";
-	},
-	getClassName: function()
-	{
-		return "BayLang.OpCodes.OpCollection";
-	},
-	getParentClassName: function()
-	{
-		return "BayLang.OpCodes.BaseOpCode";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.OpCodes.OpCollection);
-module.exports = BayLang.OpCodes.OpCollection;
+		this.items = null;
+	}
+	static getClassName(){ return "BayLang.OpCodes.OpCollection"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.OpCodes.OpCollection);
+module.exports = {
+	"OpCollection": BayLang.OpCodes.OpCollection,
+};

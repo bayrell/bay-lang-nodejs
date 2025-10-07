@@ -1,9 +1,12 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rs = use("Runtime.rs");
+const rtl = use("Runtime.rtl");
+const TranslatorES6 = use("BayLang.LangES6.TranslatorES6");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,119 +22,124 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangNode == 'undefined') BayLang.LangNode = {};
-BayLang.LangNode.TranslatorNode = function(ctx)
+BayLang.LangNode.TranslatorNode = class extends TranslatorES6
 {
-	use("BayLang.LangES6.TranslatorES6").apply(this, arguments);
-};
-BayLang.LangNode.TranslatorNode.prototype = Object.create(use("BayLang.LangES6.TranslatorES6").prototype);
-BayLang.LangNode.TranslatorNode.prototype.constructor = BayLang.LangNode.TranslatorNode;
-Object.assign(BayLang.LangNode.TranslatorNode.prototype,
-{
-	_init: function(ctx)
-	{
-		use("BayLang.LangES6.TranslatorES6").prototype._init.call(this,ctx);
-		this.async_await = null;
-		this.expression = null;
-		this.html = null;
-		this.operator = null;
-		this.program = null;
-		this.use_module_name = true;
-		this.enable_async_await = true;
-		this.emulate_async_await = false;
-		this.enable_introspection = false;
-		this.enable_context = true;
-	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "async_await")return this.async_await;
-		else if (k == "expression")return this.expression;
-		else if (k == "html")return this.html;
-		else if (k == "operator")return this.operator;
-		else if (k == "program")return this.program;
-		else if (k == "use_module_name")return this.use_module_name;
-		else if (k == "enable_async_await")return this.enable_async_await;
-		else if (k == "emulate_async_await")return this.emulate_async_await;
-		else if (k == "enable_introspection")return this.enable_introspection;
-		else if (k == "enable_context")return this.enable_context;
-		return use("BayLang.LangES6.TranslatorES6").prototype.takeValue.call(this,ctx,k,d);
-	},
-});
-Object.assign(BayLang.LangNode.TranslatorNode, use("BayLang.LangES6.TranslatorES6"));
-Object.assign(BayLang.LangNode.TranslatorNode,
-{
+	
+	/* Flags */
+	
+	
 	/**
-	 * Reset translator
+	 * Constructor
 	 */
-	reset: function(ctx, t)
+	constructor()
 	{
-		t = use("BayLang.LangES6.TranslatorES6").reset.bind(this)(ctx, t);
-		var __v0 = use("BayLang.LangNode.TranslatorNodeExpression");
-		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["expression"]), new __v0(ctx));
-		var __v1 = use("BayLang.LangNode.TranslatorNodeProgram");
-		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["program"]), new __v1(ctx));
-		t = Runtime.rtl.setAttr(ctx, t, Runtime.Collection.from(["preprocessor_flags"]), t.preprocessor_flags.concat(ctx, use("Runtime.Map").from({"BACKEND":true,"NODEJS":true,"ES6":false})));
-		return t;
-	},
+		super();
+		this.preprocessor_flags.set("BACKEND", true);
+		this.preprocessor_flags.set("ES6", false);
+		this.preprocessor_flags.set("NODEJS", true);
+	}
+	
+	
+	/**
+	 * Set use modules
+	 */
+	setUseModules(use_modules)
+	{
+		if (use_modules == undefined) use_modules = null;
+		if (use_modules == null) use_modules = new Map();
+		var save_use_modules = this.use_modules.get("local").copy();
+		this.use_modules.set("local", use_modules);
+		return save_use_modules;
+	}
+	
+	
+	/**
+	 * Use module
+	 */
+	useModule(module_name)
+	{
+		var is_global = false;
+		if (module_name == "Runtime.rtl" || module_name == "Runtime.rs")
+		{
+			is_global = true;
+		}
+		var arr = rs.split(".", module_name);
+		var alias_name = arr.last();
+		if (this.uses.has(alias_name))
+		{
+			var modules = this.use_modules.get(is_global ? "global" : "local");
+			modules.set(alias_name, module_name);
+			return alias_name;
+		}
+		return module_name;
+	}
+	
+	
+	/**
+	 * Add use modules
+	 */
+	addUseModules(result, is_multiline, use_modules)
+	{
+		if (is_multiline == undefined) is_multiline = true;
+		if (use_modules == undefined) use_modules = null;
+		if (use_modules == null) use_modules = this.use_modules.get("local");
+		var keys = rtl.list(use_modules.keys());
+		for (var i = 0; i < keys.count(); i++)
+		{
+			var alias_name = keys.get(i);
+			var module_name = use_modules.get(alias_name);
+			if (is_multiline) result.push(this.newLine());
+			result.push("const " + String(alias_name) + String(" = use(") + String(this.toString(module_name)) + String(");"));
+		}
+	}
+	
+	
 	/**
 	 * Translate BaseOpCode
 	 */
-	translate: function(ctx, t, op_code)
+	translate(op_code)
 	{
-		return t.program.constructor.translateProgram(ctx, t, op_code);
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+		var result = [];
+		result.push("\"use strict;\"");
+		result.push(this.newLine());
+		result.push("const use = require('bay-lang').use;");
+		/*result.push(this.newLine());
+		result.push("const {rtl, rs} = use.rtl();");*/
+		/* Translate program */
+		var result1 = [];
+		result1.push(this.newLine());
+		this.program.translate(op_code, result1);
+		/* Add use */
+		this.addUseModules(result, true, this.use_modules.get("global"));
+		this.addUseModules(result);
+		result.appendItems(result1);
+		/* Add export */
+		this.program.addModuleExports(result);
+		return rs.join("", result);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "BayLang.LangNode";
-	},
-	getClassName: function()
-	{
-		return "BayLang.LangNode.TranslatorNode";
-	},
-	getParentClassName: function()
-	{
-		return "BayLang.LangES6.TranslatorES6";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
+		super._init();
+		const TranslatorNodeExpression = use("BayLang.LangNode.TranslatorNodeExpression");
+		const TranslatorNodeProgram = use("BayLang.LangNode.TranslatorNodeProgram");
+		this.expression = new TranslatorNodeExpression(this);
+		this.program = new TranslatorNodeProgram(this);
+		this.use_modules = Map.create({
+			"global": new Map(),
+			"local": new Map(),
 		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		a.push("async_await");
-		a.push("expression");
-		a.push("html");
-		a.push("operator");
-		a.push("program");
-		a.push("use_module_name");
-		a.push("enable_async_await");
-		a.push("emulate_async_await");
-		a.push("enable_introspection");
-		a.push("enable_context");
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.LangNode.TranslatorNode);
-module.exports = BayLang.LangNode.TranslatorNode;
+		this.use_module_name = true;
+		this.use_window = false;
+	}
+	static getClassName(){ return "BayLang.LangNode.TranslatorNode"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.LangNode.TranslatorNode);
+module.exports = {
+	"TranslatorNode": BayLang.LangNode.TranslatorNode,
+};

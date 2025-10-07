@@ -1,7 +1,9 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const BaseProvider = use("Runtime.BaseProvider");
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -19,104 +21,59 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Console == 'undefined') Runtime.Console = {};
-Runtime.Console.CommandsList = function(ctx)
+Runtime.Console.CommandsList = class extends BaseProvider
 {
-	use("Runtime.BaseProvider").apply(this, arguments);
-};
-Runtime.Console.CommandsList.prototype = Object.create(use("Runtime.BaseProvider").prototype);
-Runtime.Console.CommandsList.prototype.constructor = Runtime.Console.CommandsList;
-Object.assign(Runtime.Console.CommandsList.prototype,
-{
+	
+	
 	/**
 	 * Start provider
 	 */
-	start: async function(ctx)
+	async start()
 	{
-		var __v0 = use("Runtime.Map");
-		var commands_list = new __v0(ctx);
-		var commands = ctx.getEntities(ctx, "Runtime.Console.Annotations.ConsoleCommand");
-		for (var i = 0; i < commands.count(ctx); i++)
+		const Callback = use("Runtime.Callback");
+		this.commands_list = new Map();
+		var commands = Runtime.rtl.getContext().getEntities("Runtime.Console.Annotations.ConsoleCommand");
+		for (var i = 0; i < commands.count(); i++)
 		{
-			var info = commands.get(ctx, i);
+			var info = commands.get(i);
 			var command_class_name = info.name;
 			if (command_class_name)
 			{
 				/* Get method getRoutes */
-				var __v1 = use("Runtime.Callback");
-				var getName = new __v1(ctx, command_class_name, "getName");
+				var getName = new Callback(command_class_name, "getName");
 				/* Returns command name */
-				var name = getName.apply(ctx);
+				var name = getName.apply();
 				/* Add to list */
-				commands_list.set(ctx, name, command_class_name);
+				this.commands_list.set(name, command_class_name);
 			}
 		}
-		this.commands_list = commands_list.toDict(ctx);
-	},
+	}
+	
+	
 	/**
 	 * Returns command by name
 	 */
-	getCommandByName: function(ctx, name)
-	{
-		return this.commands_list.get(ctx, name);
-	},
+	getCommandByName(name){ return this.commands_list.get(name); }
+	
+	
 	/**
 	 * Returns commands list
 	 */
-	getCommands: function(ctx)
+	getCommands(){ return rtl.list(this.commands_list.keys()).sort(); }
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return this.commands_list.keys(ctx).sort(ctx);
-	},
-	_init: function(ctx)
-	{
-		use("Runtime.BaseProvider").prototype._init.call(this,ctx);
-		this.commands_list = use("Runtime.Map").from({});
-	},
-});
-Object.assign(Runtime.Console.CommandsList, use("Runtime.BaseProvider"));
-Object.assign(Runtime.Console.CommandsList,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime.Console";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Console.CommandsList";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseProvider";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Console.CommandsList);
-module.exports = Runtime.Console.CommandsList;
+		super._init();
+		this.commands_list = new Map();
+	}
+	static getClassName(){ return "Runtime.Console.CommandsList"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Console.CommandsList);
+module.exports = {
+	"CommandsList": Runtime.Console.CommandsList,
+};

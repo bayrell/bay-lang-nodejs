@@ -1,5 +1,6 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
@@ -19,66 +20,33 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Entity == 'undefined') Runtime.Entity = {};
-Runtime.Entity.Entity = function(ctx, obj)
+Runtime.Entity.Entity = class extends BaseObject
 {
-	use("Runtime.BaseObject").call(this, ctx);
-	this._assign_values(ctx, obj);
-};
-Runtime.Entity.Entity.prototype = Object.create(use("Runtime.BaseObject").prototype);
-Runtime.Entity.Entity.prototype.constructor = Runtime.Entity.Entity;
-Object.assign(Runtime.Entity.Entity.prototype,
-{
-	_init: function(ctx)
+	/* Entity name */
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(obj)
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super();
+		this.assign(obj);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
+	{
+		super._init();
 		this.name = "";
-	},
-});
-Object.assign(Runtime.Entity.Entity, use("Runtime.BaseObject"));
-Object.assign(Runtime.Entity.Entity,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime.Entity";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Entity.Entity";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Entity.Entity);
-module.exports = Runtime.Entity.Entity;
+	}
+	static getClassName(){ return "Runtime.Entity.Entity"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Entity.Entity);
+module.exports = {
+	"Entity": Runtime.Entity.Entity,
+};

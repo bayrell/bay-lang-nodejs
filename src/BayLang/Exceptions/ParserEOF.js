@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const ParserUnknownError = use("BayLang.Exceptions.ParserUnknownError");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,62 +20,27 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Exceptions == 'undefined') BayLang.Exceptions = {};
-BayLang.Exceptions.ParserEOF = function(ctx, prev)
+BayLang.Exceptions.ParserEOF = class extends ParserUnknownError
 {
-	if (prev == undefined) prev = null;
-	var __v0 = use("BayLang.LangUtils");
-	use("BayLang.Exceptions.ParserUnknownError").call(this, ctx, "ERROR_PARSER_EOF", __v0.ERROR_PARSER_EOF, prev);
+	constructor(prev)
+	{
+		const LangUtils = use("BayLang.LangUtils");
+		if (prev == undefined) prev = null;
+		super("ERROR_PARSER_EOF", LangUtils.ERROR_PARSER_EOF, prev);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
+	{
+		super._init();
+	}
+	static getClassName(){ return "BayLang.Exceptions.ParserEOF"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
 };
-BayLang.Exceptions.ParserEOF.prototype = Object.create(use("BayLang.Exceptions.ParserUnknownError").prototype);
-BayLang.Exceptions.ParserEOF.prototype.constructor = BayLang.Exceptions.ParserEOF;
-Object.assign(BayLang.Exceptions.ParserEOF.prototype,
-{
-});
-Object.assign(BayLang.Exceptions.ParserEOF, use("BayLang.Exceptions.ParserUnknownError"));
-Object.assign(BayLang.Exceptions.ParserEOF,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.Exceptions";
-	},
-	getClassName: function()
-	{
-		return "BayLang.Exceptions.ParserEOF";
-	},
-	getParentClassName: function()
-	{
-		return "BayLang.Exceptions.ParserUnknownError";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.Exceptions.ParserEOF);
-module.exports = BayLang.Exceptions.ParserEOF;
+use.add(BayLang.Exceptions.ParserEOF);
+module.exports = {
+	"ParserEOF": BayLang.Exceptions.ParserEOF,
+};

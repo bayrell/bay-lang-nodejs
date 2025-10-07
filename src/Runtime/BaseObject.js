@@ -1,5 +1,5 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
 /*!
  *  BayLang Technology
  *
@@ -18,103 +18,53 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.BaseObject = function(ctx)
+Runtime.BaseObject = class
 {
-	/* Init object */
-	this._init(ctx);
-};
-Object.assign(Runtime.BaseObject.prototype,
-{
+	/** 
+	 * Constructor
+	 */
+	constructor()
+	{
+		/* Init object */
+		this._init();
+	}
+	
+	
 	/**
 	 * Init function
 	 */
-	_init: function(ctx)
+	_init()
 	{
-	},
-	/**
-	 * Init struct data
-	 */
-	_changes: function(ctx, changes)
-	{
-	},
+	}
+	
+	
 	/**
 	 * Assign new values
 	 */
-	_assign_values: function(ctx, changes)
+	assign(changes)
 	{
 		if (changes == undefined) changes = null;
-		if (typeof changes == 'object' && !(changes instanceof Runtime.Dict))
+		if (changes instanceof Map)
 		{
-			changes = new Runtime.Map(ctx, changes);
+			for (var key of changes.keys())
+			{
+				var value = changes.get(key);
+				this[key] = value;
+			}
 		}
-		if (changes == null)
-		{
-			return ;
-		}
-		if (changes.keys(ctx).count(ctx) == 0)
-		{
-			return ;
-		}
-		var __v0 = use("Runtime.Map");
-		if (!(changes instanceof __v0))
-		{
-			changes = changes.toMap(ctx);
-		}
-		this._changes(ctx, changes);
-		var _Dict = use("Runtime.Dict");
-		var rtl = use("Runtime.rtl");
-		if (changes instanceof _Dict) changes = changes.toObject();
-		for (var key in changes)
-		{
-			var value = changes[key];
-			this[key] = value;
-		}
-	},
-});
-Object.assign(Runtime.BaseObject,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getParentClassName: function()
-	{
-		return "";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.BaseObject);
-module.exports = Runtime.BaseObject;
+	}
+	static getClassName(){ return "Runtime.BaseObject"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.BaseObject);
+module.exports = {
+	"BaseObject": Runtime.BaseObject,
+};

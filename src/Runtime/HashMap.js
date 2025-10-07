@@ -1,5 +1,5 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
 /*!
  *  BayLang Technology
  *
@@ -18,101 +18,77 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.HashMap = function(ctx)
+Runtime.HashMap = class
 {
-	this._map = new Map();
-};
-Object.assign(Runtime.HashMap.prototype,
-{
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor()
+	{
+		this._map = new Map();
+	}
+	
+	
 	/**
 	 * Set value size_to position
 	 * @param Key key - position
 	 * @param Value value 
 	 * @return self
 	 */
-	set: function(ctx, key, value)
+	set(key, value)
 	{
 		this._map.set(key, value);
 		return this;
-	},
+	}
+	
+	
 	/**
 	 * Returns value from position
 	 * @param string key
 	 * @return Value
 	 */
-	get: function(ctx, key)
+	get(key)
 	{
 		return this._map.get(key);
 		return this;
-	},
+	}
+	
+	
 	/**
 	 * Return true if key exists
 	 * @param string key
 	 * @return bool var
 	 */
-	has: function(ctx, key)
+	has(key)
 	{
 		return this._map.has(key);
-	},
+	}
+	
+	
 	/**
 	 * Remove value from position
 	 * @param string key
 	 * @return self
 	 */
-	remove: function(ctx, key)
+	remove(key)
 	{
 		this._map.delete(key);
 		return this;
-	},
-	_init: function(ctx)
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		this._map = null;
-	},
-});
-Object.assign(Runtime.HashMap,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.HashMap";
-	},
-	getParentClassName: function()
-	{
-		return "";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.HashMap);
-module.exports = Runtime.HashMap;
+	}
+	static getClassName(){ return "Runtime.HashMap"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.HashMap);
+module.exports = {
+	"HashMap": Runtime.HashMap,
+};

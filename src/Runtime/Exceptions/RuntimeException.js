@@ -1,5 +1,6 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const ClassException = use("Runtime.Exceptions.ClassException");
 /*!
  *  BayLang Technology
  *
@@ -19,62 +20,156 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Exceptions == 'undefined') Runtime.Exceptions = {};
-Runtime.Exceptions.RuntimeException = function(ctx, message, prev)
+
+if (typeof Runtime == 'undefined') Runtime = {};
+if (typeof Runtime.Exceptions == 'undefined') Runtime.Exceptions = {};
+Runtime.Exceptions.ClassException = function(message, code, prev)
 {
-	if (prev == undefined) prev = null;
-	var __v0 = use("Runtime.rtl");
-	use("Runtime.Exceptions.AbstractException").call(this, ctx, message, __v0.ERROR_RUNTIME, prev);
-};
-Runtime.Exceptions.RuntimeException.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
-Runtime.Exceptions.RuntimeException.prototype.constructor = Runtime.Exceptions.RuntimeException;
-Object.assign(Runtime.Exceptions.RuntimeException.prototype,
+	Error.call(this);
+	Error.captureStackTrace(this, this.constructor);
+	this.message = message;
+	this.code = code;
+	this.prev = prev;
+}
+Runtime.Exceptions.ClassException.prototype = Object.create(Error.prototype);
+Runtime.Exceptions.ClassException.prototype.constructor = Runtime.Exceptions.ClassException;
+Object.assign(Runtime.Exceptions.ClassException.prototype,
 {
+	_init: function(){},
 });
-Object.assign(Runtime.Exceptions.RuntimeException, use("Runtime.Exceptions.AbstractException"));
-Object.assign(Runtime.Exceptions.RuntimeException,
+Object.assign(Runtime.Exceptions.ClassException,
 {
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+	getNamespace: function(){ return "Runtime.Exceptions"; },
+	getClassName: function(){ return "Runtime.Exceptions.ClassException"; },
+	getParentClassName: function(){ return ""; },
+});
+use.add(Runtime.Exceptions.ClassException);
+Runtime.Exceptions.RuntimeException = class extends ClassException
+{
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(message, code, prev)
 	{
-		return "Runtime.Exceptions";
-	},
-	getClassName: function()
+		if (message == undefined) message = "";
+		if (code == undefined) code = -1;
+		if (prev == undefined) prev = null;
+		super(message, code, prev);
+		this._init();
+		this.error_message = message;
+		this.error_code = code;
+		this.prev = prev;
+	}
+	
+	
+	/**
+	 * Returns previous exception
+	 */
+	getPreviousException()
 	{
-		return "Runtime.Exceptions.RuntimeException";
-	},
-	getParentClassName: function()
+		return this.prev;
+	}
+	
+	
+	/**
+	 * Build error message
+	 */
+	buildErrorMessage()
 	{
-		return "Runtime.Exceptions.AbstractException";
-	},
-	getClassInfo: function(ctx)
+		return this.error_message;
+	}
+	
+	
+	/**
+	 * Returns error message
+	 */
+	getErrorMessage()
 	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
+		return this.error_message;
+	}
+	
+	
+	/**
+	 * Returns error code
+	 */
+	getErrorCode()
 	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
+		return this.error_code;
+	}
+	
+	
+	/**
+	 * Returns error file name
+	 */
+	getFileName()
 	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
+		return this.error_file;
+	}
+	
+	
+	/**
+	 * Returns error line
+	 */
+	getErrorLine()
 	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
+		return this.error_line;
+	}
+	
+	
+	/**
+	 * Returns error position
+	 */
+	getErrorPos()
 	{
-		return null;
-	},
-});use.add(Runtime.Exceptions.RuntimeException);
-module.exports = Runtime.Exceptions.RuntimeException;
+		return this.error_pos;
+	}
+	
+	
+	/**
+	 * Convert exception to string
+	 */
+	toString()
+	{
+		return this.buildErrorMessage();
+	}
+	
+	
+	/**
+	 * Returns trace
+	 */
+	getTraceStr()
+	{
+	}
+	
+	
+	/**
+	 * Returns trace
+	 */
+	getTraceCollection()
+	{
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
+	{
+		super._init();
+		this.prev = null;
+		this.error_message = "";
+		this.error_code = 0;
+		this.error_file = "";
+		this.error_line = "";
+		this.error_pos = "";
+	}
+	static getClassName(){ return "Runtime.Exceptions.RuntimeException"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Exceptions.RuntimeException);
+module.exports = {
+	"ClassException": Runtime.Exceptions.ClassException,
+	"RuntimeException": Runtime.Exceptions.RuntimeException,
+};

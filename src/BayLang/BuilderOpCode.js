@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,82 +19,52 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.BuilderOpCode = function(ctx)
-{
-	use("Runtime.BaseObject").apply(this, arguments);
-};
-BayLang.BuilderOpCode.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.BuilderOpCode.prototype.constructor = BayLang.BuilderOpCode;
-Object.assign(BayLang.BuilderOpCode.prototype,
+BayLang.BuilderOpCode = class extends BaseObject
 {
 	/**
 	 * Add slot
 	 */
-	addSlot: function(ctx, op_code, name)
+	addSlot(op_code, name)
 	{
-		var __v0 = use("BayLang.OpCodes.OpHtmlSlot");
-		var __v1 = use("BayLang.OpCodes.OpHtmlItems");
-		var slot = new __v0(ctx, use("Runtime.Map").from({"name":name,"items":new __v1(ctx)}));
-		op_code.items.items.push(ctx, slot);
+		const OpHtmlSlot = use("BayLang.OpCodes.OpHtmlSlot");
+		const OpHtmlItems = use("BayLang.OpCodes.OpHtmlItems");
+		var slot = new OpHtmlSlot(Map.create({
+			"name": name,
+			"items": new OpHtmlItems(),
+		}));
+		op_code.items.items.push(slot);
 		return slot;
-	},
+	}
+	
+	
 	/**
 	 * Add tag
 	 */
-	addTag: function(ctx, op_code, name)
+	addTag(op_code, name)
 	{
-		var __v0 = use("BayLang.OpCodes.OpHtmlTag");
-		var __v1 = use("BayLang.OpCodes.OpHtmlItems");
-		var tag = new __v0(ctx, use("Runtime.Map").from({"attrs":use("Runtime.Vector").from([]),"items":new __v1(ctx),"tag_name":name}));
-		op_code.items.items.push(ctx, tag);
+		const OpHtmlTag = use("BayLang.OpCodes.OpHtmlTag");
+		const OpHtmlItems = use("BayLang.OpCodes.OpHtmlItems");
+		var tag = new OpHtmlTag(Map.create({
+			"attrs": [],
+			"items": new OpHtmlItems(),
+			"tag_name": name,
+		}));
+		op_code.items.items.push(tag);
 		return tag;
-	},
-});
-Object.assign(BayLang.BuilderOpCode, use("Runtime.BaseObject"));
-Object.assign(BayLang.BuilderOpCode,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "BayLang";
-	},
-	getClassName: function()
-	{
-		return "BayLang.BuilderOpCode";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.BuilderOpCode);
-module.exports = BayLang.BuilderOpCode;
+		super._init();
+	}
+	static getClassName(){ return "BayLang.BuilderOpCode"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.BuilderOpCode);
+module.exports = {
+	"BuilderOpCode": BayLang.BuilderOpCode,
+};

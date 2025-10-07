@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,65 +20,22 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpContinue = function(ctx)
+BayLang.OpCodes.OpContinue = class extends BaseOpCode
 {
-	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
-};
-BayLang.OpCodes.OpContinue.prototype = Object.create(use("BayLang.OpCodes.BaseOpCode").prototype);
-BayLang.OpCodes.OpContinue.prototype.constructor = BayLang.OpCodes.OpContinue;
-Object.assign(BayLang.OpCodes.OpContinue.prototype,
-{
-	_init: function(ctx)
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		super._init();
 		this.op = "op_continue";
-	},
-});
-Object.assign(BayLang.OpCodes.OpContinue, use("BayLang.OpCodes.BaseOpCode"));
-Object.assign(BayLang.OpCodes.OpContinue,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.OpCodes";
-	},
-	getClassName: function()
-	{
-		return "BayLang.OpCodes.OpContinue";
-	},
-	getParentClassName: function()
-	{
-		return "BayLang.OpCodes.BaseOpCode";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.OpCodes.OpContinue);
-module.exports = BayLang.OpCodes.OpContinue;
+	}
+	static getClassName(){ return "BayLang.OpCodes.OpContinue"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.OpCodes.OpContinue);
+module.exports = {
+	"OpContinue": BayLang.OpCodes.OpContinue,
+};

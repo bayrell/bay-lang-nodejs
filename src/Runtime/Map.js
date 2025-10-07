@@ -1,5 +1,5 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
 /*!
  *  BayLang Technology
  *
@@ -18,105 +18,78 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Map = function(ctx)
+
+Runtime.Map = Map;
+
+Object.assign(Map, {
+
+/**
+ * Create map from Object
+ */
+create(obj)
 {
-	use("Runtime.Dict").apply(this, arguments);
-};
-Runtime.Map.prototype = Object.create(use("Runtime.Dict").prototype);
-Runtime.Map.prototype.constructor = Runtime.Map;
-Object.assign(Runtime.Map.prototype,
+	return new Map(Object.entries(obj));
+},
+
+
+/**
+ * Create map from Object
+ */
+from(obj)
 {
-	/**
-	 * Set value size_to position
-	 * @param string key - position
-	 * @param T value 
-	 * @return self
-	 */
-	set: function(ctx, key, value)
-	{
-		key = this.toStr(key);
-		this._map["|" + key] = value;
-		return this;
-	},
-	/**
-	 * Remove value from position
-	 * @param string key
-	 * @return self
-	 */
-	remove: function(ctx, key)
-	{
-		key = this.toStr(key);
-		if (typeof this._map["|" + key] != "undefined")
-		{
-			delete this._map["|" + key];
-		}
-		return this;
-	},
-	/**
-	 * Clear all values from vector
-	 * @return self
-	 */
-	clear: function(ctx)
-	{
-		this._map = {};
-		return this;
-	},
+	return new Map(Object.entries(obj));
+},
+
+/* Returns namespace */
+getNamespace() { return "Runtime"; },
+
+/* Returns class name */
+getClassName() { return "Runtime.Map"; },
+
 });
-Object.assign(Runtime.Map, use("Runtime.Dict"));
-Object.assign(Runtime.Map,
+
+Object.assign(Map.prototype, {
+
+
+/**
+ * Copy map
+ */
+copy: function()
 {
-	/**
-	 * Returns new Instance
-	 * @return Object
-	 */
-	Instance: function(ctx, val)
+	return new Map(this);
+},
+
+
+/**
+ * Call function for each item
+ * @param fn f
+ */
+each: function(f)
+{
+	for (var key of this.keys())
 	{
-		if (val == undefined) val = null;
-		var __v0 = use("Runtime.Map");
-		return new __v0(ctx, val);
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+		var value = this.get(key);
+		f(value, key, this);
+	}
+},
+
+
+/**
+ * Transition
+ */
+transition: function(f)
+{
+	var arr = [];
+	for (var key of this.keys())
 	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Map";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Dict";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Map);
-module.exports = Runtime.Map;
+		var value = this.get(key);
+		arr.push(f(value, key, this));
+	}
+	return arr;
+},
+
+});
+use.add(Runtime.Map);
+module.exports = {
+	"Map": Runtime.Map,
+};

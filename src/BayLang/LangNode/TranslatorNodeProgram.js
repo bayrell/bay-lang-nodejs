@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const TranslatorES6Program = use("BayLang.LangES6.TranslatorES6Program");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,93 +20,29 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangNode == 'undefined') BayLang.LangNode = {};
-BayLang.LangNode.TranslatorNodeProgram = function(ctx)
+BayLang.LangNode.TranslatorNodeProgram = class extends TranslatorES6Program
 {
-	use("BayLang.LangES6.TranslatorES6Program").apply(this, arguments);
+	/**
+	 * OpUse
+	 */
+	OpUse(op_code, result)
+	{
+		this.translator.uses.set(op_code.alias, op_code.name);
+		return false;
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
+	{
+		super._init();
+	}
+	static getClassName(){ return "BayLang.LangNode.TranslatorNodeProgram"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
 };
-BayLang.LangNode.TranslatorNodeProgram.prototype = Object.create(use("BayLang.LangES6.TranslatorES6Program").prototype);
-BayLang.LangNode.TranslatorNodeProgram.prototype.constructor = BayLang.LangNode.TranslatorNodeProgram;
-Object.assign(BayLang.LangNode.TranslatorNodeProgram.prototype,
-{
-});
-Object.assign(BayLang.LangNode.TranslatorNodeProgram, use("BayLang.LangES6.TranslatorES6Program"));
-Object.assign(BayLang.LangNode.TranslatorNodeProgram,
-{
-	/**
-	 * Translate program
-	 */
-	translateProgramHeader: function(ctx, t, op_code)
-	{
-		var content = "\"use strict;\"";
-		content += use("Runtime.rtl").toStr(t.s(ctx, "var use = require('bay-lang').use;"));
-		return use("Runtime.Vector").from([t,content]);
-	},
-	/**
-	 * OpDeclareClassFooter
-	 */
-	OpDeclareClassFooter: function(ctx, t, op_code)
-	{
-		var content = "";
-		var name = "";
-		content += use("Runtime.rtl").toStr("use.add(" + use("Runtime.rtl").toStr(t.current_class_full_name) + use("Runtime.rtl").toStr(");"));
-		/*
-		content ~= t.s("if (module.exports == undefined) module.exports = {};");
-		Collection<string> arr = rs::split(".", t.current_namespace_name);
-		for (int i=0; i<arr.count(); i++)
-		{
-			name = name ~ ((i == 0) ? "" : ".") ~ arr.item(i);
-			string s = "if (module.exports." ~ name ~ " == undefined) module.exports." ~ name ~ " = {};";
-			content ~= (content == 0) ? s : t.s(s);
-		}
-		
-		content ~= t.s("module.exports." ~
-			t.current_class_full_name ~ " = " ~ t.current_class_full_name ~ ";");
-		*/
-		content += use("Runtime.rtl").toStr(t.s(ctx, "module.exports = " + use("Runtime.rtl").toStr(t.current_class_full_name) + use("Runtime.rtl").toStr(";")));
-		return use("Runtime.Vector").from([t,content]);
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.LangNode";
-	},
-	getClassName: function()
-	{
-		return "BayLang.LangNode.TranslatorNodeProgram";
-	},
-	getParentClassName: function()
-	{
-		return "BayLang.LangES6.TranslatorES6Program";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.LangNode.TranslatorNodeProgram);
-module.exports = BayLang.LangNode.TranslatorNodeProgram;
+use.add(BayLang.LangNode.TranslatorNodeProgram);
+module.exports = {
+	"TranslatorNodeProgram": BayLang.LangNode.TranslatorNodeProgram,
+};

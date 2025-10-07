@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,179 +20,247 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
-BayLang.LangES6.ParserES6Operator = function(ctx, parser)
+BayLang.LangES6.ParserES6Operator = class extends BaseObject
 {
-	use("Runtime.BaseObject").call(this, ctx);
-	this.parser = parser;
-};
-BayLang.LangES6.ParserES6Operator.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.LangES6.ParserES6Operator.prototype.constructor = BayLang.LangES6.ParserES6Operator;
-Object.assign(BayLang.LangES6.ParserES6Operator.prototype,
-{
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(parser)
+	{
+		super();
+		this.parser = parser;
+	}
+	
+	
+	/**
+	 * Read return
+	 */
+	readReturn(reader)
+	{
+	}
+	
+	
+	/**
+	 * Read delete
+	 */
+	readDelete(reader)
+	{
+	}
+	
+	
+	/**
+	 * Read throw
+	 */
+	readThrow(reader)
+	{
+	}
+	
+	
+	/**
+	 * Read try
+	 */
+	readTry(reader)
+	{
+	}
+	
+	
 	/**
 	 * Read if
 	 */
-	readIf: function(ctx, reader)
+	readIf(reader)
 	{
-		var caret_start = reader.caret(ctx);
+		const OpIfElse = use("BayLang.OpCodes.OpIfElse");
+		const OpIf = use("BayLang.OpCodes.OpIf");
+		var caret_start = reader.start();
 		var if_true = null;
 		var if_false = null;
-		var if_else = use("Runtime.Vector").from([]);
+		var if_else = [];
 		/* Read condition */
-		reader.matchToken(ctx, "if");
-		reader.matchToken(ctx, "(");
-		var condition = this.parser.parser_expression.readExpression(ctx, reader);
-		reader.matchToken(ctx, ")");
+		reader.matchToken("if");
+		reader.matchToken("(");
+		var condition = this.parser.parser_expression.readExpression(reader);
+		reader.matchToken(")");
 		/* Read content */
-		if_true = this.readContent(ctx, reader);
+		if_true = this.readContent(reader);
 		/* Read content */
-		var operations = use("Runtime.Vector").from(["else","elseif"]);
-		while (!reader.eof(ctx) && operations.indexOf(ctx, reader.nextToken(ctx)) >= 0)
+		var operations = ["else", "elseif"];
+		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
 		{
-			var token = reader.readToken(ctx);
-			if (token == "elseif" || token == "else" && reader.nextToken(ctx) == "if")
+			var token = reader.readToken();
+			if (token == "elseif" || token == "else" && reader.nextToken() == "if")
 			{
 				/* Read condition */
-				if (reader.nextToken(ctx) == "if")
-				{
-					reader.readToken(ctx);
-				}
-				reader.matchToken(ctx, "(");
-				var if_else_condition = this.parser.parser_expression.readExpression(ctx, reader);
-				reader.matchToken(ctx, ")");
+				if (reader.nextToken() == "if") reader.readToken();
+				reader.matchToken("(");
+				var if_else_condition = this.parser.parser_expression.readExpression(reader);
+				reader.matchToken(")");
 				/* Read content */
-				var if_else_content = this.readContent(ctx, reader);
+				var if_else_content = this.readContent(reader);
 				/* Add op_code */
-				var __v0 = use("BayLang.OpCodes.OpIfElse");
-				if_else.push(ctx, new __v0(ctx, use("Runtime.Map").from({"condition":if_else_condition,"content":if_else_content,"caret_start":caret_start,"caret_end":reader.caret(ctx)})));
+				if_else.push(new OpIfElse(Map.create({
+					"condition": if_else_condition,
+					"content": if_else_content,
+					"caret_start": caret_start,
+					"caret_end": reader.caret(),
+				})));
 			}
 			else if (token == "else")
 			{
-				if_false = this.readContent(ctx, reader);
+				if_false = this.readContent(reader);
 			}
 		}
-		var __v0 = use("BayLang.OpCodes.OpIf");
-		return new __v0(ctx, use("Runtime.Map").from({"condition":condition,"if_true":if_true,"if_false":if_false,"if_else":if_else,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
-	},
+		return new OpIf(Map.create({
+			"condition": condition,
+			"if_true": if_true,
+			"if_false": if_false,
+			"if_else": if_else,
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+		}));
+	}
+	
+	
 	/**
 	 * Read For
 	 */
-	readFor: function(ctx, reader)
+	readFor(reader)
 	{
-		var caret_start = reader.caret(ctx);
+		const OpFor = use("BayLang.OpCodes.OpFor");
+		var caret_start = reader.start();
 		/* Read for */
-		reader.matchToken(ctx, "for");
-		reader.matchToken(ctx, "(");
+		reader.matchToken("for");
+		reader.matchToken("(");
 		/* Read assing */
-		var expr1 = this.readAssign(ctx, reader);
-		reader.matchToken(ctx, ";");
+		var expr1 = this.readAssign(reader);
+		reader.matchToken(";");
 		/* Read expression */
-		var expr2 = this.parser.parser_expression.readExpression(ctx, reader);
-		reader.matchToken(ctx, ";");
+		var expr2 = this.parser.parser_expression.readExpression(reader);
+		reader.matchToken(";");
 		/* Read operator */
-		var expr3 = this.readInc(ctx, reader);
-		reader.matchToken(ctx, ")");
+		var expr3 = this.readInc(reader);
+		reader.matchToken(")");
 		/* Read content */
-		var content = this.readContent(ctx, reader);
+		var content = this.readContent(reader);
 		/* Returns op_code */
-		var __v0 = use("BayLang.OpCodes.OpFor");
-		return new __v0(ctx, use("Runtime.Map").from({"expr1":expr1,"expr2":expr2,"expr3":expr3,"content":content,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
-	},
+		return new OpFor(Map.create({
+			"expr1": expr1,
+			"expr2": expr2,
+			"expr3": expr3,
+			"content": content,
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+		}));
+	}
+	
+	
 	/**
 	 * Read While
 	 */
-	readWhile: function(ctx, reader)
+	readWhile(reader)
 	{
-		var caret_start = reader.caret(ctx);
+		const OpWhile = use("BayLang.OpCodes.OpWhile");
+		var caret_start = reader.start();
 		/* Read condition */
-		reader.matchToken(ctx, "while");
-		reader.matchToken(ctx, "(");
-		var condition = this.parser.parser_expression.readExpression(ctx, reader);
-		reader.matchToken(ctx, ")");
+		reader.matchToken("while");
+		reader.matchToken("(");
+		var condition = this.parser.parser_expression.readExpression(reader);
+		reader.matchToken(")");
 		/* Read items */
 		var content = null;
-		if (reader.nextToken(ctx) == "{")
+		if (reader.nextToken() == "{")
 		{
-			content = this.parse(ctx, reader);
+			content = this.parse(reader);
 		}
 		else
 		{
-			content = this.readOperator(ctx, reader);
+			content = this.readOperator(reader);
 		}
 		/* Returns op_code */
-		var __v0 = use("BayLang.OpCodes.OpWhile");
-		return new __v0(ctx, use("Runtime.Map").from({"content":content,"condition":condition,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
-	},
+		return new OpWhile(Map.create({
+			"content": content,
+			"condition": condition,
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+		}));
+	}
+	
+	
 	/**
 	 * Read assign
 	 */
-	readAssign: function(ctx, reader, pattern)
+	readAssign(reader, pattern)
 	{
+		const OpInc = use("BayLang.OpCodes.OpInc");
+		const OpTypeIdentifier = use("BayLang.OpCodes.OpTypeIdentifier");
+		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
+		const OpAssignValue = use("BayLang.OpCodes.OpAssignValue");
+		const OpAssign = use("BayLang.OpCodes.OpAssign");
+		const OpFlags = use("BayLang.OpCodes.OpFlags");
 		if (pattern == undefined) pattern = null;
-		var caret_start = reader.caret(ctx);
-		var items = use("Runtime.Vector").from([]);
+		var caret_start = reader.start();
+		var items = [];
 		/* Read pattern */
 		if (pattern == null)
 		{
-			pattern = this.parser.parser_base.readTypeIdentifier(ctx, reader);
+			pattern = this.parser.parser_base.readTypeIdentifier(reader);
 		}
 		/* Read increment */
-		if (reader.nextToken(ctx) == "++" || reader.nextToken(ctx) == "--")
+		if (reader.nextToken() == "++" || reader.nextToken() == "--")
 		{
 			var kind = "";
-			var operation = reader.readToken(ctx);
-			if (operation == "++")
-			{
-				var __v0 = use("BayLang.OpCodes.OpInc");
-				kind = __v0.KIND_INC;
-			}
-			else if (operation == "--")
-			{
-				var __v1 = use("BayLang.OpCodes.OpInc");
-				kind = __v1.KIND_DEC;
-			}
+			var operation = reader.readToken();
+			if (operation == "++") kind = OpInc.KIND_INC;
+			else if (operation == "--") kind = OpInc.KIND_DEC;
 			/* Find identifier */
-			var __v0 = use("BayLang.OpCodes.OpTypeIdentifier");
-			if (pattern instanceof __v0)
+			if (pattern instanceof OpTypeIdentifier)
 			{
-				pattern = pattern.entity_name.items.last(ctx);
+				pattern = pattern.entity_name.items.last();
 			}
-			var __v0 = use("BayLang.OpCodes.OpIdentifier");
-			if (!(pattern instanceof __v0))
+			if (!(pattern instanceof OpIdentifier))
 			{
-				throw pattern.caret_end.error(ctx, "Wrong type identifier")
+				throw pattern.caret_end.error("Wrong type identifier");
 			}
-			this.parser.findVariable(ctx, pattern);
+			this.parser.findVariable(pattern);
 			/* Returns op_code */
-			var __v0 = use("BayLang.OpCodes.OpInc");
-			return new __v0(ctx, use("Runtime.Map").from({"kind":kind,"item":pattern,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
+			return new OpInc(Map.create({
+				"kind": kind,
+				"item": pattern,
+				"caret_start": caret_start,
+				"caret_end": reader.caret(),
+			}));
 		}
 		/* Read items */
-		if (reader.nextToken(ctx) != "=")
+		var operations = ["=", "+=", "-=", "~="];
+		var next_token = reader.nextToken();
+		if (operations.indexOf(next_token) == -1)
 		{
-			while (!reader.eof(ctx))
+			while (!reader.eof())
 			{
-				var caret_value_start = reader.caret(ctx);
+				var caret_value_start = reader.start();
 				/* Read assign value */
-				var value = this.parser.parser_base.readIdentifier(ctx, reader);
+				var value = this.parser.parser_base.readIdentifier(reader);
 				/* Register variable */
-				this.parser.addVariable(ctx, value);
+				this.parser.addVariable(value, pattern);
 				/* Read expression */
 				var expression = null;
-				if (reader.nextToken(ctx) == "=")
+				if (reader.nextToken() == "=")
 				{
-					reader.matchToken(ctx, "=");
-					expression = this.parser.parser_expression.readExpression(ctx, reader);
+					reader.matchToken("=");
+					expression = this.parser.parser_expression.readExpression(reader);
 				}
 				/* Add op_code */
-				var __v0 = use("BayLang.OpCodes.OpAssignValue");
-				items.push(ctx, new __v0(ctx, use("Runtime.Map").from({"value":value,"expression":expression,"caret_start":caret_value_start,"caret_end":reader.caret(ctx)})));
+				items.push(new OpAssignValue(Map.create({
+					"op": "=",
+					"value": value,
+					"expression": expression,
+					"caret_start": caret_value_start,
+					"caret_end": reader.caret(),
+				})));
 				/* Read next token */
-				if (reader.nextToken(ctx) != ",")
-				{
-					break;
-				}
-				reader.readToken(ctx);
+				if (reader.nextToken() != ",") break;
+				reader.readToken();
 			}
 		}
 		else
@@ -200,366 +269,195 @@ Object.assign(BayLang.LangES6.ParserES6Operator.prototype,
 			var value = pattern;
 			pattern = null;
 			/* Find identifier */
-			var __v0 = use("BayLang.OpCodes.OpTypeIdentifier");
-			if (value instanceof __v0)
+			if (value instanceof OpTypeIdentifier)
 			{
-				value = value.entity_name.items.last(ctx);
+				value = value.entity_name.items.last();
 			}
-			var __v0 = use("BayLang.OpCodes.OpIdentifier");
-			if (!(value instanceof __v0))
+			if (!(value instanceof OpIdentifier))
 			{
-				throw value.caret_end.error(ctx, "Wrong type identifier")
+				throw value.caret_end.error("Wrong type identifier");
 			}
-			this.parser.findVariable(ctx, value);
+			this.parser.findVariable(value);
 			/* Read expression */
-			reader.matchToken(ctx, "=");
-			var expression = this.parser.parser_expression.readExpression(ctx, reader);
-			var __v0 = use("BayLang.OpCodes.OpAssignValue");
-			items.push(ctx, new __v0(ctx, use("Runtime.Map").from({"value":value,"expression":expression,"caret_start":caret_start,"caret_end":reader.caret(ctx)})));
+			var op = reader.readToken();
+			var expression = this.parser.parser_expression.readExpression(reader);
+			items.push(new OpAssignValue(Map.create({
+				"op": op,
+				"value": value,
+				"expression": expression,
+				"caret_start": caret_start,
+				"caret_end": reader.caret(),
+			})));
 		}
 		/* Returns op_code */
-		var __v0 = use("BayLang.OpCodes.OpAssign");
-		var __v1 = use("BayLang.OpCodes.OpFlags");
-		return new __v0(ctx, use("Runtime.Map").from({"flags":new __v1(ctx),"pattern":pattern,"items":items,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
-	},
+		return new OpAssign(Map.create({
+			"flags": new OpFlags(),
+			"pattern": pattern,
+			"items": items,
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+		}));
+	}
+	
+	
 	/**
 	 * Read operator
 	 */
-	readInc: function(ctx, reader)
+	readInc(reader)
 	{
-		var caret_start = reader.caret(ctx);
+		const OpInc = use("BayLang.OpCodes.OpInc");
+		var caret_start = reader.start();
 		/* Read identifier */
-		var item = this.parser.parser_base.readIdentifier(ctx, reader);
+		var item = this.parser.parser_base.readIdentifier(reader);
 		/* Read kind */
-		var kind = reader.readToken(ctx);
-		if (kind == "++")
-		{
-			var __v0 = use("BayLang.OpCodes.OpInc");
-			kind = __v0.KIND_INC;
-		}
-		else if (kind == "--")
-		{
-			var __v1 = use("BayLang.OpCodes.OpInc");
-			kind = __v1.KIND_DEC;
-		}
-		else
-		{
-			throw reader.expected(ctx, "++ or --")
-		}
+		var kind = reader.readToken();
+		if (kind == "++") kind = OpInc.KIND_INC;
+		else if (kind == "--") kind = OpInc.KIND_DEC;
+		else throw reader.expected("++ or --");
 		/* Returns op_code */
-		var __v0 = use("BayLang.OpCodes.OpInc");
-		return new __v0(ctx, use("Runtime.Map").from({"kind":kind,"item":item,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
-	},
+		return new OpInc(Map.create({
+			"kind": kind,
+			"item": item,
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+		}));
+	}
+	
+	
 	/**
 	 * Read operator
 	 */
-	readOperator: function(ctx, reader)
+	readOperator(reader)
 	{
-		var next_token = reader.nextToken(ctx);
-		var caret_start = reader.caret(ctx);
+		const OpBreak = use("BayLang.OpCodes.OpBreak");
+		const OpContinue = use("BayLang.OpCodes.OpContinue");
+		var next_token = reader.nextToken();
+		var caret_start = reader.start();
 		/* Comment */
 		if (next_token == "/")
 		{
-			return this.parser.parser_base.readComment(ctx, reader);
+			return this.parser.parser_base.readComment(reader);
 		}
 		else if (next_token == "break")
 		{
-			var __v0 = use("BayLang.OpCodes.OpBreak");
-			return new __v0(ctx, use("Runtime.Map").from({"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
+			return new OpBreak(Map.create({
+				"caret_start": caret_start,
+				"caret_end": reader.caret(),
+			}));
 		}
 		else if (next_token == "continue")
 		{
-			var __v1 = use("BayLang.OpCodes.OpContinue");
-			return new __v1(ctx, use("Runtime.Map").from({"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
+			return new OpContinue(Map.create({
+				"caret_start": caret_start,
+				"caret_end": reader.caret(),
+			}));
 		}
 		else if (next_token == "delete")
 		{
-			return this.readDelete(ctx, reader);
+			return this.readDelete(reader);
 		}
 		else if (next_token == "return")
 		{
-			return this.readReturn(ctx, reader);
+			return this.readReturn(reader);
 		}
 		else if (next_token == "throw")
 		{
-			return this.readThrow(ctx, reader);
+			return this.readThrow(reader);
 		}
 		else if (next_token == "try")
 		{
-			return this.readTry(ctx, reader);
+			return this.readTry(reader);
 		}
 		else if (next_token == "if")
 		{
-			return this.readIf(ctx, reader);
+			return this.readIf(reader);
 		}
 		else if (next_token == "for")
 		{
-			return this.readFor(ctx, reader);
+			return this.readFor(reader);
 		}
 		else if (next_token == "while")
 		{
-			return this.readWhile(ctx, reader);
+			return this.readWhile(reader);
 		}
 		/* Save caret */
-		var save_caret = reader.caret(ctx);
+		var save_caret = reader.caret();
 		/* Try to read call function */
-		var op_code = this.parser.parser_function.readCallFunction(ctx, reader);
-		if (op_code)
-		{
-			return op_code;
-		}
+		var op_code = this.parser.parser_function.readCallFunction(reader);
+		if (op_code) return op_code;
 		/* Restore reader */
-		reader.init(ctx, save_caret);
+		reader.init(save_caret);
 		/* Assign operator */
-		return this.readAssign(ctx, reader);
-	},
+		return this.readAssign(reader);
+	}
+	
+	
 	/**
 	 * Read content
 	 */
-	readContent: function(ctx, reader)
+	readContent(reader)
 	{
-		if (reader.nextToken(ctx) == "{")
+		if (reader.nextToken() == "{")
 		{
-			return this.parse(ctx, reader);
+			return this.parse(reader);
 		}
-		var content = this.readOperator(ctx, reader);
-		reader.matchToken(ctx, ";");
+		var content = this.readOperator(reader);
+		reader.matchToken(";");
 		return content;
-	},
+	}
+	
+	
 	/**
 	 * Read operators
 	 */
-	parse: function(ctx, reader)
+	parse(reader)
 	{
-		var caret_start = reader.caret(ctx);
-		var items = use("Runtime.Vector").from([]);
+		const OpItems = use("BayLang.OpCodes.OpItems");
+		var caret_start = reader.start();
+		var items = [];
 		/* Read begin tag */
-		reader.matchToken(ctx, "{");
+		reader.matchToken("{");
 		/* Read operators */
-		while (!reader.eof(ctx) && reader.nextToken(ctx) != "}")
+		while (!reader.eof() && reader.nextToken() != "}")
 		{
-			var op_code = this.readOperator(ctx, reader);
+			var op_code = this.readOperator(reader);
 			if (op_code)
 			{
-				items.push(ctx, op_code);
+				items.push(op_code);
 			}
 			else
 			{
 				break;
 			}
 			/* Match semicolon */
-			if (reader.nextToken(ctx) == ";")
+			if (reader.nextToken() == ";")
 			{
-				reader.matchToken(ctx, ";");
+				reader.matchToken(";");
 			}
 		}
 		/* Read end tag */
-		reader.matchToken(ctx, "}");
+		reader.matchToken("}");
 		/* Returns value */
-		var __v0 = use("BayLang.OpCodes.OpItems");
-		return new __v0(ctx, use("Runtime.Map").from({"items":items,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
-	},
-	_init: function(ctx)
+		return new OpItems(Map.create({
+			"items": items,
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+		}));
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.parser = null;
-	},
-});
-Object.assign(BayLang.LangES6.ParserES6Operator, use("Runtime.BaseObject"));
-Object.assign(BayLang.LangES6.ParserES6Operator,
-{
-	/**
-	 * Read return
-	 */
-	readReturn: function(ctx, parser)
-	{
-		var token = null;
-		var op_code = null;
-		var look = null;
-		var res = parser.parser_base.constructor.matchToken(ctx, parser, "return");
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
-		var caret_start = token.caret_start;
-		var res = parser.parser_base.constructor.readToken(ctx, parser);
-		look = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
-		if (token.content != ";")
-		{
-			var res = parser.parser_expression.constructor.readExpression(ctx, parser);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			op_code = Runtime.rtl.attr(ctx, res, 1);
-		}
-		var __v0 = use("BayLang.OpCodes.OpReturn");
-		return use("Runtime.Vector").from([parser,new __v0(ctx, use("Runtime.Map").from({"expression":op_code,"caret_start":caret_start,"caret_end":parser.caret}))]);
-	},
-	/**
-	 * Read delete
-	 */
-	readDelete: function(ctx, parser)
-	{
-		var token = null;
-		var op_code = null;
-		var res = parser.parser_base.constructor.matchToken(ctx, parser, "delete");
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
-		var caret_start = token.caret_start;
-		var res = parser.parser_base.constructor.readDynamic(ctx, parser);
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		op_code = Runtime.rtl.attr(ctx, res, 1);
-		var __v0 = use("BayLang.OpCodes.OpDelete");
-		return use("Runtime.Vector").from([parser,new __v0(ctx, use("Runtime.Map").from({"op_code":op_code,"caret_start":caret_start,"caret_end":parser.caret}))]);
-	},
-	/**
-	 * Read throw
-	 */
-	readThrow: function(ctx, parser)
-	{
-		var token = null;
-		var op_code = null;
-		var res = parser.parser_base.constructor.matchToken(ctx, parser, "throw");
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
-		var caret_start = token.caret_start;
-		var res = parser.parser_expression.constructor.readExpression(ctx, parser);
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		op_code = Runtime.rtl.attr(ctx, res, 1);
-		var __v0 = use("BayLang.OpCodes.OpThrow");
-		return use("Runtime.Vector").from([parser,new __v0(ctx, use("Runtime.Map").from({"expression":op_code,"caret_start":caret_start,"caret_end":parser.caret}))]);
-	},
-	/**
-	 * Read try
-	 */
-	readTry: function(ctx, parser)
-	{
-		var look = null;
-		var token = null;
-		var op_try = null;
-		var __v0 = use("Runtime.Vector");
-		var items = new __v0(ctx);
-		var res = parser.parser_base.constructor.matchToken(ctx, parser, "try");
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
-		var caret_start = token.caret_start;
-		/* Try */
-		var res = this.readOperators(ctx, parser);
-		parser = Runtime.rtl.attr(ctx, res, 0);
-		op_try = Runtime.rtl.attr(ctx, res, 1);
-		/* Catch */
-		var res = parser.parser_base.constructor.readToken(ctx, parser);
-		look = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
-		while (!token.eof && token.content == "catch")
-		{
-			parser = look;
-			var op_catch = null;
-			var var_op_code = null;
-			var pattern = null;
-			var item_caret_start = token.caret_start;
-			/* Read ident */
-			var res = parser.parser_base.constructor.matchToken(ctx, parser, "(");
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			var res = parser.parser_base.constructor.readTypeIdentifier(ctx, parser);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			pattern = Runtime.rtl.attr(ctx, res, 1);
-			var res = parser.parser_base.constructor.readIdentifier(ctx, parser);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			var_op_code = Runtime.rtl.attr(ctx, res, 1);
-			var var_name = var_op_code.value;
-			var res = parser.parser_base.constructor.matchToken(ctx, parser, ")");
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			/* Save vars */
-			var save_vars = parser.vars;
-			parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["vars"]), parser.vars.setIm(ctx, var_name, true));
-			/* Catch operators */
-			var res = this.readOperators(ctx, parser);
-			parser = Runtime.rtl.attr(ctx, res, 0);
-			op_catch = Runtime.rtl.attr(ctx, res, 1);
-			/* Restore vars */
-			parser = Runtime.rtl.setAttr(ctx, parser, Runtime.Collection.from(["vars"]), save_vars);
-			var __v1 = use("BayLang.OpCodes.OpTryCatchItem");
-			var item = new __v1(ctx, use("Runtime.Map").from({"name":var_name,"pattern":pattern,"value":op_catch,"caret_start":item_caret_start,"caret_end":parser.caret}));
-			items.push(ctx, item);
-			var res = parser.parser_base.constructor.readToken(ctx, parser);
-			look = Runtime.rtl.attr(ctx, res, 0);
-			token = Runtime.rtl.attr(ctx, res, 1);
-		}
-		var __v1 = use("BayLang.OpCodes.OpTryCatch");
-		return use("Runtime.Vector").from([parser,new __v1(ctx, use("Runtime.Map").from({"op_try":op_try,"items":items,"caret_start":caret_start,"caret_end":parser.caret}))]);
-	},
-	/**
-	 * Read then
-	 */
-	readThen: function(ctx, parser)
-	{
-		var look = null;
-		var token = null;
-		var res = parser.parser_base.constructor.readToken(ctx, parser);
-		look = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
-		if (token.content == "then")
-		{
-			return use("Runtime.Vector").from([look,token]);
-		}
-		return use("Runtime.Vector").from([parser,token]);
-	},
-	/**
-	 * Read do
-	 */
-	readDo: function(ctx, parser)
-	{
-		var look = null;
-		var token = null;
-		var res = parser.parser_base.constructor.readToken(ctx, parser);
-		look = Runtime.rtl.attr(ctx, res, 0);
-		token = Runtime.rtl.attr(ctx, res, 1);
-		if (token.content == "do")
-		{
-			return use("Runtime.Vector").from([look,token]);
-		}
-		return use("Runtime.Vector").from([parser,token]);
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.LangES6";
-	},
-	getClassName: function()
-	{
-		return "BayLang.LangES6.ParserES6Operator";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.LangES6.ParserES6Operator);
-module.exports = BayLang.LangES6.ParserES6Operator;
+	}
+	static getClassName(){ return "BayLang.LangES6.ParserES6Operator"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.LangES6.ParserES6Operator);
+module.exports = {
+	"ParserES6Operator": BayLang.LangES6.ParserES6Operator,
+};

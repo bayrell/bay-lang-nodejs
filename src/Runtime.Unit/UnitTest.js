@@ -1,7 +1,8 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const Entity = use("Runtime.Entity.Entity");
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -19,60 +20,27 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
-Runtime.Unit.UnitTest = function(ctx, api_name)
+Runtime.Unit.UnitTest = class extends Entity
 {
-	use("Runtime.Entity.Entity").call(this, ctx, use("Runtime.Map").from({"name":api_name}));
+	constructor(api_name)
+	{
+		super(Map.create({
+			"name": api_name,
+		}));
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
+	{
+		super._init();
+	}
+	static getClassName(){ return "Runtime.Unit.UnitTest"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
 };
-Runtime.Unit.UnitTest.prototype = Object.create(use("Runtime.Entity.Entity").prototype);
-Runtime.Unit.UnitTest.prototype.constructor = Runtime.Unit.UnitTest;
-Object.assign(Runtime.Unit.UnitTest.prototype,
-{
-});
-Object.assign(Runtime.Unit.UnitTest, use("Runtime.Entity.Entity"));
-Object.assign(Runtime.Unit.UnitTest,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime.Unit";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Unit.UnitTest";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Entity.Entity";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Unit.UnitTest);
-module.exports = Runtime.Unit.UnitTest;
+use.add(Runtime.Unit.UnitTest);
+module.exports = {
+	"UnitTest": Runtime.Unit.UnitTest,
+};

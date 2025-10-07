@@ -1,9 +1,11 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const BaseCommand = use("Runtime.Console.BaseCommand");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,101 +22,78 @@ var use = require('bay-lang').use;
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
-BayLang.Compiler.Commands.Compile = function(ctx)
-{
-	use("Runtime.Console.BaseCommand").apply(this, arguments);
-};
-BayLang.Compiler.Commands.Compile.prototype = Object.create(use("Runtime.Console.BaseCommand").prototype);
-BayLang.Compiler.Commands.Compile.prototype.constructor = BayLang.Compiler.Commands.Compile;
-Object.assign(BayLang.Compiler.Commands.Compile.prototype,
-{
-});
-Object.assign(BayLang.Compiler.Commands.Compile, use("Runtime.Console.BaseCommand"));
-Object.assign(BayLang.Compiler.Commands.Compile,
+BayLang.Compiler.Commands.Compile = class extends BaseCommand
 {
 	/**
 	 * Returns name
 	 */
-	getName: function(ctx)
-	{
-		return "compile";
-	},
+	static getName(){ return "compile"; }
+	
+	
 	/**
 	 * Returns description
 	 */
-	getDescription: function(ctx)
-	{
-		return "Compile file";
-	},
+	static getDescription(){ return "Compile file"; }
+	
+	
 	/**
 	 * Run task
 	 */
-	run: async function(ctx)
+	static async run()
 	{
-		var command = Runtime.rtl.attr(ctx, ctx.cli_args, 2);
-		var src_file_name = Runtime.rtl.attr(ctx, ctx.cli_args, 3);
-		var dest_file_name = Runtime.rtl.attr(ctx, ctx.cli_args, 4);
+		const LangUtils = use("BayLang.LangUtils");
+		const fs = use("Runtime.fs");
+		const ParserError = use("BayLang.Exceptions.ParserError");
+		var command = Runtime.rtl.getContext().cli_args[2];
+		var src_file_name = Runtime.rtl.getContext().cli_args[3];
+		var dest_file_name = Runtime.rtl.getContext().cli_args[4];
 		/* Check command */
 		if (!command)
 		{
-			var __v0 = use("Runtime.io");
-			__v0.print(ctx, "Print <command> <src> <dest>");
-			var __v1 = use("Runtime.io");
-			__v1.print(ctx, "Command: bay_to_php, bay_to_es6, php_to_bay, php_to_es6, es6_to_bay, es6_to_php");
-			return Promise.resolve(this.FAIL);
+			rtl.print("Print <command> <src> <dest>");
+			rtl.print("Command: bay_to_php, bay_to_es6, php_to_bay, php_to_es6, es6_to_bay, es6_to_php");
+			return this.FAIL;
 		}
 		/* Check src */
 		if (!src_file_name)
 		{
-			var __v0 = use("Runtime.io");
-			__v0.print_error(ctx, "Print src file name");
-			return Promise.resolve(this.FAIL);
+			rtl.print_error("Print src file name");
+			return this.FAIL;
 		}
 		/* Check dest */
 		if (!dest_file_name)
 		{
-			var __v0 = use("Runtime.io");
-			__v0.print_error(ctx, "Print dest file name");
-			return Promise.resolve(this.FAIL);
+			rtl.print_error("Print dest file name");
+			return this.FAIL;
 		}
-		var __v0 = use("Runtime.io");
-		__v0.print(ctx, "Convert " + use("Runtime.rtl").toStr(src_file_name) + use("Runtime.rtl").toStr(" to ") + use("Runtime.rtl").toStr(dest_file_name));
-		var __v1 = use("BayLang.LangUtils");
-		var res = __v1.parseCommand(ctx, command);
-		var __v2 = use("BayLang.LangUtils");
-		var parser = __v2.createParser(ctx, res.get(ctx, "from"));
-		var __v3 = use("BayLang.LangUtils");
-		var translator = __v3.createTranslator(ctx, res.get(ctx, "to"));
+		rtl.print("Convert " + String(src_file_name) + String(" to ") + String(dest_file_name));
+		var res = LangUtils.parseCommand(command);
+		var parser = LangUtils.createParser(res.get("from"));
+		var translator = LangUtils.createTranslator(res.get("to"));
 		/* Check file exists */
-		var __v4 = use("Runtime.fs");
-		if (!await __v4.isFile(ctx, src_file_name))
+		if (!await fs.isFile(src_file_name))
 		{
-			var __v5 = use("Runtime.io");
-			__v5.print_error(ctx, "File not found");
-			return Promise.resolve(this.FAIL);
+			rtl.print_error("File not found");
+			return this.FAIL;
 		}
 		/* Read file name */
 		var op_code = null;
-		var __v4 = use("Runtime.fs");
-		var content = await __v4.readFile(ctx, src_file_name);
+		var content = await fs.readFile(src_file_name);
 		var output = "";
 		/* Translate file */
-		var __v5 = use("BayLang.Exceptions.ParserError");
 		try
 		{
-			parser.setContent(ctx, content);
-			op_code = parser.parse(ctx);
-			output = translator.translate(ctx, op_code);
+			parser.setContent(content);
+			op_code = parser.parse();
+			output = translator.translate(op_code);
 		}
 		catch (_ex)
 		{
-			if (_ex instanceof __v5)
+			if (_ex instanceof ParserError)
 			{
 				var error = _ex;
-				
-				var __v6 = use("Runtime.io");
-				__v6.print_error(ctx, error.toString(ctx));
-				return Promise.resolve(this.FAIL);
+				rtl.print_error(error.toString());
+				return this.FAIL;
 			}
 			else
 			{
@@ -122,55 +101,24 @@ Object.assign(BayLang.Compiler.Commands.Compile,
 			}
 		}
 		/* Save file */
-		var __v5 = use("Runtime.fs");
-		await __v5.saveFile(ctx, dest_file_name, output);
+		await fs.saveFile(dest_file_name, output);
 		/* Return result */
-		var __v6 = use("Runtime.io");
-		__v6.print(ctx, "Ok");
-		return Promise.resolve(this.SUCCESS);
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+		rtl.print("Ok");
+		return this.SUCCESS;
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "BayLang.Compiler.Commands";
-	},
-	getClassName: function()
-	{
-		return "BayLang.Compiler.Commands.Compile";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Console.BaseCommand";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.Compiler.Commands.Compile);
-module.exports = BayLang.Compiler.Commands.Compile;
+		super._init();
+	}
+	static getClassName(){ return "BayLang.Compiler.Commands.Compile"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.Compiler.Commands.Compile);
+module.exports = {
+	"Compile": BayLang.Compiler.Commands.Compile,
+};

@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,159 +20,162 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBayProgram = function(ctx, parser)
+BayLang.LangBay.ParserBayProgram = class extends BaseObject
 {
-	use("Runtime.BaseObject").call(this, ctx);
-	this.parser = parser;
-};
-BayLang.LangBay.ParserBayProgram.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.LangBay.ParserBayProgram.prototype.constructor = BayLang.LangBay.ParserBayProgram;
-Object.assign(BayLang.LangBay.ParserBayProgram.prototype,
-{
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(parser)
+	{
+		super();
+		this.parser = parser;
+	}
+	
+	
 	/**
 	 * Read namespace
 	 */
-	readNamespace: function(ctx, reader)
+	readNamespace(reader)
 	{
-		var caret_start = reader.caret(ctx);
+		const OpNamespace = use("BayLang.OpCodes.OpNamespace");
+		var caret_start = reader.start();
 		/* Read module name */
-		reader.matchToken(ctx, "namespace");
-		var entity_name = this.parser.parser_base.readEntityName(ctx, reader);
-		var module_name = entity_name.getName(ctx);
+		reader.matchToken("namespace");
+		var entity_name = this.parser.parser_base.readEntityName(reader);
+		var module_name = entity_name.getName();
 		/* Create op_code */
-		var __v0 = use("BayLang.OpCodes.OpNamespace");
-		var op_code = new __v0(ctx, use("Runtime.Map").from({"caret_start":caret_start,"caret_end":reader.caret(ctx),"name":module_name}));
+		var op_code = new OpNamespace(Map.create({
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+			"name": module_name,
+		}));
 		/* Set current namespace */
 		this.parser.current_namespace = op_code;
 		this.parser.current_namespace_name = module_name;
 		/* Returns op_code */
 		return op_code;
-	},
+	}
+	
+	
 	/**
 	 * Read use
 	 */
-	readUse: function(ctx, reader)
+	readUse(reader)
 	{
+		const OpUse = use("BayLang.OpCodes.OpUse");
 		var look = null;
-		var token = null;
 		var name = null;
-		var caret_start = reader.caret(ctx);
+		var caret_start = reader.start();
 		var alias = "";
 		/* Read module name */
-		reader.matchToken(ctx, "use");
-		var module_name = this.parser.parser_base.readEntityName(ctx, reader);
+		reader.matchToken("use");
+		var module_name = this.parser.parser_base.readEntityName(reader);
 		/* Read alias */
-		if (reader.nextToken(ctx) == "as")
+		if (reader.nextToken() == "as")
 		{
-			reader.readToken(ctx);
-			alias = reader.readToken(ctx);
+			reader.readToken();
+			alias = reader.readToken();
 		}
-		var __v0 = use("BayLang.OpCodes.OpUse");
-		return new __v0(ctx, use("Runtime.Map").from({"name":module_name.getName(ctx),"alias":alias,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
-	},
+		else
+		{
+			alias = module_name.items.last().value;
+		}
+		/* Add use */
+		this.parser.uses.set(alias, module_name.getName());
+		return new OpUse(Map.create({
+			"name": module_name.getName(),
+			"alias": alias,
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+		}));
+	}
+	
+	
 	/**
 	 * Read module
 	 */
-	readModuleItem: function(ctx, reader)
+	readModuleItem(reader)
 	{
-		var next_token = reader.nextToken(ctx);
+		const OpPreprocessorIfDef = use("BayLang.OpCodes.OpPreprocessorIfDef");
+		var next_token = reader.nextTokenComments();
 		/* Namespace */
 		if (next_token == "namespace")
 		{
-			return this.readNamespace(ctx, reader);
+			return this.readNamespace(reader);
 		}
 		else if (next_token == "use")
 		{
-			return this.readUse(ctx, reader);
+			return this.readUse(reader);
+		}
+		else if (next_token == "abstract" || next_token == "class" || next_token == "interface")
+		{
+			return this.parser.parser_class.readClass(reader);
+		}
+		else if (next_token == "#switch" || next_token == "#ifcode" || next_token == "#ifdef")
+		{
+			return this.parser.parser_preprocessor.readPreprocessor(reader, OpPreprocessorIfDef.KIND_PROGRAM);
 		}
 		else if (next_token != "")
 		{
-			return this.parser.parser_operator.readOperator(ctx, reader);
+			return this.parser.parser_operator.readOperator(reader);
 		}
 		return null;
-	},
+	}
+	
+	
 	/**
 	 * Parse program
 	 */
-	parse: function(ctx, reader)
+	parse(reader)
 	{
-		var items = use("Runtime.Vector").from([]);
-		var caret_start = reader.caret(ctx);
+		const CoreParser = use("BayLang.CoreParser");
+		const OpModule = use("BayLang.OpCodes.OpModule");
+		this.parser.current_block = CoreParser.BLOCK_PROGRAM;
+		var items = [];
+		var caret_start = reader.start();
 		/* Read module */
-		while (!reader.eof(ctx) && reader.nextToken(ctx) != "")
+		while (!reader.eof() && reader.nextToken() != "" && reader.nextToken() != "#endswitch" && reader.nextToken() != "#case" && reader.nextToken() != "#endif")
 		{
-			var next_token = reader.nextToken(ctx);
+			var next_token = reader.nextToken();
 			/* Read module item */
-			var op_code = this.readModuleItem(ctx, reader);
+			var op_code = this.readModuleItem(reader);
 			if (op_code)
 			{
-				items.push(ctx, op_code);
+				items.push(op_code);
 			}
 			else
 			{
 				break;
 			}
 			/* Match semicolon */
-			if (reader.nextToken(ctx) == ";")
+			if (reader.nextToken() == ";")
 			{
-				reader.matchToken(ctx, ";");
+				reader.matchToken(";");
 			}
 		}
 		/* Returns op_code */
-		var __v0 = use("BayLang.OpCodes.OpModule");
-		return new __v0(ctx, use("Runtime.Map").from({"caret_start":caret_start,"caret_end":reader.caret(ctx),"items":items}));
-	},
-	_init: function(ctx)
+		return new OpModule(Map.create({
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+			"items": items,
+		}));
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.parser = null;
-	},
-});
-Object.assign(BayLang.LangBay.ParserBayProgram, use("Runtime.BaseObject"));
-Object.assign(BayLang.LangBay.ParserBayProgram,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.LangBay";
-	},
-	getClassName: function()
-	{
-		return "BayLang.LangBay.ParserBayProgram";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.LangBay.ParserBayProgram);
-module.exports = BayLang.LangBay.ParserBayProgram;
+	}
+	static getClassName(){ return "BayLang.LangBay.ParserBayProgram"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.LangBay.ParserBayProgram);
+module.exports = {
+	"ParserBayProgram": BayLang.LangBay.ParserBayProgram,
+};

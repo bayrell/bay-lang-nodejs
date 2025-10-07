@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,121 +20,90 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangPHP == 'undefined') BayLang.LangPHP = {};
-BayLang.LangPHP.ParserPHPFunction = function(ctx, parser)
+BayLang.LangPHP.ParserPHPFunction = class extends BaseObject
 {
-	use("Runtime.BaseObject").call(this, ctx);
-	this.parser = parser;
-};
-BayLang.LangPHP.ParserPHPFunction.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.LangPHP.ParserPHPFunction.prototype.constructor = BayLang.LangPHP.ParserPHPFunction;
-Object.assign(BayLang.LangPHP.ParserPHPFunction.prototype,
-{
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(parser)
+	{
+		super();
+		this.parser = parser;
+	}
+	
+	
 	/**
 	 * Returns pattern
 	 */
-	getPattern: function(ctx, pattern)
+	getPattern(pattern)
 	{
-		var __v0 = use("BayLang.OpCodes.OpEntityName");
-		var __v1 = use("BayLang.OpCodes.OpIdentifier");
-		if (pattern instanceof __v0)
+		const OpEntityName = use("BayLang.OpCodes.OpEntityName");
+		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
+		if (pattern instanceof OpEntityName)
 		{
-			return pattern.items.first(ctx);
+			return pattern.items.first();
 		}
-		else if (pattern instanceof __v1)
+		else if (pattern instanceof OpIdentifier)
 		{
-			if (pattern.value == "echo")
-			{
-				pattern.value = "print";
-			}
+			if (pattern.value == "echo") pattern.value = "print";
 		}
 		return pattern;
-	},
+	}
+	
+	
 	/**
 	 * Read call function
 	 */
-	readCallFunction: function(ctx, reader, pattern)
+	readCallFunction(reader, pattern)
 	{
+		const OpCall = use("BayLang.OpCodes.OpCall");
 		if (pattern == undefined) pattern = null;
-		var caret_start = reader.caret(ctx);
+		var caret_start = reader.start();
 		/* Read identifier */
 		if (pattern == null)
 		{
-			pattern = this.parser.parser_base.readItem(ctx, reader);
+			pattern = this.parser.parser_base.readItem(reader);
 		}
 		/* Next token should be bracket */
-		if (reader.nextToken(ctx) != "(")
-		{
-			return null;
-		}
+		if (reader.nextToken() != "(") return null;
 		/* Update pattern */
-		pattern = this.getPattern(ctx, pattern);
+		pattern = this.getPattern(pattern);
 		/* Read arguments */
-		reader.matchToken(ctx, "(");
-		var args = use("Runtime.Vector").from([]);
-		while (!reader.eof(ctx) && reader.nextToken(ctx) != ")")
+		reader.matchToken("(");
+		var args = [];
+		while (!reader.eof() && reader.nextToken() != ")")
 		{
-			var expression = this.parser.parser_expression.readExpression(ctx, reader);
-			args.push(ctx, expression);
-			if (reader.nextToken(ctx) == ",")
+			var expression = this.parser.parser_expression.readExpression(reader);
+			args.push(expression);
+			if (reader.nextToken() == ",")
 			{
-				reader.matchToken(ctx, ",");
+				reader.matchToken(",");
 			}
 		}
-		reader.matchToken(ctx, ")");
-		var __v0 = use("BayLang.OpCodes.OpCall");
-		return new __v0(ctx, use("Runtime.Map").from({"args":args,"item":pattern,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
-	},
-	_init: function(ctx)
+		reader.matchToken(")");
+		return new OpCall(Map.create({
+			"args": args,
+			"item": pattern,
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+		}));
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.parser = null;
-	},
-});
-Object.assign(BayLang.LangPHP.ParserPHPFunction, use("Runtime.BaseObject"));
-Object.assign(BayLang.LangPHP.ParserPHPFunction,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.LangPHP";
-	},
-	getClassName: function()
-	{
-		return "BayLang.LangPHP.ParserPHPFunction";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.LangPHP.ParserPHPFunction);
-module.exports = BayLang.LangPHP.ParserPHPFunction;
+	}
+	static getClassName(){ return "BayLang.LangPHP.ParserPHPFunction"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.LangPHP.ParserPHPFunction);
+module.exports = {
+	"ParserPHPFunction": BayLang.LangPHP.ParserPHPFunction,
+};

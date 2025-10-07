@@ -1,7 +1,8 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const Entity = use("Runtime.Entity.Entity");
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -20,60 +21,27 @@ var use = require('bay-lang').use;
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Console == 'undefined') Runtime.Console = {};
 if (typeof Runtime.Console.Annotations == 'undefined') Runtime.Console.Annotations = {};
-Runtime.Console.Annotations.ConsoleCommand = function(ctx, api_name)
+Runtime.Console.Annotations.ConsoleCommand = class extends Entity
 {
-	use("Runtime.Entity.Entity").call(this, ctx, use("Runtime.Map").from({"name":api_name}));
+	constructor(api_name)
+	{
+		super(Map.create({
+			"name": api_name,
+		}));
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
+	{
+		super._init();
+	}
+	static getClassName(){ return "Runtime.Console.Annotations.ConsoleCommand"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
 };
-Runtime.Console.Annotations.ConsoleCommand.prototype = Object.create(use("Runtime.Entity.Entity").prototype);
-Runtime.Console.Annotations.ConsoleCommand.prototype.constructor = Runtime.Console.Annotations.ConsoleCommand;
-Object.assign(Runtime.Console.Annotations.ConsoleCommand.prototype,
-{
-});
-Object.assign(Runtime.Console.Annotations.ConsoleCommand, use("Runtime.Entity.Entity"));
-Object.assign(Runtime.Console.Annotations.ConsoleCommand,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime.Console.Annotations";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Console.Annotations.ConsoleCommand";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Entity.Entity";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Console.Annotations.ConsoleCommand);
-module.exports = Runtime.Console.Annotations.ConsoleCommand;
+use.add(Runtime.Console.Annotations.ConsoleCommand);
+module.exports = {
+	"ConsoleCommand": Runtime.Console.Annotations.ConsoleCommand,
+};

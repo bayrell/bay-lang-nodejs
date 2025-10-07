@@ -1,9 +1,9 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,87 +18,50 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.ModuleDescription = function(ctx)
-{
-};
-Object.assign(BayLang.ModuleDescription.prototype,
-{
-});
-Object.assign(BayLang.ModuleDescription,
+BayLang.ModuleDescription = class
 {
 	/**
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleName: function(ctx)
-	{
-		return "BayLang";
-	},
+	static getModuleName(){ return "BayLang"; }
+	
+	
 	/**
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleVersion: function(ctx)
-	{
-		return "1.0";
-	},
+	static getModuleVersion(){ return "1.0"; }
+	
+	
 	/**
 	 * Returns required modules
 	 * @return Map<string>
 	 */
-	requiredModules: function(ctx)
+	static requiredModules()
 	{
-		return use("Runtime.Map").from({"Runtime":">=0.11 <1.0"});
-	},
+		return Map.create({
+			"Runtime": ">=0.11 <1.0",
+		});
+	}
+	
+	
 	/**
 	 * Returns enities
 	 */
-	entities: function(ctx)
+	static entities(){ return null; }
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return null;
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang";
-	},
-	getClassName: function()
-	{
-		return "BayLang.ModuleDescription";
-	},
-	getParentClassName: function()
-	{
-		return "";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.ModuleDescription);
-module.exports = BayLang.ModuleDescription;
+	}
+	static getClassName(){ return "BayLang.ModuleDescription"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.ModuleDescription);
+module.exports = {
+	"ModuleDescription": BayLang.ModuleDescription,
+};

@@ -1,9 +1,11 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const BaseCommand = use("Runtime.Console.BaseCommand");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,101 +22,59 @@ var use = require('bay-lang').use;
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
-BayLang.Compiler.Commands.MakeAll = function(ctx)
-{
-	use("Runtime.Console.BaseCommand").apply(this, arguments);
-};
-BayLang.Compiler.Commands.MakeAll.prototype = Object.create(use("Runtime.Console.BaseCommand").prototype);
-BayLang.Compiler.Commands.MakeAll.prototype.constructor = BayLang.Compiler.Commands.MakeAll;
-Object.assign(BayLang.Compiler.Commands.MakeAll.prototype,
-{
-});
-Object.assign(BayLang.Compiler.Commands.MakeAll, use("Runtime.Console.BaseCommand"));
-Object.assign(BayLang.Compiler.Commands.MakeAll,
+BayLang.Compiler.Commands.MakeAll = class extends BaseCommand
 {
 	/**
 	 * Returns name
 	 */
-	getName: function(ctx)
-	{
-		return "make_all";
-	},
+	static getName(){ return "make_all"; }
+	
+	
 	/**
 	 * Returns description
 	 */
-	getDescription: function(ctx)
-	{
-		return "Make all modules";
-	},
+	static getDescription(){ return "Make all modules"; }
+	
+	
 	/**
 	 * Run task
 	 */
-	run: async function(ctx)
+	static async run()
 	{
-		var result = true;
-		var lang = Runtime.rtl.attr(ctx, ctx.cli_args, 2);
-		/* Get modules */
-		var settings = ctx.provider(ctx, "BayLang.Compiler.SettingsProvider");
-		var modules = settings.getModules(ctx);
-		/* Compile modules */
-		var modules_names = modules.keys(ctx).sort(ctx);
-		for (var i = 0; i < modules_names.count(ctx); i++)
+		const Project = use("BayLang.Compiler.Project");
+		const Make = use("BayLang.Compiler.Commands.Make");
+		/* Read project */
+		var project = await Project.readProject(Runtime.rtl.getContext().base_path);
+		if (!project)
 		{
-			var module_name = Runtime.rtl.attr(ctx, modules_names, i);
-			var __v0 = use("Runtime.io");
-			var __v1 = use("Runtime.io");
-			__v0.print(ctx, __v1.color(ctx, "yellow", "Compile " + use("Runtime.rtl").toStr(module_name)));
-			result = result & await settings.compileModule(ctx, module_name, lang);
+			rtl.error("Project not found");
+			return this.ERROR;
 		}
-		/* Result */
-		if (!result)
+		var make = new Make();
+		var modules = project.getModules();
+		var keys = rtl.list(modules.keys());
+		for (var i = 0; i < keys.count(); i++)
 		{
-			return Promise.resolve(this.FAIL);
+			var module_name = keys.get(i);
+			var module = modules.get(module_name);
+			rtl.print(rtl.color("yellow", "Compile " + String(module.name)));
+			await make.compile(project, module);
 		}
-		return Promise.resolve(this.SUCCESS);
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+		return this.SUCCESS;
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "BayLang.Compiler.Commands";
-	},
-	getClassName: function()
-	{
-		return "BayLang.Compiler.Commands.MakeAll";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Console.BaseCommand";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.Compiler.Commands.MakeAll);
-module.exports = BayLang.Compiler.Commands.MakeAll;
+		super._init();
+	}
+	static getClassName(){ return "BayLang.Compiler.Commands.MakeAll"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.Compiler.Commands.MakeAll);
+module.exports = {
+	"MakeAll": BayLang.Compiler.Commands.MakeAll,
+};

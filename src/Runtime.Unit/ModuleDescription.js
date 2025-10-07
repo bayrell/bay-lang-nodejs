@@ -1,7 +1,7 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -19,91 +19,58 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
-Runtime.Unit.ModuleDescription = function(ctx)
-{
-};
-Object.assign(Runtime.Unit.ModuleDescription.prototype,
-{
-});
-Object.assign(Runtime.Unit.ModuleDescription,
+Runtime.Unit.ModuleDescription = class
 {
 	/**
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleName: function(ctx)
-	{
-		return "Runtime.Unit";
-	},
+	static getModuleName(){ return "Runtime.Unit"; }
+	
+	
 	/**
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleVersion: function(ctx)
-	{
-		return "0.12.0";
-	},
+	static getModuleVersion(){ return "0.12.0"; }
+	
+	
 	/**
 	 * Returns required modules
 	 * @return Map<string, string>
 	 */
-	requiredModules: function(ctx)
+	static requiredModules()
 	{
-		return use("Runtime.Map").from({"Runtime":"*","Runtime.Console":"*"});
-	},
+		return Map.create({
+			"Runtime": "*",
+			"Runtime.Console": "*",
+		});
+	}
+	
+	
 	/**
 	 * Returns enities
 	 */
-	entities: function(ctx)
+	static entities()
 	{
-		var __v0 = use("Runtime.Console.Annotations.ConsoleCommand");
-		var __v1 = use("Runtime.Console.Annotations.ConsoleCommand");
-		var __v2 = use("Runtime.Entity.Provider");
-		var __v3 = use("Runtime.Unit.TestProvider");
-		return use("Runtime.Vector").from([new __v0(ctx, "Runtime.Unit.Commands.TestAll"),new __v1(ctx, "Runtime.Unit.Commands.TestRun"),new __v2(ctx, "Runtime.Unit.TestProvider", new __v3(ctx))]);
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime.Unit";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Unit.ModuleDescription";
-	},
-	getParentClassName: function()
-	{
-		return "";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
+		
+		const Provider = use("Runtime.Entity.Provider");
+		const TestProvider = use("Runtime.Unit.TestProvider");return [
+			new Provider("Runtime.Unit.TestProvider", new TestProvider()),
 		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return null;
-	},
-});use.add(Runtime.Unit.ModuleDescription);
-module.exports = Runtime.Unit.ModuleDescription;
+	}
+	static getClassName(){ return "Runtime.Unit.ModuleDescription"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Unit.ModuleDescription);
+module.exports = {
+	"ModuleDescription": Runtime.Unit.ModuleDescription,
+};

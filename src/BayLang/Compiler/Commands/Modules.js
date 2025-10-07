@@ -1,9 +1,11 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const BaseCommand = use("Runtime.Console.BaseCommand");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,114 +22,70 @@ var use = require('bay-lang').use;
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
-BayLang.Compiler.Commands.Modules = function(ctx)
-{
-	use("Runtime.Console.BaseCommand").apply(this, arguments);
-};
-BayLang.Compiler.Commands.Modules.prototype = Object.create(use("Runtime.Console.BaseCommand").prototype);
-BayLang.Compiler.Commands.Modules.prototype.constructor = BayLang.Compiler.Commands.Modules;
-Object.assign(BayLang.Compiler.Commands.Modules.prototype,
-{
-});
-Object.assign(BayLang.Compiler.Commands.Modules, use("Runtime.Console.BaseCommand"));
-Object.assign(BayLang.Compiler.Commands.Modules,
+BayLang.Compiler.Commands.Modules = class extends BaseCommand
 {
 	/**
 	 * Returns name
 	 */
-	getName: function(ctx)
-	{
-		return "modules";
-	},
+	static getName(){ return "modules"; }
+	
+	
 	/**
 	 * Returns description
 	 */
-	getDescription: function(ctx)
-	{
-		return "Show modules";
-	},
+	static getDescription(){ return "Show modules"; }
+	
+	
 	/**
 	 * Run task
 	 */
-	run: async function(ctx)
+	static async run()
 	{
-		this.showModules(ctx, true);
-		return Promise.resolve(this.SUCCESS);
-	},
-	/**
-	 * Returns modules
-	 */
-	getModules: function(ctx)
-	{
-		var settings = ctx.provider(ctx, "BayLang.Compiler.SettingsProvider");
-		return settings.modules;
-	},
+		this.showModules(true);
+		return this.SUCCESS;
+	}
+	
+	
 	/**
 	 * Show modules
 	 */
-	showModules: function(ctx, verbose)
+	static async showModules(verbose)
 	{
-		var modules = this.getModules(ctx);
-		var modules_names = modules.keys(ctx).sort(ctx);
-		for (var i = 0; i < modules_names.count(ctx); i++)
+		const Project = use("BayLang.Compiler.Project");
+		var project = await Project.readProject(Runtime.rtl.getContext().base_path);
+		if (!project)
 		{
-			var module_name = Runtime.rtl.attr(ctx, modules_names, i);
-			var module = Runtime.rtl.attr(ctx, modules, module_name);
+			return;
+		}
+		var modules = project.getModules();
+		var modules_names = rtl.list(modules.keys()).sort();
+		for (var i = 0; i < modules_names.count(); i++)
+		{
+			var module_name = modules_names[i];
+			var module = modules.get(module_name);
 			if (verbose)
 			{
-				var __v0 = use("Runtime.io");
-				var __v1 = use("Runtime.io");
-				__v0.print(ctx, i + 1 + use("Runtime.rtl").toStr(") ") + use("Runtime.rtl").toStr(__v1.color(ctx, "yellow", module_name)) + use("Runtime.rtl").toStr(" - ") + use("Runtime.rtl").toStr(module.path));
+				rtl.print(i + 1 + String(") ") + String(rtl.color("yellow", module_name)) + String(" - ") + String(module.path));
 			}
 			else
 			{
-				var __v2 = use("Runtime.io");
-				__v2.print(ctx, module_name);
+				rtl.print(module_name);
 			}
 		}
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "BayLang.Compiler.Commands";
-	},
-	getClassName: function()
-	{
-		return "BayLang.Compiler.Commands.Modules";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Console.BaseCommand";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.Compiler.Commands.Modules);
-module.exports = BayLang.Compiler.Commands.Modules;
+		super._init();
+	}
+	static getClassName(){ return "BayLang.Compiler.Commands.Modules"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.Compiler.Commands.Modules);
+module.exports = {
+	"Modules": BayLang.Compiler.Commands.Modules,
+};

@@ -1,9 +1,11 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rs = use("Runtime.rs");
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,114 +20,127 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.CoreTranslator = function(ctx)
+BayLang.CoreTranslator = class extends BaseObject
 {
-	use("Runtime.BaseObject").apply(this, arguments);
-};
-BayLang.CoreTranslator.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.CoreTranslator.prototype.constructor = BayLang.CoreTranslator;
-Object.assign(BayLang.CoreTranslator.prototype,
-{
+	/* State */
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor()
+	{
+		super();
+		this.uses.set("Collection", "Runtime.Collection");
+		this.uses.set("Dict", "Runtime.Dict");
+	}
+	
+	
+	/**
+	 * Get full entity name
+	 */
+	getFullName(class_name)
+	{
+		if (this.uses.has(class_name))
+		{
+			return this.uses.get(class_name);
+		}
+		else
+		{
+			return this.current_namespace_name + String(".") + String(class_name);
+		}
+	}
+	
+	
 	/**
 	 * Set flag
 	 */
-	setFlag: function(ctx, flag_name, value)
+	setFlag(flag_name, value)
 	{
-		this.preprocessor_flags.set(ctx, flag_name, value);
+		this.preprocessor_flags.set(flag_name, value);
 		return this;
-	},
+	}
+	
+	
 	/**
 	 * Increment indent level
 	 */
-	levelInc: function(ctx)
+	levelInc()
 	{
 		this.indent_level = this.indent_level + 1;
-	},
+	}
+	
+	
 	/**
 	 * Decrease indent level
 	 */
-	levelDec: function(ctx)
+	levelDec()
 	{
 		this.indent_level = this.indent_level - 1;
-	},
+	}
+	
+	
 	/**
 	 * Returns new line with indent
 	 */
-	newLine: function(ctx)
+	newLine(count)
 	{
-		var __v0 = use("Runtime.rs");
-		return this.crlf + use("Runtime.rtl").toStr(__v0.str_repeat(ctx, this.indent, this.indent_level));
-	},
+		if (count == undefined) count = 1;
+		if (count == 1) return this.crlf + String(rs.str_repeat(this.indent, this.indent_level));
+		var arr = [];
+		for (var i = 0; i < count; i++)
+		{
+			arr.push(this.crlf + String(rs.str_repeat(this.indent, this.indent_level)));
+		}
+		return rs.join("", arr);
+	}
+	
+	
 	/**
 	 * Returns string
 	 */
-	toString: function(ctx, s)
+	toString(s)
 	{
 		return s;
-	},
+	}
+	
+	
 	/**
 	 * Translate BaseOpCode
 	 */
-	translate: function(ctx, op_code)
+	translate(op_code)
 	{
 		return "";
-	},
-	_init: function(ctx)
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.opcode_level = 0;
 		this.indent_level = 0;
 		this.last_semicolon = false;
 		this.indent = "\t";
 		this.crlf = "\n";
-		this.preprocessor_flags = use("Runtime.Map").from({});
-	},
-});
-Object.assign(BayLang.CoreTranslator, use("Runtime.BaseObject"));
-Object.assign(BayLang.CoreTranslator,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang";
-	},
-	getClassName: function()
-	{
-		return "BayLang.CoreTranslator";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.CoreTranslator);
-module.exports = BayLang.CoreTranslator;
+		this.preprocessor_flags = new Map();
+		this.vars = new Map();
+		this.uses = new Map();
+		this.class_items = new Map();
+		this.current_class = null;
+		this.class_function = null;
+		this.current_block = "";
+		this.current_class_name = "";
+		this.current_namespace_name = "";
+		this.parent_class_name = "";
+		this.is_operator_block = false;
+	}
+	static getClassName(){ return "BayLang.CoreTranslator"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.CoreTranslator);
+module.exports = {
+	"CoreTranslator": BayLang.CoreTranslator,
+};

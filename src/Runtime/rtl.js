@@ -1,5 +1,5 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
 /*!
  *  BayLang Technology
  *
@@ -18,197 +18,185 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.rtl = function(ctx)
+Runtime.rtl = class
 {
-};
-Object.assign(Runtime.rtl.prototype,
-{
-});
-Object.assign(Runtime.rtl,
-{
-	LOG_FATAL: 0,
-	LOG_CRITICAL: 2,
-	LOG_ERROR: 4,
-	LOG_WARNING: 6,
-	LOG_INFO: 8,
-	LOG_DEBUG: 10,
-	LOG_DEBUG2: 12,
-	STATUS_PLAN: 0,
-	STATUS_DONE: 1,
-	STATUS_PROCESS: 100,
-	STATUS_FAIL: -1,
-	ERROR_NULL: 0,
-	ERROR_OK: 1,
-	ERROR_PROCCESS: 100,
-	ERROR_FALSE: -100,
-	ERROR_RUNTIME: -1,
-	ERROR_UNKNOWN: -1,
-	ERROR_INDEX_OUT_OF_RANGE: -2,
-	ERROR_STOP_ITERATION: -3,
-	ERROR_ITEM_NOT_FOUND: -5,
-	ERROR_OBJECT_ALLREADY_EXISTS: -6,
-	ERROR_ASSERT: -7,
-	ERROR_REQUEST: -8,
-	ERROR_RESPONSE: -9,
-	ERROR_CSRF_TOKEN: -10,
-	ERROR_VALIDATION: -12,
-	ERROR_SERIALIZATION: -14,
-	ERROR_ASSIGN: -15,
-	ERROR_AUTH: -16,
-	ERROR_DUPLICATE: -17,
-	ERROR_API_NOT_FOUND: -18,
-	ERROR_API_WRONG_FORMAT: -19,
-	ERROR_API_WRONG_APP_NAME: -20,
-	ERROR_API: -21,
-	ERROR_CURL: -22,
-	ERROR_FATAL: -99,
-	ERROR_HTTP_CONTINUE: -100,
-	ERROR_HTTP_SWITCH: -101,
-	ERROR_HTTP_PROCESSING: -102,
-	ERROR_HTTP_OK: -200,
-	ERROR_HTTP_BAD_GATEWAY: -502,
-	ERROR_USER: -10000,
-	ALLOW_OBJECTS: 1,
-	JSON_PRETTY: 8,
-	_memorize_cache: null,
-	_memorize_not_found: null,
-	_memorize_hkey: null,
-	_global_context: null,
+	/* Log level */
+	
+	/**
+	 * Fatal error. Application stoped
+	 */
+	static LOG_FATAL = 0;
+	
+	/**
+	 * Critical error. Application damaged, but works
+	 */
+	static LOG_CRITICAL = 2;
+	
+	/**
+	 * Any Application error or exception
+	 */
+	static LOG_ERROR = 4;
+	
+	/**
+	 * Log warning. Developer should attention to this
+	 */
+	static LOG_WARNING = 6;
+	
+	/**
+	 * Information about any event
+	 */
+	static LOG_INFO = 8;
+	
+	/**
+	 * Debug level 1
+	 */
+	static LOG_DEBUG = 10;
+	
+	/**
+	 * Debug level 2
+	 */
+	static LOG_DEBUG2 = 12;
+	
+	/* Status codes */
+	static STATUS_PLAN = 0;
+	static STATUS_DONE = 1;
+	static STATUS_PROCESS = 100;
+	static STATUS_FAIL = -1;
+	
+	/* Errors */
+	static ERROR_NULL = 0;
+	static ERROR_OK = 1;
+	static ERROR_PROCCESS = 100;
+	static ERROR_FALSE = -100;
+	static ERROR_RUNTIME = -1;
+	static ERROR_UNKNOWN = -1;
+	static ERROR_INDEX_OUT_OF_RANGE = -2;
+	static ERROR_STOP_ITERATION = -3;
+	static ERROR_ITEM_NOT_FOUND = -5;
+	static ERROR_OBJECT_ALLREADY_EXISTS = -6;
+	static ERROR_ASSERT = -7;
+	static ERROR_REQUEST = -8;
+	static ERROR_RESPONSE = -9;
+	static ERROR_CSRF_TOKEN = -10;
+	static ERROR_VALIDATION = -12;
+	static ERROR_SERIALIZATION = -14;
+	static ERROR_ASSIGN = -15;
+	static ERROR_AUTH = -16;
+	static ERROR_DUPLICATE = -17;
+	static ERROR_API_NOT_FOUND = -18;
+	static ERROR_API_WRONG_FORMAT = -19;
+	static ERROR_API_WRONG_APP_NAME = -20;
+	static ERROR_API = -21;
+	static ERROR_CURL = -22;
+	static ERROR_FATAL = -99;
+	static ERROR_HTTP_CONTINUE = -100;
+	static ERROR_HTTP_SWITCH = -101;
+	static ERROR_HTTP_PROCESSING = -102;
+	static ERROR_HTTP_OK = -200;
+	static ERROR_HTTP_BAD_GATEWAY = -502;
+	static ERROR_USER = -10000;
+	
+	/* Serializer */
+	static ALLOW_OBJECTS = 1;
+	static JSON_PRETTY = 8;
+	
+	
 	/**
 	 * Define class
 	 */
-	defClass: function(obj)
+	static defClass(obj)
 	{
-	},
-	/**
-	 * Register module
-	 */
-	defModule: function(f)
-	{
-	},
-	/**
-	 * Require js module by name
-	 * @return module
-	 */
-	require: function(module_name)
-	{
-		return require(module_name);
-	},
+	}
+	
+	
 	/**
 	 * Find class instance by name. If class does not exists return null.
 	 * @return var - class instance
 	 */
-	find_class: function(class_name)
+	static findClass(class_name)
 	{
-		if (class_name instanceof Function)
-			return class_name;
+		if (typeof class_name == "string")
+		{
+			class_name = typeof window != "undefined" ? window[class_name] : use(class_name);
+		}
+		if (class_name == undefined || class_name == null) return null;
+		if (!(class_name instanceof Function)) class_name = class_name.constructor;
 		
-		return use(class_name);
-	},
+		return class_name instanceof Function ? class_name : null;
+	}
+	
+	
+	/**
+	 * Return class name
+	 */
+	static className(class_name)
+	{
+		if (this.isString(class_name)) return class_name;
+		var obj = this.findClass(class_name);
+		return (obj && obj.getClassName) ? obj.getClassName() : "";
+	}
+	
+	
+	/**
+	 * Returns parent class name
+	 */
+	static parentClassName(class_name)
+	{
+		var obj = this.findClass(class_name);
+		var parentObj = obj ? Object.getPrototypeOf(obj) : null;
+		return parentObj && parentObj.getClassName ? parentObj.getClassName() : "";
+	}
+	
+	
 	/**
 	 * Returns true if class instanceof class_name
 	 * @return bool
 	 */
-	is_instanceof: function(ctx, obj, class_name)
+	static isInstanceOf(obj, class_name)
 	{
-		if (obj == null)
+		if (obj == null) return false;
+		obj = this.className(obj);
+		if (!this.isString(obj)) return false;
+		var parent_class_name = obj;
+		while (parent_class_name != "")
 		{
-			return false;
+			if (parent_class_name == class_name) return true;
+			var parent_class_name = this.parentClassName(parent_class_name);
 		}
-		var obj_class_name = this.get_class_name(ctx, obj);
-		if (obj_class_name != "")
-		{
-			obj = obj_class_name;
-		}
-		if (this.isString(ctx, obj))
-		{
-			if (obj == class_name)
-			{
-				return true;
-			}
-			var parents = this.getParents(ctx, obj);
-			if (parents.indexOf(ctx, class_name) >= 0)
-			{
-				return true;
-			}
-			return false;
-		}
-		return false;
-	},
+	}
+	
+	
 	/**
-	 * Returns true if obj implements interface_name
-	 * @return bool
+	 * Returns true if class implements interface
 	 */
-	is_implements: function(ctx, obj, interface_name)
+	static isImplements(obj, interface_name)
 	{
-		if (obj == null)
+		if (obj == null) return false;
+		obj = this.findClass(obj);
+		if (!obj) return false;
+		while (obj != null)
 		{
-			return false;
+			if (obj.getInterfaces && obj.getInterfaces().indexOf(interface_name) >= 0) return true;
+			obj = this.findClass(this.parentClassName(obj));
 		}
-		return this.class_implements(ctx, this.get_class_name(ctx, obj), interface_name);
-	},
+	}
+	
+	
 	/**
-	 * Returns true if class exists
-	 * @return bool
+	 * Class exists
 	 */
-	class_implements: function(ctx, class_name, interface_name)
+	static classExists(class_name)
 	{
-		var obj = this.find_class(class_name);
-		var obj2 = this.find_class(interface_name);
-		
-		while (obj != null){
-			if (obj.__implements__){
-				if (obj.__implements__.indexOf( obj2 ) > -1 ){
-					return true;
-				}
-			}
-			obj = obj.__proto__;
-		}
-		
-		return false;
-	},
-	/**
-	 * Returns interface of class
-	 * @param string class_name
-	 * @return Collection<string>
-	 */
-	getInterfaces: function(ctx, class_name)
-	{
-		return Runtime.Vector.from(this.find_class(class_name).__implements__);
-	},
+		var obj = this.findClass(class_name);
+		return obj != null;
+	}
+	
+	
 	/**
 	 * Returns true if class exists
 	 * @return bool
 	 */
-	class_exists: function(ctx, class_name)
-	{
-		var obj = this.find_class(class_name);
-		if (!this.exists(ctx, obj)) return false;
-		return true;
-	},
-	/**
-	 * Returns true if class exists
-	 * @return bool
-	 */
-	get_class_name: function(ctx, obj)
-	{
-		if (this.isString(ctx, obj))
-		{
-			return obj;
-		}
-		var t = this.getType(ctx, obj);
-		if (t != "object" && t != "collection" && t != "dict")
-		{
-			return "";
-		}
-		if (obj.constructor.getClassName == undefined) return "";
-		return obj.constructor.getClassName(ctx);
-	},
-	/**
-	 * Returns true if class exists
-	 * @return bool
-	 */
-	method_exists: function(ctx, class_name, method_name)
+	static methodExists(class_name, method_name)
 	{
 		if (typeof(class_name) == "object")
 		{
@@ -216,828 +204,318 @@ Object.assign(Runtime.rtl,
 			return false;
 		}
 		
-		var obj = this.find_class(class_name);
-		if (!this.exists(ctx, obj)) return false;
-		if (this.exists(ctx, obj[method_name])) return true;
+		var obj = this.findClass(class_name);
+		if (!this.exists(obj)) return false;
+		if (this.exists(obj[method_name])) return true;
 		return false;
-	},
+	}
+	
+	
 	/**
 	 * Create object by class_name. If class name does not exists return null
 	 * @return Object
 	 */
-	newInstance: function(ctx, class_name, args)
+	static newInstance(class_name, args)
 	{
 		if (args == undefined) args = null;
-		var obj = this.find_class(class_name);
-		if (!this.exists(ctx, obj) || !(obj instanceof Function))
+		var obj = this.findClass(class_name);
+		if (!this.exists(obj) || !(obj instanceof Function))
 		{
-			throw new Runtime.Exceptions.ItemNotFound(ctx, class_name, "class name");
+			throw new Runtime.Exceptions.ItemNotFound(class_name, "class name");
 		}
-		if (args == undefined || args == null){ args = []; } else { args = args.toArray(); }
+		if (args == undefined || args == null){ args = []; }
 		args = args.slice(); 
 		args.unshift(null);
 		var f = Function.prototype.bind.apply(obj, args);
 		return new f;
-	},
+	}
+	
+	
 	/**
-	 * Returns callback
-	 * @return fn
+	 * Return attr value by name
 	 */
-	method: function(ctx, obj, method_name)
-	{
-		var __v0 = use("Runtime.Callback");
-		return new __v0(ctx, obj, method_name);
-	},
-	/**
-	 * Call function
-	 * @return fn
-	 */
-	apply: function(ctx, f, args)
-	{
-		if (args == undefined) args = null;
-		if (args == null) args = [];
-		else args = Array.prototype.slice.call(args);
-		if (typeof ctx != "undefined") args.unshift(ctx);
-		
-		if (f instanceof Runtime.Callback)
-		{
-			return f.apply(args);
-		}
-		
-		return f.apply(null, args);
-	},
-	/**
-	 * Await promise
-	 */
-	resolvePromise: async function(ctx, value)
-	{
-		return await value;
-	},
-	/**
-	 * Run async function
-	 * @return fn
-	 */
-	runAsync: function(ctx, f, args)
-	{
-		if (args == undefined) args = null;
-		(async () => {
-			try
-			{
-				await Runtime.rtl.apply(f, args);
-			}
-			catch (e)
-			{
-				Runtime.io.print_error(e);
-			}
-		})()
-	},
-	/**
-	 * Returns callback
-	 * @return var
-	 */
-	attr: function(ctx, item, path, def_val)
+	static attr(item, name, def_val)
 	{
 		if (def_val == undefined) def_val = null;
-		if (path === null)
-		{
-			return def_val;
-		}
-		var Collection = use("Runtime.Collection");
-		var Dict = use("Runtime.Dict");
-		var BaseObject = use("Runtime.BaseObject");
-		var BaseStruct = use("Runtime.BaseStruct");
-		var MapInterface = use("Runtime.MapInterface");
-		
-		if (def_val == undefined) def_val = null;
-		if (item === null) return def_val;
-		if (item === undefined) return def_val;
-		if (Array.isArray(path) && path.count == undefined) path = Collection.from(path);
-		if (this.isScalarValue(ctx, path)) path = Collection.from([path]);
-		if (!(path instanceof Collection)) return def_val;
-		if (path.count() == 0)
-		{
-			return item;
-		}
-		if (typeof item == "string") return item.charAt(path[0]);
-		var key = path.first(ctx);
-		var path = path.slice(ctx, 1);
-		var val = def_val;
-		if (
-			item instanceof Dict ||
-			item instanceof Collection ||
-			item instanceof BaseStruct ||
-			this.is_implements(item, MapInterface)
-		)
-		{
-			var new_item = item.get(ctx, key, def_val);
-			val = this.attr(ctx, new_item, path, def_val);
-			return val;
-		}
-		else
-		{
-			var new_item = item[key] || def_val;
-			val = this.attr(ctx, new_item, path, def_val);
-			return val;
-		}
-		return def_val;
-	},
-	/**
-	 * Update current item
-	 * @return var
-	 */
-	setAttr: function(ctx, item, attrs, new_value)
-	{
-		if (attrs == null)
-		{
-			return item;
-		}
-		var Vector = use("Runtime.Vector");
-		if (typeof attrs == "string") attrs = Vector.from([attrs]);
-		else if (Array.isArray(attrs) && attrs.count == undefined) attrs = Vector.from(attrs);
-		var f = (ctx, attrs, data, new_value, f) =>
-		{
-			if (attrs.count(ctx) == 0)
-			{
-				return new_value;
-			}
-			if (data == null)
-			{
-				data = use("Runtime.Map").from({});
-			}
-			var new_data = null;
-			var attr_name = attrs.first(ctx);
-			attrs = attrs.slice(ctx, 1);
-			var __v0 = use("Runtime.BaseStruct");
-			var __v2 = use("Runtime.BaseObject");
-			var __v3 = use("Runtime.Map");
-			var __v4 = use("Runtime.Dict");
-			var __v5 = use("Runtime.Vector");
-			var __v6 = use("Runtime.Collection");
-			if (data instanceof __v0)
-			{
-				var attr_data = data.get(ctx, attr_name, null);
-				var res = f(ctx, attrs, attr_data, new_value, f);
-				var __v1 = use("Runtime.Map");
-				var d = (new __v1(ctx)).set(ctx, attr_name, res);
-				new_data = data.copy(ctx, d);
-			}
-			else if (data instanceof __v2)
-			{
-				var attr_data = this.attr(ctx, data, attr_name, null);
-				var res = f(ctx, attrs, attr_data, new_value, f);
-				new_data = data;
-				data[attr_name] = res;
-			}
-			else if (data instanceof __v3)
-			{
-				var attr_data = data.get(ctx, attr_name, null);
-				var res = f(ctx, attrs, attr_data, new_value, f);
-				data.set(ctx, attr_name, res);
-				new_data = data;
-			}
-			else if (data instanceof __v4)
-			{
-				var attr_data = data.get(ctx, attr_name, null);
-				var res = f(ctx, attrs, attr_data, new_value, f);
-				new_data = data.setIm(ctx, attr_name, res);
-			}
-			else if (data instanceof __v5)
-			{
-				var attr_data = data.get(ctx, attr_name, null);
-				var res = f(ctx, attrs, attr_data, new_value, f);
-				data.set(ctx, attr_name, res);
-				new_data = data;
-			}
-			else if (data instanceof __v6)
-			{
-				var attr_data = data.get(ctx, attr_name, null);
-				var res = f(ctx, attrs, attr_data, new_value, f);
-				new_data = data.setIm(ctx, attr_name, res);
-			}
-			return new_data;
-		};
-		var new_item = f(ctx, attrs, item, new_value, f);
-		return new_item;
-	},
-	/**
-	 * Convert monad by type
-	 */
-	m_to: function(ctx, type_value, def_value)
-	{
-		if (def_value == undefined) def_value = null;
-		return (ctx, m) =>
-		{
-			var __v0 = use("Runtime.Monad");
-			return new __v0(ctx, (m.err == null) ? (this.convert(ctx, m.val, type_value, def_value)) : (def_value));
-		};
-	},
-	/**
-	 * Convert monad to default value
-	 */
-	m_def: function(ctx, def_value)
-	{
-		if (def_value == undefined) def_value = null;
-		return (ctx, m) =>
-		{
-			var __v0 = use("Runtime.Monad");
-			return (m.err != null || m.val === null) ? (new __v0(ctx, def_value)) : (m);
-		};
-	},
-	/**
-	 * Returns value if value instanceof type_value, else returns def_value
-	 * @param var value
-	 * @param string type_value
-	 * @param var def_value
-	 * @param var type_template
-	 * @return var
-	 */
-	convert: function(ctx, v, t, d)
-	{
-		if (d == undefined) d = null;
-		if (v === null)
-		{
-			return d;
-		}
-		if (t == "mixed" || t == "primitive" || t == "var" || t == "fn" || t == "callback")
-		{
-			return v;
-		}
-		if (t == "bool" || t == "boolean")
-		{
-			return this.toBool(ctx, v);
-		}
-		else if (t == "string")
-		{
-			return this.toString(ctx, v);
-		}
-		else if (t == "int")
-		{
-			return this.toInt(ctx, v);
-		}
-		else if (t == "float" || t == "double")
-		{
-			return this.toFloat(ctx, v);
-		}
-		else if (this.is_instanceof(ctx, v, t))
-		{
-			return v;
-		}
-		return null;
-	},
-	/**
-	 * Returns value
-	 * @param var value
-	 * @param var def_val
-	 * @param var obj
-	 * @return var
-	 */
-	to: function(v, o)
-	{
-		var ctx = null;
-		var e = "";
-		e = o.e;
-		return this.convert(v, e);
-	},
-	/**
-	 * Return true if value is empty
-	 * @param var value
-	 * @return bool
-	 */
-	isEmpty: function(ctx, value)
-	{
-		return !this.exists(ctx, value) || value === null || value === "" || value === false || value === 0;
-	},
+		return item[name] || def_val;
+	}
+	
+	
 	/**
 	 * Return true if value is exists
 	 * @param var value
 	 * @return bool
 	 */
-	exists: function(ctx, value)
+	static exists(value)
 	{
 		return (value != null) && (value != undefined);
-	},
+	}
+	
+	
 	/**
-	 * Returns true if value is scalar value
-	 * @return bool
-	 */
-	getType: function(ctx, value)
-	{
-		if (value == null)
-		{
-			return "null";
-		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isString(ctx, value))
-		{
-			return "string";
-		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isInt(ctx, value))
-		{
-			return "int";
-		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isDouble(ctx, value))
-		{
-			return "double";
-		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isBoolean(ctx, value))
-		{
-			return "boolean";
-		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isCallable(ctx, value))
-		{
-			return "fn";
-		}
-		var __v0 = use("Runtime.Collection");
-		if (value instanceof __v0)
-		{
-			return "collection";
-		}
-		var __v0 = use("Runtime.Dict");
-		if (value instanceof __v0)
-		{
-			return "dict";
-		}
-		var __v0 = use("Runtime.BaseObject");
-		if (value instanceof __v0)
-		{
-			return "object";
-		}
-		if (typeof value == "object") return "object";
-		return "unknown";
-	},
-	/**
-	 * Returns true if value is scalar value
-	 * @return bool 
-	 */
-	isScalarValue: function(ctx, value)
-	{
-		if (value == null)
-		{
-			return true;
-		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isString(ctx, value))
-		{
-			return true;
-		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isInt(ctx, value))
-		{
-			return true;
-		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isDouble(ctx, value))
-		{
-			return true;
-		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isBoolean(ctx, value))
-		{
-			return true;
-		}
-		return false;
-	},
-	/**
-	 * Return true if value is boolean
+	 * Returns true if value is string
 	 * @param var value
 	 * @return bool
 	 */
-	isBoolean: function(ctx, value)
-	{
-		if (value === false || value === true)
-		{
-			return true;
-		}
-		return false;
-	},
-	/**
-	 * Return true if value is boolean
-	 * @param var value
-	 * @return bool
-	 */
-	isBool: function(ctx, value)
-	{
-		return this.isBoolean(ctx, value);
-	},
-	/**
-	 * Return true if value is number
-	 * @param var value
-	 * @return bool
-	 */
-	isInt: function(ctx, value)
-	{
-		if (typeof value != "number") return false;
-		if (value % 1 !== 0) return false;
-		return true;
-	},
-	/**
-	 * Return true if value is number
-	 * @param var value
-	 * @return bool
-	 */
-	isDouble: function(ctx, value)
-	{
-		if (typeof value == "number") return true;
-		return false;
-	},
-	/**
-	 * Return true if value is string
-	 * @param var value
-	 * @return bool
-	 */
-	isString: function(ctx, value)
+	static isString(value)
 	{
 		if (typeof value == 'string') return true;
 		else if (value instanceof String) return true;
 		return false;
-	},
+	}
+	
+	
 	/**
-	 * Return true if value is function
-	 * @param var value
-	 * @return bool
+	 * Returns true if value is collection
 	 */
-	isCallable: function(ctx, value)
+	static isCollection(value)
 	{
-		var __v0 = use("Runtime.Callback");
-		if (value instanceof __v0)
+		return Array.isArray(value);
+	}
+	
+	
+	/**
+	 * Translate
+	 */
+	static translate(s, params)
+	{
+		return Runtime.rtl.getContext().translate(s, params);
+	}
+	
+	
+	/* ================================= Lib Functions =================================== */
+	
+	static compare(order, f)
+	{
+		if (f == undefined) f = null;
+		return (a, b) =>
 		{
-			if (value.exists(ctx, value))
+			if (f)
 			{
-				return true;
+				a = f(a);
+				b = f(b);
 			}
-			return false;
-		}
-		if (typeof(value) == 'function') return true;
-		return false;
-	},
+			if (a < b) return 1;
+			if (a > b) return -1;
+			return 0;
+		};
+	}
+	
+	/* =============================== Convert Functions ================================= */
+	
 	/**
-	 * Return true if value is Promise
-	 * @param var value
-	 * @return bool
+	 * Convert generator to list
 	 */
-	isPromise: function(ctx, value)
+	static list(generator)
 	{
-		if (value instanceof Promise) return true;
-		return false;
-	},
+		return [...generator];
+		return generator;
+	}
+	
+	
+	/**
+	 * Convert to int
+	 */
+	static toInt(s)
+	{
+		return Number(s);
+	}
+	
+	
 	/**
 	 * Convert value to string
 	 * @param var value
 	 * @return string
 	 */
-	toString: function(ctx, value)
+	static toStr(value)
 	{
-		return this.toStr(value);
-	},
-	/**
-	 * Convert value to string
-	 * @param var value
-	 * @return string
-	 */
-	toStr: function(value)
-	{
-		var _StringInterface = use("Runtime.StringInterface");
+		var StringInterface = use("Runtime.StringInterface");
 		
 		if (value === null) return "";
 		if (typeof value == 'string') return value;
 		if (typeof value == 'number') return ""+value;
 		if (value instanceof String) return ""+value;
-		if (typeof value == 'object' && this.is_implements(value, _StringInterface))
+		if (typeof value == 'object' && this.isImplements(value, StringInterface))
 			return value.toString();
 		return ""+value;
-	},
+	}
+	
+	
 	/**
-	 * Convert value to int
-	 * @param var value
-	 * @return int
+	 * Json Decode
 	 */
-	toInt: function(ctx, val)
+	static jsonDecode(obj)
 	{
-		var res = parseInt(val);
-		var s_res = new String(res);
-		var s_val = new String(val);
-		if (s_res.localeCompare(s_val) == 0)
-			return res;
-		return 0;
-	},
-	/**
-	 * Convert value to boolean
-	 * @param var value
-	 * @return bool
-	 */
-	toBool: function(ctx, val)
-	{
-		var res = false;
-		if (val == false || val == 'false') return false;
-		if (val == true || val == 'true') return true;
-		var s_res = new String(res);
-		var s_val = new String(val);
-		if (s_res.localeCompare(s_val) == 0)
-			return res;
-		return false;
-	},
-	/**
-	 * Convert value to float
-	 * @param var value
-	 * @return float
-	 */
-	toFloat: function(ctx, val)
-	{
-		var res = parseFloat(val);
-		var s_res = new String(res);
-		var s_val = new String(val);
-		if (s_res.localeCompare(s_val) == 0)
-			return res;
-		return 0;
-	},
-	/* ============================= Instrospection ============================= */
-	/**
-	 * Returns parents class names
-	 * @return Vector<string>
-	 */
-	getParents: function(ctx, class_name)
-	{
-		var __memorize_value = use("Runtime.rtl")._memorizeValue("Runtime.rtl.getParents", arguments);
-		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
-		var __v0 = use("Runtime.Vector");
-		var res = new __v0(ctx);
-		while (class_name != "")
+		try
 		{
-			var __v1 = use("Runtime.Callback");
-			var getParentClassName = new __v1(ctx, class_name, "getParentClassName");
-			if (!getParentClassName.exists(ctx))
-			{
-				break;
-			}
-			class_name = this.apply(ctx, getParentClassName);
-			if (class_name == "")
-			{
-				break;
-			}
-			res.push(ctx, class_name);
+			obj = JSON.parse(obj, (key, value) => {
+				if (value === null) return null;
+				if (Array.isArray(value)) return value;
+				if (typeof value == "object") return Map.create(value);
+				return value;
+			});
 		}
-		var __memorize_value = res.toCollection(ctx);
-		use("Runtime.rtl")._memorizeSave("Runtime.rtl.getParents", arguments, __memorize_value);
-		return __memorize_value;
-	},
+		catch (e){}
+		return obj;
+	}
+	
+	
 	/**
-	 * Returns fields of class
+	 * Json encode
 	 */
-	getFields: function(ctx, class_name, flag)
+	static jsonEncode(obj)
 	{
-		var __memorize_value = use("Runtime.rtl")._memorizeValue("Runtime.rtl.getFields", arguments);
-		if (__memorize_value != use("Runtime.rtl")._memorize_not_found) return __memorize_value;
-		if (flag == undefined) flag = 255;
-		var __v0 = use("Runtime.Vector");
-		var names = new __v0(ctx);
-		var appendFields = (ctx, parent_class_name) =>
-		{
-			var __v1 = use("Runtime.Callback");
-			var getFieldsList = new __v1(ctx, parent_class_name, "getFieldsList");
-			if (!getFieldsList.exists(ctx))
-			{
-				return ;
-			}
-			var item_fields = this.apply(ctx, getFieldsList, use("Runtime.Vector").from([flag]));
-			if (!item_fields)
-			{
-				return ;
-			}
-			names.appendItems(ctx, item_fields);
-		};
-		appendFields(ctx, class_name);
-		var parents = this.getParents(ctx, class_name);
-		for (var i = 0; i < parents.count(ctx); i++)
-		{
-			var parent_class_name = Runtime.rtl.attr(ctx, parents, i);
-			appendFields(ctx, parent_class_name);
-		}
-		var __memorize_value = names.removeDuplicates(ctx).toCollection(ctx);
-		use("Runtime.rtl")._memorizeSave("Runtime.rtl.getFields", arguments, __memorize_value);
-		return __memorize_value;
-	},
-	/* ====================== Assert ====================== */
-	assert: function(ctx, expr, message)
-	{
-		if (!expr)
-		{
-			var __v0 = use("Runtime.Exceptions.AssertException");
-			throw new __v0(ctx, message)
-		}
-	},
-	_memorizeValidHKey: function(hkey, key)
-	{
-	},
+		return JSON.stringify(obj);
+	}
+	
+	
+	/* ================================== IO Functions =================================== */
+	
 	/**
-	 * Clear memorize cache
+	 * Print message to output
 	 */
-	_memorizeClear: function()
+	static print(message, new_line, type)
 	{
-		this._memorize_cache = null;
-	},
+		if (new_line == undefined) new_line = true;
+		if (type == undefined) type = "";
+		var output = Runtime.rtl.getContext().provider("output");
+		output.print(message, new_line, type);
+	}
+	
+	
 	/**
-	 * Returns cached value
+	 * Print error message to output
 	 */
-	_memorizeValue: function(name, args)
+	static error(message)
 	{
-		if (this._memorize_cache == null) return this._memorize_not_found;
-		if (this._memorize_cache[name] == undefined) return this._memorize_not_found;
-		var arr = this._memorize_cache[name];
-		var sz = args.length;
-		for (var i=0; i<sz; i++)
+		var output = Runtime.rtl.getContext().provider("output");
+		output.error(message);
+	}
+	
+	
+	/**
+	 * Color message to output
+	 */
+	static color(color, message)
+	{
+		var output = Runtime.rtl.getContext().provider("output");
+		return output.color(color, message);
+	}
+	
+	
+	/**
+	 * Log message
+	 */
+	static log(type, message)
+	{
+		var p = Runtime.rtl.getContext().provider("log");
+		p.log(type, message);
+	}
+	
+	
+	/**
+	 * Read line from input
+	 */
+	static input()
+	{
+		var input = Runtime.rtl.getContext().provider("input");
+		return input.input();
+	}
+	
+	
+	/* ================================= Math Functions ================================== */
+	
+	/**
+	 * Returns random value x, where 0 <= x < 1
+	 * @return double
+	 */
+	static urandom()
+	{
+		if (
+			window != undefined && window.crypto != undefined &&
+			window.crypto.getRandomValues != undefined)
 		{
-			var key = args[i];
-			var hkey = null;
-			if (key != null && typeof key == 'object')
-			{
-				if (key.__uq__ != undefined) hkey = key.__uq__;
-				else return this._memorize_not_found;
-			}
-			else if (typeof key == 'string') hkey = "__s_" + key;
-			else hkey = key;
-			if (i == sz - 1)
-			{
-				if (arr[hkey] == undefined) return this._memorize_not_found;
-				return arr[hkey];
-			}
-			else
-			{
-				if (arr[hkey] == undefined) arr[hkey] = {};
-				arr = arr[hkey];
-			}
+			var s = new Uint32Array(1);
+			window.crypto.getRandomValues(s);
+			return s[0] / 4294967296;
 		}
 		
-		return this._memorize_not_found;
-	},
+		return Math.random();
+	}
+	
+	
 	/**
-	 * Returns cached value
-	 */
-	_memorizeSave: function(name, args, value)
-	{
-		if (this._memorize_cache == null) this._memorize_cache = {};
-		if (this._memorize_cache[name] == undefined) this._memorize_cache[name] = {};
-		var arr = this._memorize_cache[name];
-		var sz = args.length;
-		for (var i=0; i<sz; i++)
-		{
-			var key = args[i];
-			var hkey = null;
-			if (key != null && typeof key == 'object')
-			{
-				if (key.__uq__ != undefined) hkey = key.__uq__;
-				else hkey = null;
-			}
-			else if (typeof key == 'string') hkey = "__s_" + key;
-			else hkey = key;
-			if (i == sz - 1)
-			{
-				arr[hkey] = value;
-			}
-			else
-			{
-				if (arr[hkey] == undefined) arr[hkey] = {};
-				arr = arr[hkey];
-			}
-		}
-	},
-	/* ================ Dirty functions ================ */
-	/**
-	 * Trace
-	 */
-	getTrace: function(ctx)
-	{
-		var res = use("Runtime.Vector").from([]);
-		return res;
-	},
-	/**
-	 * Print trace
-	 */
-	printTrace: function(ctx, ch)
-	{
-		if (ch == undefined) ch = "\n";
-		var __v0 = use("Runtime.rs");
-		var __v1 = use("Runtime.rtl");
-		var s = __v0.join(ctx, ch, __v1.getTrace(ctx));
-		console.log(s);
-	},
-	/**
-	 * Sleep in ms
-	 */
-	sleep: async function(ctx, time)
-	{
-		await new Promise((f, e) => setTimeout(f, time));
-	},
-	/**
-	 * Returns unique value
-	 * @param bool flag If true returns as text. Default true
-	 * @return string
-	 */
-	unique: function(ctx, flag)
-	{
-		if (flag == undefined) flag = true;
-		if (flag == undefined) flag = true;
-		if (flag)
-			return "" + (new Date).getTime() + Math.floor((Math.random() * 899999 + 100000));
-		return Symbol();
-	},
-	/**
-	 * Returns current unix time in seconds
+	 * Returns random value x, where a <= x <= b
+	 * @param int a
+	 * @param int b
 	 * @return int
 	 */
-	time: function(ctx)
+	static random(a, b)
 	{
-		return Math.round((new Date()).getTime() / 1000);
-	},
-	/**
-	 * Returns unix timestamp in microseconds
-	 */
-	utime: function(ctx)
-	{
-		return (new Date()).getTime() * 1000;
-	},
-	/**
-	 * Json encode serializable values
-	 * @param serializable value
-	 * @param SerializeContainer container
-	 * @return string 
-	 */
-	json_encode: function(ctx, value, flags)
-	{
-		if (flags == undefined) flags = 0;
-		var __v0 = use("Runtime.SerializerJson");
-		var serializer = new __v0(ctx);
-		serializer.flags = flags;
-		return serializer.encode(ctx, value);
-	},
-	/**
-	 * Json decode to primitive values
-	 * @param string s Encoded string
-	 * @return var 
-	 */
-	json_decode: function(ctx, obj, flags)
-	{
-		if (flags == undefined) flags = 0;
-		var __v0 = use("Runtime.SerializerJson");
-		var serializer = new __v0(ctx);
-		serializer.flags = flags;
-		return serializer.decode(ctx, obj);
-	},
+		return this.round(this.urandom() * (b - a) + a);
+	}
+	
+	
+	/* ================================ Context Functions ================================ */
+	
+	static _global_context = null;
+	
+	
 	/**
 	 * Returns global context
 	 * @return Context
 	 */
-	getContext: function()
+	static getContext()
 	{
-		if (!rtl._global_context) return null;
-		return rtl._global_context;
-	},
+		if (!Runtime.rtl._global_context) return null;
+		return Runtime.rtl._global_context;
+	}
+	
+	
 	/**
 	 * Set global context
 	 * @param Context context
 	 */
-	setContext: function(ctx, context)
+	static setContext(context)
 	{
 		use("Runtime.rtl")._global_context = context;
-	},
+	}
+	
+	
 	/**
 	 * Create context
 	 */
-	createContext: async function(ctx, params)
+	static async createContext(params)
 	{
+		const Context = use("Runtime.Context");
 		/* Create contenxt */
-		var __v0 = use("Runtime.Context");
-		var context = __v0.create(ctx, params);
+		var context = new Context(Context.initParams(params));
 		/* Setup global context */
-		this.setContext(ctx, context);
-		ctx = context;
+		this.setContext(context);
 		/* Init context */
-		await context.init(ctx);
-		return Promise.resolve(context);
-	},
+		await context.init(params);
+		return context;
+	}
+	
+	
 	/**
-	 * Run application
-	 * @param Dict d
+	 * Run app
 	 */
-	runApp: async function(ctx, class_name, modules, params)
+	static async runApp(app, modules)
 	{
-		if (params == undefined) params = null;
-		if (params == null)
-		{
-			params = use("Runtime.Map").from({});
-		}
-		params.set(ctx, "entry_point", class_name);
-		params.set(ctx, "modules", modules);
-		let code = 0;
-		
+		const Provider = use("Runtime.Entity.Provider");
 		try
 		{
-			let context = await Runtime.rtl.createContext(null, params);
-			await context.start(context, context);
-			code = await context.run(context, context);
+			var params = Map.create({
+				"providers": [
+					new Provider("app", app),
+				],
+				"modules": modules,
+			});
+			var context = await this.createContext(params);
+			await context.start();
+			var app = context.provider("app");
+			return await app.main();
 		}
 		catch (e)
 		{
@@ -1045,58 +523,19 @@ Object.assign(Runtime.rtl,
 			process.stderr.write(e.stack);
 			process.stderr.write("\x1B[0m\n");
 		}
-		
-		return code;
-		return Promise.resolve(0);
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.rtl";
-	},
-	getParentClassName: function()
-	{
-		return "";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.rtl);
-module.exports = Runtime.rtl;
-if (typeof Runtime != 'undefined' && typeof Runtime.rtl != 'undefined')
-{
-	Runtime.rtl._classes = {};
-	Runtime.rtl._modules = {};
-	Runtime.rtl._memorize_not_found = {'s':'memorize_key_not_found','id':Symbol()};
-}
+	}
+	static getClassName(){ return "Runtime.rtl"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.rtl);
+module.exports = {
+	"rtl": Runtime.rtl,
+};

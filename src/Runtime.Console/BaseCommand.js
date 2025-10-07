@@ -1,7 +1,8 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -19,83 +20,44 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Console == 'undefined') Runtime.Console = {};
-Runtime.Console.BaseCommand = function(ctx)
+Runtime.Console.BaseCommand = class extends BaseObject
 {
-	use("Runtime.BaseObject").apply(this, arguments);
-};
-Runtime.Console.BaseCommand.prototype = Object.create(use("Runtime.BaseObject").prototype);
-Runtime.Console.BaseCommand.prototype.constructor = Runtime.Console.BaseCommand;
-Object.assign(Runtime.Console.BaseCommand.prototype,
-{
-	/**
-	 * Run task
-	 */
-	runTask: function(ctx)
-	{
-		return this.constructor.UNKNOWN_ERROR;
-	},
-});
-Object.assign(Runtime.Console.BaseCommand, use("Runtime.BaseObject"));
-Object.assign(Runtime.Console.BaseCommand,
-{
-	SUCCESS: 1,
-	UNKNOWN_ERROR: -1,
+	static SUCCESS = 1;
+	static ERROR = -1;
+	
+	
 	/**
 	 * Returns name
 	 */
-	getName: function(ctx)
-	{
-		return "";
-	},
+	static getName(){ return ""; }
+	
+	
 	/**
 	 * Returns description
 	 */
-	getDescription: function(ctx)
+	static getDescription(){ return ""; }
+	
+	
+	/**
+	 * Run task
+	 */
+	runTask()
 	{
-		return "";
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+		return this.constructor.UNKNOWN_ERROR;
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "Runtime.Console";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Console.BaseCommand";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Console.BaseCommand);
-module.exports = Runtime.Console.BaseCommand;
+		super._init();
+	}
+	static getClassName(){ return "Runtime.Console.BaseCommand"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Console.BaseCommand);
+module.exports = {
+	"BaseCommand": Runtime.Console.BaseCommand,
+};

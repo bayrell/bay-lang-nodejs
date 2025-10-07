@@ -1,5 +1,7 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const RuntimeException = use("Runtime.Exceptions.RuntimeException");
 /*!
  *  BayLang Technology
  *
@@ -19,97 +21,71 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Exceptions == 'undefined') Runtime.Exceptions = {};
-Runtime.Exceptions.ApiError = function(ctx, prev)
+Runtime.Exceptions.ApiError = class extends RuntimeException
 {
-	if (prev == undefined) prev = null;
-	var __v0 = use("Runtime.rtl");
-	use("Runtime.Exceptions.AbstractException").call(this, ctx, prev.getErrorMessage(ctx), __v0.ERROR_API_ERROR, prev);
-};
-Runtime.Exceptions.ApiError.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
-Runtime.Exceptions.ApiError.prototype.constructor = Runtime.Exceptions.ApiError;
-Object.assign(Runtime.Exceptions.ApiError.prototype,
-{
+	constructor(prev)
+	{
+		if (prev == undefined) prev = null;
+		super(prev.getErrorMessage(), rtl.ERROR_API_ERROR, prev);
+	}
+	
+	
 	/**
 	 * Returns error message
 	 */
-	getErrorMessage: function(ctx)
+	getErrorMessage()
 	{
-		return this.prev.getErrorMessage(ctx);
-	},
+		return this.prev.getErrorMessage();
+	}
+	
+	
 	/**
 	 * Returns error code
 	 */
-	getErrorCode: function(ctx)
+	getErrorCode()
 	{
-		return this.prev.getErrorCode(ctx);
-	},
+		return this.prev.getErrorCode();
+	}
+	
+	
 	/**
 	 * Returns error file name
 	 */
-	getFileName: function(ctx)
+	getFileName()
 	{
-		return this.prev.getFileName(ctx);
-	},
+		return this.prev.getFileName();
+	}
+	
+	
 	/**
 	 * Returns error line
 	 */
-	getErrorLine: function(ctx)
+	getErrorLine()
 	{
-		return this.prev.getErrorLine(ctx);
-	},
+		return this.prev.getErrorLine();
+	}
+	
+	
 	/**
 	 * Returns error position
 	 */
-	getErrorPos: function(ctx)
+	getErrorPos()
 	{
-		return this.prev.getErrorPos(ctx);
-	},
-});
-Object.assign(Runtime.Exceptions.ApiError, use("Runtime.Exceptions.AbstractException"));
-Object.assign(Runtime.Exceptions.ApiError,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+		return this.prev.getErrorPos();
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "Runtime.Exceptions";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Exceptions.ApiError";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Exceptions.AbstractException";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Exceptions.ApiError);
-module.exports = Runtime.Exceptions.ApiError;
+		super._init();
+	}
+	static getClassName(){ return "Runtime.Exceptions.ApiError"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Exceptions.ApiError);
+module.exports = {
+	"ApiError": Runtime.Exceptions.ApiError,
+};

@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,104 +20,78 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
-BayLang.LangES6.ParserES6Program = function(ctx, parser)
+BayLang.LangES6.ParserES6Program = class extends BaseObject
 {
-	use("Runtime.BaseObject").call(this, ctx);
-	this.parser = parser;
-};
-BayLang.LangES6.ParserES6Program.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.LangES6.ParserES6Program.prototype.constructor = BayLang.LangES6.ParserES6Program;
-Object.assign(BayLang.LangES6.ParserES6Program.prototype,
-{
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(parser)
+	{
+		super();
+		this.parser = parser;
+	}
+	
+	
 	/**
 	 * Read module
 	 */
-	readModuleItem: function(ctx, reader)
+	readModuleItem(reader)
 	{
-		return this.parser.parser_operator.readOperator(ctx, reader);
-	},
+		return this.parser.parser_operator.readOperator(reader);
+	}
+	
+	
 	/**
 	 * Parse program
 	 */
-	parse: function(ctx, reader)
+	parse(reader)
 	{
-		var items = use("Runtime.Vector").from([]);
-		var caret_start = reader.caret(ctx);
+		const OpModule = use("BayLang.OpCodes.OpModule");
+		var items = [];
+		var caret_start = reader.start();
 		/* Read module */
-		while (!reader.eof(ctx) && reader.nextToken(ctx) != "")
+		while (!reader.eof() && reader.nextToken() != "")
 		{
-			var next_token = reader.nextToken(ctx);
+			var next_token = reader.nextToken();
 			/* Read module item */
-			var op_code = this.readModuleItem(ctx, reader);
+			var op_code = this.readModuleItem(reader);
 			if (op_code)
 			{
-				items.push(ctx, op_code);
+				items.push(op_code);
 			}
 			else
 			{
 				break;
 			}
 			/* Match semicolon */
-			if (reader.nextToken(ctx) == ";")
+			if (reader.nextToken() == ";")
 			{
-				reader.matchToken(ctx, ";");
+				reader.matchToken(";");
 			}
 		}
 		/* Returns op_code */
-		var __v0 = use("BayLang.OpCodes.OpModule");
-		return new __v0(ctx, use("Runtime.Map").from({"caret_start":caret_start,"caret_end":reader.caret(ctx),"items":items}));
-	},
-	_init: function(ctx)
+		return new OpModule(Map.create({
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+			"items": items,
+		}));
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.parser = null;
-	},
-});
-Object.assign(BayLang.LangES6.ParserES6Program, use("Runtime.BaseObject"));
-Object.assign(BayLang.LangES6.ParserES6Program,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.LangES6";
-	},
-	getClassName: function()
-	{
-		return "BayLang.LangES6.ParserES6Program";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.LangES6.ParserES6Program);
-module.exports = BayLang.LangES6.ParserES6Program;
+	}
+	static getClassName(){ return "BayLang.LangES6.ParserES6Program"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.LangES6.ParserES6Program);
+module.exports = {
+	"ParserES6Program": BayLang.LangES6.ParserES6Program,
+};

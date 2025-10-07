@@ -3,7 +3,7 @@ var use = require('bay-lang').use;
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,47 +18,28 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.SaveOpCode = function(ctx)
+if (typeof BayLang.Test == 'undefined') BayLang.Test = {};
+if (typeof BayLang.Test.LangBay == 'undefined') BayLang.Test.LangBay = {};
+BayLang.Test.LangBay.ClassTest = function(ctx)
 {
-	use("Runtime.BaseStruct").apply(this, arguments);
 };
-BayLang.SaveOpCode.prototype = Object.create(use("Runtime.BaseStruct").prototype);
-BayLang.SaveOpCode.prototype.constructor = BayLang.SaveOpCode;
-Object.assign(BayLang.SaveOpCode.prototype,
+Object.assign(BayLang.Test.LangBay.ClassTest.prototype,
 {
-	_init: function(ctx)
-	{
-		use("Runtime.BaseStruct").prototype._init.call(this,ctx);
-		this.var_name = "";
-		this.var_content = "";
-		this.content = "";
-		this.op_code = null;
-	},
-	takeValue: function(ctx,k,d)
-	{
-		if (d == undefined) d = null;
-		if (k == "var_name")return this.var_name;
-		else if (k == "var_content")return this.var_content;
-		else if (k == "content")return this.content;
-		else if (k == "op_code")return this.op_code;
-		return use("Runtime.BaseStruct").prototype.takeValue.call(this,ctx,k,d);
-	},
 });
-Object.assign(BayLang.SaveOpCode, use("Runtime.BaseStruct"));
-Object.assign(BayLang.SaveOpCode,
+Object.assign(BayLang.Test.LangBay.ClassTest,
 {
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()
 	{
-		return "BayLang";
+		return "BayLang.Test.LangBay";
 	},
 	getClassName: function()
 	{
-		return "BayLang.SaveOpCode";
+		return "BayLang.Test.LangBay.ClassTest";
 	},
 	getParentClassName: function()
 	{
-		return "Runtime.BaseStruct";
+		return "";
 	},
 	getClassInfo: function(ctx)
 	{
@@ -72,10 +53,6 @@ Object.assign(BayLang.SaveOpCode,
 	getFieldsList: function(ctx)
 	{
 		var a = [];
-		a.push("var_name");
-		a.push("var_content");
-		a.push("content");
-		a.push("op_code");
 		return use("Runtime.Vector").from(a);
 	},
 	getFieldInfoByName: function(ctx,field_name)
@@ -94,5 +71,5 @@ Object.assign(BayLang.SaveOpCode,
 	{
 		return null;
 	},
-});use.add(BayLang.SaveOpCode);
-module.exports = BayLang.SaveOpCode;
+});use.add(BayLang.Test.LangBay.ClassTest);
+module.exports = BayLang.Test.LangBay.ClassTest;

@@ -3,7 +3,7 @@
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,8 +26,10 @@ require(__dirname + "/src/Runtime.Console/index.js");
 require(__dirname + "/src/Runtime.Unit/index.js");
 require(__dirname + "/src/BayLang/index.js");
 
+//console.log(use("Runtime.Map"));
+//console.log(Object.keys(use.get_classes()));
+//process.exit();
+
 /* Get classes */
 let rtl = use("Runtime.rtl");
-let Vector = use("Runtime.Vector");
-
-rtl.runApp(null, "BayLang.Compiler.ConsoleApp", Vector.from(["BayLang.Compiler"]));
+rtl.runApp("BayLang.Compiler.ConsoleApp", ["BayLang.Compiler"]);

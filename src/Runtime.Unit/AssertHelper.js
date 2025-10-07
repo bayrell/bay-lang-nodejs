@@ -1,7 +1,8 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -19,146 +20,104 @@ var use = require('bay-lang').use;
  */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
-Runtime.Unit.AssertHelper = function(ctx)
-{
-};
-Object.assign(Runtime.Unit.AssertHelper.prototype,
-{
-});
-Object.assign(Runtime.Unit.AssertHelper,
+Runtime.Unit.AssertHelper = class
 {
 	/**
 	 * Check equals of types
 	 */
-	equalValueType: function(ctx, value1, value2, message)
+	static equalValueType(value1, value2, message)
 	{
-		var __v0 = use("Runtime.rtl");
-		var type1 = __v0.getType(ctx, value1);
-		var __v1 = use("Runtime.rtl");
-		var type2 = __v1.getType(ctx, value2);
-		var __v2 = use("Runtime.rtl");
-		__v2.assert(ctx, type1 == type2, message);
-	},
+		var type1 = rtl.getType(value1);
+		var type2 = rtl.getType(value2);
+		rtl.assert(type1 == type2, message);
+	}
+	
+	
 	/**
 	 * Check equals of values
 	 */
-	equalValue: function(ctx, value1, value2, message)
+	static equalValue(value1, value2, message)
 	{
-		this.equalValueType(ctx, value1, value2, message);
-		var __v0 = use("Runtime.rtl");
-		var value_type1 = __v0.getType(ctx, value1);
-		var __v1 = use("Runtime.rtl");
-		var value_type2 = __v1.getType(ctx, value2);
-		var __v2 = use("Runtime.rtl");
-		__v2.assert(ctx, value_type1 == value_type2, message);
-		var __v3 = use("Runtime.rtl");
-		if (__v3.isScalarValue(ctx, value1))
+		this.equalValueType(value1, value2, message);
+		var value_type1 = rtl.getType(value1);
+		var value_type2 = rtl.getType(value2);
+		rtl.assert(value_type1 == value_type2, message);
+		if (rtl.isScalarValue(value1))
 		{
-			var __v4 = use("Runtime.rtl");
-			__v4.assert(ctx, value1 === value2, message);
-			return ;
+			rtl.assert(value1 === value2, message);
+			return;
 		}
 		if (value_type1 == "collection")
 		{
-			this.equalCollection(ctx, value1, value2, message);
-			return ;
+			this.equalCollection(value1, value2, message);
+			return;
 		}
 		if (value_type1 == "dict")
 		{
-			this.equalDict(ctx, value1, value2, message);
-			return ;
+			this.equalDict(value1, value2, message);
+			return;
 		}
-		var __v3 = use("Runtime.rtl");
-		__v3.assert(ctx, false, message);
-	},
+		rtl.assert(false, message);
+	}
+	
+	
 	/**
 	 * Check equals of two collections
 	 */
-	equalCollection: function(ctx, c1, c2, message)
+	static equalCollection(c1, c2, message)
 	{
-		if (c1.count(ctx) != c2.count(ctx))
+		if (c1.count() != c2.count())
 		{
-			var __v0 = use("Runtime.rtl");
-			__v0.assert(ctx, false, message);
+			rtl.assert(false, message);
 		}
-		for (var i = 0; i < c1.count(ctx); i++)
+		for (var i = 0; i < c1.count(); i++)
 		{
-			var value1 = c1.get(ctx, i);
-			var value2 = c2.get(ctx, i);
-			this.equalValue(ctx, value1, value2, message);
+			var value1 = c1.get(i);
+			var value2 = c2.get(i);
+			this.equalValue(value1, value2, message);
 		}
-	},
+	}
+	
+	
 	/**
 	 * Check equals of two dicts
 	 */
-	equalDict: function(ctx, d1, d2, message)
+	static equalDict(d1, d2, message)
 	{
-		var d1_keys = d1.keys(ctx);
-		var d2_keys = d2.keys(ctx);
-		for (var i = 0; i < d1_keys.count(ctx); i++)
+		var d1_keys = d1.keys();
+		var d2_keys = d2.keys();
+		for (var i = 0; i < d1_keys.count(); i++)
 		{
-			var key1 = d1_keys.get(ctx, i);
-			if (!d2.has(ctx, key1))
+			var key1 = d1_keys.get(i);
+			if (!d2.has(key1))
 			{
-				var __v0 = use("Runtime.rtl");
-				__v0.assert(ctx, false, message);
+				rtl.assert(false, message);
 			}
-			var value1 = d1.get(ctx, key1);
-			var value2 = d2.get(ctx, key1);
-			this.equalValue(ctx, value1, value2, message);
+			var value1 = d1.get(key1);
+			var value2 = d2.get(key1);
+			this.equalValue(value1, value2, message);
 		}
-		for (var i = 0; i < d2_keys.count(ctx); i++)
+		for (var i = 0; i < d2_keys.count(); i++)
 		{
-			var key2 = d2_keys.get(ctx, i);
-			if (!d1.has(ctx, key2))
+			var key2 = d2_keys.get(i);
+			if (!d1.has(key2))
 			{
-				var __v0 = use("Runtime.rtl");
-				__v0.assert(ctx, false, message);
+				rtl.assert(false, message);
 			}
 		}
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "Runtime.Unit";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Unit.AssertHelper";
-	},
-	getParentClassName: function()
-	{
-		return "";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Unit.AssertHelper);
-module.exports = Runtime.Unit.AssertHelper;
+	}
+	static getClassName(){ return "Runtime.Unit.AssertHelper"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Unit.AssertHelper);
+module.exports = {
+	"AssertHelper": Runtime.Unit.AssertHelper,
+};

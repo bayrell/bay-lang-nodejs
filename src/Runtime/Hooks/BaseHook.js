@@ -1,5 +1,7 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
@@ -18,115 +20,76 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.BaseHook = function(ctx, params)
+Runtime.BaseHook = class extends BaseObject
 {
-	if (params == undefined) params = null;
-	use("Runtime.BaseObject").call(this, ctx);
-	/* Setup hook params */
-	this.setup(ctx, params);
-};
-Runtime.BaseHook.prototype = Object.create(use("Runtime.BaseObject").prototype);
-Runtime.BaseHook.prototype.constructor = Runtime.BaseHook;
-Object.assign(Runtime.BaseHook.prototype,
-{
+	
+	
+	/**
+	 * Create hook
+	 */
+	constructor(params)
+	{
+		if (params == undefined) params = null;
+		super();
+		/* Setup hook params */
+		this.setup(params);
+	}
+	
+	
 	/**
 	 * Setup hook params
 	 */
-	setup: function(ctx, params)
+	setup(params)
 	{
-		if (params == null)
-		{
-			return ;
-		}
-	},
+		if (params == null) return;
+	}
+	
+	
 	/**
 	 * Returns method name by hook name
 	 */
-	getMethodName: function(ctx, hook_name)
-	{
-		return "";
-	},
+	getMethodName(hook_name){ return ""; }
+	
+	
 	/**
 	 * Register hook
 	 */
-	register: function(ctx, hook_name, method_name, priority)
+	register(hook_name, method_name, priority)
 	{
 		if (method_name == undefined) method_name = "";
 		if (priority == undefined) priority = 100;
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isInt(ctx, method_name))
+		if (rtl.isInt(method_name))
 		{
 			priority = method_name;
 			method_name = "";
 		}
-		if (method_name == "")
-		{
-			method_name = this.getMethodName(ctx, hook_name);
-		}
-		if (method_name == "")
-		{
-			return ;
-		}
-		this.provider.register(ctx, hook_name, this, method_name, priority);
-	},
+		if (method_name == "") method_name = this.getMethodName(hook_name);
+		if (method_name == "") return;
+		this.provider.register(hook_name, this, method_name, priority);
+	}
+	
+	
 	/**
 	 * Register hooks
 	 */
-	register_hooks: function(ctx)
+	register_hooks()
 	{
-	},
-	_init: function(ctx)
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.hook = null;
 		this.provider = null;
-	},
-});
-Object.assign(Runtime.BaseHook, use("Runtime.BaseObject"));
-Object.assign(Runtime.BaseHook,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.BaseHook";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.BaseHook);
-module.exports = Runtime.BaseHook;
+	}
+	static getClassName(){ return "Runtime.BaseHook"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.BaseHook);
+module.exports = {
+	"BaseHook": Runtime.BaseHook,
+};

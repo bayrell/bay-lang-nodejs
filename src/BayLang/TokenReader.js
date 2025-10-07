@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,132 +19,113 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.TokenReader = function(ctx)
+BayLang.TokenReader = class extends BaseObject
 {
-	use("Runtime.BaseObject").apply(this, arguments);
-};
-BayLang.TokenReader.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.TokenReader.prototype.constructor = BayLang.TokenReader;
-Object.assign(BayLang.TokenReader.prototype,
-{
+	
+	
 	/**
 	 * Init token reader
 	 */
-	init: function(ctx, caret)
+	init(caret)
 	{
 		this.main_caret = caret;
-		this.next_caret = caret.copy(ctx);
-		this.readToken(ctx);
-	},
+		this.next_caret = caret.copy();
+		this.readToken();
+	}
+	
+	
 	/**
 	 * Returns caret
 	 */
-	caret: function(ctx)
-	{
-		return this.main_caret.copy(ctx);
-	},
+	caret(){ return this.main_caret.copy(); }
+	
+	
+	/**
+	 * Returns caret start
+	 */
+	start(){ return this.main_caret.copy().skipSpace(); }
+	
+	
 	/**
 	 * Returns eof
 	 */
-	eof: function(ctx)
-	{
-		return this.main_caret.eof(ctx);
-	},
+	eof(){ return this.main_caret.eof(); }
+	
+	
 	/**
 	 * Returns next token
 	 */
-	nextToken: function(ctx)
-	{
-		return this.next_token;
-	},
+	nextToken(){ return this.next_token; }
+	
+	
 	/**
 	 * Read token
 	 */
-	readToken: function(ctx)
+	readToken()
 	{
 		var token = this.next_token;
-		this.main_caret.seek(ctx, this.next_caret);
-		this.next_token = this.next_caret.readToken(ctx);
+		this.main_caret.seek(this.next_caret);
+		this.next_token = this.next_caret.readToken();
 		return token;
-	},
+	}
+	
+	
+	/**
+	 * Read next token with comments
+	 */
+	nextTokenComments()
+	{
+		var caret = this.main_caret.copy();
+		caret.skip_comments = false;
+		return caret.readToken();
+	}
+	
+	
 	/**
 	 * Returns parser error
 	 */
-	error: function(ctx, message)
+	error(message)
 	{
-		return this.main_caret.error(ctx, message);
-	},
+		return this.main_caret.error(message);
+	}
+	
+	
 	/**
 	 * Returns expected error
 	 */
-	expected: function(ctx, message)
+	expected(message)
 	{
-		return this.main_caret.expected(ctx, message);
-	},
+		return this.main_caret.expected(message);
+	}
+	
+	
 	/**
 	 * Match next token
 	 */
-	matchToken: function(ctx, ch)
+	matchToken(ch)
 	{
-		if (this.nextToken(ctx) != ch)
+		if (this.nextToken() != ch)
 		{
-			throw this.expected(ctx, ch)
+			throw this.expected(ch);
 		}
-		this.readToken(ctx);
-	},
-	_init: function(ctx)
+		this.readToken();
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.main_caret = null;
 		this.next_caret = null;
 		this.next_token = "";
-	},
-});
-Object.assign(BayLang.TokenReader, use("Runtime.BaseObject"));
-Object.assign(BayLang.TokenReader,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang";
-	},
-	getClassName: function()
-	{
-		return "BayLang.TokenReader";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.TokenReader);
-module.exports = BayLang.TokenReader;
+	}
+	static getClassName(){ return "BayLang.TokenReader"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.TokenReader);
+module.exports = {
+	"TokenReader": BayLang.TokenReader,
+};

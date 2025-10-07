@@ -1,7 +1,9 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
+const BaseCommand = use("Runtime.Console.BaseCommand");
 /*!
- *  Bayrell Runtime Library
+ *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
  *
@@ -20,96 +22,52 @@ var use = require('bay-lang').use;
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Console == 'undefined') Runtime.Console = {};
 if (typeof Runtime.Console.Commands == 'undefined') Runtime.Console.Commands = {};
-Runtime.Console.Commands.Help = function(ctx)
-{
-	use("Runtime.Console.BaseCommand").apply(this, arguments);
-};
-Runtime.Console.Commands.Help.prototype = Object.create(use("Runtime.Console.BaseCommand").prototype);
-Runtime.Console.Commands.Help.prototype.constructor = Runtime.Console.Commands.Help;
-Object.assign(Runtime.Console.Commands.Help.prototype,
-{
-});
-Object.assign(Runtime.Console.Commands.Help, use("Runtime.Console.BaseCommand"));
-Object.assign(Runtime.Console.Commands.Help,
+Runtime.Console.Commands.Help = class extends BaseCommand
 {
 	/**
 	 * Returns name
 	 */
-	getName: function(ctx)
-	{
-		return "help";
-	},
+	static getName(){ return "help"; }
+	
+	
 	/**
 	 * Returns description
 	 */
-	getDescription: function(ctx)
-	{
-		return "Show help";
-	},
+	static getDescription(){ return "Show help"; }
+	
+	
 	/**
 	 * Run task
 	 */
-	run: async function(ctx)
+	static async run()
 	{
-		var __v0 = use("Runtime.io");
-		__v0.print(ctx, "Methods:");
-		var commands = ctx.provider(ctx, "Runtime.Console.CommandsList");
-		var keys = commands.getCommands(ctx);
-		for (var i = 0; i < keys.count(ctx); i++)
+		const Callback = use("Runtime.Callback");
+		rtl.print("Methods:");
+		var commands = Runtime.rtl.getContext().provider("Runtime.Console.CommandsList");
+		var keys = commands.getCommands();
+		for (var i = 0; i < keys.count(); i++)
 		{
-			var command_name = keys.get(ctx, i);
-			var class_name = commands.getCommandByName(ctx, command_name);
-			var __v1 = use("Runtime.Callback");
-			var getDescription = new __v1(ctx, class_name, "getDescription");
-			var command_description = getDescription.apply(ctx);
-			var __v2 = use("Runtime.io");
-			var __v3 = use("Runtime.io");
-			__v2.print(ctx, __v3.color(ctx, "yellow", command_name) + use("Runtime.rtl").toStr(" - ") + use("Runtime.rtl").toStr(command_description));
+			var command_name = keys.get(i);
+			var class_name = commands.getCommandByName(command_name);
+			var getDescription = new Callback(class_name, "getDescription");
+			var command_description = getDescription.apply();
+			rtl.print(rtl.color("yellow", command_name) + String(" - ") + String(command_description));
 		}
-		return Promise.resolve(this.SUCCESS);
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+		return this.SUCCESS;
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "Runtime.Console.Commands";
-	},
-	getClassName: function()
-	{
-		return "Runtime.Console.Commands.Help";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Console.BaseCommand";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.Console.Commands.Help);
-module.exports = Runtime.Console.Commands.Help;
+		super._init();
+	}
+	static getClassName(){ return "Runtime.Console.Commands.Help"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.Console.Commands.Help);
+module.exports = {
+	"Help": Runtime.Console.Commands.Help,
+};

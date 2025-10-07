@@ -3,7 +3,7 @@ var use = require('bay-lang').use;
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ var use = require('bay-lang').use;
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Test == 'undefined') BayLang.Test = {};
 if (typeof BayLang.Test.Translator == 'undefined') BayLang.Test.Translator = {};
-BayLang.Test.Translator.Expression = function(ctx)
+BayLang.Test.Translator.Expression = function()
 {
 };
 Object.assign(BayLang.Test.Translator.Expression.prototype,
@@ -28,38 +28,38 @@ Object.assign(BayLang.Test.Translator.Expression.prototype,
 	/**
 	 * Assert value
 	 */
-	assert: function(ctx, command, value1, value2)
+	assert: function(command, value1, value2)
 	{
 		var message = use("Runtime.Vector").from([command,"Missing:",value1,"Exists:",value2]);
 		var __v0 = use("Runtime.Unit.AssertHelper");
 		var __v1 = use("Runtime.rs");
-		__v0.equalValue(ctx, value1, value2, __v1.join(ctx, "\n", message));
+		__v0.equalValue(value1, value2, __v1.join("\n", message));
 	},
 	/**
 	 * Test expression
 	 */
-	testExpression: function(ctx, command, src, dest, callback)
+	testExpression: function(command, src, dest, callback)
 	{
 		if (callback == undefined) callback = null;
 		var __v0 = use("BayLang.LangUtils");
-		var res = __v0.parseCommand(ctx, command);
+		var res = __v0.parseCommand(command);
 		var __v1 = use("BayLang.LangUtils");
-		var parser = __v1.createParser(ctx, res.get(ctx, "from"));
+		var parser = __v1.createParser(res.get("from"));
 		var __v2 = use("BayLang.LangUtils");
-		var translator = __v2.createTranslator(ctx, res.get(ctx, "to"));
+		var translator = __v2.createTranslator(res.get("to"));
 		/* Init function */
 		if (callback)
 		{
-			callback(ctx, parser, translator);
+			callback(parser, translator);
 		}
 		/* Translate file */
 		var output = use("Runtime.Vector").from([]);
 		var __v3 = use("BayLang.Exceptions.ParserError");
 		try
 		{
-			parser.setContent(ctx, src);
-			var op_code = parser.parser_expression.readExpression(ctx, parser.createReader(ctx));
-			translator.expression.translate(ctx, op_code, output);
+			parser.setContent(src);
+			var op_code = parser.parser_expression.readExpression(parser.createReader());
+			translator.expression.translate(op_code, output);
 		}
 		catch (_ex)
 		{
@@ -68,7 +68,7 @@ Object.assign(BayLang.Test.Translator.Expression.prototype,
 				var error = _ex;
 				
 				var __v4 = use("Runtime.Exceptions.AssertException");
-				throw new __v4(ctx, command + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(error.toString(ctx)))
+				throw new __v4(command + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(error.toString()))
 			}
 			else
 			{
@@ -76,139 +76,139 @@ Object.assign(BayLang.Test.Translator.Expression.prototype,
 			}
 		}
 		/* Check output */
-		var __v3 = use("Runtime.rs");
-		this.assert(ctx, command, dest, __v3.join(ctx, "", output));
+		var __v5 = use("Runtime.rs");
+		this.assert(command, dest, __v5.join("", output));
 	},
 	/**
 	 * Test lang
 	 */
-	test: function(ctx, content, init)
+	test: function(content, init)
 	{
 		if (init == undefined) init = null;
-		var content_bay = content.get(ctx, "bay");
-		var content_es6 = (content.has(ctx, "es6")) ? (content.get(ctx, "es6")) : (content_bay);
-		var content_php = (content.has(ctx, "php")) ? (content.get(ctx, "php")) : (content_bay);
-		this.testExpression(ctx, "bay_to_bay", content_bay, content_bay, init);
-		this.testExpression(ctx, "bay_to_php", content_bay, content_php, init);
-		this.testExpression(ctx, "bay_to_es6", content_bay, content_es6, init);
-		this.testExpression(ctx, "php_to_php", content_php, content_php, init);
-		this.testExpression(ctx, "php_to_bay", content_php, content_bay, init);
-		this.testExpression(ctx, "php_to_es6", content_php, content_es6, init);
-		this.testExpression(ctx, "es6_to_es6", content_es6, content_es6, init);
-		this.testExpression(ctx, "es6_to_bay", content_es6, content_bay, init);
-		this.testExpression(ctx, "es6_to_php", content_es6, content_php, init);
+		var content_bay = content.get("bay");
+		var content_es6 = (content.has("es6")) ? (content.get("es6")) : (content_bay);
+		var content_php = (content.has("php")) ? (content.get("php")) : (content_bay);
+		this.testExpression("bay_to_bay", content_bay, content_bay, init);
+		this.testExpression("bay_to_php", content_bay, content_php, init);
+		this.testExpression("bay_to_es6", content_bay, content_es6, init);
+		this.testExpression("php_to_php", content_php, content_php, init);
+		this.testExpression("php_to_bay", content_php, content_bay, init);
+		this.testExpression("php_to_es6", content_php, content_es6, init);
+		this.testExpression("es6_to_es6", content_es6, content_es6, init);
+		this.testExpression("es6_to_bay", content_es6, content_bay, init);
+		this.testExpression("es6_to_php", content_es6, content_php, init);
 	},
-	testMath1: function(ctx)
+	testMath1: function()
 	{
 		var content = use("Runtime.Map").from({"bay":"a + b","es6":"a + b","php":"$a + $b"});
-		var init = (ctx, parser, translator) =>
+		var init = (parser, translator) =>
 		{
-			parser.vars.set(ctx, "a", true);
-			parser.vars.set(ctx, "b", true);
+			parser.vars.set("a", true);
+			parser.vars.set("b", true);
 		};
-		this.test(ctx, content, init);
+		this.test(content, init);
 	},
-	testMath2: function(ctx)
+	testMath2: function()
 	{
 		var content = use("Runtime.Map").from({"bay":"a * b","php":"$a * $b"});
-		var init = (ctx, parser, translator) =>
+		var init = (parser, translator) =>
 		{
-			parser.vars.set(ctx, "a", true);
-			parser.vars.set(ctx, "b", true);
+			parser.vars.set("a", true);
+			parser.vars.set("b", true);
 		};
-		this.test(ctx, content, init);
+		this.test(content, init);
 	},
-	testMath3: function(ctx)
+	testMath3: function()
 	{
 		var content = use("Runtime.Map").from({"bay":"a + b * c","php":"$a + $b * $c"});
-		var init = (ctx, parser, translator) =>
+		var init = (parser, translator) =>
 		{
-			parser.vars.set(ctx, "a", true);
-			parser.vars.set(ctx, "b", true);
-			parser.vars.set(ctx, "c", true);
+			parser.vars.set("a", true);
+			parser.vars.set("b", true);
+			parser.vars.set("c", true);
 		};
-		this.test(ctx, content, init);
+		this.test(content, init);
 	},
-	testMath4: function(ctx)
+	testMath4: function()
 	{
 		var content = use("Runtime.Map").from({"bay":"(a + b) * c","php":"($a + $b) * $c"});
-		var init = (ctx, parser, translator) =>
+		var init = (parser, translator) =>
 		{
-			parser.vars.set(ctx, "a", true);
-			parser.vars.set(ctx, "b", true);
-			parser.vars.set(ctx, "c", true);
+			parser.vars.set("a", true);
+			parser.vars.set("b", true);
+			parser.vars.set("c", true);
 		};
-		this.test(ctx, content, init);
+		this.test(content, init);
 	},
-	testMath5: function(ctx)
+	testMath5: function()
 	{
 		var content = use("Runtime.Map").from({"bay":"a * (b + c)","php":"$a * ($b + $c)"});
-		var init = (ctx, parser, translator) =>
+		var init = (parser, translator) =>
 		{
-			parser.vars.set(ctx, "a", true);
-			parser.vars.set(ctx, "b", true);
-			parser.vars.set(ctx, "c", true);
+			parser.vars.set("a", true);
+			parser.vars.set("b", true);
+			parser.vars.set("c", true);
 		};
-		this.test(ctx, content, init);
+		this.test(content, init);
 	},
-	testMath6: function(ctx)
+	testMath6: function()
 	{
 		var content = use("Runtime.Map").from({"bay":"not a","es6":"!a","php":"!$a"});
-		var init = (ctx, parser, translator) =>
+		var init = (parser, translator) =>
 		{
-			parser.vars.set(ctx, "a", true);
+			parser.vars.set("a", true);
 		};
-		this.test(ctx, content, init);
+		this.test(content, init);
 	},
-	testMath7: function(ctx)
+	testMath7: function()
 	{
 		var content = use("Runtime.Map").from({"bay":"not (a or b)","es6":"!(a || b)","php":"!($a || $b)"});
-		var init = (ctx, parser, translator) =>
+		var init = (parser, translator) =>
 		{
-			parser.vars.set(ctx, "a", true);
-			parser.vars.set(ctx, "b", true);
+			parser.vars.set("a", true);
+			parser.vars.set("b", true);
 		};
-		this.test(ctx, content, init);
+		this.test(content, init);
 	},
-	testMath8: function(ctx)
+	testMath8: function()
 	{
 		var content = use("Runtime.Map").from({"bay":"not a or not b","es6":"!a || !b","php":"!$a || !$b"});
-		var init = (ctx, parser, translator) =>
+		var init = (parser, translator) =>
 		{
-			parser.vars.set(ctx, "a", true);
-			parser.vars.set(ctx, "b", true);
+			parser.vars.set("a", true);
+			parser.vars.set("b", true);
 		};
-		this.test(ctx, content, init);
+		this.test(content, init);
 	},
-	testString: function(ctx)
+	testString: function()
 	{
 		var content = use("Runtime.Map").from({"bay":"\"Hello \" ~ username ~ \"!\"","es6":"\"Hello \" + String(username) + String(\"!\")","php":"\"Hello \" . $username . \"!\""});
-		var init = (ctx, parser, translator) =>
+		var init = (parser, translator) =>
 		{
-			parser.vars.set(ctx, "username", true);
+			parser.vars.set("username", true);
 		};
-		this.test(ctx, content);
+		this.test(content);
 	},
-	testFn2: function(ctx)
+	testFn2: function()
 	{
 		var content = use("Runtime.Map").from({"bay":"a() + b()","es6":"a() + b()","php":"$a() + $b()"});
-		var init = (ctx, parser, translator) =>
+		var init = (parser, translator) =>
 		{
-			parser.vars.set(ctx, "a", true);
-			parser.vars.set(ctx, "b", true);
+			parser.vars.set("a", true);
+			parser.vars.set("b", true);
 		};
-		this.test(ctx, content, init);
+		this.test(content, init);
 	},
-	testFn3: function(ctx)
+	testFn3: function()
 	{
 		var content = use("Runtime.Map").from({"bay":"(a() + b()) * c()","es6":"(a() + b()) * c()","php":"($a() + $b()) * $c()"});
-		var init = (ctx, parser, translator) =>
+		var init = (parser, translator) =>
 		{
-			parser.vars.set(ctx, "a", true);
-			parser.vars.set(ctx, "b", true);
-			parser.vars.set(ctx, "c", true);
+			parser.vars.set("a", true);
+			parser.vars.set("b", true);
+			parser.vars.set("c", true);
 		};
-		this.test(ctx, content, init);
+		this.test(content, init);
 	},
 });
 Object.assign(BayLang.Test.Translator.Expression,
@@ -226,7 +226,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 	{
 		return "";
 	},
-	getClassInfo: function(ctx)
+	getClassInfo: function()
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
@@ -235,18 +235,18 @@ Object.assign(BayLang.Test.Translator.Expression,
 			]),
 		});
 	},
-	getFieldsList: function(ctx)
+	getFieldsList: function()
 	{
 		var a = [];
 		return use("Runtime.Vector").from(a);
 	},
-	getFieldInfoByName: function(ctx,field_name)
+	getFieldInfoByName: function(field_name)
 	{
 		var Vector = use("Runtime.Vector");
 		var Map = use("Runtime.Map");
 		return null;
 	},
-	getMethodsList: function(ctx)
+	getMethodsList: function()
 	{
 		var a=[
 			"testMath1",
@@ -263,7 +263,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 		];
 		return use("Runtime.Vector").from(a);
 	},
-	getMethodInfoByName: function(ctx,field_name)
+	getMethodInfoByName: function(field_name)
 	{
 		if (field_name == "testMath1")
 		{
@@ -272,7 +272,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v0(ctx, use("Runtime.Map").from({})),
+					new __v0(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -284,7 +284,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v1(ctx, use("Runtime.Map").from({})),
+					new __v1(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -297,7 +297,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v2(ctx, use("Runtime.Map").from({})),
+					new __v2(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -311,7 +311,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v3(ctx, use("Runtime.Map").from({})),
+					new __v3(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -326,7 +326,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v4(ctx, use("Runtime.Map").from({})),
+					new __v4(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -342,7 +342,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v5(ctx, use("Runtime.Map").from({})),
+					new __v5(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -359,7 +359,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v6(ctx, use("Runtime.Map").from({})),
+					new __v6(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -377,7 +377,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v7(ctx, use("Runtime.Map").from({})),
+					new __v7(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -396,7 +396,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v8(ctx, use("Runtime.Map").from({})),
+					new __v8(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -416,7 +416,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v9(ctx, use("Runtime.Map").from({})),
+					new __v9(use("Runtime.Map").from({})),
 				]),
 			});
 		}
@@ -437,7 +437,7 @@ Object.assign(BayLang.Test.Translator.Expression,
 			var Map = use("Runtime.Map");
 			return Map.from({
 				"annotations": Vector.from([
-					new __v10(ctx, use("Runtime.Map").from({})),
+					new __v10(use("Runtime.Map").from({})),
 				]),
 			});
 		}

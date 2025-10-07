@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,125 +20,98 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
-BayLang.LangES6.ParserES6Function = function(ctx, parser)
+BayLang.LangES6.ParserES6Function = class extends BaseObject
 {
-	use("Runtime.BaseObject").call(this, ctx);
-	this.parser = parser;
-};
-BayLang.LangES6.ParserES6Function.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.LangES6.ParserES6Function.prototype.constructor = BayLang.LangES6.ParserES6Function;
-Object.assign(BayLang.LangES6.ParserES6Function.prototype,
-{
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(parser)
+	{
+		super();
+		this.parser = parser;
+	}
+	
+	
 	/**
 	 * Returns pattern
 	 */
-	getPattern: function(ctx, pattern)
+	getPattern(pattern)
 	{
-		var __v0 = use("BayLang.OpCodes.OpEntityName");
-		if (pattern instanceof __v0)
+		const OpEntityName = use("BayLang.OpCodes.OpEntityName");
+		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
+		if (pattern instanceof OpEntityName)
 		{
-			if (pattern.items.count(ctx) == 2 && pattern.items.get(ctx, 0).value == "console" && pattern.items.get(ctx, 1).value == "log")
+			if (pattern.items.count() == 2 && pattern.items.get(0).value == "console" && pattern.items.get(1).value == "log")
 			{
-				var __v1 = use("BayLang.OpCodes.OpIdentifier");
-				return new __v1(ctx, use("Runtime.Map").from({"value":"print","caret_start":pattern.caret_start,"caret_end":pattern.caret_end}));
+				return new OpIdentifier(Map.create({
+					"value": "print",
+					"caret_start": pattern.caret_start,
+					"caret_end": pattern.caret_end,
+				}));
 			}
 			else
 			{
-				return pattern.items.first(ctx);
+				return pattern.items.first();
 			}
 		}
 		return pattern;
-	},
+	}
+	
+	
 	/**
 	 * Read call function
 	 */
-	readCallFunction: function(ctx, reader, pattern)
+	readCallFunction(reader, pattern)
 	{
+		const OpCall = use("BayLang.OpCodes.OpCall");
 		if (pattern == undefined) pattern = null;
-		var caret_start = reader.caret(ctx);
+		var caret_start = reader.start();
 		/* Read identifier */
 		if (pattern == null)
 		{
-			if (!this.parser.parser_base.constructor.isIdentifier(ctx, reader.nextToken(ctx)))
-			{
-				return null;
-			}
-			pattern = this.parser.parser_base.readEntityName(ctx, reader);
+			if (!this.parser.parser_base.isIdentifier(reader.nextToken())) return null;
+			pattern = this.parser.parser_base.readEntityName(reader);
 		}
 		/* Next token should be bracket */
-		if (reader.nextToken(ctx) != "(")
-		{
-			return null;
-		}
+		if (reader.nextToken() != "(") return null;
 		/* Update pattern */
-		pattern = this.getPattern(ctx, pattern);
+		pattern = this.getPattern(pattern);
 		/* Read arguments */
-		reader.matchToken(ctx, "(");
-		var args = use("Runtime.Vector").from([]);
-		while (!reader.eof(ctx) && reader.nextToken(ctx) != ")")
+		reader.matchToken("(");
+		var args = [];
+		while (!reader.eof() && reader.nextToken() != ")")
 		{
-			var expression = this.parser.parser_expression.readExpression(ctx, reader);
-			args.push(ctx, expression);
-			if (reader.nextToken(ctx) == ",")
+			var expression = this.parser.parser_expression.readExpression(reader);
+			args.push(expression);
+			if (reader.nextToken() == ",")
 			{
-				reader.matchToken(ctx, ",");
+				reader.matchToken(",");
 			}
 		}
-		reader.matchToken(ctx, ")");
-		var __v0 = use("BayLang.OpCodes.OpCall");
-		return new __v0(ctx, use("Runtime.Map").from({"args":args,"item":pattern,"caret_start":caret_start,"caret_end":reader.caret(ctx)}));
-	},
-	_init: function(ctx)
+		reader.matchToken(")");
+		return new OpCall(Map.create({
+			"args": args,
+			"item": pattern,
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+		}));
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.parser = null;
-	},
-});
-Object.assign(BayLang.LangES6.ParserES6Function, use("Runtime.BaseObject"));
-Object.assign(BayLang.LangES6.ParserES6Function,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.LangES6";
-	},
-	getClassName: function()
-	{
-		return "BayLang.LangES6.ParserES6Function";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.LangES6.ParserES6Function);
-module.exports = BayLang.LangES6.ParserES6Function;
+	}
+	static getClassName(){ return "BayLang.LangES6.ParserES6Function"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.LangES6.ParserES6Function);
+module.exports = {
+	"ParserES6Function": BayLang.LangES6.ParserES6Function,
+};

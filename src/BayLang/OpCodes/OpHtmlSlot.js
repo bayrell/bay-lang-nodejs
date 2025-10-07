@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,80 +20,39 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpHtmlSlot = function(ctx)
+BayLang.OpCodes.OpHtmlSlot = class extends BaseOpCode
 {
-	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
-};
-BayLang.OpCodes.OpHtmlSlot.prototype = Object.create(use("BayLang.OpCodes.BaseOpCode").prototype);
-BayLang.OpCodes.OpHtmlSlot.prototype.constructor = BayLang.OpCodes.OpHtmlSlot;
-Object.assign(BayLang.OpCodes.OpHtmlSlot.prototype,
-{
+	
+	
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize(serializer, data)
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
-		serializer.process(ctx, this, "attrs", data);
-		serializer.process(ctx, this, "items", data);
-		serializer.process(ctx, this, "name", data);
-	},
-	_init: function(ctx)
+		super.serialize(serializer, data);
+		serializer.process(this, "attrs", data);
+		serializer.process(this, "items", data);
+		serializer.process(this, "name", data);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		super._init();
 		this.op = "op_html_slot";
 		this.name = "";
 		this.args = null;
 		this.attrs = null;
 		this.vars = null;
 		this.items = null;
-	},
-});
-Object.assign(BayLang.OpCodes.OpHtmlSlot, use("BayLang.OpCodes.BaseOpCode"));
-Object.assign(BayLang.OpCodes.OpHtmlSlot,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.OpCodes";
-	},
-	getClassName: function()
-	{
-		return "BayLang.OpCodes.OpHtmlSlot";
-	},
-	getParentClassName: function()
-	{
-		return "BayLang.OpCodes.BaseOpCode";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.OpCodes.OpHtmlSlot);
-module.exports = BayLang.OpCodes.OpHtmlSlot;
+	}
+	static getClassName(){ return "BayLang.OpCodes.OpHtmlSlot"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.OpCodes.OpHtmlSlot);
+module.exports = {
+	"OpHtmlSlot": BayLang.OpCodes.OpHtmlSlot,
+};

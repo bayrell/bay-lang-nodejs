@@ -1,9 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,81 +20,40 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpMethod = function(ctx)
+BayLang.OpCodes.OpMethod = class extends BaseOpCode
 {
-	use("BayLang.OpCodes.BaseOpCode").apply(this, arguments);
-};
-BayLang.OpCodes.OpMethod.prototype = Object.create(use("BayLang.OpCodes.BaseOpCode").prototype);
-BayLang.OpCodes.OpMethod.prototype.constructor = BayLang.OpCodes.OpMethod;
-Object.assign(BayLang.OpCodes.OpMethod.prototype,
-{
+	static KIND_ATTR = "attr";
+	static KIND_STATIC = "static";
+	static KIND_CLASS = "class";
+	
+	
 	/**
 	 * Serialize object
 	 */
-	serialize: function(ctx, serializer, data)
+	serialize(serializer, data)
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype.serialize.call(this, ctx, serializer, data);
-		serializer.process(ctx, this, "kind", data);
-		serializer.process(ctx, this, "value1", data);
-		serializer.process(ctx, this, "value2", data);
-	},
-	_init: function(ctx)
+		super.serialize(serializer, data);
+		serializer.process(this, "kind", data);
+		serializer.process(this, "value1", data);
+		serializer.process(this, "value2", data);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("BayLang.OpCodes.BaseOpCode").prototype._init.call(this,ctx);
+		super._init();
 		this.op = "op_method";
 		this.value1 = null;
 		this.value2 = null;
 		this.kind = "";
-	},
-});
-Object.assign(BayLang.OpCodes.OpMethod, use("BayLang.OpCodes.BaseOpCode"));
-Object.assign(BayLang.OpCodes.OpMethod,
-{
-	KIND_ATTR: "attr",
-	KIND_STATIC: "static",
-	KIND_CLASS: "class",
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.OpCodes";
-	},
-	getClassName: function()
-	{
-		return "BayLang.OpCodes.OpMethod";
-	},
-	getParentClassName: function()
-	{
-		return "BayLang.OpCodes.BaseOpCode";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.OpCodes.OpMethod);
-module.exports = BayLang.OpCodes.OpMethod;
+	}
+	static getClassName(){ return "BayLang.OpCodes.OpMethod"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.OpCodes.OpMethod);
+module.exports = {
+	"OpMethod": BayLang.OpCodes.OpMethod,
+};

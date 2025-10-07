@@ -1,5 +1,6 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
@@ -18,103 +19,68 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.BaseProvider = function(ctx, params)
+Runtime.BaseProvider = class extends BaseObject
 {
-	if (params == undefined) params = null;
-	use("Runtime.BaseObject").call(this, ctx);
-	this.params = (params != null) ? (params.toDict(ctx)) : (null);
-};
-Runtime.BaseProvider.prototype = Object.create(use("Runtime.BaseObject").prototype);
-Runtime.BaseProvider.prototype.constructor = Runtime.BaseProvider;
-Object.assign(Runtime.BaseProvider.prototype,
-{
+	
+	
 	/**
 	 * Returns true if started
 	 */
-	isStarted: function(ctx)
-	{
-		return this.started;
-	},
+	isStarted(){ return this.started; }
+	
+	
 	/**
 	 * Return param
 	 */
-	getParam: function(ctx, param_name, def_value)
+	getParam(param_name, def_value)
 	{
-		if (this.param == null)
-		{
-			return def_value;
-		}
-		if (this.param.has(ctx, param_name))
-		{
-			return def_value;
-		}
-		return this.param.get(ctx, param_name);
-	},
+		if (this.params == null) return def_value;
+		if (this.params.has(param_name)) return def_value;
+		return this.params.get(param_name);
+	}
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(params)
+	{
+		if (params == undefined) params = null;
+		super();
+		this.params = (params != null) ? params.toDict() : null;
+	}
+	
+	
 	/**
 	 * Init provider
 	 */
-	init: async function(ctx)
+	async init()
 	{
-	},
+	}
+	
+	
 	/**
 	 * Start provider
 	 */
-	start: async function(ctx)
+	async start()
 	{
 		this.started = true;
-	},
-	_init: function(ctx)
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.started = false;
 		this.params = null;
-	},
-});
-Object.assign(Runtime.BaseProvider, use("Runtime.BaseObject"));
-Object.assign(Runtime.BaseProvider,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.BaseProvider";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.BaseProvider);
-module.exports = Runtime.BaseProvider;
+	}
+	static getClassName(){ return "Runtime.BaseProvider"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.BaseProvider);
+module.exports = {
+	"BaseProvider": Runtime.BaseProvider,
+};

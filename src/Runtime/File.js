@@ -1,5 +1,6 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
@@ -18,89 +19,52 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.File = function(ctx, params)
+Runtime.File = class extends BaseObject
 {
-	use("Runtime.BaseObject").call(this, ctx);
-	this._assign_values(ctx, params);
-};
-Runtime.File.prototype = Object.create(use("Runtime.BaseObject").prototype);
-Runtime.File.prototype.constructor = Runtime.File;
-Object.assign(Runtime.File.prototype,
-{
+	
+	
+	/**
+	 * Constructor
+	 */
+	constructor(params)
+	{
+		super();
+		this._assign_values(params);
+	}
+	
+	
 	/**
 	 * Returns file name
 	 */
-	getName: function(ctx)
-	{
-		return this.name;
-	},
+	getName(){ return this.name; }
+	
+	
 	/**
 	 * Returns file path
 	 */
-	getPath: function(ctx)
-	{
-		return this.path;
-	},
+	getPath(){ return this.path; }
+	
+	
 	/**
 	 * Returns file size
 	 */
-	getSize: function(ctx)
+	getSize(){ return this.size; }
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return this.size;
-	},
-	_init: function(ctx)
-	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.name = "";
 		this.path = "";
 		this.size = 0;
-	},
-});
-Object.assign(Runtime.File, use("Runtime.BaseObject"));
-Object.assign(Runtime.File,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "Runtime";
-	},
-	getClassName: function()
-	{
-		return "Runtime.File";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(Runtime.File);
-module.exports = Runtime.File;
+	}
+	static getClassName(){ return "Runtime.File"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(Runtime.File);
+module.exports = {
+	"File": Runtime.File,
+};

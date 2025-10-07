@@ -1,9 +1,11 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rs = use("Runtime.rs");
+const BaseObject = use("Runtime.BaseObject");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,97 +20,93 @@ var use = require('bay-lang').use;
  *  limitations under the License.
  */
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.CoreParser = function(ctx)
+BayLang.CoreParser = class extends BaseObject
 {
-	use("Runtime.BaseObject").apply(this, arguments);
-};
-BayLang.CoreParser.prototype = Object.create(use("Runtime.BaseObject").prototype);
-BayLang.CoreParser.prototype.constructor = BayLang.CoreParser;
-Object.assign(BayLang.CoreParser.prototype,
-{
+	
+	
+	/**
+	 * Save vars
+	 */
+	saveVars(){ return this.vars.copy(); }
+	
+	
+	/**
+	 * Restore vars
+	 */
+	restoreVars(vars)
+	{
+		this.vars = vars;
+	}
+	
+	
+	/**
+	 * Add variable
+	 */
+	addVariable(op_code, pattern)
+	{
+		var name = op_code.value;
+		this.vars.set(name, pattern);
+	}
+	
+	
 	/**
 	 * Set content
 	 */
-	setContent: function(ctx, content)
+	setContent(content)
 	{
 		this.content = content;
-		var __v0 = use("Runtime.rs");
-		this.content_size = __v0.strlen(ctx, content);
+		this.content_size = rs.strlen(content);
 		return this;
-	},
+	}
+	
+	
 	/**
 	 * Create reader
 	 */
-	createReader: function(ctx)
+	createReader()
 	{
-		var __v0 = use("BayLang.TokenReader");
-		var reader = new __v0(ctx);
-		var __v1 = use("BayLang.Caret");
-		var __v2 = use("Runtime.Reference");
-		reader.init(ctx, new __v1(ctx, use("Runtime.Map").from({"content":new __v2(ctx, this.content),"tab_size":this.tab_size})));
+		const TokenReader = use("BayLang.TokenReader");
+		const Caret = use("BayLang.Caret");
+		const Reference = use("Runtime.Reference");
+		var reader = new TokenReader();
+		reader.init(new Caret(Map.create({
+			"content": new Reference(this.content),
+			"tab_size": this.tab_size,
+		})));
 		return reader;
-	},
+	}
+	
+	
 	/**
 	 * Parse file and convert to BaseOpCode
 	 */
-	parse: function(ctx)
+	parse()
 	{
 		return null;
-	},
-	_init: function(ctx)
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		use("Runtime.BaseObject").prototype._init.call(this,ctx);
+		super._init();
 		this.file_name = "";
 		this.content = "";
 		this.content_size = 0;
 		this.tab_size = 4;
-	},
-});
-Object.assign(BayLang.CoreParser, use("Runtime.BaseObject"));
-Object.assign(BayLang.CoreParser,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang";
-	},
-	getClassName: function()
-	{
-		return "BayLang.CoreParser";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.BaseObject";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.CoreParser);
-module.exports = BayLang.CoreParser;
+		this.find_variable = true;
+		this.vars = new Map();
+		this.uses = new Map();
+		this.current_namespace = null;
+		this.current_class = null;
+		this.current_namespace_name = "";
+	}
+	static getClassName(){ return "BayLang.CoreParser"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.CoreParser);
+module.exports = {
+	"CoreParser": BayLang.CoreParser,
+};

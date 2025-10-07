@@ -1,9 +1,12 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
+const rs = use("Runtime.rs");
+const rtl = use("Runtime.rtl");
+const BaseCommand = use("Runtime.Console.BaseCommand");
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -20,97 +23,143 @@ var use = require('bay-lang').use;
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
-BayLang.Compiler.Commands.Make = function(ctx)
-{
-	use("Runtime.Console.BaseCommand").apply(this, arguments);
-};
-BayLang.Compiler.Commands.Make.prototype = Object.create(use("Runtime.Console.BaseCommand").prototype);
-BayLang.Compiler.Commands.Make.prototype.constructor = BayLang.Compiler.Commands.Make;
-Object.assign(BayLang.Compiler.Commands.Make.prototype,
-{
-	/**
-	 * Run task
-	 */
-	run: async function(ctx)
-	{
-		var module_name = Runtime.rtl.attr(ctx, ctx.cli_args, 2);
-		var lang = Runtime.rtl.attr(ctx, ctx.cli_args, 3);
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isEmpty(ctx, module_name))
-		{
-			var __v1 = use("BayLang.Compiler.Commands.Modules");
-			__v1.showModules(ctx);
-			return Promise.resolve(0);
-		}
-		/* Compile module */
-		var settings = ctx.provider(ctx, "BayLang.Compiler.SettingsProvider");
-		var result = await settings.compileModule(ctx, module_name, lang);
-		if (!result)
-		{
-			return Promise.resolve(this.constructor.FAIL);
-		}
-		return Promise.resolve(this.constructor.SUCCESS);
-	},
-});
-Object.assign(BayLang.Compiler.Commands.Make, use("Runtime.Console.BaseCommand"));
-Object.assign(BayLang.Compiler.Commands.Make,
+BayLang.Compiler.Commands.Make = class extends BaseCommand
 {
 	/**
 	 * Returns name
 	 */
-	getName: function(ctx)
-	{
-		return "make";
-	},
+	static getName(){ return "make"; }
+	
+	
 	/**
 	 * Returns description
 	 */
-	getDescription: function(ctx)
+	static getDescription(){ return "Make module"; }
+	
+	
+	/**
+	 * Compile module
+	 */
+	async compile(project, module, lang)
 	{
-		return "Make module";
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+		const fs = use("Runtime.fs");
+		const ParserUnknownError = use("BayLang.Exceptions.ParserUnknownError");
+		if (lang == undefined) lang = "";
+		var is_success = true;
+		var module_src_path = module.getSourceFolderPath();
+		var files = await fs.listDirRecursive(module_src_path);
+		for (var i = 0; i < files.count(); i++)
+		{
+			var file_name = files[i];
+			var file_path = fs.join([module_src_path, file_name]);
+			/* Detect is file */
+			if (!await fs.isFile(file_path))
+			{
+				continue;
+			}
+			/* Check if not exclude */
+			if (module.checkExclude(file_name))
+			{
+				continue;
+			}
+			/* Compile */
+			try
+			{
+				var extension = rs.extname(file_name);
+				if (extension == "bay")
+				{
+					rtl.print(file_name);
+					await module.compile(file_name, lang);
+				}
+			}
+			catch (_ex)
+			{
+				if (_ex instanceof ParserUnknownError)
+				{
+					var e = _ex;
+					rtl.error(e.toString());
+					is_success = false;
+				}
+				else if (true)
+				{
+					var e = _ex;
+					rtl.error(e);
+					is_success = false;
+				}
+				else
+				{
+					throw _ex;
+				}
+			}
+		}
+		if (!is_success)
+		{
+			return false;
+		}
+		var languages = project.getLanguages();
+		if (languages.indexOf("es6") != -1)
+		{
+			var project_assets = module.getProjectAssets();
+			for (var i = 0; i < project_assets.count(); i++)
+			{
+				var asset_item = project_assets.get(i);
+				await project.buildAsset(asset_item);
+				rtl.print("Bundle to => " + String(asset_item.get("dest")));
+			}
+		}
+		return true;
+	}
+	
+	
+	/**
+	 * Run task
+	 */
+	async run()
 	{
-		return "BayLang.Compiler.Commands";
-	},
-	getClassName: function()
+		const Modules = use("BayLang.Compiler.Commands.Modules");
+		const Project = use("BayLang.Compiler.Project");
+		var module_name = Runtime.rtl.getContext().cli_args[2];
+		var lang = Runtime.rtl.getContext().cli_args[3];
+		if (!module_name)
+		{
+			Modules.showModules();
+			return 0;
+		}
+		/* Read project */
+		var project = await Project.readProject(Runtime.rtl.getContext().base_path);
+		if (!project)
+		{
+			rtl.error("Project not found");
+			return;
+		}
+		/* Get module */
+		var module = project.getModule(module_name);
+		if (!module)
+		{
+			rtl.error("Module not found");
+			return;
+		}
+		/* Compile module */
+		var is_success = await this.compile(project, module, lang);
+		if (!is_success)
+		{
+			return this.constructor.ERROR;
+		}
+		return this.constructor.SUCCESS;
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return "BayLang.Compiler.Commands.Make";
-	},
-	getParentClassName: function()
-	{
-		return "Runtime.Console.BaseCommand";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
-	{
-		return null;
-	},
-});use.add(BayLang.Compiler.Commands.Make);
-module.exports = BayLang.Compiler.Commands.Make;
+		super._init();
+	}
+	static getClassName(){ return "BayLang.Compiler.Commands.Make"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.Compiler.Commands.Make);
+module.exports = {
+	"Make": BayLang.Compiler.Commands.Make,
+};

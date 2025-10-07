@@ -1,9 +1,9 @@
 "use strict;"
-var use = require('bay-lang').use;
+const use = require('bay-lang').use;
 /*!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,91 +19,62 @@ var use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
-BayLang.Compiler.ModuleDescription = function(ctx)
-{
-};
-Object.assign(BayLang.Compiler.ModuleDescription.prototype,
-{
-});
-Object.assign(BayLang.Compiler.ModuleDescription,
+BayLang.Compiler.ModuleDescription = class
 {
 	/**
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleName: function(ctx)
-	{
-		return "BayLang.Compiler";
-	},
+	static getModuleName(){ return "BayLang.Compiler"; }
+	
+	
 	/**
 	 * Returns module name
 	 * @return string
 	 */
-	getModuleVersion: function(ctx)
-	{
-		var __v0 = use("BayLang.ModuleDescription");
-		return __v0.getModuleVersion(ctx);
-	},
+	static getModuleVersion(){ const ModuleDescription = use("BayLang.ModuleDescription");return ModuleDescription.getModuleVersion(); }
+	
+	
 	/**
 	 * Returns required modules
 	 * @return Map<string>
 	 */
-	requiredModules: function(ctx)
+	static requiredModules()
 	{
-		return use("Runtime.Map").from({"BayLang":"*","BayLang.Test":"*","Runtime.Unit":"*"});
-	},
+		return Map.create({
+			"BayLang": "*",
+			"BayLang.Test": "*",
+			"Runtime.Unit": "*",
+		});
+	}
+	
+	
 	/**
 	 * Returns enities
 	 */
-	entities: function(ctx)
+	static entities()
 	{
-		var __v0 = use("Runtime.Console.Annotations.ConsoleCommand");
-		var __v1 = use("Runtime.Console.Annotations.ConsoleCommand");
-		var __v2 = use("Runtime.Entity.Provider");
-		return use("Runtime.Vector").from([new __v0(ctx, "BayLang.Compiler.Commands.Compile"),new __v1(ctx, "BayLang.Compiler.Commands.Version"),new __v2(ctx, "BayLang.Compiler.SettingsProvider")]);
-	},
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
-	{
-		return "BayLang.Compiler";
-	},
-	getClassName: function()
-	{
-		return "BayLang.Compiler.ModuleDescription";
-	},
-	getParentClassName: function()
-	{
-		return "";
-	},
-	getClassInfo: function(ctx)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function(ctx)
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(ctx,field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return null;
-	},
-	getMethodsList: function(ctx)
-	{
-		var a=[
+		
+		const ConsoleCommand = use("Runtime.Console.Annotations.ConsoleCommand");return [
+			new ConsoleCommand("BayLang.Compiler.Commands.Compile"),
+			new ConsoleCommand("BayLang.Compiler.Commands.Make"),
+			new ConsoleCommand("BayLang.Compiler.Commands.MakeAll"),
+			new ConsoleCommand("BayLang.Compiler.Commands.Modules"),
+			new ConsoleCommand("BayLang.Compiler.Commands.Version"),
 		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(ctx,field_name)
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		return null;
-	},
-});use.add(BayLang.Compiler.ModuleDescription);
-module.exports = BayLang.Compiler.ModuleDescription;
+	}
+	static getClassName(){ return "BayLang.Compiler.ModuleDescription"; }
+	static getMethodsList(){ return []; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getInterfaces(field_name){ return []; }
+};
+use.add(BayLang.Compiler.ModuleDescription);
+module.exports = {
+	"ModuleDescription": BayLang.Compiler.ModuleDescription,
+};
