@@ -40,8 +40,7 @@ BayLang.Compiler.Project = class extends BaseObject
 	 */
 	static async readProject(project_path)
 	{
-		const Project = use("BayLang.Compiler.Project");
-		var project = new Project();
+		var project = new BayLang.Compiler.Project();
 		await project.read(project_path);
 		if (!project.exists()) return null;
 		await project.readModules();
@@ -202,7 +201,7 @@ BayLang.Compiler.Project = class extends BaseObject
 	{
 		var res = null;
 		var module_path_sz = -1;
-		var module_names = this.modules.keys();
+		var module_names = rtl.list(this.modules.keys());
 		for (var i = 0; i < module_names.count(); i++)
 		{
 			var module_name = module_names.get(i);

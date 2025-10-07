@@ -61,6 +61,7 @@ BayLang.Compiler.ModuleDescription = class
 			new ConsoleCommand("BayLang.Compiler.Commands.MakeAll"),
 			new ConsoleCommand("BayLang.Compiler.Commands.Modules"),
 			new ConsoleCommand("BayLang.Compiler.Commands.Version"),
+			new ConsoleCommand("BayLang.Compiler.Commands.Watch"),
 		];
 	}
 	

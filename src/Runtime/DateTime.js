@@ -141,8 +141,7 @@ Runtime.DateTime = class extends BaseObject
 	 */
 	static fromString(s)
 	{
-		const DateTime = use("Runtime.DateTime");
-		var dt = new DateTime();
+		var dt = new Runtime.DateTime();
 		dt.y = rtl.toInt(rs.substr(s, 0, 4));
 		dt.m = rtl.toInt(rs.substr(s, 5, 2));
 		dt.d = rtl.toInt(rs.substr(s, 8, 2));

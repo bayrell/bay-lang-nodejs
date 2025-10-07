@@ -1,6 +1,5 @@
 "use strict;"
 const use = require('bay-lang').use;
-const rs = use("Runtime.rs");
 /*!
  *  BayLang Technology
  *
@@ -271,7 +270,7 @@ Runtime.rs = class
 	 */
 	static addFirstSlash(path)
 	{
-		if (rs.substr(path, 0, 1) == "/") return path;
+		if (Runtime.rs.substr(path, 0, 1) == "/") return path;
 		return "/" + String(path);
 	}
 	
@@ -281,7 +280,7 @@ Runtime.rs = class
 	 */
 	static addLastSlash(path)
 	{
-		if (rs.substr(path, rs.strlen(path) - 1, 1) == "/") return path;
+		if (Runtime.rs.substr(path, Runtime.rs.strlen(path) - 1, 1) == "/") return path;
 		return path + String("/");
 	}
 	
@@ -328,8 +327,8 @@ Runtime.rs = class
 		var ext = ret.get("extension");
 		if (ext != "")
 		{
-			var sz = 0 - rs.strlen(ext) - 1;
-			res = rs.substr(res, 0, sz);
+			var sz = 0 - Runtime.rs.strlen(ext) - 1;
+			res = Runtime.rs.substr(res, 0, sz);
 		}
 		return res;
 	}
@@ -567,7 +566,7 @@ Runtime.rs = class
 		if (allowed_tags == null)
 		{
 			content = re.replace("<[^>]+>", "", content);
-			content = rs.trim(rs.spaceless(content));
+			content = Runtime.rs.trim(Runtime.rs.spaceless(content));
 			return content;
 		}
 		var matches = re.matchAll("<[^>]+>", content, "i");
@@ -588,7 +587,7 @@ Runtime.rs = class
 				}
 			}
 		}
-		content = rs.trim(rs.spaceless(content));
+		content = Runtime.rs.trim(Runtime.rs.spaceless(content));
 		return content;
 	}
 	
@@ -622,10 +621,10 @@ Runtime.rs = class
 		if (x == undefined) x = 257;
 		if (p == undefined) p = 1000000007;
 		var h = 0;
-		var sz = rs.strlen(s);
+		var sz = Runtime.rs.strlen(s);
 		for (var i = 0; i < sz; i++)
 		{
-			var ch = rs.ord(rs.substr(s, i, 1));
+			var ch = Runtime.rs.ord(Runtime.rs.substr(s, i, 1));
 			h = (h * x + ch) % p;
 		}
 		if (last)
@@ -649,7 +648,7 @@ Runtime.rs = class
 		{
 			var c = h & 15;
 			h = h >> 4;
-			r = rs.substr(a, c, 1) + String(r);
+			r = Runtime.rs.substr(a, c, 1) + String(r);
 			if (h == 0) break;
 		}
 		return r;
@@ -680,7 +679,7 @@ Runtime.rs = class
 		if (spec == undefined) spec = "aun";
 		var s = "";
 		var res = "";
-		var sz = rs.strlen(spec);
+		var sz = Runtime.rs.strlen(spec);
 		for (var i = 0; i < sz; i++)
 		{
 			var ch = spec[i];
@@ -701,7 +700,7 @@ Runtime.rs = class
 				s += "!@#$%^&*()-_+='\":;'.,<>?/|~";
 			}
 		}
-		var sz_s = rs.strlen(s);
+		var sz_s = Runtime.rs.strlen(s);
 		for (var i = 0; i < len; i++)
 		{
 			var code = Math.random(0, sz_s - 1);
@@ -720,7 +719,7 @@ Runtime.rs = class
 		if (params == null) return s;
 		params.each((value, key) =>
 		{
-			s = rs.replace("%" + String(key) + String("%"), value, s);
+			s = Runtime.rs.replace("%" + String(key) + String("%"), value, s);
 		});
 		return s;
 	}

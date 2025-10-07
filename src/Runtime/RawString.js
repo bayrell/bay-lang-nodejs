@@ -47,13 +47,12 @@ Runtime.RawString = class
 	 */
 	static normalize(item)
 	{
-		const RawString = use("Runtime.RawString");
 		const Collection = use("Runtime.Collection");
 		if (rtl.isString(item))
 		{
 			return item;
 		}
-		else if (item instanceof RawString)
+		else if (item instanceof Runtime.RawString)
 		{
 			return item.s;
 		}

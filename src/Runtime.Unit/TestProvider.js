@@ -58,9 +58,8 @@ Runtime.Unit.TestProvider = class extends BaseProvider
 	 */
 	static async run(test_name)
 	{
-		const TestProvider = use("Runtime.Unit.TestProvider");
 		if (test_name == undefined) test_name = "";
-		var provider = new TestProvider();
+		var provider = new Runtime.Unit.TestProvider();
 		await provider.start();
 		if (test_name == "")
 		{
@@ -81,8 +80,7 @@ Runtime.Unit.TestProvider = class extends BaseProvider
 	 */
 	static async runAll()
 	{
-		const TestProvider = use("Runtime.Unit.TestProvider");
-		var provider = new TestProvider();
+		var provider = new Runtime.Unit.TestProvider();
 		await provider.start();
 		for (var i = 0; i < provider.count(); i++)
 		{

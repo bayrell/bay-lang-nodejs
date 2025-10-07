@@ -38,8 +38,7 @@ BayLang.OpCodes.OpFlags = class extends BaseOpCode
 	 */
 	isFlag(name)
 	{
-		const OpFlags = use("BayLang.OpCodes.OpFlags");
-		if (!OpFlags.hasFlag(name)) return false;
+		if (!BayLang.OpCodes.OpFlags.hasFlag(name)) return false;
 		return this.items.get(name);
 	}
 	

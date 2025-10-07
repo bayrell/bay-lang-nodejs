@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const rs = use("Runtime.rs");
 const rtl = use("Runtime.rtl");
+const rs = use("Runtime.rs");
 const BaseCommand = use("Runtime.Console.BaseCommand");
 /*!
  *  BayLang Technology
@@ -35,6 +35,25 @@ BayLang.Compiler.Commands.Make = class extends BaseCommand
 	 * Returns description
 	 */
 	static getDescription(){ return "Make module"; }
+	
+	
+	/**
+	 * Build asset
+	 */
+	async buildAsset(project, module)
+	{
+		var languages = project.getLanguages();
+		if (languages.indexOf("es6") != -1)
+		{
+			var project_assets = module.getProjectAssets();
+			for (var i = 0; i < project_assets.count(); i++)
+			{
+				var asset_item = project_assets.get(i);
+				await project.buildAsset(asset_item);
+				rtl.print("Bundle to => " + String(asset_item.get("dest")));
+			}
+		}
+	}
 	
 	
 	/**
@@ -96,17 +115,7 @@ BayLang.Compiler.Commands.Make = class extends BaseCommand
 		{
 			return false;
 		}
-		var languages = project.getLanguages();
-		if (languages.indexOf("es6") != -1)
-		{
-			var project_assets = module.getProjectAssets();
-			for (var i = 0; i < project_assets.count(); i++)
-			{
-				var asset_item = project_assets.get(i);
-				await project.buildAsset(asset_item);
-				rtl.print("Bundle to => " + String(asset_item.get("dest")));
-			}
-		}
+		await this.buildAsset(project, module);
 		return true;
 	}
 	

@@ -1,5 +1,6 @@
 "use strict;"
 const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
 const BaseCommand = use("Runtime.Console.BaseCommand");
 /*!
  *  BayLang Technology
@@ -23,8 +24,6 @@ if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
 BayLang.Compiler.Commands.Watch = class extends BaseCommand
 {
-	
-	
 	/**
 	 * Returns name
 	 */
@@ -42,46 +41,49 @@ BayLang.Compiler.Commands.Watch = class extends BaseCommand
 	 */
 	async onChangeFile(changed_file_path)
 	{
-		const io = use("Runtime.io");
+		const Project = use("BayLang.Compiler.Project");
+		const Make = use("BayLang.Compiler.Commands.Make");
 		const ParserUnknownError = use("BayLang.Exceptions.ParserUnknownError");
-		try
+		/* Read project */
+		var project = await Project.readProject(Runtime.rtl.getContext().base_path);
+		if (!project)
 		{
-			if (changed_file_path == this.settings.project_json_path)
-			{
-				io.print("Reload project.json");
-				await this.settings.reload();
-				return;
-			}
-			var file_info = await this.settings.compileFile(changed_file_path, "", 3);
-			if (!file_info) return;
-			var module = file_info.get("module");
-			var assets = module.config.get("assets");
-			var src_file_name = file_info.get("src_file_name");
-			if (file_info.get("file_name") == "/module.json")
-			{
-				io.print("Reload module.json");
-				await this.settings.reload();
-			}
-			else if (assets.indexOf(src_file_name) >= 0)
-			{
-				await this.settings.updateModule(module.name);
-			}
+			rtl.error("Project not found");
+			return;
 		}
-		catch (_ex)
+		var make = new Make();
+		var module = project.findModuleByFileName(changed_file_path);
+		if (module)
 		{
-			if (_ex instanceof ParserUnknownError)
+			try
 			{
-				var e = _ex;
-				io.print_error("Error: " + e.toString());
+				var file_path = module.getRelativeSourcePath(changed_file_path);
+				var result = await module.compile(file_path);
+				if (result)
+				{
+					rtl.print(changed_file_path);
+					var languages = project.getLanguages();
+					for (var i = 0; i < languages.count(); i++)
+					{
+						var lang = languages.get(i);
+						var dest_file_path = module.resolveDestFilePath(file_path, lang);
+						rtl.print("=> " + String(dest_file_path));
+					}
+					await make.buildAsset(project, module);
+				}
 			}
-			else if (true)
+			catch (_ex)
 			{
-				var e = _ex;
-				io.print_error(e);
-			}
-			else
-			{
-				throw _ex;
+				if (_ex instanceof ParserUnknownError)
+				{
+					var e = _ex;
+					rtl.print(changed_file_path);
+					rtl.error(e.toString());
+				}
+				else
+				{
+					throw _ex;
+				}
 			}
 		}
 	}
@@ -92,24 +94,22 @@ BayLang.Compiler.Commands.Watch = class extends BaseCommand
 	 */
 	async run()
 	{
-		this.settings = Runtime.rtl.getContext().provider("BayLang.Compiler.SettingsProvider");
-		let watch_dir = (ctx) =>
+		let watch_dir = () =>
 		{
-			let io = use("Runtime.io");
 			let chokidar = require("chokidar");
 			return new Promise(() => {
-				io.print(ctx, "Start watch");
+				console.log("Start watch");
 				chokidar
-					.watch(ctx.base_path)
+					.watch(rtl.getContext().base_path)
 					.on('change', (path, stat) => {
-						setTimeout(()=>{ this.onChangeFile(ctx, path); }, 500);
+						setTimeout(()=>{ this.onChangeFile(path); }, 500);
 					})
 				;
 				
 			});
 		};
 		
-		await watch_dir(ctx);
+		await watch_dir();
 		return this.constructor.SUCCESS;
 	}
 	

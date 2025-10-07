@@ -59,6 +59,7 @@ BayLang.LangNode.TranslatorNode = class extends TranslatorES6
 	useModule(module_name)
 	{
 		var is_global = false;
+		if (module_name == this.current_class_name) return module_name;
 		if (module_name == "Runtime.rtl" || module_name == "Runtime.rs")
 		{
 			is_global = true;

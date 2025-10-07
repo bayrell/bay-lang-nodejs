@@ -82,8 +82,7 @@ BayLang.Caret = class extends BaseObject
 	clone(items)
 	{
 		
-		const Caret = use("BayLang.Caret");
-		if (items == undefined) items = null;return new Caret(Map.create({
+		if (items == undefined) items = null;return new BayLang.Caret(Map.create({
 			"file_name": items ? items.get("file_name", this.file_name) : this.file_name,
 			"content": items ? items.get("content", this.content) : this.content,
 			"content_sz": items ? items.get("content_sz", this.content_sz) : this.content_sz,
