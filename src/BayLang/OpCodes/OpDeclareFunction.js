@@ -75,8 +75,8 @@ Object.assign(BayLang.OpCodes.OpDeclareFunction.prototype,
 			return null;
 		}
 		var op_code_item = this.items.items.get(0);
-		var __v0 = use("BayLang.OpCodes.OpReturn");
-		if (!(op_code_item instanceof __v0))
+		var __v1 = use("BayLang.OpCodes.OpReturn");
+		if (!(op_code_item instanceof __v1))
 		{
 			return null;
 		}

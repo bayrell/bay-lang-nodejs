@@ -68,8 +68,8 @@ Object.assign(Runtime.Unit.AssertHelper,
 			this.equalDict(value1, value2, message);
 			return ;
 		}
-		var __v3 = use("Runtime.rtl");
-		__v3.assert(false, message);
+		var __v5 = use("Runtime.rtl");
+		__v5.assert(false, message);
 	},
 	/**
 	 * Check equals of two collections
@@ -112,8 +112,8 @@ Object.assign(Runtime.Unit.AssertHelper,
 			var key2 = d2_keys.get(i);
 			if (!d1.has(key2))
 			{
-				var __v0 = use("Runtime.rtl");
-				__v0.assert(false, message);
+				var __v1 = use("Runtime.rtl");
+				__v1.assert(false, message);
 			}
 		}
 	},

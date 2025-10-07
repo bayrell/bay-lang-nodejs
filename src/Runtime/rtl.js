@@ -539,38 +539,38 @@ Object.assign(Runtime.rtl,
 		{
 			return "string";
 		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isInt(value))
+		var __v1 = use("Runtime.rtl");
+		if (__v1.isInt(value))
 		{
 			return "int";
 		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isDouble(value))
+		var __v2 = use("Runtime.rtl");
+		if (__v2.isDouble(value))
 		{
 			return "double";
 		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isBoolean(value))
+		var __v3 = use("Runtime.rtl");
+		if (__v3.isBoolean(value))
 		{
 			return "boolean";
 		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isCallable(value))
+		var __v4 = use("Runtime.rtl");
+		if (__v4.isCallable(value))
 		{
 			return "fn";
 		}
-		var __v0 = use("Runtime.Collection");
-		if (value instanceof __v0)
+		var __v5 = use("Runtime.Collection");
+		if (value instanceof __v5)
 		{
 			return "collection";
 		}
-		var __v0 = use("Runtime.Dict");
-		if (value instanceof __v0)
+		var __v6 = use("Runtime.Dict");
+		if (value instanceof __v6)
 		{
 			return "dict";
 		}
-		var __v0 = use("Runtime.BaseObject");
-		if (value instanceof __v0)
+		var __v7 = use("Runtime.BaseObject");
+		if (value instanceof __v7)
 		{
 			return "object";
 		}
@@ -592,18 +592,18 @@ Object.assign(Runtime.rtl,
 		{
 			return true;
 		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isInt(value))
+		var __v1 = use("Runtime.rtl");
+		if (__v1.isInt(value))
 		{
 			return true;
 		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isDouble(value))
+		var __v2 = use("Runtime.rtl");
+		if (__v2.isDouble(value))
 		{
 			return true;
 		}
-		var __v0 = use("Runtime.rtl");
-		if (__v0.isBoolean(value))
+		var __v3 = use("Runtime.rtl");
+		if (__v3.isBoolean(value))
 		{
 			return true;
 		}

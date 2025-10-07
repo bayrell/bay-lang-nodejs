@@ -218,8 +218,8 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 			var __v6 = use("BayLang.OpCodes.OpAnnotation");
 			var __v7 = use("BayLang.OpCodes.OpComment");
 			var __v8 = use("BayLang.OpCodes.OpAssign");
-			var __v9 = use("BayLang.OpCodes.OpDeclareFunction");
-			var __v10 = use("BayLang.OpCodes.OpPreprocessorIfDef");
+			var __v10 = use("BayLang.OpCodes.OpDeclareFunction");
+			var __v12 = use("BayLang.OpCodes.OpPreprocessorIfDef");
 			if (item instanceof __v6)
 			{
 				annotations.push(item);
@@ -246,13 +246,13 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 				annotations.clear();
 				comments.clear();
 			}
-			else if (item instanceof __v9)
+			else if (item instanceof __v10)
 			{
 				item = item.copy(use("Runtime.Map").from({"annotations":annotations.slice(),"comments":comments.slice()}));
 				if (names.has(item.name))
 				{
-					var __v10 = use("BayLang.Exceptions.ParserError");
-					throw new __v10("Dublicate identifier " + use("Runtime.rtl").toStr(item.name), item.caret_start, parser.file_name)
+					var __v11 = use("BayLang.Exceptions.ParserError");
+					throw new __v11("Dublicate identifier " + use("Runtime.rtl").toStr(item.name), item.caret_start, parser.file_name)
 				}
 				names.set(item.name, true);
 				if (item.name == "constructor")
@@ -270,7 +270,7 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 				annotations.clear();
 				comments.clear();
 			}
-			else if (item instanceof __v10)
+			else if (item instanceof __v12)
 			{
 				var d = this.classBodyAnalyze(parser, item.items);
 				var d_vars = Runtime.rtl.attr(d, "vars");
@@ -373,8 +373,8 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 		token = Runtime.rtl.attr(res, 1);
 		if (token.content == "<")
 		{
-			var __v0 = use("Runtime.Vector");
-			template = new __v0();
+			var __v3 = use("Runtime.Vector");
+			template = new __v3();
 			var res = parser.parser_base.constructor.matchToken(parser, "<");
 			parser = Runtime.rtl.attr(res, 0);
 			var res = parser.parser_base.constructor.readToken(parser);
@@ -419,8 +419,8 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 		token = Runtime.rtl.attr(res, 1);
 		if (token.content == "implements")
 		{
-			var __v0 = use("Runtime.Vector");
-			class_implements = new __v0();
+			var __v4 = use("Runtime.Vector");
+			class_implements = new __v4();
 			var res = parser.parser_base.constructor.readTypeIdentifier(look);
 			parser = Runtime.rtl.attr(res, 0);
 			op_code = Runtime.rtl.attr(res, 1);
@@ -449,8 +449,8 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 		var d = this.classBodyAnalyze(parser, arr);
 		var res = parser.parser_base.constructor.matchToken(parser, "}");
 		parser = Runtime.rtl.attr(res, 0);
-		var __v0 = use("BayLang.OpCodes.OpDeclareClass");
-		var current_class = new __v0(use("Runtime.Map").from({"kind":class_kind,"name":class_name,"is_abstract":is_abstract,"is_static":is_static,"is_declare":is_declare,"class_extends":class_extends,"class_implements":(class_implements != null) ? (class_implements) : (null),"template":(template != null) ? (template) : (null),"vars":d.item("vars"),"functions":d.item("functions"),"fn_create":d.item("fn_create"),"fn_destroy":d.item("fn_destroy"),"items":arr,"caret_start":caret_start,"caret_end":parser.caret}));
+		var __v5 = use("BayLang.OpCodes.OpDeclareClass");
+		var current_class = new __v5(use("Runtime.Map").from({"kind":class_kind,"name":class_name,"is_abstract":is_abstract,"is_static":is_static,"is_declare":is_declare,"class_extends":class_extends,"class_implements":(class_implements != null) ? (class_implements) : (null),"template":(template != null) ? (template) : (null),"vars":d.item("vars"),"functions":d.item("functions"),"fn_create":d.item("fn_create"),"fn_destroy":d.item("fn_destroy"),"items":arr,"caret_start":caret_start,"caret_end":parser.caret}));
 		/* Restore uses */
 		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["uses"]), save_uses);
 		return use("Runtime.Vector").from([parser.copy(use("Runtime.Map").from({"current_class":current_class})),current_class]);
@@ -591,8 +591,8 @@ Object.assign(BayLang.LangBay.ParserBayProgram,
 			parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["skip_comments"]), true);
 		}
 		items.appendItems(comments);
-		var __v3 = use("BayLang.OpCodes.OpModule");
-		return use("Runtime.Vector").from([parser,new __v3(use("Runtime.Map").from({"uses":parser.uses.toDict(),"items":items,"caret_start":caret_start,"caret_end":parser.caret}))]);
+		var __v5 = use("BayLang.OpCodes.OpModule");
+		return use("Runtime.Vector").from([parser,new __v5(use("Runtime.Map").from({"uses":parser.uses.toDict(),"items":items,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()

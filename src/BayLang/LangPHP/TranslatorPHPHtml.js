@@ -61,19 +61,19 @@ Object.assign(BayLang.LangPHP.TranslatorPHPHtml,
 		{
 			return use("Runtime.Vector").from([t,t.expression.constructor.toString(op_code.value)]);
 		}
-		var __v0 = use("BayLang.OpCodes.OpHtmlValue");
-		if (op_code instanceof __v0)
+		var __v1 = use("BayLang.OpCodes.OpHtmlValue");
+		if (op_code instanceof __v1)
 		{
-			var __v1 = use("BayLang.OpCodes.OpHtmlValue");
 			var __v2 = use("BayLang.OpCodes.OpHtmlValue");
-			if (op_code.kind == __v1.KIND_RAW)
+			var __v3 = use("BayLang.OpCodes.OpHtmlValue");
+			if (op_code.kind == __v2.KIND_RAW)
 			{
 				var res = t.expression.constructor.Expression(t, op_code.value);
 				t = Runtime.rtl.attr(res, 0);
 				var value = Runtime.rtl.attr(res, 1);
 				return use("Runtime.Vector").from([t,value]);
 			}
-			else if (op_code.kind == __v2.KIND_JSON)
+			else if (op_code.kind == __v3.KIND_JSON)
 			{
 				var res = t.expression.constructor.Expression(t, op_code.value);
 				t = Runtime.rtl.attr(res, 0);
@@ -148,13 +148,13 @@ Object.assign(BayLang.LangPHP.TranslatorPHPHtml,
 		});
 		if (attr_class.count() > 0)
 		{
-			var __v2 = use("Runtime.rs");
-			res_attrs.push("\"class\" => " + use("Runtime.rtl").toStr("$this->_class_name([") + use("Runtime.rtl").toStr(__v2.join(", ", attr_class)) + use("Runtime.rtl").toStr("])"));
+			var __v5 = use("Runtime.rs");
+			res_attrs.push("\"class\" => " + use("Runtime.rtl").toStr("$this->_class_name([") + use("Runtime.rtl").toStr(__v5.join(", ", attr_class)) + use("Runtime.rtl").toStr("])"));
 		}
 		if (res_attrs.count() > 0)
 		{
-			var __v2 = use("Runtime.rs");
-			attr_s = "[" + use("Runtime.rtl").toStr(__v2.join(",", res_attrs)) + use("Runtime.rtl").toStr("]");
+			var __v6 = use("Runtime.rs");
+			attr_s = "[" + use("Runtime.rtl").toStr(__v6.join(",", res_attrs)) + use("Runtime.rtl").toStr("]");
 		}
 		else
 		{
@@ -180,7 +180,7 @@ Object.assign(BayLang.LangPHP.TranslatorPHPHtml,
 		var content = "";
 		var __v0 = use("BayLang.OpCodes.OpHtmlContent");
 		var __v1 = use("BayLang.OpCodes.OpHtmlValue");
-		var __v2 = use("BayLang.OpCodes.OpHtmlTag");
+		var __v4 = use("BayLang.OpCodes.OpHtmlTag");
 		if (op_code instanceof __v0)
 		{
 			var item_value = t.expression.constructor.toString(op_code.value);
@@ -212,7 +212,7 @@ Object.assign(BayLang.LangPHP.TranslatorPHPHtml,
 				content += use("Runtime.rtl").toStr(t.s("$this->_t(" + use("Runtime.rtl").toStr(var_name) + use("Runtime.rtl").toStr(", ") + use("Runtime.rtl").toStr(item_value) + use("Runtime.rtl").toStr(");")));
 			}
 		}
-		else if (op_code instanceof __v2)
+		else if (op_code instanceof __v4)
 		{
 			var new_var_name = "";
 			var res = t.constructor.incSaveOpCode(t);
@@ -301,8 +301,8 @@ Object.assign(BayLang.LangPHP.TranslatorPHPHtml,
 			var save_op_codes = t.save_op_codes;
 			/*int save_op_code_inc = t.save_op_code_inc;*/
 			var item_value = "";
-			var __v3 = use("BayLang.OpCodes.OpCall");
-			if (op_code instanceof __v3)
+			var __v5 = use("BayLang.OpCodes.OpCall");
+			if (op_code instanceof __v5)
 			{
 				var res = t.expression.constructor.OpCall(t, op_code);
 				t = Runtime.rtl.attr(res, 0);
@@ -400,8 +400,8 @@ Object.assign(BayLang.LangPHP.TranslatorPHPHtml,
 		var f_args = "";
 		if (args != null)
 		{
-			var __v0 = use("BayLang.OpCodes.OpDeclareFunction");
-			var res = t.operator.constructor.OpDeclareFunctionArgs(t, new __v0(use("Runtime.Map").from({"args":args,"is_context":false})));
+			var __v1 = use("BayLang.OpCodes.OpDeclareFunction");
+			var res = t.operator.constructor.OpDeclareFunctionArgs(t, new __v1(use("Runtime.Map").from({"args":args,"is_context":false})));
 			f_args = Runtime.rtl.attr(res, 1);
 		}
 		/* Slot vars */

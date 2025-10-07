@@ -58,8 +58,8 @@ Object.assign(BayLang.Compiler.SettingsProvider.prototype,
 		}
 		if (!this.config)
 		{
-			var __v1 = use("Runtime.Exceptions.RuntimeException");
-			throw new __v1("File '" + file_name + "' contains error ")
+			var __v2 = use("Runtime.Exceptions.RuntimeException");
+			throw new __v2("File '" + file_name + "' contains error ")
 		}
 	},
 	/**
@@ -233,27 +233,27 @@ Object.assign(BayLang.Compiler.SettingsProvider.prototype,
 			return Promise.resolve(null);
 		}
 		var module_path = module.getModulePath();
-		var __v0 = use("Runtime.rs");
-		if (__v0.indexOf(file_path, module_path) != 0)
+		var __v1 = use("Runtime.rs");
+		if (__v1.indexOf(file_path, module_path) != 0)
 		{
 			return Promise.resolve(null);
 		}
-		var __v0 = use("Runtime.rs");
-		var module_ext_name = __v0.extname(file_path);
-		var __v1 = use("Runtime.rs");
 		var __v2 = use("Runtime.rs");
-		var d = use("Runtime.Map").from({"file_path":file_path,"file_name":__v1.substr(file_path, __v2.strlen(module_path)),"module":module,"src_file_name":null,"ext_name":module_ext_name,"success":false});
-		var module_src_path = module.getSourcePath();
+		var module_ext_name = __v2.extname(file_path);
 		var __v3 = use("Runtime.rs");
-		if (__v3.indexOf(file_path, module_src_path) != 0)
+		var __v4 = use("Runtime.rs");
+		var d = use("Runtime.Map").from({"file_path":file_path,"file_name":__v3.substr(file_path, __v4.strlen(module_path)),"module":module,"src_file_name":null,"ext_name":module_ext_name,"success":false});
+		var module_src_path = module.getSourcePath();
+		var __v5 = use("Runtime.rs");
+		if (__v5.indexOf(file_path, module_src_path) != 0)
 		{
 			return Promise.resolve(d);
 		}
-		var __v3 = use("Runtime.rs");
-		var __v4 = use("Runtime.rs");
-		var src_file_name = __v3.substr(file_path, __v4.strlen(module_src_path));
-		var __v5 = use("Runtime.rs");
-		src_file_name = __v5.removeFirstSlash(src_file_name);
+		var __v6 = use("Runtime.rs");
+		var __v7 = use("Runtime.rs");
+		var src_file_name = __v6.substr(file_path, __v7.strlen(module_src_path));
+		var __v8 = use("Runtime.rs");
+		src_file_name = __v8.removeFirstSlash(src_file_name);
 		d.set("src_file_name", src_file_name);
 		if (module.checkExclude(src_file_name))
 		{
@@ -286,15 +286,15 @@ Object.assign(BayLang.Compiler.SettingsProvider.prototype,
 		var ext_name = Runtime.rtl.attr(file_info, "ext_name");
 		var container = use("Runtime.Map").from({"op_code":null,"success":false,"content":"","result":"","lang":""});
 		/* Set content */
-		var __v0 = use("Runtime.fs");
-		var content = await __v0.readFile(file_path);
+		var __v2 = use("Runtime.fs");
+		var content = await __v2.readFile(file_path);
 		container.set("content", content);
 		if (ext_name == "bay")
 		{
-			var __v1 = use("BayLang.LangBay.ParserBay");
-			var parser = new __v1();
-			var __v2 = use("BayLang.LangUtils");
-			var op_code = __v2.parse(parser, content);
+			var __v3 = use("BayLang.LangBay.ParserBay");
+			var parser = new __v3();
+			var __v4 = use("BayLang.LangUtils");
+			var op_code = __v4.parse(parser, content);
 			container.set("op_code", op_code);
 		}
 		var is_lang = (ext_name, lang) =>
@@ -338,32 +338,32 @@ Object.assign(BayLang.Compiler.SettingsProvider.prototype,
 				return Promise.resolve(false);
 			}
 			/* Create directory if does not exists */
-			var __v1 = use("Runtime.rs");
-			var dir_name = __v1.dirname(dest_path);
-			var __v2 = use("Runtime.fs");
-			if (!await __v2.isDir(dir_name))
+			var __v5 = use("Runtime.rs");
+			var dir_name = __v5.dirname(dest_path);
+			var __v6 = use("Runtime.fs");
+			if (!await __v6.isDir(dir_name))
 			{
-				var __v3 = use("Runtime.fs");
-				await __v3.mkdir(dir_name);
+				var __v7 = use("Runtime.fs");
+				await __v7.mkdir(dir_name);
 			}
 			/* Save file */
-			var __v2 = use("Runtime.fs");
-			await __v2.saveFile(dest_path, Runtime.rtl.attr(container, "result"));
+			var __v8 = use("Runtime.fs");
+			await __v8.saveFile(dest_path, Runtime.rtl.attr(container, "result"));
 			if ((log_level & 2) == 2)
 			{
-				var __v3 = use("Runtime.io");
-				__v3.print("=> " + use("Runtime.rtl").toStr(dest_path));
+				var __v9 = use("Runtime.io");
+				__v9.print("=> " + use("Runtime.rtl").toStr(dest_path));
 			}
 			return Promise.resolve(true);
 		};
 		var languages = use("Runtime.Vector").from([]);
 		if (lang == "")
 		{
-			var __v1 = use("Runtime.Monad");
-			var __v2 = new __v1(Runtime.rtl.attr(this.config, "languages"));
-			var __v3 = use("Runtime.rtl");
-			__v2 = __v2.monad(__v3.m_to("Runtime.Collection", use("Runtime.Vector").from([])));
-			languages = __v2.value();
+			var __v5 = use("Runtime.Monad");
+			var __v6 = new __v5(Runtime.rtl.attr(this.config, "languages"));
+			var __v7 = use("Runtime.rtl");
+			__v6 = __v6.monad(__v7.m_to("Runtime.Collection", use("Runtime.Vector").from([])));
+			languages = __v6.value();
 		}
 		else
 		{
@@ -371,11 +371,11 @@ Object.assign(BayLang.Compiler.SettingsProvider.prototype,
 		}
 		for (var i = 0; i < languages.count(); i++)
 		{
-			var __v1 = use("Runtime.Monad");
-			var __v2 = new __v1(Runtime.rtl.attr(languages, i));
-			var __v3 = use("Runtime.rtl");
-			__v2 = __v2.monad(__v3.m_to("string", ""));
-			var lang_name = __v2.value();
+			var __v8 = use("Runtime.Monad");
+			var __v9 = new __v8(Runtime.rtl.attr(languages, i));
+			var __v10 = use("Runtime.rtl");
+			__v9 = __v9.monad(__v10.m_to("string", ""));
+			var lang_name = __v9.value();
 			var op_code = Runtime.rtl.attr(container, "op_code");
 			container.set("success", false);
 			container.set("lang", lang_name);
@@ -384,12 +384,12 @@ Object.assign(BayLang.Compiler.SettingsProvider.prototype,
 			{
 				if (op_code)
 				{
-					var __v4 = use("BayLang.LangUtils");
-					var t = __v4.createTranslator(lang_name);
+					var __v11 = use("BayLang.LangUtils");
+					var t = __v11.createTranslator(lang_name);
 					if (t)
 					{
-						var __v5 = use("BayLang.LangUtils");
-						container.set("result", __v5.translate(t, op_code));
+						var __v12 = use("BayLang.LangUtils");
+						container.set("result", __v12.translate(t, op_code));
 						container.set("success", true);
 					}
 				}
@@ -406,8 +406,8 @@ Object.assign(BayLang.Compiler.SettingsProvider.prototype,
 		}
 		if ((log_level & 2) == 2)
 		{
-			var __v1 = use("Runtime.io");
-			__v1.print("Ok");
+			var __v13 = use("Runtime.io");
+			__v13.print("Ok");
 		}
 		return Promise.resolve(file_info);
 	},
@@ -428,43 +428,43 @@ Object.assign(BayLang.Compiler.SettingsProvider.prototype,
 		var module_src_path = module.getSourcePath();
 		var is_success = true;
 		/* Read files */
-		var __v0 = use("Runtime.fs");
-		var files = await __v0.listDirRecursive(module_src_path);
+		var __v1 = use("Runtime.fs");
+		var files = await __v1.listDirRecursive(module_src_path);
 		for (var i = 0; i < files.count(); i++)
 		{
 			var file_name = Runtime.rtl.attr(files, i);
-			var __v1 = use("Runtime.fs");
-			var file_path = __v1.join(use("Runtime.Vector").from([module_src_path,file_name]));
+			var __v2 = use("Runtime.fs");
+			var file_path = __v2.join(use("Runtime.Vector").from([module_src_path,file_name]));
 			if (module.checkExclude(file_name))
 			{
 				continue;
 			}
-			var __v2 = use("Runtime.fs");
-			if (!await __v2.isFile(file_path))
+			var __v3 = use("Runtime.fs");
+			if (!await __v3.isFile(file_path))
 			{
 				continue;
 			}
-			var __v2 = use("BayLang.Exceptions.ParserUnknownError");
+			var __v4 = use("BayLang.Exceptions.ParserUnknownError");
 			try
 			{
 				await this.compileFile(file_path, lang, 1);
 			}
 			catch (_ex)
 			{
-				if (_ex instanceof __v2)
+				if (_ex instanceof __v4)
 				{
 					var e = _ex;
 					
-					var __v3 = use("Runtime.io");
-					__v3.print_error(e.toString());
+					var __v5 = use("Runtime.io");
+					__v5.print_error(e.toString());
 					is_success = false;
 				}
 				else if (true)
 				{
 					var e = _ex;
 					
-					var __v4 = use("Runtime.io");
-					__v4.print_error(e);
+					var __v6 = use("Runtime.io");
+					__v6.print_error(e);
 					is_success = false;
 				}
 				else
@@ -684,19 +684,19 @@ Object.assign(BayLang.Compiler.SettingsProvider.prototype,
 			}
 		}
 		/* Create directory if does not exists */
-		var __v4 = use("Runtime.rs");
-		var dir_name = __v4.dirname(asset_path);
-		var __v5 = use("Runtime.fs");
-		if (!await __v5.isDir(dir_name))
+		var __v12 = use("Runtime.rs");
+		var dir_name = __v12.dirname(asset_path);
+		var __v13 = use("Runtime.fs");
+		if (!await __v13.isDir(dir_name))
 		{
-			var __v6 = use("Runtime.fs");
-			await __v6.mkdir(dir_name);
+			var __v14 = use("Runtime.fs");
+			await __v14.mkdir(dir_name);
 		}
 		/* Save file */
-		var __v5 = use("Runtime.fs");
-		await __v5.saveFile(asset_path, asset_content);
-		var __v6 = use("Runtime.io");
-		__v6.print("Bundle to => " + use("Runtime.rtl").toStr(asset_path_relative));
+		var __v15 = use("Runtime.fs");
+		await __v15.saveFile(asset_path, asset_content);
+		var __v16 = use("Runtime.io");
+		__v16.print("Bundle to => " + use("Runtime.rtl").toStr(asset_path_relative));
 	},
 	_init: function()
 	{

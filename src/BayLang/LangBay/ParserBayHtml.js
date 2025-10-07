@@ -263,17 +263,17 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 			var __v3 = use("BayLang.OpCodes.OpString");
 			op_code_item = new __v2(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":caret_end,"value1":op_code_item,"value2":new __v3(use("Runtime.Map").from({"value":"}"})),"math":"~"}));
 		}
-		var __v0 = use("BayLang.OpCodes.OpString");
-		if (op_code_item instanceof __v0)
+		var __v4 = use("BayLang.OpCodes.OpString");
+		if (op_code_item instanceof __v4)
 		{
-			var __v1 = use("BayLang.OpCodes.OpString");
-			op_code_item = new __v1(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":caret_end,"value":selector + use("Runtime.rtl").toStr("{") + use("Runtime.rtl").toStr(op_code_item.value)}));
+			var __v5 = use("BayLang.OpCodes.OpString");
+			op_code_item = new __v5(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":caret_end,"value":selector + use("Runtime.rtl").toStr("{") + use("Runtime.rtl").toStr(op_code_item.value)}));
 		}
 		else
 		{
-			var __v2 = use("BayLang.OpCodes.OpMath");
-			var __v3 = use("BayLang.OpCodes.OpString");
-			op_code_item = new __v2(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":caret_end,"value1":new __v3(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":caret_end,"value":selector + use("Runtime.rtl").toStr("{")})),"value2":op_code_item,"math":"~"}));
+			var __v6 = use("BayLang.OpCodes.OpMath");
+			var __v7 = use("BayLang.OpCodes.OpString");
+			op_code_item = new __v6(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":caret_end,"value1":new __v7(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":caret_end,"value":selector + use("Runtime.rtl").toStr("{")})),"value2":op_code_item,"math":"~"}));
 		}
 		return op_code_item;
 	},
@@ -515,9 +515,9 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 				{
 					arr.push(";");
 				}
-				var __v5 = use("Runtime.rs");
 				var __v6 = use("Runtime.rs");
-				var s = __v5.trim(__v6.join("", arr));
+				var __v7 = use("Runtime.rs");
+				var s = __v6.trim(__v7.join("", arr));
 				css_content.push(s);
 				/* Setup caret */
 				parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["caret"]), caret);
@@ -536,15 +536,15 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 				return item != "";
 			});
 			/* Remove last semicolon */
-			var __v0 = use("Runtime.rtl");
-			if (css_content.count() > 0 && __v0.isString(css_content.last()))
+			var __v8 = use("Runtime.rtl");
+			if (css_content.count() > 0 && __v8.isString(css_content.last()))
 			{
 				var item = css_content.last();
-				var __v1 = use("Runtime.rs");
-				if (__v1.substr(item, -1) == ";")
+				var __v9 = use("Runtime.rs");
+				if (__v9.substr(item, -1) == ";")
 				{
-					var __v2 = use("Runtime.rs");
-					item = __v2.substr(item, 0, -1);
+					var __v10 = use("Runtime.rs");
+					item = __v10.substr(item, 0, -1);
 				}
 				css_content.set(css_content.count() - 1, item);
 			}
@@ -553,13 +553,13 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 			{
 				if (arr.count() > 0)
 				{
-					var __v0 = use("BayLang.OpCodes.OpString");
-					var __v1 = use("Runtime.rs");
-					var css_str_op_code = new __v0(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.getCaret(),"value":__v1.join("", arr)}));
+					var __v11 = use("BayLang.OpCodes.OpString");
+					var __v12 = use("Runtime.rs");
+					var css_str_op_code = new __v11(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.getCaret(),"value":__v12.join("", arr)}));
 					if (op_code_item != null)
 					{
-						var __v2 = use("BayLang.OpCodes.OpMath");
-						op_code_item = new __v2(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.getCaret(),"value1":op_code_item,"value2":css_str_op_code,"math":"~"}));
+						var __v13 = use("BayLang.OpCodes.OpMath");
+						op_code_item = new __v13(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.getCaret(),"value1":op_code_item,"value2":css_str_op_code,"math":"~"}));
 					}
 					else
 					{
@@ -569,18 +569,18 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 				return op_code_item;
 			};
 			/* Init arr */
-			var __v0 = use("Runtime.Vector");
-			var arr = new __v0();
+			var __v11 = use("Runtime.Vector");
+			var arr = new __v11();
 			var selectors = this.getSelectors(start_selectors);
-			var __v1 = use("Runtime.rs");
-			arr.push(__v1.join(",", selectors) + use("Runtime.rtl").toStr("{"));
+			var __v12 = use("Runtime.rs");
+			arr.push(__v12.join(",", selectors) + use("Runtime.rtl").toStr("{"));
 			/* Build op_code_item */
 			var op_code_item = null;
 			for (var i = 0; i < css_content.count(); i++)
 			{
 				var item = css_content.get(i);
-				var __v2 = use("Runtime.rtl");
-				if (__v2.isString(item))
+				var __v13 = use("Runtime.rtl");
+				if (__v13.isString(item))
 				{
 					arr.push(item);
 				}
@@ -589,8 +589,8 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 					op_code_item = extendItem(op_code_item, arr);
 					if (op_code_item != null)
 					{
-						var __v3 = use("BayLang.OpCodes.OpMath");
-						op_code_item = new __v3(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.getCaret(),"value1":op_code_item,"value2":item,"math":"~"}));
+						var __v14 = use("BayLang.OpCodes.OpMath");
+						op_code_item = new __v14(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.getCaret(),"value1":op_code_item,"value2":item,"math":"~"}));
 					}
 					else
 					{
@@ -650,8 +650,8 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 		}
 		if (op_code == null)
 		{
-			var __v1 = use("BayLang.OpCodes.OpString");
-			op_code = new __v1(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.caret,"value":""}));
+			var __v5 = use("BayLang.OpCodes.OpString");
+			op_code = new __v5(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.caret,"value":""}));
 		}
 		op_code = Runtime.rtl.setAttr(op_code, Runtime.Collection.from(["caret_start"]), caret_start);
 		op_code = Runtime.rtl.setAttr(op_code, Runtime.Collection.from(["caret_end"]), parser.caret);
@@ -766,18 +766,18 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 		}
 		else
 		{
-			var __v2 = use("BayLang.Exceptions.ParserExpected");
-			var __v3 = use("BayLang.Caret");
-			throw new __v2("End of comment", new __v3(use("Runtime.Map").from({"x":x,"y":y,"pos":pos})), start.file_name)
+			var __v4 = use("BayLang.Exceptions.ParserExpected");
+			var __v5 = use("BayLang.Caret");
+			throw new __v4("End of comment", new __v5(use("Runtime.Map").from({"x":x,"y":y,"pos":pos})), start.file_name)
 		}
 		/* Return result */
-		var __v2 = use("Runtime.rs");
-		var value_str = __v2.substr(content.ref, pos_start, pos_end - pos_start);
-		var __v3 = use("BayLang.Caret");
-		var caret_end = new __v3(use("Runtime.Map").from({"x":x,"y":y,"pos":pos}));
+		var __v6 = use("Runtime.rs");
+		var value_str = __v6.substr(content.ref, pos_start, pos_end - pos_start);
+		var __v7 = use("BayLang.Caret");
+		var caret_end = new __v7(use("Runtime.Map").from({"x":x,"y":y,"pos":pos}));
 		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["skip_comments"]), true);
-		var __v4 = use("BayLang.OpCodes.OpComment");
-		return use("Runtime.Vector").from([start.copy(use("Runtime.Map").from({"caret":caret_end})),new __v4(use("Runtime.Map").from({"value":value_str,"caret_start":caret_start,"caret_end":caret_end}))]);
+		var __v8 = use("BayLang.OpCodes.OpComment");
+		return use("Runtime.Vector").from([start.copy(use("Runtime.Map").from({"caret":caret_end})),new __v8(use("Runtime.Map").from({"value":value_str,"caret_start":caret_start,"caret_end":caret_end}))]);
 		return use("Runtime.Vector").from([parser,null]);
 	},
 	/**
@@ -1105,10 +1105,10 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 				items.push(new __v3(use("Runtime.Map").from({"key":key,"value":value,"caret_start":caret_start,"caret_end":parser.caret})));
 			}
 			caret = parser.parser_base.constructor.skipChar(parser, content, parser.caret);
-			var __v2 = use("Runtime.rs");
-			ch = __v2.substr(content.ref, caret.pos, 1);
-			var __v3 = use("Runtime.rs");
-			var ch2 = __v3.substr(content.ref, caret.pos, 2);
+			var __v4 = use("Runtime.rs");
+			ch = __v4.substr(content.ref, caret.pos, 1);
+			var __v5 = use("Runtime.rs");
+			var ch2 = __v5.substr(content.ref, caret.pos, 2);
 			if (ch2 == "/>")
 			{
 				break;
@@ -1189,21 +1189,21 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 			}
 			else if (ch == "<" || ch2 == "{{" || ch == "@")
 			{
-				var __v13 = use("Runtime.rs");
-				var value = __v13.substr(content.ref, start_pos, pos - start_pos);
-				var __v14 = use("BayLang.Caret");
-				caret = new __v14(use("Runtime.Map").from({"x":x,"y":y,"pos":pos}));
-				var __v15 = use("Runtime.rs");
-				value = __v15.trim(value, "\t\r\n");
+				var __v14 = use("Runtime.rs");
+				var value = __v14.substr(content.ref, start_pos, pos - start_pos);
+				var __v15 = use("BayLang.Caret");
+				caret = new __v15(use("Runtime.Map").from({"x":x,"y":y,"pos":pos}));
+				var __v16 = use("Runtime.rs");
+				value = __v16.trim(value, "\t\r\n");
 				if (flag_first && first_html_tag)
 				{
-					var __v16 = use("Runtime.rs");
-					value = __v16.trim(value, " ");
+					var __v17 = use("Runtime.rs");
+					value = __v17.trim(value, " ");
 				}
 				if (value != "")
 				{
-					var __v16 = use("BayLang.OpCodes.OpHtmlContent");
-					item = new __v16(use("Runtime.Map").from({"value":value,"caret_start":caret_start,"caret_end":caret}));
+					var __v18 = use("BayLang.OpCodes.OpHtmlContent");
+					item = new __v18(use("Runtime.Map").from({"value":value,"caret_start":caret_start,"caret_end":caret}));
 					items.push(item);
 				}
 				/* Read HTML Value */
@@ -1221,18 +1221,18 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 			}
 			else if (ch3 == "%if" || ch4 == "%for" || ch4 == "%var" || ch4 == "%set" || ch6 == "%while" || ch7 == "%render")
 			{
-				var __v16 = use("Runtime.rs");
-				var value = __v16.substr(content.ref, start_pos, pos - start_pos);
-				var __v17 = use("BayLang.Caret");
-				caret = new __v17(use("Runtime.Map").from({"x":x,"y":y,"pos":pos}));
-				var __v18 = use("Runtime.rs");
-				value = __v18.trim(value, "\t\r\n");
 				var __v19 = use("Runtime.rs");
-				value = __v19.trim(value, " ");
+				var value = __v19.substr(content.ref, start_pos, pos - start_pos);
+				var __v20 = use("BayLang.Caret");
+				caret = new __v20(use("Runtime.Map").from({"x":x,"y":y,"pos":pos}));
+				var __v21 = use("Runtime.rs");
+				value = __v21.trim(value, "\t\r\n");
+				var __v22 = use("Runtime.rs");
+				value = __v22.trim(value, " ");
 				if (value != "")
 				{
-					var __v20 = use("BayLang.OpCodes.OpHtmlContent");
-					item = new __v20(use("Runtime.Map").from({"value":value,"caret_start":caret_start,"caret_end":caret}));
+					var __v23 = use("BayLang.OpCodes.OpHtmlContent");
+					item = new __v23(use("Runtime.Map").from({"value":value,"caret_start":caret_start,"caret_end":caret}));
 					items.push(item);
 				}
 				/* Read HTML Operator */
@@ -1258,25 +1258,25 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 				y = parser.parser_base.constructor.nextY(parser, ch, y);
 				pos = pos + 1;
 			}
-			var __v9 = use("Runtime.rs");
-			ch_pos = __v9.substr(content.ref, pos, end_tag_sz);
+			var __v24 = use("Runtime.rs");
+			ch_pos = __v24.substr(content.ref, pos, end_tag_sz);
 		}
 		/* Push item */
-		var __v3 = use("Runtime.rs");
-		var value = __v3.substr(content.ref, start_pos, pos - start_pos);
-		var __v4 = use("Runtime.rs");
-		value = __v4.trim(value, "\t\r\n");
-		var __v5 = use("BayLang.Caret");
-		caret = new __v5(use("Runtime.Map").from({"x":x,"y":y,"pos":pos}));
+		var __v25 = use("Runtime.rs");
+		var value = __v25.substr(content.ref, start_pos, pos - start_pos);
+		var __v26 = use("Runtime.rs");
+		value = __v26.trim(value, "\t\r\n");
+		var __v27 = use("BayLang.Caret");
+		caret = new __v27(use("Runtime.Map").from({"x":x,"y":y,"pos":pos}));
 		if (first_html_tag)
 		{
-			var __v6 = use("Runtime.rs");
-			value = __v6.trim(value, " ");
+			var __v28 = use("Runtime.rs");
+			value = __v28.trim(value, " ");
 		}
 		if (value != "")
 		{
-			var __v6 = use("BayLang.OpCodes.OpHtmlContent");
-			item = new __v6(use("Runtime.Map").from({"value":value,"caret_start":caret_start,"caret_end":caret}));
+			var __v29 = use("BayLang.OpCodes.OpHtmlContent");
+			item = new __v29(use("Runtime.Map").from({"value":value,"caret_start":caret_start,"caret_end":caret}));
 			items.push(item);
 		}
 		return use("Runtime.Vector").from([parser.copy(use("Runtime.Map").from({"caret":caret})),items]);
@@ -1342,18 +1342,18 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 		if (tag_name == "slot")
 		{
 			/* Slot args */
-			var __v0 = use("Runtime.lib");
-			var args_item = attrs.findItem(__v0.equalAttr("key", "args"));
+			var __v1 = use("Runtime.lib");
+			var args_item = attrs.findItem(__v1.equalAttr("key", "args"));
 			if (args_item)
 			{
 				var args_str = args_item.value.value;
 				/* Create parser */
-				var __v1 = use("BayLang.LangBay.ParserBay");
-				var parser2 = new __v1();
+				var __v2 = use("BayLang.LangBay.ParserBay");
+				var parser2 = new __v2();
 				parser2 = parser2.constructor.reset(parser2);
 				parser2 = parser2.constructor.setContent(parser2, args_str);
-				var __v2 = use("BayLang.Caret");
-				parser2 = Runtime.rtl.setAttr(parser2, Runtime.Collection.from(["caret"]), new __v2(use("Runtime.Map").from({})));
+				var __v3 = use("BayLang.Caret");
+				parser2 = Runtime.rtl.setAttr(parser2, Runtime.Collection.from(["caret"]), new __v3(use("Runtime.Map").from({})));
 				/* Parse args */
 				var res = parser2.parser_operator.constructor.readDeclareFunctionArgs(parser2, false, false);
 				parser2 = Runtime.rtl.attr(res, 0);
@@ -1363,22 +1363,22 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 				parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["vars"]), parser2_vars);
 			}
 			/* Slot use */
-			var __v1 = use("Runtime.lib");
-			args_item = attrs.findItem(__v1.equalAttr("key", "use"));
+			var __v4 = use("Runtime.lib");
+			args_item = attrs.findItem(__v4.equalAttr("key", "use"));
 			if (args_item)
 			{
 				var args_str = args_item.value.value;
-				var __v2 = use("Runtime.Vector");
-				slot_use = new __v2();
+				var __v5 = use("Runtime.Vector");
+				slot_use = new __v5();
 				/* Each items */
 				var parser2_vars = use("Runtime.Map").from({});
-				var __v3 = use("Runtime.rs");
-				var items = __v3.split(",", args_str);
+				var __v6 = use("Runtime.rs");
+				var items = __v6.split(",", args_str);
 				for (var i = 0; i < items.count(); i++)
 				{
-					var __v4 = use("BayLang.OpCodes.OpIdentifier");
-					var __v5 = use("BayLang.OpCodes.OpIdentifier");
-					slot_use.push(new __v4(use("Runtime.Map").from({"value":items.get(i),"kind":__v5.KIND_VARIABLE})));
+					var __v7 = use("BayLang.OpCodes.OpIdentifier");
+					var __v8 = use("BayLang.OpCodes.OpIdentifier");
+					slot_use.push(new __v7(use("Runtime.Map").from({"value":items.get(i),"kind":__v8.KIND_VARIABLE})));
 					parser2_vars.set(items.get(i), true);
 				}
 				/* Add slot args */
@@ -1402,12 +1402,12 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 				var res = parser.parser_base.constructor.readUntilStringArr(parser, use("Runtime.Vector").from(["</svg>"]), false);
 				parser = Runtime.rtl.attr(res, 0);
 				var content = Runtime.rtl.attr(res, 1);
-				var __v0 = use("Runtime.re");
-				content = __v0.replace("[\t\n]", "", content);
-				var __v1 = use("BayLang.OpCodes.OpHtmlValue");
-				var __v2 = use("BayLang.OpCodes.OpHtmlValue");
-				var __v3 = use("BayLang.OpCodes.OpString");
-				var items = use("Runtime.Vector").from([new __v1(use("Runtime.Map").from({"kind":__v2.KIND_RAW,"value":new __v3(use("Runtime.Map").from({"caret_start":parser.caret,"caret_end":parser.caret,"value":content})),"caret_start":caret_start,"caret_end":parser.caret}))]);
+				var __v9 = use("Runtime.re");
+				content = __v9.replace("[\t\n]", "", content);
+				var __v10 = use("BayLang.OpCodes.OpHtmlValue");
+				var __v11 = use("BayLang.OpCodes.OpHtmlValue");
+				var __v12 = use("BayLang.OpCodes.OpString");
+				var items = use("Runtime.Vector").from([new __v10(use("Runtime.Map").from({"kind":__v11.KIND_RAW,"value":new __v12(use("Runtime.Map").from({"caret_start":parser.caret,"caret_end":parser.caret,"value":content})),"caret_start":caret_start,"caret_end":parser.caret}))]);
 			}
 			else
 			{
@@ -1454,30 +1454,30 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 		var op_code = null;
 		if (tag_name == "slot")
 		{
-			var __v0 = use("Runtime.lib");
-			var op_attr_name = attrs.findItem(__v0.equalAttr("key", "name"));
+			var __v13 = use("Runtime.lib");
+			var op_attr_name = attrs.findItem(__v13.equalAttr("key", "name"));
 			/* Filter attrs */
-			var __v1 = use("Runtime.lib");
-			attrs = attrs.filter(__v1.equalAttrNot("key", "args"));
-			var __v2 = use("Runtime.lib");
-			attrs = attrs.filter(__v2.equalAttrNot("key", "name"));
-			var __v3 = use("Runtime.lib");
-			attrs = attrs.filter(__v3.equalAttrNot("key", "use"));
+			var __v14 = use("Runtime.lib");
+			attrs = attrs.filter(__v14.equalAttrNot("key", "args"));
+			var __v15 = use("Runtime.lib");
+			attrs = attrs.filter(__v15.equalAttrNot("key", "name"));
+			var __v16 = use("Runtime.lib");
+			attrs = attrs.filter(__v16.equalAttrNot("key", "use"));
 			var name = "";
-			var __v4 = use("BayLang.OpCodes.OpString");
-			if (op_attr_name && op_attr_name.value instanceof __v4)
+			var __v17 = use("BayLang.OpCodes.OpString");
+			if (op_attr_name && op_attr_name.value instanceof __v17)
 			{
 				name = op_attr_name.value.value;
 			}
-			var __v4 = use("BayLang.OpCodes.OpHtmlSlot");
-			var __v5 = use("BayLang.OpCodes.OpHtmlItems");
-			op_code = new __v4(use("Runtime.Map").from({"args":slot_args,"attrs":attrs,"name":name,"vars":slot_use,"caret_start":caret_start,"caret_end":parser.caret,"items":(items != null) ? (new __v5(use("Runtime.Map").from({"caret_start":caret_items_start,"caret_end":caret_items_end,"items":items}))) : (null)}));
+			var __v18 = use("BayLang.OpCodes.OpHtmlSlot");
+			var __v19 = use("BayLang.OpCodes.OpHtmlItems");
+			op_code = new __v18(use("Runtime.Map").from({"args":slot_args,"attrs":attrs,"name":name,"vars":slot_use,"caret_start":caret_start,"caret_end":parser.caret,"items":(items != null) ? (new __v19(use("Runtime.Map").from({"caret_start":caret_items_start,"caret_end":caret_items_end,"items":items}))) : (null)}));
 		}
 		else
 		{
-			var __v6 = use("BayLang.OpCodes.OpHtmlTag");
-			var __v7 = use("BayLang.OpCodes.OpHtmlItems");
-			op_code = new __v6(use("Runtime.Map").from({"attrs":attrs,"tag_name":tag_name,"op_code_name":op_code_name,"caret_start":caret_start,"caret_end":parser.caret,"items":(items != null) ? (new __v7(use("Runtime.Map").from({"caret_start":caret_items_start,"caret_end":caret_items_end,"items":items}))) : (null)}));
+			var __v20 = use("BayLang.OpCodes.OpHtmlTag");
+			var __v21 = use("BayLang.OpCodes.OpHtmlItems");
+			op_code = new __v20(use("Runtime.Map").from({"attrs":attrs,"tag_name":tag_name,"op_code_name":op_code_name,"caret_start":caret_start,"caret_end":parser.caret,"items":(items != null) ? (new __v21(use("Runtime.Map").from({"caret_start":caret_items_start,"caret_end":caret_items_end,"items":items}))) : (null)}));
 		}
 		return use("Runtime.Vector").from([parser,op_code]);
 	},
@@ -1658,9 +1658,9 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 		parser = Runtime.rtl.attr(res, 0);
 		var res = parser.parser_base.constructor.matchToken(parser, ">");
 		parser = Runtime.rtl.attr(res, 0);
-		var __v0 = use("BayLang.OpCodes.OpDeclareFunction");
-		var __v1 = use("BayLang.OpCodes.OpFlags");
-		var f = new __v0(use("Runtime.Map").from({"args":fn_args,"vars":use("Runtime.Vector").from([]),"flags":new __v1(use("Runtime.Map").from({"p_static":false,"p_pure":false,"p_multiblock":is_multiblock})),"name":fn_name,"result_type":"html","is_html":true,"expression":expression,"items":null,"caret_start":caret_start,"caret_end":parser.caret}));
+		var __v1 = use("BayLang.OpCodes.OpDeclareFunction");
+		var __v2 = use("BayLang.OpCodes.OpFlags");
+		var f = new __v1(use("Runtime.Map").from({"args":fn_args,"vars":use("Runtime.Vector").from([]),"flags":new __v2(use("Runtime.Map").from({"p_static":false,"p_pure":false,"p_multiblock":is_multiblock})),"name":fn_name,"result_type":"html","is_html":true,"expression":expression,"items":null,"caret_start":caret_start,"caret_end":parser.caret}));
 		return use("Runtime.Vector").from([parser,f]);
 	},
 	/**
@@ -1827,8 +1827,8 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 		var res = parser.parser_base.constructor.matchToken(parser, ">");
 		parser = Runtime.rtl.attr(res, 0);
 		/* Create widget data */
-		var __v3 = use("BayLang.OpCodes.OpWidget");
-		var op_code = new __v3(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.caret,"items":items,"settings":settings}));
+		var __v4 = use("BayLang.OpCodes.OpWidget");
+		var op_code = new __v4(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.caret,"items":items,"settings":settings}));
 		return use("Runtime.Vector").from([parser,op_code]);
 	},
 	/**
@@ -1916,8 +1916,8 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 		var res = parser.parser_base.constructor.matchToken(parser, ">");
 		parser = Runtime.rtl.attr(res, 0);
 		/* Create widget data */
-		var __v2 = use("BayLang.OpCodes.OpWidgetData");
-		var op_code = new __v2(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.caret,"widget":items}));
+		var __v3 = use("BayLang.OpCodes.OpWidgetData");
+		var op_code = new __v3(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.caret,"widget":items}));
 		return use("Runtime.Vector").from([parser,op_code]);
 	},
 	/**
@@ -2028,13 +2028,13 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 			class_extend_op_code = new __v6(use("Runtime.Map").from({"entity_name":new __v7(use("Runtime.Map").from({"caret_start":class_caret_start,"caret_end":parser.caret,"names":__v8.split(".", class_extends)})),"template":null,"caret_start":class_caret_start,"caret_end":parser.caret}));
 		}
 		/* Add namespace */
-		var __v6 = use("BayLang.OpCodes.OpNamespace");
-		module_items.push(new __v6(use("Runtime.Map").from({"name":namespace_name})));
+		var __v9 = use("BayLang.OpCodes.OpNamespace");
+		module_items.push(new __v9(use("Runtime.Map").from({"name":namespace_name})));
 		/* Read class body */
 		var caret = parser.parser_base.constructor.skipChar(parser, content, parser.caret);
 		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["caret"]), caret);
-		var __v7 = use("Runtime.rs");
-		var ch2 = __v7.substr(content.ref, caret.pos, 2);
+		var __v10 = use("Runtime.rs");
+		var ch2 = __v10.substr(content.ref, caret.pos, 2);
 		while (ch2 != "</" && caret.pos < content_sz)
 		{
 			var parser_start = parser;
@@ -2052,8 +2052,8 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 				parser = Runtime.rtl.attr(res, 0);
 				items.push(Runtime.rtl.attr(res, 1));
 				caret = parser.parser_base.constructor.skipChar(parser, content, parser.caret);
-				var __v8 = use("Runtime.rs");
-				ch2 = __v8.substr(content.ref, caret.pos, 2);
+				var __v11 = use("Runtime.rs");
+				ch2 = __v11.substr(content.ref, caret.pos, 2);
 				continue;
 			}
 			var res = this.readAttrs(parser);
@@ -2063,11 +2063,11 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 			{
 				var annotation_name = item_attrs.get("name", "");
 				var annotation_op_code = item_attrs.get("value", null);
-				var __v8 = use("BayLang.OpCodes.OpAnnotation");
-				var __v9 = use("BayLang.OpCodes.OpTypeIdentifier");
-				var __v10 = use("BayLang.OpCodes.OpEntityName");
-				var __v11 = use("Runtime.rs");
-				class_annotations.push(new __v8(use("Runtime.Map").from({"name":new __v9(use("Runtime.Map").from({"entity_name":new __v10(use("Runtime.Map").from({"names":__v11.split(".", annotation_name)}))})),"params":annotation_op_code})));
+				var __v12 = use("BayLang.OpCodes.OpAnnotation");
+				var __v13 = use("BayLang.OpCodes.OpTypeIdentifier");
+				var __v14 = use("BayLang.OpCodes.OpEntityName");
+				var __v15 = use("Runtime.rs");
+				class_annotations.push(new __v12(use("Runtime.Map").from({"name":new __v13(use("Runtime.Map").from({"entity_name":new __v14(use("Runtime.Map").from({"names":__v15.split(".", annotation_name)}))})),"params":annotation_op_code})));
 			}
 			else if (item_name == "use")
 			{
@@ -2077,16 +2077,16 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 				is_component = is_component == "true" || is_component == "1";
 				if (short_name == "")
 				{
-					var __v12 = use("Runtime.rs");
-					short_name = __v12.split(".", full_name).last();
+					var __v16 = use("Runtime.rs");
+					short_name = __v16.split(".", full_name).last();
 				}
 				parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["uses"]), parser.uses.setIm(short_name, full_name));
 				if (is_component)
 				{
 					components.push(full_name);
 				}
-				var __v12 = use("BayLang.OpCodes.OpUse");
-				module_items.push(new __v12(use("Runtime.Map").from({"name":full_name,"alias":short_name,"is_component":is_component})));
+				var __v17 = use("BayLang.OpCodes.OpUse");
+				module_items.push(new __v17(use("Runtime.Map").from({"name":full_name,"alias":short_name,"is_component":is_component})));
 			}
 			/* Read body */
 			var res = parser.parser_base.constructor.readToken(parser);
@@ -2126,8 +2126,8 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 				}
 				else
 				{
-					var __v8 = use("BayLang.Exceptions.ParserError");
-					throw new __v8("Unknown identifier '" + use("Runtime.rtl").toStr(item_name) + use("Runtime.rtl").toStr("'"), item_token.caret_start, parser.file_name)
+					var __v18 = use("BayLang.Exceptions.ParserError");
+					throw new __v18("Unknown identifier '" + use("Runtime.rtl").toStr(item_name) + use("Runtime.rtl").toStr("'"), item_token.caret_start, parser.file_name)
 				}
 			}
 			else if (token.content == "/")
@@ -2137,24 +2137,24 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 			}
 			else
 			{
-				var __v8 = use("BayLang.Exceptions.ParserError");
-				throw new __v8("Unknown identifier '" + use("Runtime.rtl").toStr(token.content) + use("Runtime.rtl").toStr("'"), token.caret_start, parser.file_name)
+				var __v19 = use("BayLang.Exceptions.ParserError");
+				throw new __v19("Unknown identifier '" + use("Runtime.rtl").toStr(token.content) + use("Runtime.rtl").toStr("'"), token.caret_start, parser.file_name)
 			}
 			caret = parser.parser_base.constructor.skipChar(parser, content, parser.caret);
 			parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["caret"]), caret);
-			var __v8 = use("Runtime.rs");
-			ch2 = __v8.substr(content.ref, caret.pos, 2);
+			var __v20 = use("Runtime.rs");
+			ch2 = __v20.substr(content.ref, caret.pos, 2);
 		}
 		/* Add components function */
 		if (components.count() > 0)
 		{
-			var __v8 = use("BayLang.OpCodes.OpDeclareFunction");
-			var __v9 = use("BayLang.OpCodes.OpFlags");
-			var __v10 = use("BayLang.OpCodes.OpCollection");
-			var f = new __v8(use("Runtime.Map").from({"args":use("Runtime.Vector").from([]),"vars":use("Runtime.Vector").from([]),"flags":new __v9(use("Runtime.Map").from({"p_static":true,"p_pure":true})),"name":"components","result_type":"var","expression":new __v10(use("Runtime.Map").from({"caret_start":parser.caret,"caret_end":parser.caret,"values":components.map((class_name) =>
+			var __v21 = use("BayLang.OpCodes.OpDeclareFunction");
+			var __v22 = use("BayLang.OpCodes.OpFlags");
+			var __v23 = use("BayLang.OpCodes.OpCollection");
+			var f = new __v21(use("Runtime.Map").from({"args":use("Runtime.Vector").from([]),"vars":use("Runtime.Vector").from([]),"flags":new __v22(use("Runtime.Map").from({"p_static":true,"p_pure":true})),"name":"components","result_type":"var","expression":new __v23(use("Runtime.Map").from({"caret_start":parser.caret,"caret_end":parser.caret,"values":components.map((class_name) =>
 			{
-				var __v11 = use("BayLang.OpCodes.OpString");
-				return new __v11(use("Runtime.Map").from({"caret_start":parser.caret,"caret_end":parser.caret,"value":class_name}));
+				var __v24 = use("BayLang.OpCodes.OpString");
+				return new __v24(use("Runtime.Map").from({"caret_start":parser.caret,"caret_end":parser.caret,"value":class_name}));
 			})})),"items":null,"caret_start":parser.caret,"caret_end":parser.caret}));
 			items.push(f);
 		}
@@ -2170,9 +2170,9 @@ Object.assign(BayLang.LangBay.ParserBayHtml,
 		/* Analyze class body */
 		var class_body = parser.parser_program.constructor.classBodyAnalyze(parser, items);
 		/* Add class */
-		var __v8 = use("BayLang.OpCodes.OpDeclareClass");
-		var __v9 = use("BayLang.OpCodes.OpDeclareClass");
-		module_items.push(new __v8(use("Runtime.Map").from({"kind":__v9.KIND_CLASS,"name":class_name_last,"is_static":true,"is_component":flag_is_component,"is_model":flag_is_model,"is_declare":false,"class_extends":class_extend_op_code,"class_implements":null,"annotations":use("Runtime.Vector").from([]),"template":null,"vars":class_body.item("vars"),"annotations":class_annotations,"functions":class_body.item("functions"),"fn_create":class_body.item("fn_create"),"fn_destroy":class_body.item("fn_destroy"),"items":items,"caret_start":class_caret_start,"caret_end":parser.caret})));
+		var __v24 = use("BayLang.OpCodes.OpDeclareClass");
+		var __v25 = use("BayLang.OpCodes.OpDeclareClass");
+		module_items.push(new __v24(use("Runtime.Map").from({"kind":__v25.KIND_CLASS,"name":class_name_last,"is_static":true,"is_component":flag_is_component,"is_model":flag_is_model,"is_declare":false,"class_extends":class_extend_op_code,"class_implements":null,"annotations":use("Runtime.Vector").from([]),"template":null,"vars":class_body.item("vars"),"annotations":class_annotations,"functions":class_body.item("functions"),"fn_create":class_body.item("fn_create"),"fn_destroy":class_body.item("fn_destroy"),"items":items,"caret_start":class_caret_start,"caret_end":parser.caret})));
 		return use("Runtime.Vector").from([parser,module_items]);
 	},
 	/**

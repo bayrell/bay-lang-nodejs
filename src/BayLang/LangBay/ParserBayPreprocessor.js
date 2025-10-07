@@ -109,8 +109,8 @@ Object.assign(BayLang.LangBay.ParserBayPreprocessor,
 		/* read endswitch */
 		var res = parser.parser_base.constructor.matchToken(parser, "#endswitch");
 		parser = Runtime.rtl.attr(res, 0);
-		var __v1 = use("BayLang.OpCodes.OpPreprocessorSwitch");
-		return use("Runtime.Vector").from([parser,new __v1(use("Runtime.Map").from({"items":items,"caret_start":caret_start,"caret_end":parser.caret}))]);
+		var __v2 = use("BayLang.OpCodes.OpPreprocessorSwitch");
+		return use("Runtime.Vector").from([parser,new __v2(use("Runtime.Map").from({"items":items,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/**
 	 * Read preprocessor ifcode
@@ -209,8 +209,8 @@ Object.assign(BayLang.LangBay.ParserBayPreprocessor,
 			var res = parser.parser_base.constructor.matchToken(parser, "#endif");
 			parser = Runtime.rtl.attr(res, 0);
 		}
-		var __v0 = use("BayLang.OpCodes.OpPreprocessorIfDef");
-		return use("Runtime.Vector").from([parser,new __v0(use("Runtime.Map").from({"items":items,"condition":condition,"caret_start":caret_start,"caret_end":parser.caret}))]);
+		var __v4 = use("BayLang.OpCodes.OpPreprocessorIfDef");
+		return use("Runtime.Vector").from([parser,new __v4(use("Runtime.Map").from({"items":items,"condition":condition,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/* ======================= Class Init Functions ======================= */
 	getNamespace: function()

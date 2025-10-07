@@ -300,8 +300,8 @@ Object.assign(BayLang.LangES6.TranslatorES6AsyncAwait,
 		content += use("Runtime.rtl").toStr(t.s("{"));
 		t = t.levelInc();
 		/* Call condition expression */
-		var __v1 = use("Runtime.rtl");
-		var res = t.constructor.saveOpCodeCall(t, __v1.method(t.expression.getClassName(), "Expression"), use("Runtime.Vector").from([op_code.expr2]));
+		var __v4 = use("Runtime.rtl");
+		var res = t.constructor.saveOpCodeCall(t, __v4.method(t.expression.getClassName(), "Expression"), use("Runtime.Vector").from([op_code.expr2]));
 		t = Runtime.rtl.attr(res, 0);
 		var save = Runtime.rtl.attr(res, 1);
 		var value = Runtime.rtl.attr(res, 2);

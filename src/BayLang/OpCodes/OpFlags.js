@@ -61,8 +61,8 @@ Object.assign(BayLang.OpCodes.OpFlags.prototype,
 		{
 			return false;
 		}
-		var __v0 = use("Runtime.rtl");
-		return __v0.attr(this, "p_" + use("Runtime.rtl").toStr(name));
+		var __v1 = use("Runtime.rtl");
+		return __v1.attr(this, "p_" + use("Runtime.rtl").toStr(name));
 	},
 	_init: function()
 	{

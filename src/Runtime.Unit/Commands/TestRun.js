@@ -74,15 +74,15 @@ Object.assign(Runtime.Unit.Commands.TestRun,
 			error_code = await tests.runTestByName(test_name);
 			if (error_code == 1)
 			{
-				var __v1 = use("Runtime.io");
-				var __v2 = use("Runtime.io");
-				__v1.print(__v2.color("green", "OK"));
+				var __v3 = use("Runtime.io");
+				var __v4 = use("Runtime.io");
+				__v3.print(__v4.color("green", "OK"));
 			}
 			else
 			{
-				var __v3 = use("Runtime.io");
-				var __v4 = use("Runtime.io");
-				__v3.print(__v4.color("red", "Fail"));
+				var __v5 = use("Runtime.io");
+				var __v6 = use("Runtime.io");
+				__v5.print(__v6.color("red", "Fail"));
 			}
 		}
 		return Promise.resolve(error_code);

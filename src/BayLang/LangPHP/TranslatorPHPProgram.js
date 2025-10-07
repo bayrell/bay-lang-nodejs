@@ -258,8 +258,8 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 		t = t.levelDec();
 		content += use("Runtime.rtl").toStr(t.s("}"));
 		/* Meta data */
-		var __v0 = use("Runtime.lib");
-		var op_code_meta = op_code.items.findItem(__v0.isInstance("BayLang.OpCodes.OpHtmlMeta"));
+		var __v1 = use("Runtime.lib");
+		var op_code_meta = op_code.items.findItem(__v1.isInstance("BayLang.OpCodes.OpHtmlMeta"));
 		if (op_code_meta)
 		{
 			content += use("Runtime.rtl").toStr(t.s("static function getMetaData()"));
@@ -309,7 +309,7 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 					var value = variable.values.item(j);
 					var res = t.expression.constructor.Expression(t, value.expression);
 					var s = (value.expression != null) ? (Runtime.rtl.attr(res, 1)) : ("null");
-					var __v1 = use("BayLang.OpCodes.OpDeclareClass");
+					var __v2 = use("BayLang.OpCodes.OpDeclareClass");
 					if (is_static && is_const)
 					{
 						content += use("Runtime.rtl").toStr(t.s("const " + use("Runtime.rtl").toStr(value.var_name) + use("Runtime.rtl").toStr("=") + use("Runtime.rtl").toStr(s) + use("Runtime.rtl").toStr(";")));
@@ -318,7 +318,7 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 					{
 						content += use("Runtime.rtl").toStr(t.s("static $" + use("Runtime.rtl").toStr(value.var_name) + use("Runtime.rtl").toStr("=") + use("Runtime.rtl").toStr(s) + use("Runtime.rtl").toStr(";")));
 					}
-					else if (class_kind == __v1.KIND_STRUCT)
+					else if (class_kind == __v2.KIND_STRUCT)
 					{
 						content += use("Runtime.rtl").toStr(t.s("public $__" + use("Runtime.rtl").toStr(value.var_name) + use("Runtime.rtl").toStr(";")));
 					}
@@ -330,8 +330,8 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 			}
 		}
 		/* Constructor */
-		var __v0 = use("BayLang.OpCodes.OpDeclareClass");
-		if (class_kind != __v0.KIND_INTERFACE)
+		var __v3 = use("BayLang.OpCodes.OpDeclareClass");
+		if (class_kind != __v3.KIND_INTERFACE)
 		{
 			var res = this.OpDeclareClassConstructor(t, op_code);
 			content += use("Runtime.rtl").toStr(Runtime.rtl.attr(res, 1));
@@ -351,21 +351,21 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 		for (var i = 0; i < op_code.items.count(); i++)
 		{
 			var item = op_code.items.item(i);
-			var __v0 = use("BayLang.OpCodes.OpPreprocessorIfCode");
-			var __v1 = use("BayLang.OpCodes.OpPreprocessorIfDef");
-			var __v3 = use("BayLang.OpCodes.OpPreprocessorSwitch");
-			if (item instanceof __v0)
+			var __v4 = use("BayLang.OpCodes.OpPreprocessorIfCode");
+			var __v5 = use("BayLang.OpCodes.OpPreprocessorIfDef");
+			var __v7 = use("BayLang.OpCodes.OpPreprocessorSwitch");
+			if (item instanceof __v4)
 			{
 				var res = t.operator.constructor.OpPreprocessorIfCode(t, item);
 				content += use("Runtime.rtl").toStr(Runtime.rtl.attr(res, 1));
 			}
-			else if (item instanceof __v1)
+			else if (item instanceof __v5)
 			{
-				var __v2 = use("BayLang.OpCodes.OpPreprocessorIfDef");
-				var res = t.operator.constructor.OpPreprocessorIfDef(t, item, __v2.KIND_CLASS_BODY);
+				var __v6 = use("BayLang.OpCodes.OpPreprocessorIfDef");
+				var res = t.operator.constructor.OpPreprocessorIfDef(t, item, __v6.KIND_CLASS_BODY);
 				content += use("Runtime.rtl").toStr(Runtime.rtl.attr(res, 1));
 			}
-			else if (item instanceof __v3)
+			else if (item instanceof __v7)
 			{
 				for (var j = 0; j < item.items.count(); j++)
 				{
@@ -386,14 +386,14 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 			t = Runtime.rtl.attr(res, 0);
 			content += use("Runtime.rtl").toStr(Runtime.rtl.attr(res, 1));
 		}
-		var __v0 = use("BayLang.OpCodes.OpDeclareClass");
-		if (class_kind != __v0.KIND_INTERFACE)
+		var __v8 = use("BayLang.OpCodes.OpDeclareClass");
+		if (class_kind != __v8.KIND_INTERFACE)
 		{
 			content += use("Runtime.rtl").toStr(t.s("/* ======================= Class Init Functions ======================= */"));
 		}
 		/* Init variables */
-		var __v0 = use("BayLang.OpCodes.OpDeclareClass");
-		if (class_kind != __v0.KIND_INTERFACE && op_code.vars != null)
+		var __v9 = use("BayLang.OpCodes.OpDeclareClass");
+		if (class_kind != __v9.KIND_INTERFACE && op_code.vars != null)
 		{
 			var vars = op_code.vars.filter((variable) =>
 			{
@@ -416,8 +416,8 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 					{
 						continue;
 					}
-					var __v1 = use("BayLang.OpCodes.OpAssign");
-					if (variable.kind != __v1.KIND_DECLARE)
+					var __v10 = use("BayLang.OpCodes.OpAssign");
+					if (variable.kind != __v10.KIND_DECLARE)
 					{
 						continue;
 					}
@@ -426,13 +426,13 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 						continue;
 					}
 					var prefix = "";
-					var __v1 = use("BayLang.OpCodes.OpDeclareClass");
-					var __v2 = use("BayLang.OpCodes.OpDeclareClass");
-					if (class_kind == __v1.KIND_STRUCT)
+					var __v11 = use("BayLang.OpCodes.OpDeclareClass");
+					var __v12 = use("BayLang.OpCodes.OpDeclareClass");
+					if (class_kind == __v11.KIND_STRUCT)
 					{
 						prefix = "__";
 					}
-					else if (class_kind == __v2.KIND_CLASS)
+					else if (class_kind == __v12.KIND_CLASS)
 					{
 						prefix = "";
 					}
@@ -448,11 +448,11 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 				content += use("Runtime.rtl").toStr(t.s("}"));
 			}
 			/* Struct */
-			var __v1 = use("BayLang.OpCodes.OpDeclareClass");
-			if (op_code.is_component == false && class_kind == __v1.KIND_STRUCT)
+			var __v13 = use("BayLang.OpCodes.OpDeclareClass");
+			if (op_code.is_component == false && class_kind == __v13.KIND_STRUCT)
 			{
-				var __v2 = use("BayLang.OpCodes.OpDeclareClass");
-				var is_struct = class_kind == __v2.KIND_STRUCT;
+				var __v14 = use("BayLang.OpCodes.OpDeclareClass");
+				var is_struct = class_kind == __v14.KIND_STRUCT;
 				var var_prefix = (is_struct) ? ("__") : ("");
 				if (!is_struct && false)
 				{
@@ -460,15 +460,15 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 					content += use("Runtime.rtl").toStr(t.s("function assignObject($ctx,$o)"));
 					content += use("Runtime.rtl").toStr(t.s("{"));
 					t = t.levelInc();
-					var __v3 = use("Runtime.rs");
-					content += use("Runtime.rtl").toStr(t.s("if ($o instanceof \\" + use("Runtime.rtl").toStr(__v3.replace("\\.", "\\", t.current_class_full_name)) + use("Runtime.rtl").toStr(")")));
+					var __v15 = use("Runtime.rs");
+					content += use("Runtime.rtl").toStr(t.s("if ($o instanceof \\" + use("Runtime.rtl").toStr(__v15.replace("\\.", "\\", t.current_class_full_name)) + use("Runtime.rtl").toStr(")")));
 					content += use("Runtime.rtl").toStr(t.s("{"));
 					t = t.levelInc();
 					for (var i = 0; i < op_code.vars.count(); i++)
 					{
 						var variable = op_code.vars.item(i);
-						var __v4 = use("BayLang.OpCodes.OpAssign");
-						if (variable.kind != __v4.KIND_DECLARE)
+						var __v16 = use("BayLang.OpCodes.OpAssign");
+						if (variable.kind != __v16.KIND_DECLARE)
 						{
 							continue;
 						}
@@ -510,8 +510,8 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 					for (var i = 0; i < op_code.vars.count(); i++)
 					{
 						var variable = op_code.vars.item(i);
-						var __v4 = use("BayLang.OpCodes.OpAssign");
-						if (variable.kind != __v4.KIND_DECLARE)
+						var __v17 = use("BayLang.OpCodes.OpAssign");
+						if (variable.kind != __v17.KIND_DECLARE)
 						{
 							continue;
 						}
@@ -560,8 +560,8 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 				for (var i = 0; i < op_code.vars.count(); i++)
 				{
 					var variable = op_code.vars.item(i);
-					var __v3 = use("BayLang.OpCodes.OpAssign");
-					if (variable.kind != __v3.KIND_DECLARE)
+					var __v18 = use("BayLang.OpCodes.OpAssign");
+					if (variable.kind != __v18.KIND_DECLARE)
 					{
 						continue;
 					}
@@ -596,8 +596,8 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 				content += use("Runtime.rtl").toStr(t.s("}"));
 			}
 		}
-		var __v0 = use("BayLang.OpCodes.OpDeclareClass");
-		if (class_kind != __v0.KIND_INTERFACE)
+		var __v19 = use("BayLang.OpCodes.OpDeclareClass");
+		if (class_kind != __v19.KIND_INTERFACE)
 		{
 			/* Get current namespace function */
 			content += use("Runtime.rtl").toStr(t.s("static function getNamespace()"));
@@ -660,8 +660,8 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 			content += use("Runtime.rtl").toStr(t.s("$a = [];"));
 			if (op_code.vars != null)
 			{
-				var __v1 = use("Runtime.Map");
-				var vars = new __v1();
+				var __v20 = use("Runtime.Map");
+				var vars = new __v20();
 				for (var i = 0; i < op_code.vars.count(); i++)
 				{
 					var variable = op_code.vars.item(i);
@@ -678,13 +678,13 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 					{
 						continue;
 					}
-					var __v2 = use("BayLang.OpCodes.OpAssign");
-					if (variable.kind != __v2.KIND_DECLARE)
+					var __v21 = use("BayLang.OpCodes.OpAssign");
+					if (variable.kind != __v21.KIND_DECLARE)
 					{
 						continue;
 					}
-					var __v2 = use("BayLang.OpCodes.OpDeclareClass");
-					if (class_kind != __v2.KIND_STRUCT)
+					var __v22 = use("BayLang.OpCodes.OpDeclareClass");
+					if (class_kind != __v22.KIND_STRUCT)
 					{
 						if (variable.annotations == null)
 						{
@@ -718,8 +718,8 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 				for (var i = 0; i < op_code.vars.count(); i++)
 				{
 					var variable = op_code.vars.item(i);
-					var __v1 = use("BayLang.OpCodes.OpAssign");
-					if (variable.kind != __v1.KIND_DECLARE)
+					var __v23 = use("BayLang.OpCodes.OpAssign");
+					if (variable.kind != __v23.KIND_DECLARE)
 					{
 						continue;
 					}
@@ -755,23 +755,23 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 					{
 						return "$field_name == " + use("Runtime.rtl").toStr(t.expression.constructor.toString(var_name));
 					});
-					var __v1 = use("Runtime.rs");
-					var var_type = __v1.join(".", t.expression.constructor.findModuleNames(t, variable.pattern.entity_name.names));
+					var __v24 = use("Runtime.rs");
+					var var_type = __v24.join(".", t.expression.constructor.findModuleNames(t, variable.pattern.entity_name.names));
 					var var_sub_types = (variable.pattern.template != null) ? (variable.pattern.template.map((op_code) =>
 					{
-						var __v2 = use("Runtime.rs");
-						return __v2.join(".", t.expression.constructor.findModuleNames(t, op_code.entity_name.names));
+						var __v25 = use("Runtime.rs");
+						return __v25.join(".", t.expression.constructor.findModuleNames(t, op_code.entity_name.names));
 					})) : (use("Runtime.Vector").from([]));
 					var_sub_types = var_sub_types.map(t.expression.constructor.toString);
 					t = t.constructor.clearSaveOpCode(t);
-					var __v2 = use("Runtime.rs");
-					content += use("Runtime.rtl").toStr(t.s("if (" + use("Runtime.rtl").toStr(__v2.join(" or ", v)) + use("Runtime.rtl").toStr(") ") + use("Runtime.rtl").toStr("return \\Runtime\\Dict::from([")));
+					var __v25 = use("Runtime.rs");
+					content += use("Runtime.rtl").toStr(t.s("if (" + use("Runtime.rtl").toStr(__v25.join(" or ", v)) + use("Runtime.rtl").toStr(") ") + use("Runtime.rtl").toStr("return \\Runtime\\Dict::from([")));
 					t = t.levelInc();
 					content += use("Runtime.rtl").toStr(t.s("\"t\"=>" + use("Runtime.rtl").toStr(t.expression.constructor.toString(var_type)) + use("Runtime.rtl").toStr(",")));
 					if (var_sub_types.count() > 0)
 					{
-						var __v3 = use("Runtime.rs");
-						content += use("Runtime.rtl").toStr(t.s("\"s\"=> [" + use("Runtime.rtl").toStr(__v3.join(", ", var_sub_types)) + use("Runtime.rtl").toStr("],")));
+						var __v26 = use("Runtime.rs");
+						content += use("Runtime.rtl").toStr(t.s("\"s\"=> [" + use("Runtime.rtl").toStr(__v26.join(", ", var_sub_types)) + use("Runtime.rtl").toStr("],")));
 					}
 					content += use("Runtime.rtl").toStr(t.s("\"annotations\"=>\\Runtime\\Collection::from(["));
 					t = t.levelInc();
@@ -899,24 +899,24 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 		t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["current_class"]), op_code);
 		t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["current_class_name"]), op_code.name);
 		t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["current_class_full_name"]), t.current_namespace_name + use("Runtime.rtl").toStr(".") + use("Runtime.rtl").toStr(t.current_class_name));
-		var __v1 = use("BayLang.OpCodes.OpDeclareClass");
 		var __v2 = use("BayLang.OpCodes.OpDeclareClass");
+		var __v3 = use("BayLang.OpCodes.OpDeclareClass");
 		if (op_code.class_extends != null)
 		{
-			var __v0 = use("Runtime.rs");
-			var extends_name = __v0.join(".", op_code.class_extends.entity_name.names);
+			var __v1 = use("Runtime.rs");
+			var extends_name = __v1.join(".", op_code.class_extends.entity_name.names);
 			t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["current_class_extends_name"]), extends_name);
-		}
-		else if (op_code.kind == __v1.KIND_STRUCT)
-		{
-			t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["current_class_extends_name"]), "Runtime.BaseStruct");
 		}
 		else if (op_code.kind == __v2.KIND_STRUCT)
 		{
+			t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["current_class_extends_name"]), "Runtime.BaseStruct");
+		}
+		else if (op_code.kind == __v3.KIND_STRUCT)
+		{
 			t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["current_class_extends_name"]), "");
 		}
-		var __v0 = use("BayLang.OpCodes.OpDeclareClass");
-		if (op_code.kind != __v0.KIND_INTERFACE)
+		var __v4 = use("BayLang.OpCodes.OpDeclareClass");
+		if (op_code.kind != __v4.KIND_INTERFACE)
 		{
 			if (op_code.class_extends != null)
 			{
@@ -938,8 +938,8 @@ Object.assign(BayLang.LangPHP.TranslatorPHPProgram,
 			{
 				return t.expression.constructor.getModuleNames(t, item.entity_name.names);
 			});
-			var __v0 = use("Runtime.rs");
-			var s1 = __v0.join(", ", arr);
+			var __v5 = use("Runtime.rs");
+			var s1 = __v5.join(", ", arr);
 			content += use("Runtime.rtl").toStr(" implements " + use("Runtime.rtl").toStr(s1));
 		}
 		/* Class body */

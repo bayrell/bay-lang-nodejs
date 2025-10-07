@@ -552,8 +552,8 @@ Object.assign(BayLang.LangES6.TranslatorES6Program,
 		content += use("Runtime.rtl").toStr(t.s("var a = [];"));
 		if (op_code.vars != null)
 		{
-			var __v0 = use("Runtime.Map");
-			var vars = new __v0();
+			var __v1 = use("Runtime.Map");
+			var vars = new __v1();
 			for (var i = 0; i < op_code.vars.count(); i++)
 			{
 				var variable = op_code.vars.item(i);
@@ -572,13 +572,13 @@ Object.assign(BayLang.LangES6.TranslatorES6Program,
 				{
 					continue;
 				}
-				var __v1 = use("BayLang.OpCodes.OpAssign");
-				if (variable.kind != __v1.KIND_DECLARE)
+				var __v2 = use("BayLang.OpCodes.OpAssign");
+				if (variable.kind != __v2.KIND_DECLARE)
 				{
 					continue;
 				}
-				var __v1 = use("BayLang.OpCodes.OpDeclareClass");
-				if (class_kind != __v1.KIND_STRUCT)
+				var __v3 = use("BayLang.OpCodes.OpDeclareClass");
+				if (class_kind != __v3.KIND_STRUCT)
 				{
 					if (variable.annotations == null)
 					{
@@ -614,8 +614,8 @@ Object.assign(BayLang.LangES6.TranslatorES6Program,
 			for (var i = 0; i < op_code.vars.count(); i++)
 			{
 				var variable = op_code.vars.item(i);
-				var __v0 = use("BayLang.OpCodes.OpAssign");
-				if (variable.kind != __v0.KIND_DECLARE)
+				var __v4 = use("BayLang.OpCodes.OpAssign");
+				if (variable.kind != __v4.KIND_DECLARE)
 				{
 					continue;
 				}
@@ -651,24 +651,24 @@ Object.assign(BayLang.LangES6.TranslatorES6Program,
 				{
 					return "field_name == " + use("Runtime.rtl").toStr(t.expression.constructor.toString(var_name));
 				});
-				var __v0 = use("Runtime.rs");
-				var var_type = __v0.join(".", t.expression.constructor.findModuleNames(t, variable.pattern.entity_name.names));
+				var __v5 = use("Runtime.rs");
+				var var_type = __v5.join(".", t.expression.constructor.findModuleNames(t, variable.pattern.entity_name.names));
 				var var_sub_types = (variable.pattern.template != null) ? (variable.pattern.template.map((op_code) =>
 				{
-					var __v1 = use("Runtime.rs");
-					return __v1.join(".", t.expression.constructor.findModuleNames(t, op_code.entity_name.names));
+					var __v6 = use("Runtime.rs");
+					return __v6.join(".", t.expression.constructor.findModuleNames(t, op_code.entity_name.names));
 				})) : (use("Runtime.Vector").from([]));
 				var_sub_types = var_sub_types.map(t.expression.constructor.toString);
 				t = t.constructor.clearSaveOpCode(t);
 				var s1 = "";
-				var __v1 = use("Runtime.rs");
-				s1 += use("Runtime.rtl").toStr(t.s("if (" + use("Runtime.rtl").toStr(__v1.join(" or ", v)) + use("Runtime.rtl").toStr(") return Map.from({")));
+				var __v6 = use("Runtime.rs");
+				s1 += use("Runtime.rtl").toStr(t.s("if (" + use("Runtime.rtl").toStr(__v6.join(" or ", v)) + use("Runtime.rtl").toStr(") return Map.from({")));
 				t = t.levelInc();
 				s1 += use("Runtime.rtl").toStr(t.s("\"t\": " + use("Runtime.rtl").toStr(t.expression.constructor.toString(var_type)) + use("Runtime.rtl").toStr(",")));
 				if (var_sub_types.count() > 0)
 				{
-					var __v2 = use("Runtime.rs");
-					s1 += use("Runtime.rtl").toStr(t.s("\"s\": [" + use("Runtime.rtl").toStr(__v2.join(", ", var_sub_types)) + use("Runtime.rtl").toStr("],")));
+					var __v7 = use("Runtime.rs");
+					s1 += use("Runtime.rtl").toStr(t.s("\"s\": [" + use("Runtime.rtl").toStr(__v7.join(", ", var_sub_types)) + use("Runtime.rtl").toStr("],")));
 				}
 				s1 += use("Runtime.rtl").toStr(t.s("\"annotations\": Vector.from(["));
 				t = t.levelInc();
@@ -836,14 +836,14 @@ Object.assign(BayLang.LangES6.TranslatorES6Program,
 					continue;
 				}
 				var prefix = "";
-				var __v0 = use("BayLang.OpCodes.OpDeclareClass");
 				var __v1 = use("BayLang.OpCodes.OpDeclareClass");
-				if (class_kind == __v0.KIND_STRUCT)
+				var __v2 = use("BayLang.OpCodes.OpDeclareClass");
+				if (class_kind == __v1.KIND_STRUCT)
 				{
 					/* prefix = "__"; */
 					prefix = "";
 				}
-				else if (class_kind == __v1.KIND_CLASS)
+				else if (class_kind == __v2.KIND_CLASS)
 				{
 					prefix = "";
 				}
@@ -1252,8 +1252,8 @@ Object.assign(BayLang.LangES6.TranslatorES6Program,
 			content += use("Runtime.rtl").toStr(Runtime.rtl.attr(res, 1));
 		}
 		/* Init struct */
-		var __v0 = use("BayLang.OpCodes.OpDeclareClass");
-		if (class_kind == __v0.KIND_STRUCT && op_code.vars != null)
+		var __v1 = use("BayLang.OpCodes.OpDeclareClass");
+		if (class_kind == __v1.KIND_STRUCT && op_code.vars != null)
 		{
 			/* Assign object */
 			/*
@@ -1350,14 +1350,14 @@ Object.assign(BayLang.LangES6.TranslatorES6Program,
 		t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["current_class"]), op_code);
 		t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["current_class_name"]), op_code.name);
 		t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["current_class_full_name"]), t.current_namespace_name + use("Runtime.rtl").toStr(".") + use("Runtime.rtl").toStr(t.current_class_name));
-		var __v1 = use("BayLang.OpCodes.OpDeclareClass");
+		var __v2 = use("BayLang.OpCodes.OpDeclareClass");
 		if (op_code.class_extends != null)
 		{
-			var __v0 = use("Runtime.rs");
-			var extends_name = __v0.join(".", op_code.class_extends.entity_name.names);
+			var __v1 = use("Runtime.rs");
+			var extends_name = __v1.join(".", op_code.class_extends.entity_name.names);
 			t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["current_class_extends_name"]), extends_name);
 		}
-		else if (op_code.kind == __v1.KIND_STRUCT)
+		else if (op_code.kind == __v2.KIND_STRUCT)
 		{
 			t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["current_class_extends_name"]), "Runtime.BaseStruct");
 		}

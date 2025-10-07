@@ -50,17 +50,17 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 			return __memorize_value;
 		}
 		var __v0 = use("BayLang.OpCodes.OpAssign");
-		var __v1 = use("BayLang.OpCodes.OpAssignStruct");
-		var __v2 = use("BayLang.OpCodes.OpAttr");
-		var __v3 = use("BayLang.OpCodes.OpCall");
-		var __v4 = use("BayLang.OpCodes.OpPipe");
-		var __v5 = use("BayLang.OpCodes.OpFor");
-		var __v6 = use("BayLang.OpCodes.OpIf");
-		var __v7 = use("BayLang.OpCodes.OpItems");
-		var __v8 = use("BayLang.OpCodes.OpMath");
-		var __v9 = use("BayLang.OpCodes.OpReturn");
-		var __v10 = use("BayLang.OpCodes.OpTryCatch");
-		var __v11 = use("BayLang.OpCodes.OpWhile");
+		var __v4 = use("BayLang.OpCodes.OpAssignStruct");
+		var __v5 = use("BayLang.OpCodes.OpAttr");
+		var __v7 = use("BayLang.OpCodes.OpCall");
+		var __v8 = use("BayLang.OpCodes.OpPipe");
+		var __v9 = use("BayLang.OpCodes.OpFor");
+		var __v10 = use("BayLang.OpCodes.OpIf");
+		var __v11 = use("BayLang.OpCodes.OpItems");
+		var __v12 = use("BayLang.OpCodes.OpMath");
+		var __v13 = use("BayLang.OpCodes.OpReturn");
+		var __v14 = use("BayLang.OpCodes.OpTryCatch");
+		var __v15 = use("BayLang.OpCodes.OpWhile");
 		if (op_code instanceof __v0)
 		{
 			var __v1 = use("BayLang.OpCodes.OpAssign");
@@ -91,7 +91,7 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 				}
 			}
 		}
-		else if (op_code instanceof __v1)
+		else if (op_code instanceof __v4)
 		{
 			var flag = this.isAwait(op_code.expression);
 			if (flag)
@@ -101,11 +101,11 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 				return __memorize_value;
 			}
 		}
-		else if (op_code instanceof __v2)
+		else if (op_code instanceof __v5)
 		{
 			var op_code_next = op_code;
-			var __v3 = use("BayLang.OpCodes.OpAttr");
-			while (op_code_next instanceof __v3)
+			var __v6 = use("BayLang.OpCodes.OpAttr");
+			while (op_code_next instanceof __v6)
 			{
 				op_code_next = op_code_next.obj;
 			}
@@ -113,13 +113,13 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 			use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 			return __memorize_value;
 		}
-		else if (op_code instanceof __v3)
+		else if (op_code instanceof __v7)
 		{
 			var __memorize_value = op_code.is_await;
 			use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 			return __memorize_value;
 		}
-		else if (op_code instanceof __v4)
+		else if (op_code instanceof __v8)
 		{
 			if (op_code.is_async)
 			{
@@ -131,13 +131,13 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 			use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 			return __memorize_value;
 		}
-		else if (op_code instanceof __v5)
+		else if (op_code instanceof __v9)
 		{
 			var __memorize_value = this.isAwait(op_code.expr2) || this.isAwait(op_code.value);
 			use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 			return __memorize_value;
 		}
-		else if (op_code instanceof __v6)
+		else if (op_code instanceof __v10)
 		{
 			var flag = false;
 			flag = this.isAwait(op_code.condition);
@@ -180,7 +180,7 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 				}
 			}
 		}
-		else if (op_code instanceof __v7)
+		else if (op_code instanceof __v11)
 		{
 			for (var i = 0; i < op_code.items.count(); i++)
 			{
@@ -194,7 +194,7 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 				}
 			}
 		}
-		else if (op_code instanceof __v8)
+		else if (op_code instanceof __v12)
 		{
 			if (op_code.math == "!" || op_code.math == "not")
 			{
@@ -209,7 +209,7 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 				return __memorize_value;
 			}
 		}
-		else if (op_code instanceof __v9)
+		else if (op_code instanceof __v13)
 		{
 			var flag = this.isAwait(op_code.expression);
 			if (flag)
@@ -219,13 +219,13 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 				return __memorize_value;
 			}
 		}
-		else if (op_code instanceof __v10)
+		else if (op_code instanceof __v14)
 		{
 			var __memorize_value = this.isAwait(op_code.op_try);
 			use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
 			return __memorize_value;
 		}
-		else if (op_code instanceof __v11)
+		else if (op_code instanceof __v15)
 		{
 			var __memorize_value = this.isAwait(op_code.condition) || this.isAwait(op_code.value);
 			use("Runtime.rtl")._memorizeSave("BayLang.LangES6.TranslatorES6Operator.isAwait", arguments, __memorize_value);
@@ -270,7 +270,7 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 		var content = "";
 		var __v0 = use("BayLang.OpCodes.OpAssign");
 		var __v1 = use("BayLang.OpCodes.OpAssign");
-		var __v2 = use("BayLang.OpCodes.OpAssign");
+		var __v12 = use("BayLang.OpCodes.OpAssign");
 		if (op_code.kind == __v0.KIND_ASSIGN || op_code.kind == __v1.KIND_DECLARE)
 		{
 			for (var i = 0; i < op_code.values.count(); i++)
@@ -317,22 +317,22 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 					for (var j = 0; j < items.count(); j++)
 					{
 						var item_attr = Runtime.rtl.attr(items, j);
-						var __v5 = use("BayLang.OpCodes.OpAttr");
 						var __v6 = use("BayLang.OpCodes.OpAttr");
 						var __v7 = use("BayLang.OpCodes.OpAttr");
-						if (item_attr.kind == __v5.KIND_ATTR)
+						var __v8 = use("BayLang.OpCodes.OpAttr");
+						if (item_attr.kind == __v6.KIND_ATTR)
 						{
 							obj_s += use("Runtime.rtl").toStr("." + use("Runtime.rtl").toStr(item_attr.value.value));
 							items2.push(t.expression.constructor.toString(item_attr.value.value));
 						}
-						else if (item_attr.kind == __v6.KIND_DYNAMIC)
+						else if (item_attr.kind == __v7.KIND_DYNAMIC)
 						{
 							var res = t.expression.constructor.Expression(t, item_attr.value);
 							t = Runtime.rtl.attr(res, 0);
 							obj_s += use("Runtime.rtl").toStr("[" + use("Runtime.rtl").toStr(Runtime.rtl.attr(res, 1)) + use("Runtime.rtl").toStr("]"));
 							items2.push(Runtime.rtl.attr(res, 1));
 						}
-						else if (item_attr.kind == __v7.KIND_DYNAMIC_ATTRS)
+						else if (item_attr.kind == __v8.KIND_DYNAMIC_ATTRS)
 						{
 							if (item_attr.attrs != null)
 							{
@@ -357,8 +357,8 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 						{
 							op2 = "-";
 						}
-						var __v5 = use("Runtime.rs");
-						item_expression = "Runtime.rtl.attr(" + use("Runtime.rtl").toStr(obj_s) + use("Runtime.rtl").toStr(", [") + use("Runtime.rtl").toStr(__v5.join(", ", items2)) + use("Runtime.rtl").toStr("]) ") + use("Runtime.rtl").toStr(op2) + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(item_expression);
+						var __v9 = use("Runtime.rs");
+						item_expression = "Runtime.rtl.attr(" + use("Runtime.rtl").toStr(obj_s) + use("Runtime.rtl").toStr(", [") + use("Runtime.rtl").toStr(__v9.join(", ", items2)) + use("Runtime.rtl").toStr("]) ") + use("Runtime.rtl").toStr(op2) + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(item_expression);
 					}
 					s = obj_s + use("Runtime.rtl").toStr(" = ") + use("Runtime.rtl").toStr(item_expression);
 				}
@@ -370,8 +370,8 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 					}
 					else
 					{
-						var __v5 = use("BayLang.OpCodes.OpAssign");
-						if (op_code.kind == __v5.KIND_DECLARE)
+						var __v10 = use("BayLang.OpCodes.OpAssign");
+						if (op_code.kind == __v10.KIND_DECLARE)
 						{
 							if (t.current_function.isFlag("async") && t.isEmulateAsyncAwait())
 							{
@@ -407,12 +407,12 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 				}
 				if (t.current_function.isFlag("async") && t.isEmulateAsyncAwait())
 				{
-					var __v2 = use("BayLang.OpCodes.OpAssign");
+					var __v11 = use("BayLang.OpCodes.OpAssign");
 					if (item.expression == null)
 					{
 						s = "";
 					}
-					else if (op_code.kind == __v2.KIND_DECLARE)
+					else if (op_code.kind == __v11.KIND_DECLARE)
 					{
 						s = s + use("Runtime.rtl").toStr(";");
 					}
@@ -431,7 +431,7 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 				}
 			}
 		}
-		else if (op_code.kind == __v2.KIND_STRUCT)
+		else if (op_code.kind == __v12.KIND_STRUCT)
 		{
 			var s = op_code.var_name + use("Runtime.rtl").toStr(" = ");
 			var res = this.OpAssignStruct(t, op_code, 0);
@@ -715,15 +715,15 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 		for (var i = 0; i < op_code.items.count(); i++)
 		{
 			var item = op_code.items.item(i);
-			var __v0 = use("BayLang.OpCodes.OpComment");
-			var __v1 = use("BayLang.OpCodes.OpDeclareFunction");
-			if (item instanceof __v0)
+			var __v2 = use("BayLang.OpCodes.OpComment");
+			var __v3 = use("BayLang.OpCodes.OpDeclareFunction");
+			if (item instanceof __v2)
 			{
 				var res = t.operator.constructor.OpComment(t, item);
 				t = Runtime.rtl.attr(res, 0);
 				content += use("Runtime.rtl").toStr(Runtime.rtl.attr(res, 1));
 			}
-			else if (item instanceof __v1)
+			else if (item instanceof __v3)
 			{
 				var res = t.program.constructor.OpDeclareFunction(t, item);
 				t = Runtime.rtl.attr(res, 0);
@@ -856,14 +856,14 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 			var res = this.OpFor(t, op_code);
 			t = Runtime.rtl.attr(res, 0);
 			content = Runtime.rtl.attr(res, 1);
-			t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["save_op_code_inc"]), save_op_code_inc);
+			/*t <= save_op_code_inc <= save_op_code_inc;*/
 		}
 		else if (op_code instanceof __v7)
 		{
 			var res = this.OpIf(t, op_code);
 			t = Runtime.rtl.attr(res, 0);
 			content = Runtime.rtl.attr(res, 1);
-			t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["save_op_code_inc"]), save_op_code_inc);
+			/*t <= save_op_code_inc <= save_op_code_inc;*/
 		}
 		else if (op_code instanceof __v8)
 		{
@@ -888,14 +888,14 @@ Object.assign(BayLang.LangES6.TranslatorES6Operator,
 			var res = this.OpTryCatch(t, op_code);
 			t = Runtime.rtl.attr(res, 0);
 			content = Runtime.rtl.attr(res, 1);
-			t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["save_op_code_inc"]), save_op_code_inc);
+			/*t <= save_op_code_inc <= save_op_code_inc;*/
 		}
 		else if (op_code instanceof __v12)
 		{
 			var res = this.OpWhile(t, op_code);
 			t = Runtime.rtl.attr(res, 0);
 			content = Runtime.rtl.attr(res, 1);
-			t = Runtime.rtl.setAttr(t, Runtime.Collection.from(["save_op_code_inc"]), save_op_code_inc);
+			/*t <= save_op_code_inc <= save_op_code_inc;*/
 		}
 		else if (op_code instanceof __v13)
 		{

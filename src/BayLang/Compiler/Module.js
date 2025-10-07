@@ -59,8 +59,8 @@ Object.assign(BayLang.Compiler.Module.prototype,
 		{
 			return false;
 		}
-		var __v0 = use("Runtime.rs");
-		group_name = __v0.substr(group_name, 1);
+		var __v1 = use("Runtime.rs");
+		group_name = __v1.substr(group_name, 1);
 		var groups = this.config.get("groups");
 		if (groups == null)
 		{
@@ -105,8 +105,8 @@ Object.assign(BayLang.Compiler.Module.prototype,
 			return __v0.join(use("Runtime.Vector").from([this.path,__v1.substr(file_name, 1)]));
 		}
 		var path = this.getSourcePath();
-		var __v0 = use("Runtime.fs");
-		return __v0.join(use("Runtime.Vector").from([path,file_name]));
+		var __v2 = use("Runtime.fs");
+		return __v2.join(use("Runtime.Vector").from([path,file_name]));
 	},
 	/**
 	 * Resolve destination file
@@ -141,24 +141,24 @@ Object.assign(BayLang.Compiler.Module.prototype,
 		}
 		if (lang == "php")
 		{
-			var __v4 = use("Runtime.re");
-			dest_path = __v4.replace("\\.bay$", ".php", dest_path);
-			var __v5 = use("Runtime.re");
-			dest_path = __v5.replace("\\.ui$", ".php", dest_path);
+			var __v6 = use("Runtime.re");
+			dest_path = __v6.replace("\\.bay$", ".php", dest_path);
+			var __v7 = use("Runtime.re");
+			dest_path = __v7.replace("\\.ui$", ".php", dest_path);
 		}
 		else if (lang == "es6")
-		{
-			var __v6 = use("Runtime.re");
-			dest_path = __v6.replace("\\.bay$", ".js", dest_path);
-			var __v7 = use("Runtime.re");
-			dest_path = __v7.replace("\\.ui$", ".js", dest_path);
-		}
-		else if (lang == "nodejs")
 		{
 			var __v8 = use("Runtime.re");
 			dest_path = __v8.replace("\\.bay$", ".js", dest_path);
 			var __v9 = use("Runtime.re");
 			dest_path = __v9.replace("\\.ui$", ".js", dest_path);
+		}
+		else if (lang == "nodejs")
+		{
+			var __v10 = use("Runtime.re");
+			dest_path = __v10.replace("\\.bay$", ".js", dest_path);
+			var __v11 = use("Runtime.re");
+			dest_path = __v11.replace("\\.ui$", ".js", dest_path);
 		}
 		return dest_path;
 	},

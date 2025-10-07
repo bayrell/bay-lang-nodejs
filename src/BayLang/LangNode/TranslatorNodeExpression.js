@@ -44,7 +44,7 @@ Object.assign(BayLang.LangNode.TranslatorNodeExpression,
 		{
 			return use("Runtime.Vector").from([t,"ctx.constructor.translate"]);
 		}
-		if (op_code.value == "log")
+		if (op_code.value == "log" || op_code.value == "print")
 		{
 			return use("Runtime.Vector").from([t,"console.log"]);
 		}

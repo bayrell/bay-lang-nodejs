@@ -126,7 +126,7 @@ Object.assign(Runtime.Unit.TestProvider.prototype,
 	runTestMethod: async function(class_name, method_name)
 	{
 		var error_code = 0;
-		var __v1 = use("Runtime.Exceptions.AssertException");
+		var __v7 = use("Runtime.Exceptions.AssertException");
 		try
 		{
 			var __v0 = use("Runtime.Callback");
@@ -140,28 +140,28 @@ Object.assign(Runtime.Unit.TestProvider.prototype,
 			}
 			if (callback.exists())
 			{
-				var __v1 = use("Runtime.rtl");
-				await __v1.apply(callback);
+				var __v3 = use("Runtime.rtl");
+				await __v3.apply(callback);
 				error_code = 1;
-				var __v2 = use("Runtime.io");
-				var __v3 = use("Runtime.io");
-				__v2.print(class_name + use("Runtime.rtl").toStr("::") + use("Runtime.rtl").toStr(method_name) + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(__v3.color("green", "Ok")));
+				var __v4 = use("Runtime.io");
+				var __v5 = use("Runtime.io");
+				__v4.print(class_name + use("Runtime.rtl").toStr("::") + use("Runtime.rtl").toStr(method_name) + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(__v5.color("green", "Ok")));
 			}
 			else
 			{
-				var __v4 = use("Runtime.Exceptions.ItemNotFound");
-				throw new __v4(class_name + use("Runtime.rtl").toStr("::") + use("Runtime.rtl").toStr(method_name), "Method")
+				var __v6 = use("Runtime.Exceptions.ItemNotFound");
+				throw new __v6(class_name + use("Runtime.rtl").toStr("::") + use("Runtime.rtl").toStr(method_name), "Method")
 			}
 		}
 		catch (_ex)
 		{
-			if (_ex instanceof __v1)
+			if (_ex instanceof __v7)
 			{
 				var e = _ex;
 				
-				var __v2 = use("Runtime.io");
-				var __v3 = use("Runtime.io");
-				__v2.print(class_name + use("Runtime.rtl").toStr("::") + use("Runtime.rtl").toStr(method_name) + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(__v3.color("red", "Error: " + use("Runtime.rtl").toStr(e.getErrorMessage()))));
+				var __v8 = use("Runtime.io");
+				var __v9 = use("Runtime.io");
+				__v8.print(class_name + use("Runtime.rtl").toStr("::") + use("Runtime.rtl").toStr(method_name) + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(__v9.color("red", "Error: " + use("Runtime.rtl").toStr(e.getErrorMessage()))));
 				error_code = e.getErrorCode();
 			}
 			else

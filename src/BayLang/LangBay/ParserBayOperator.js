@@ -142,8 +142,8 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 			look = Runtime.rtl.attr(res, 0);
 			token = Runtime.rtl.attr(res, 1);
 		}
-		var __v1 = use("BayLang.OpCodes.OpTryCatch");
-		return use("Runtime.Vector").from([parser,new __v1(use("Runtime.Map").from({"op_try":op_try,"items":items,"caret_start":caret_start,"caret_end":parser.caret}))]);
+		var __v2 = use("BayLang.OpCodes.OpTryCatch");
+		return use("Runtime.Vector").from([parser,new __v2(use("Runtime.Map").from({"op_try":op_try,"items":items,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/**
 	 * Read then
@@ -265,8 +265,8 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 			look = Runtime.rtl.attr(res, 0);
 			token = Runtime.rtl.attr(res, 1);
 		}
-		var __v1 = use("BayLang.OpCodes.OpIf");
-		return use("Runtime.Vector").from([parser,new __v1(use("Runtime.Map").from({"condition":if_condition,"if_true":if_true,"if_false":if_false,"if_else":if_else,"caret_start":caret_start,"caret_end":parser.caret}))]);
+		var __v2 = use("BayLang.OpCodes.OpIf");
+		return use("Runtime.Vector").from([parser,new __v2(use("Runtime.Map").from({"condition":if_condition,"if_true":if_true,"if_false":if_false,"if_else":if_else,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/**
 	 * Read For
@@ -448,10 +448,10 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 		if (token.content != "=" && token.content != "+=" && token.content != "-=" && token.content != "~=" && token.content != "." && token.content != "::" && token.content != "[")
 		{
 			var var_op_code = null;
-			var __v1 = use("BayLang.OpCodes.OpAssign");
-			kind = __v1.KIND_DECLARE;
-			var __v2 = use("Runtime.Vector");
-			values = new __v2();
+			var __v3 = use("BayLang.OpCodes.OpAssign");
+			kind = __v3.KIND_DECLARE;
+			var __v4 = use("Runtime.Vector");
+			values = new __v4();
 			parser = start;
 			var res = parser.parser_base.constructor.readTypeIdentifier(parser);
 			parser = Runtime.rtl.attr(res, 0);
@@ -475,8 +475,8 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 				expression = null;
 			}
 			parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["vars"]), parser.vars.setIm(var_name, true));
-			var __v3 = use("BayLang.OpCodes.OpAssignValue");
-			values.push(new __v3(use("Runtime.Map").from({"var_name":var_name,"expression":expression,"caret_start":var_op_code.caret_start,"caret_end":parser.caret})));
+			var __v5 = use("BayLang.OpCodes.OpAssignValue");
+			values.push(new __v5(use("Runtime.Map").from({"var_name":var_name,"expression":expression,"caret_start":var_op_code.caret_start,"caret_end":parser.caret})));
 			/* Look next token */
 			var res = parser.parser_base.constructor.readToken(parser);
 			look = Runtime.rtl.attr(res, 0);
@@ -502,8 +502,8 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 					expression = null;
 				}
 				parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["vars"]), parser.vars.setIm(var_name, true));
-				var __v4 = use("BayLang.OpCodes.OpAssignValue");
-				values.push(new __v4(use("Runtime.Map").from({"var_name":var_name,"expression":expression,"caret_start":var_op_code.caret_start,"caret_end":parser.caret})));
+				var __v6 = use("BayLang.OpCodes.OpAssignValue");
+				values.push(new __v6(use("Runtime.Map").from({"var_name":var_name,"expression":expression,"caret_start":var_op_code.caret_start,"caret_end":parser.caret})));
 				var res = parser.parser_base.constructor.readToken(parser);
 				look = Runtime.rtl.attr(res, 0);
 				token = Runtime.rtl.attr(res, 1);
@@ -514,8 +514,8 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 		else
 		{
 			parser = start;
-			var __v4 = use("BayLang.OpCodes.OpAssign");
-			kind = __v4.KIND_ASSIGN;
+			var __v7 = use("BayLang.OpCodes.OpAssign");
+			kind = __v7.KIND_ASSIGN;
 			var op = "";
 			var res = parser.parser_base.constructor.readDynamic(parser, 2 | 8);
 			parser = Runtime.rtl.attr(res, 0);
@@ -529,19 +529,19 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 			}
 			else
 			{
-				var __v5 = use("BayLang.Exceptions.ParserError");
-				throw new __v5("Unknown operator " + use("Runtime.rtl").toStr(token.content), token.caret_start, parser.file_name)
+				var __v8 = use("BayLang.Exceptions.ParserError");
+				throw new __v8("Unknown operator " + use("Runtime.rtl").toStr(token.content), token.caret_start, parser.file_name)
 			}
 			var res = parser.parser_expression.constructor.readExpression(parser);
 			parser = Runtime.rtl.attr(res, 0);
 			expression = Runtime.rtl.attr(res, 1);
-			var __v5 = use("BayLang.OpCodes.OpAssignValue");
-			values = use("Runtime.Vector").from([new __v5(use("Runtime.Map").from({"op_code":op_code,"expression":expression,"op":op}))]);
+			var __v9 = use("BayLang.OpCodes.OpAssignValue");
+			values = use("Runtime.Vector").from([new __v9(use("Runtime.Map").from({"op_code":op_code,"expression":expression,"op":op}))]);
 			var_name = "";
 			expression = null;
 		}
-		var __v1 = use("BayLang.OpCodes.OpAssign");
-		return use("Runtime.Vector").from([parser,new __v1(use("Runtime.Map").from({"pattern":pattern,"values":(values != null) ? (values) : (null),"caret_start":caret_start,"caret_end":parser.caret,"expression":expression,"var_name":var_name,"names":names,"kind":kind}))]);
+		var __v10 = use("BayLang.OpCodes.OpAssign");
+		return use("Runtime.Vector").from([parser,new __v10(use("Runtime.Map").from({"pattern":pattern,"values":(values != null) ? (values) : (null),"caret_start":caret_start,"caret_end":parser.caret,"expression":expression,"var_name":var_name,"names":names,"kind":kind}))]);
 	},
 	/**
 	 * Read operator
@@ -577,12 +577,12 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 		if ((look2_content == "++" || look2_content == "--") && parser.parser_base.constructor.isIdentifier(look1_content))
 		{
 			parser = look2;
-			var __v0 = use("BayLang.OpCodes.OpIdentifier");
-			var op_code = new __v0(use("Runtime.Map").from({"value":look1_content,"caret_start":token1.caret_start,"caret_end":token1.caret_end}));
-			var __v1 = use("BayLang.OpCodes.OpInc");
-			var __v2 = use("BayLang.OpCodes.OpInc");
-			var __v3 = use("BayLang.OpCodes.OpInc");
-			op_code = new __v1(use("Runtime.Map").from({"kind":(look2_content == "++") ? (__v2.KIND_POST_INC) : (__v3.KIND_POST_DEC),"value":op_code,"caret_start":caret_start,"caret_end":parser.caret}));
+			var __v4 = use("BayLang.OpCodes.OpIdentifier");
+			var op_code = new __v4(use("Runtime.Map").from({"value":look1_content,"caret_start":token1.caret_start,"caret_end":token1.caret_end}));
+			var __v5 = use("BayLang.OpCodes.OpInc");
+			var __v6 = use("BayLang.OpCodes.OpInc");
+			var __v7 = use("BayLang.OpCodes.OpInc");
+			op_code = new __v5(use("Runtime.Map").from({"kind":(look2_content == "++") ? (__v6.KIND_POST_INC) : (__v7.KIND_POST_DEC),"value":op_code,"caret_start":caret_start,"caret_end":parser.caret}));
 			return use("Runtime.Vector").from([parser,op_code]);
 		}
 		return use("Runtime.Vector").from([parser,null]);
@@ -888,8 +888,8 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 			}
 			/* Register variable in parser */
 			parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["vars"]), parser.vars.setIm(arg_name, true));
-			var __v1 = use("BayLang.OpCodes.OpDeclareFunctionArg");
-			items.push(new __v1(use("Runtime.Map").from({"pattern":arg_pattern,"name":arg_name,"expression":arg_expression,"caret_start":arg_pattern.caret_start,"caret_end":parser.caret})));
+			var __v2 = use("BayLang.OpCodes.OpDeclareFunctionArg");
+			items.push(new __v2(use("Runtime.Map").from({"pattern":arg_pattern,"name":arg_name,"expression":arg_expression,"caret_start":arg_pattern.caret_start,"caret_end":parser.caret})));
 			var res = parser.parser_base.constructor.readToken(parser);
 			look = Runtime.rtl.attr(res, 0);
 			token = Runtime.rtl.attr(res, 1);
@@ -997,9 +997,9 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 		var expression = null;
 		var is_context = true;
 		var name = "";
-		var __v1 = use("BayLang.OpCodes.OpTypeIdentifier");
-		var __v2 = use("BayLang.OpCodes.OpEntityName");
-		if (result_type && result_type instanceof __v1 && result_type.entity_name instanceof __v2)
+		var __v2 = use("BayLang.OpCodes.OpTypeIdentifier");
+		var __v3 = use("BayLang.OpCodes.OpEntityName");
+		if (result_type && result_type instanceof __v2 && result_type.entity_name instanceof __v3)
 		{
 			if (result_type.entity_name.names.get(0) == "html")
 			{
@@ -1073,8 +1073,8 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 		/* Restore vars */
 		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["vars"]), save_vars);
 		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["is_html"]), save_is_html);
-		var __v1 = use("BayLang.OpCodes.OpDeclareFunction");
-		return use("Runtime.Vector").from([parser,new __v1(use("Runtime.Map").from({"args":args,"vars":vars,"flags":flags,"name":name,"is_html":is_html,"is_context":is_context,"result_type":result_type,"expression":expression,"items":op_code,"caret_start":caret_start,"caret_end":parser.caret}))]);
+		var __v4 = use("BayLang.OpCodes.OpDeclareFunction");
+		return use("Runtime.Vector").from([parser,new __v4(use("Runtime.Map").from({"args":args,"vars":vars,"flags":flags,"name":name,"is_html":is_html,"is_context":is_context,"result_type":result_type,"expression":expression,"items":op_code,"caret_start":caret_start,"caret_end":parser.caret}))]);
 	},
 	/**
 	 * Returns true if next is function
@@ -1092,7 +1092,7 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["vars"]), new __v0());
 		parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["find_ident"]), false);
 		var res = false;
-		var __v1 = use("BayLang.Exceptions.ParserExpected");
+		var __v3 = use("BayLang.Exceptions.ParserExpected");
 		try
 		{
 			var res = parser.parser_base.constructor.readToken(parser);
@@ -1135,14 +1135,14 @@ Object.assign(BayLang.LangBay.ParserBayOperator,
 			}
 			else if (token.content != "=>" && token.content != "{")
 			{
-				var __v1 = use("BayLang.Exceptions.ParserExpected");
-				throw new __v1("Function", caret_start, parser.file_name)
+				var __v2 = use("BayLang.Exceptions.ParserExpected");
+				throw new __v2("Function", caret_start, parser.file_name)
 			}
 			res = true;
 		}
 		catch (_ex)
 		{
-			if (_ex instanceof __v1)
+			if (_ex instanceof __v3)
 			{
 				var e = _ex;
 				

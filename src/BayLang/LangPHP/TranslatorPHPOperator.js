@@ -62,7 +62,7 @@ Object.assign(BayLang.LangPHP.TranslatorPHPOperator,
 		var content = "";
 		var __v0 = use("BayLang.OpCodes.OpAssign");
 		var __v1 = use("BayLang.OpCodes.OpAssign");
-		var __v2 = use("BayLang.OpCodes.OpAssign");
+		var __v11 = use("BayLang.OpCodes.OpAssign");
 		if (op_code.kind == __v0.KIND_ASSIGN || op_code.kind == __v1.KIND_DECLARE)
 		{
 			for (var i = 0; i < op_code.values.count(); i++)
@@ -112,22 +112,22 @@ Object.assign(BayLang.LangPHP.TranslatorPHPOperator,
 					for (var j = 0; j < items.count(); j++)
 					{
 						var item_attr = Runtime.rtl.attr(items, j);
-						var __v5 = use("BayLang.OpCodes.OpAttr");
 						var __v6 = use("BayLang.OpCodes.OpAttr");
 						var __v7 = use("BayLang.OpCodes.OpAttr");
-						if (item_attr.kind == __v5.KIND_ATTR)
+						var __v8 = use("BayLang.OpCodes.OpAttr");
+						if (item_attr.kind == __v6.KIND_ATTR)
 						{
 							obj_s += use("Runtime.rtl").toStr("->" + use("Runtime.rtl").toStr(item_attr.value.value));
 							items2.push(t.expression.constructor.toString(item_attr.value.value));
 						}
-						else if (item_attr.kind == __v6.KIND_DYNAMIC)
+						else if (item_attr.kind == __v7.KIND_DYNAMIC)
 						{
 							var res = t.expression.constructor.Expression(t, item_attr.value);
 							t = Runtime.rtl.attr(res, 0);
 							obj_s += use("Runtime.rtl").toStr("[" + use("Runtime.rtl").toStr(Runtime.rtl.attr(res, 1)) + use("Runtime.rtl").toStr("]"));
 							items2.push(Runtime.rtl.attr(res, 1));
 						}
-						else if (item_attr.kind == __v7.KIND_DYNAMIC_ATTRS)
+						else if (item_attr.kind == __v8.KIND_DYNAMIC_ATTRS)
 						{
 							if (item_attr.attrs != null)
 							{
@@ -152,8 +152,8 @@ Object.assign(BayLang.LangPHP.TranslatorPHPOperator,
 						{
 							op2 = "-";
 						}
-						var __v5 = use("Runtime.rs");
-						item_expression = "\\Runtime\\rtl\\attr($ctx, " + use("Runtime.rtl").toStr(obj_s) + use("Runtime.rtl").toStr(", [") + use("Runtime.rtl").toStr(__v5.join(", ", items2)) + use("Runtime.rtl").toStr("]) ") + use("Runtime.rtl").toStr(op2) + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(item_expression);
+						var __v9 = use("Runtime.rs");
+						item_expression = "\\Runtime\\rtl\\attr($ctx, " + use("Runtime.rtl").toStr(obj_s) + use("Runtime.rtl").toStr(", [") + use("Runtime.rtl").toStr(__v9.join(", ", items2)) + use("Runtime.rtl").toStr("]) ") + use("Runtime.rtl").toStr(op2) + use("Runtime.rtl").toStr(" ") + use("Runtime.rtl").toStr(item_expression);
 					}
 					index_s = obj_s + use("Runtime.rtl").toStr(" = ") + use("Runtime.rtl").toStr(item_expression) + use("Runtime.rtl").toStr(";");
 				}
@@ -165,8 +165,8 @@ Object.assign(BayLang.LangPHP.TranslatorPHPOperator,
 					}
 					else
 					{
-						var __v5 = use("BayLang.OpCodes.OpAssign");
-						if (op_code.kind == __v5.KIND_DECLARE)
+						var __v10 = use("BayLang.OpCodes.OpAssign");
+						if (op_code.kind == __v10.KIND_DECLARE)
 						{
 							s = "$" + use("Runtime.rtl").toStr(item.var_name);
 						}
@@ -200,7 +200,7 @@ Object.assign(BayLang.LangPHP.TranslatorPHPOperator,
 				}
 			}
 		}
-		else if (op_code.kind == __v2.KIND_STRUCT)
+		else if (op_code.kind == __v11.KIND_STRUCT)
 		{
 			var s = "$" + use("Runtime.rtl").toStr(op_code.var_name) + use("Runtime.rtl").toStr(" = ");
 			var res = this.OpAssignStruct(t, op_code, 0);
@@ -445,15 +445,15 @@ Object.assign(BayLang.LangPHP.TranslatorPHPOperator,
 		for (var i = 0; i < op_code.items.count(); i++)
 		{
 			var item = op_code.items.item(i);
-			var __v0 = use("BayLang.OpCodes.OpComment");
-			var __v1 = use("BayLang.OpCodes.OpDeclareFunction");
-			if (item instanceof __v0)
+			var __v2 = use("BayLang.OpCodes.OpComment");
+			var __v3 = use("BayLang.OpCodes.OpDeclareFunction");
+			if (item instanceof __v2)
 			{
 				var res = t.operator.constructor.OpComment(t, item);
 				t = Runtime.rtl.attr(res, 0);
 				content += use("Runtime.rtl").toStr(Runtime.rtl.attr(res, 1));
 			}
-			else if (item instanceof __v1)
+			else if (item instanceof __v3)
 			{
 				var res = t.program.constructor.OpDeclareFunction(t, item);
 				t = Runtime.rtl.attr(res, 0);

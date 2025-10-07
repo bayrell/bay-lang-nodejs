@@ -35,8 +35,8 @@ Runtime.Exceptions.ItemNotFound = function(name, object, prev)
 		var __v1 = use("Runtime.rs");
 		message = __v1.format("%object% not found", use("Runtime.Map").from({"object":object}));
 	}
-	var __v0 = use("Runtime.rtl");
-	use("Runtime.Exceptions.AbstractException").call(this, message, __v0.ERROR_ITEM_NOT_FOUND, prev);
+	var __v2 = use("Runtime.rtl");
+	use("Runtime.Exceptions.AbstractException").call(this, message, __v2.ERROR_ITEM_NOT_FOUND, prev);
 };
 Runtime.Exceptions.ItemNotFound.prototype = Object.create(use("Runtime.Exceptions.AbstractException").prototype);
 Runtime.Exceptions.ItemNotFound.prototype.constructor = Runtime.Exceptions.ItemNotFound;

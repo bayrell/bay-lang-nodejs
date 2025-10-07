@@ -42,16 +42,16 @@ Object.assign(BayLang.Helper.Module.prototype,
 		}
 		/* Module json file */
 		var module_json_path = this.path + use("Runtime.rtl").toStr("/") + use("Runtime.rtl").toStr("module.json");
-		var __v0 = use("Runtime.fs");
-		if (!await __v0.isFile(module_json_path))
+		var __v1 = use("Runtime.fs");
+		if (!await __v1.isFile(module_json_path))
 		{
 			return Promise.resolve(false);
 		}
 		/* Read file */
-		var __v0 = use("Runtime.fs");
-		var content = await __v0.readFile(module_json_path);
-		var __v1 = use("Runtime.rtl");
-		var module_info = __v1.json_decode(content);
+		var __v2 = use("Runtime.fs");
+		var content = await __v2.readFile(module_json_path);
+		var __v3 = use("Runtime.rtl");
+		var module_info = __v3.json_decode(content);
 		if (!module_info)
 		{
 			return Promise.resolve(false);
@@ -77,8 +77,8 @@ Object.assign(BayLang.Helper.Module.prototype,
 			var widgets = module_info.get("widgets");
 			this.widgets = module_info.get("widgets").map((item) =>
 			{
-				var __v2 = use("BayLang.Helper.Widget");
-				var widget = new __v2(this);
+				var __v4 = use("BayLang.Helper.Widget");
+				var widget = new __v4(this);
 				widget.kind = item.get("kind");
 				widget.name = item.get("name");
 				return widget;
@@ -195,9 +195,9 @@ Object.assign(BayLang.Helper.Module.prototype,
 		{
 			return null;
 		}
-		var __v1 = use("Runtime.rs");
 		var __v2 = use("Runtime.rs");
-		return __v1.addFirstSlash(__v2.substr(file_path, source_path_sz));
+		var __v3 = use("Runtime.rs");
+		return __v2.addFirstSlash(__v3.substr(file_path, source_path_sz));
 	},
 	/**
 	 * Returns true if module contains file
@@ -286,15 +286,15 @@ Object.assign(BayLang.Helper.Module.prototype,
 			return "";
 		}
 		/* Remove module name from class name */
-		var __v1 = use("Runtime.rs");
-		class_name = __v1.substr(class_name, module_name_sz);
+		var __v2 = use("Runtime.rs");
+		class_name = __v2.substr(class_name, module_name_sz);
 		/* Return path to class name */
 		var path = this.getSourceFolderPath();
-		var __v2 = use("Runtime.rs");
-		var arr = __v2.split(".", class_name);
+		var __v3 = use("Runtime.rs");
+		var arr = __v3.split(".", class_name);
 		arr.prepend(path);
-		var __v3 = use("Runtime.fs");
-		return __v3.join(arr) + use("Runtime.rtl").toStr(".bay");
+		var __v4 = use("Runtime.fs");
+		return __v4.join(arr) + use("Runtime.rtl").toStr(".bay");
 	},
 	/**
 	 * Resolve source path
@@ -351,8 +351,8 @@ Object.assign(BayLang.Helper.Module.prototype,
 		{
 			return false;
 		}
-		var __v0 = use("Runtime.rs");
-		group_name = __v0.substr(group_name, 1);
+		var __v1 = use("Runtime.rs");
+		group_name = __v1.substr(group_name, 1);
 		if (this.groups == null)
 		{
 			return false;
@@ -428,11 +428,11 @@ Object.assign(BayLang.Helper.Module.prototype,
 		{
 			return Promise.resolve(false);
 		}
-		var __v0 = use("Runtime.fs");
-		var file_content = await __v0.readFile(src_file_path);
+		var __v1 = use("Runtime.fs");
+		var file_content = await __v1.readFile(src_file_path);
 		/* Parse file */
-		var __v1 = use("BayLang.LangBay.ParserBay");
-		var parser = new __v1();
+		var __v2 = use("BayLang.LangBay.ParserBay");
+		var parser = new __v2();
 		var res = parser.constructor.parse(parser, file_content);
 		var file_op_code = res.get(1);
 		if (!file_op_code)
@@ -491,8 +491,8 @@ Object.assign(BayLang.Helper.Module.prototype,
 			await __v3.mkdir(dest_dir_name);
 		}
 		/* Save file */
-		var __v2 = use("Runtime.fs");
-		await __v2.saveFile(dest_file_path, dest_file_content);
+		var __v4 = use("Runtime.fs");
+		await __v4.saveFile(dest_file_path, dest_file_content);
 		return Promise.resolve(true);
 	},
 	/**
@@ -640,11 +640,11 @@ Object.assign(BayLang.Helper.Module.prototype,
 			}
 		}
 		/* Save module.json */
-		var __v4 = use("Runtime.rtl");
-		var __v5 = use("Runtime.Serializer");
-		content = __v4.json_encode(module_info, __v5.JSON_PRETTY);
-		var __v6 = use("Runtime.fs");
-		await __v6.saveFile(module_json_path, content);
+		var __v5 = use("Runtime.rtl");
+		var __v6 = use("Runtime.Serializer");
+		content = __v5.json_encode(module_info, __v6.JSON_PRETTY);
+		var __v7 = use("Runtime.fs");
+		await __v7.saveFile(module_json_path, content);
 		/* Remove assets from cache */
 		for (var i = this.assets.count() - 1; i >= 0; i--)
 		{

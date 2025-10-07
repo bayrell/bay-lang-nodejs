@@ -31,4 +31,3 @@ let rtl = use("Runtime.rtl");
 let Vector = use("Runtime.Vector");
 
 rtl.runApp("BayLang.Compiler.ConsoleApp", Vector.from(["BayLang.Compiler"]));
-//rtl.runApp(null, "BayLang.Compiler.ConsoleApp", Vector.from(["BayLang.Compiler"]));

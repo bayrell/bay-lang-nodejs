@@ -53,20 +53,20 @@ Object.assign(BayLang.Helper.WidgetProcessor.prototype,
 		{
 			return Promise.resolve();
 		}
-		var __v0 = use("Runtime.fs");
-		var content = await __v0.readFile(file_path);
-		var __v2 = use("BayLang.Exceptions.ParserUnknownError");
+		var __v1 = use("Runtime.fs");
+		var content = await __v1.readFile(file_path);
+		var __v3 = use("BayLang.Exceptions.ParserUnknownError");
 		try
 		{
 			/* Parse file */
-			var __v1 = use("BayLang.LangBay.ParserBay");
-			var parser = new __v1();
+			var __v2 = use("BayLang.LangBay.ParserBay");
+			var parser = new __v2();
 			var res = parser.constructor.parse(parser, content);
 			this.op_code = res.get(1);
 		}
 		catch (_ex)
 		{
-			if (_ex instanceof __v2)
+			if (_ex instanceof __v3)
 			{
 				var e = _ex;
 			}
@@ -161,8 +161,8 @@ Object.assign(BayLang.Helper.WidgetProcessor.prototype,
 		{
 			return null;
 		}
-		var __v0 = use("BayLang.OpCodes.OpCollection");
-		if (!(expression instanceof __v0))
+		var __v1 = use("BayLang.OpCodes.OpCollection");
+		if (!(expression instanceof __v1))
 		{
 			return null;
 		}
@@ -211,8 +211,8 @@ Object.assign(BayLang.Helper.WidgetProcessor,
 		{
 			return false;
 		}
-		var __v0 = use("BayLang.OpCodes.OpTypeIdentifier");
-		if (!(op_code.value instanceof __v0))
+		var __v1 = use("BayLang.OpCodes.OpTypeIdentifier");
+		if (!(op_code.value instanceof __v1))
 		{
 			return false;
 		}
@@ -228,8 +228,8 @@ Object.assign(BayLang.Helper.WidgetProcessor,
 		{
 			return false;
 		}
-		var __v0 = use("BayLang.OpCodes.OpString");
-		if (!(op_code.args.get(0) instanceof __v0))
+		var __v2 = use("BayLang.OpCodes.OpString");
+		if (!(op_code.args.get(0) instanceof __v2))
 		{
 			return false;
 		}

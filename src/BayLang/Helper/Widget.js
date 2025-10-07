@@ -149,21 +149,21 @@ Object.assign(BayLang.Helper.Widget.prototype,
 		{
 			return Promise.resolve();
 		}
-		var __v0 = use("Runtime.fs");
-		this.model_content = await __v0.readFile(file_path);
+		var __v1 = use("Runtime.fs");
+		this.model_content = await __v1.readFile(file_path);
 		/* Parse model */
-		var __v2 = use("BayLang.Exceptions.ParserUnknownError");
+		var __v3 = use("BayLang.Exceptions.ParserUnknownError");
 		try
 		{
 			/* Parse file */
-			var __v1 = use("BayLang.LangBay.ParserBay");
-			var parser = new __v1();
+			var __v2 = use("BayLang.LangBay.ParserBay");
+			var parser = new __v2();
 			var res = parser.constructor.parse(parser, this.model_content);
 			this.model = res.get(1);
 		}
 		catch (_ex)
 		{
-			if (_ex instanceof __v2)
+			if (_ex instanceof __v3)
 			{
 				var e = _ex;
 				
@@ -246,21 +246,21 @@ Object.assign(BayLang.Helper.Widget.prototype,
 		{
 			return Promise.resolve();
 		}
-		var __v0 = use("Runtime.fs");
-		this.component_content = await __v0.readFile(file_path);
+		var __v1 = use("Runtime.fs");
+		this.component_content = await __v1.readFile(file_path);
 		/* Parse component */
-		var __v2 = use("BayLang.Exceptions.ParserUnknownError");
+		var __v3 = use("BayLang.Exceptions.ParserUnknownError");
 		try
 		{
 			/* Parse file */
-			var __v1 = use("BayLang.LangBay.ParserBay");
-			var parser = new __v1();
+			var __v2 = use("BayLang.LangBay.ParserBay");
+			var parser = new __v2();
 			var res = parser.constructor.parse(parser, this.component_content);
 			this.component = res.get(1);
 		}
 		catch (_ex)
 		{
-			if (_ex instanceof __v2)
+			if (_ex instanceof __v3)
 			{
 				var e = _ex;
 				
@@ -323,8 +323,8 @@ Object.assign(BayLang.Helper.Widget,
 		}
 		var items = op_code.items.filter((op_code) =>
 		{
-			var __v0 = use("BayLang.OpCodes.OpAssign");
-			return op_code instanceof __v0;
+			var __v1 = use("BayLang.OpCodes.OpAssign");
+			return op_code instanceof __v1;
 		}).map((op_code) =>
 		{
 			return op_code.values;

@@ -121,8 +121,8 @@ Object.assign(BayLang.LangBay.TranslatorBayProgram.prototype,
 		{
 			return (op_code.flags) ? (op_code.flags.isFlag(flag_name)) : (false);
 		});
-		var __v0 = use("Runtime.rs");
-		result.push(__v0.join(" ", flags));
+		var __v1 = use("Runtime.rs");
+		result.push(__v1.join(" ", flags));
 		if (flags.count() > 0)
 		{
 			result.push(" ");
@@ -306,8 +306,8 @@ Object.assign(BayLang.LangBay.TranslatorBayProgram.prototype,
 					result.push(this.translator.newLine());
 				}
 			}
-			var __v0 = use("BayLang.OpCodes.OpUse");
-			if (op_code_item instanceof __v0)
+			var __v1 = use("BayLang.OpCodes.OpUse");
+			if (op_code_item instanceof __v1)
 			{
 				op_code_use_count++;
 			}

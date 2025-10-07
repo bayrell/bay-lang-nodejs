@@ -129,8 +129,8 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 			}
 			/* Translate item */
 			this.translate(op_code_item, result);
-			var __v0 = use("BayLang.OpCodes.OpPreprocessorIfDef");
-			if (!(op_code_item instanceof __v0))
+			var __v2 = use("BayLang.OpCodes.OpPreprocessorIfDef");
+			if (!(op_code_item instanceof __v2))
 			{
 				if (is_multiline)
 				{
@@ -272,27 +272,27 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 		for (var i = 0; i < attrs.count(); i++)
 		{
 			var item_attr = attrs.get(i);
-			var __v1 = use("BayLang.OpCodes.OpAttr");
 			var __v2 = use("BayLang.OpCodes.OpAttr");
 			var __v3 = use("BayLang.OpCodes.OpAttr");
 			var __v4 = use("BayLang.OpCodes.OpAttr");
-			if (item_attr.kind == __v1.KIND_ATTR)
+			var __v5 = use("BayLang.OpCodes.OpAttr");
+			if (item_attr.kind == __v2.KIND_ATTR)
 			{
 				result.push(".");
 				result.push(item_attr.value.value);
 			}
-			else if (item_attr.kind == __v2.KIND_STATIC)
+			else if (item_attr.kind == __v3.KIND_STATIC)
 			{
 				result.push("::");
 				result.push(item_attr.value.value);
 			}
-			else if (item_attr.kind == __v3.KIND_DYNAMIC)
+			else if (item_attr.kind == __v4.KIND_DYNAMIC)
 			{
 				result.push("[");
 				this.translate(item_attr.value, result);
 				result.push("]");
 			}
-			else if (item_attr.kind == __v4.KIND_DYNAMIC_ATTRS)
+			else if (item_attr.kind == __v5.KIND_DYNAMIC_ATTRS)
 			{
 				result.push("[");
 				var item_attr_count = item_attr.attrs.count();
@@ -588,48 +588,48 @@ Object.assign(BayLang.LangBay.TranslatorBayExpression.prototype,
 		{
 			this.OpNumber(op_code, result);
 		}
-		var __v0 = use("BayLang.OpCodes.OpString");
-		var __v1 = use("BayLang.OpCodes.OpIdentifier");
-		var __v2 = use("BayLang.OpCodes.OpAttr");
-		var __v3 = use("BayLang.OpCodes.OpClassOf");
-		var __v4 = use("BayLang.OpCodes.OpCollection");
-		var __v5 = use("BayLang.OpCodes.OpDict");
-		var __v6 = use("BayLang.OpCodes.OpDeclareFunction");
-		var __v7 = use("BayLang.OpCodes.OpCall");
-		var __v8 = use("BayLang.OpCodes.OpNew");
-		if (op_code instanceof __v0)
+		var __v1 = use("BayLang.OpCodes.OpString");
+		var __v2 = use("BayLang.OpCodes.OpIdentifier");
+		var __v3 = use("BayLang.OpCodes.OpAttr");
+		var __v4 = use("BayLang.OpCodes.OpClassOf");
+		var __v5 = use("BayLang.OpCodes.OpCollection");
+		var __v6 = use("BayLang.OpCodes.OpDict");
+		var __v7 = use("BayLang.OpCodes.OpDeclareFunction");
+		var __v8 = use("BayLang.OpCodes.OpCall");
+		var __v9 = use("BayLang.OpCodes.OpNew");
+		if (op_code instanceof __v1)
 		{
 			this.OpString(op_code, result);
 		}
-		else if (op_code instanceof __v1)
+		else if (op_code instanceof __v2)
 		{
 			this.OpIdentifier(op_code, result);
 		}
-		else if (op_code instanceof __v2)
+		else if (op_code instanceof __v3)
 		{
 			this.OpAttr(op_code, result);
 		}
-		else if (op_code instanceof __v3)
+		else if (op_code instanceof __v4)
 		{
 			this.OpClassOf(op_code, result);
 		}
-		else if (op_code instanceof __v4)
+		else if (op_code instanceof __v5)
 		{
 			this.OpCollection(op_code, result);
 		}
-		else if (op_code instanceof __v5)
+		else if (op_code instanceof __v6)
 		{
 			this.OpDict(op_code, result);
 		}
-		else if (op_code instanceof __v6)
+		else if (op_code instanceof __v7)
 		{
 			this.translator.program.OpDeclareFunction(op_code, result);
 		}
-		else if (op_code instanceof __v7)
+		else if (op_code instanceof __v8)
 		{
 			this.OpCall(op_code, result);
 		}
-		else if (op_code instanceof __v8)
+		else if (op_code instanceof __v9)
 		{
 			this.OpNew(op_code, result);
 		}

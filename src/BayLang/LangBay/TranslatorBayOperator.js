@@ -101,20 +101,20 @@ Object.assign(BayLang.LangBay.TranslatorBayOperator.prototype,
 			result.push("++");
 			this.translator.expression.translate(op_code.value, result);
 		}
-		var __v0 = use("BayLang.OpCodes.OpInc");
-		if (op_code.kind == __v0.KIND_PRE_DEC)
+		var __v1 = use("BayLang.OpCodes.OpInc");
+		if (op_code.kind == __v1.KIND_PRE_DEC)
 		{
 			result.push("--");
 			this.translator.expression.translate(op_code.value, result);
 		}
-		var __v0 = use("BayLang.OpCodes.OpInc");
-		if (op_code.kind == __v0.KIND_POST_INC)
+		var __v2 = use("BayLang.OpCodes.OpInc");
+		if (op_code.kind == __v2.KIND_POST_INC)
 		{
 			this.translator.expression.translate(op_code.value, result);
 			result.push("++");
 		}
-		var __v0 = use("BayLang.OpCodes.OpInc");
-		if (op_code.kind == __v0.KIND_POST_DEC)
+		var __v3 = use("BayLang.OpCodes.OpInc");
+		if (op_code.kind == __v3.KIND_POST_DEC)
 		{
 			this.translator.expression.translate(op_code.value, result);
 			result.push("--");

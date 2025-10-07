@@ -41,16 +41,16 @@ Object.assign(BayLang.Helper.Project.prototype,
 		{
 			return Promise.resolve(false);
 		}
-		var __v1 = use("Runtime.fs");
-		if (!await __v1.isFile(project_json_path))
+		var __v2 = use("Runtime.fs");
+		if (!await __v2.isFile(project_json_path))
 		{
 			return Promise.resolve(false);
 		}
 		/* Read file */
-		var __v1 = use("Runtime.fs");
-		var content = await __v1.readFile(project_json_path);
-		var __v2 = use("Runtime.rtl");
-		var project_info = __v2.json_decode(content);
+		var __v3 = use("Runtime.fs");
+		var content = await __v3.readFile(project_json_path);
+		var __v4 = use("Runtime.rtl");
+		var project_info = __v4.json_decode(content);
 		if (!project_info)
 		{
 			return Promise.resolve(false);
@@ -82,21 +82,21 @@ Object.assign(BayLang.Helper.Project.prototype,
 			return Promise.resolve(false);
 		}
 		/* Read file */
-		var __v0 = use("Runtime.fs");
-		var content = await __v0.readFile(cache_path);
-		var __v1 = use("Runtime.rtl");
-		var data = __v1.json_decode(content);
+		var __v1 = use("Runtime.fs");
+		var content = await __v1.readFile(cache_path);
+		var __v2 = use("Runtime.rtl");
+		var data = __v2.json_decode(content);
 		if (!data)
 		{
 			return Promise.resolve(false);
 		}
 		/* Import data */
-		var __v2 = use("Runtime.Serializer");
-		var serializer = new __v2();
 		var __v3 = use("Runtime.Serializer");
-		serializer.setFlag(__v3.ALLOW_OBJECTS);
+		var serializer = new __v3();
 		var __v4 = use("Runtime.Serializer");
-		serializer.setFlag(__v4.DECODE);
+		serializer.setFlag(__v4.ALLOW_OBJECTS);
+		var __v5 = use("Runtime.Serializer");
+		serializer.setFlag(__v5.DECODE);
 		this.serialize(serializer, data);
 		return Promise.resolve(true);
 	},
@@ -116,14 +116,14 @@ Object.assign(BayLang.Helper.Project.prototype,
 			await __v2.mkdir(folder_path);
 		}
 		/* Create serializer */
-		var __v1 = use("Runtime.SerializerJson");
-		var serializer = new __v1();
-		var __v2 = use("Runtime.Serializer");
-		serializer.setFlag(__v2.JSON_PRETTY);
+		var __v3 = use("Runtime.SerializerJson");
+		var serializer = new __v3();
+		var __v4 = use("Runtime.Serializer");
+		serializer.setFlag(__v4.JSON_PRETTY);
 		/* Save cache to file */
 		var content = serializer.encode(this);
-		var __v3 = use("Runtime.fs");
-		await __v3.saveFile(cache_path, content);
+		var __v5 = use("Runtime.fs");
+		await __v5.saveFile(cache_path, content);
 	},
 	/**
 	 * Process project cache
@@ -410,8 +410,8 @@ Object.assign(BayLang.Helper.Project.prototype,
 		{
 			return Promise.resolve();
 		}
-		var __v0 = use("Runtime.fs");
-		var items = await __v0.listDir(folder_path);
+		var __v1 = use("Runtime.fs");
+		var items = await __v1.listDir(folder_path);
 		for (var i = 0; i < items.count(); i++)
 		{
 			var file_name = items.get(i);
@@ -424,9 +424,9 @@ Object.assign(BayLang.Helper.Project.prototype,
 				continue;
 			}
 			/* Read module */
-			var __v1 = use("BayLang.Helper.Module");
-			var __v2 = use("Runtime.fs");
-			var module = __v1.readModule(this, __v2.join(use("Runtime.Vector").from([folder_path,file_name])));
+			var __v2 = use("BayLang.Helper.Module");
+			var __v3 = use("Runtime.fs");
+			var module = __v2.readModule(this, __v3.join(use("Runtime.Vector").from([folder_path,file_name])));
 			if (module)
 			{
 				/* Set module */
@@ -558,17 +558,17 @@ Object.assign(BayLang.Helper.Project.prototype,
 			}
 		}
 		/* Create directory if does not exists */
-		var __v4 = use("Runtime.rs");
-		var dir_name = __v4.dirname(asset_path);
-		var __v5 = use("Runtime.fs");
-		if (!await __v5.isDir(dir_name))
+		var __v9 = use("Runtime.rs");
+		var dir_name = __v9.dirname(asset_path);
+		var __v10 = use("Runtime.fs");
+		if (!await __v10.isDir(dir_name))
 		{
-			var __v6 = use("Runtime.fs");
-			await __v6.mkdir(dir_name);
+			var __v11 = use("Runtime.fs");
+			await __v11.mkdir(dir_name);
 		}
 		/* Save file */
-		var __v5 = use("Runtime.fs");
-		await __v5.saveFile(asset_path, asset_content);
+		var __v12 = use("Runtime.fs");
+		await __v12.saveFile(asset_path, asset_content);
 	},
 	_init: function()
 	{
@@ -592,8 +592,8 @@ Object.assign(BayLang.Helper.Project,
 			return Promise.resolve(use("Runtime.Vector").from([]));
 		}
 		var result = use("Runtime.Vector").from([]);
-		var __v0 = use("Runtime.fs");
-		var items = await __v0.listDir(projects_path);
+		var __v1 = use("Runtime.fs");
+		var items = await __v1.listDir(projects_path);
 		for (var i = 0; i < items.count(); i++)
 		{
 			var file_name = items.get(i);
@@ -605,8 +605,8 @@ Object.assign(BayLang.Helper.Project,
 			{
 				continue;
 			}
-			var __v1 = use("Runtime.fs");
-			var project = await this.readProject(__v1.join(use("Runtime.Vector").from([projects_path,file_name])));
+			var __v2 = use("Runtime.fs");
+			var project = await this.readProject(__v2.join(use("Runtime.Vector").from([projects_path,file_name])));
 			if (project)
 			{
 				result.push(project);

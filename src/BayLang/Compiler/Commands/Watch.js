@@ -33,7 +33,7 @@ Object.assign(BayLang.Compiler.Commands.Watch.prototype,
 	 */
 	onChangeFile: async function(changed_file_path)
 	{
-		var __v0 = use("BayLang.Exceptions.ParserUnknownError");
+		var __v2 = use("BayLang.Exceptions.ParserUnknownError");
 		try
 		{
 			if (changed_file_path == this.settings.project_json_path)
@@ -53,8 +53,8 @@ Object.assign(BayLang.Compiler.Commands.Watch.prototype,
 			var src_file_name = file_info.get("src_file_name");
 			if (file_info.get("file_name") == "/module.json")
 			{
-				var __v0 = use("Runtime.io");
-				__v0.print("Reload module.json");
+				var __v1 = use("Runtime.io");
+				__v1.print("Reload module.json");
 				await this.settings.reload();
 			}
 			else if (assets.indexOf(src_file_name) >= 0)
@@ -64,19 +64,19 @@ Object.assign(BayLang.Compiler.Commands.Watch.prototype,
 		}
 		catch (_ex)
 		{
-			if (_ex instanceof __v0)
+			if (_ex instanceof __v2)
 			{
 				var e = _ex;
 				
-				var __v1 = use("Runtime.io");
-				__v1.print_error("Error: " + e.toString());
+				var __v3 = use("Runtime.io");
+				__v3.print_error("Error: " + e.toString());
 			}
 			else if (true)
 			{
 				var e = _ex;
 				
-				var __v2 = use("Runtime.io");
-				__v2.print_error(e);
+				var __v4 = use("Runtime.io");
+				__v4.print_error(e);
 			}
 			else
 			{

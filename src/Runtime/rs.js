@@ -538,16 +538,16 @@ Object.assign(Runtime.rs,
 			content = __v1.trim(__v2.spaceless(content));
 			return content;
 		}
-		var __v0 = use("Runtime.re");
-		var matches = __v0.matchAll("<[^>]+>", content, "i");
+		var __v3 = use("Runtime.re");
+		var matches = __v3.matchAll("<[^>]+>", content, "i");
 		if (matches)
 		{
 			for (var i = 0; i < matches.count(); i++)
 			{
 				var match = Runtime.rtl.attr(matches, i);
 				var tag_str = Runtime.rtl.attr(match, 0);
-				var __v1 = use("Runtime.re");
-				var tag_match = __v1.matchAll("<(\\/|)([a-zA-Z]+)(|[^>]*)>", tag_str, "i");
+				var __v4 = use("Runtime.re");
+				var tag_match = __v4.matchAll("<(\\/|)([a-zA-Z]+)(|[^>]*)>", tag_str, "i");
 				if (tag_match)
 				{
 					var tag_name = this.lower(Runtime.rtl.attr(Runtime.rtl.attr(tag_match, 0), 2));
@@ -558,9 +558,9 @@ Object.assign(Runtime.rs,
 				}
 			}
 		}
-		var __v1 = use("Runtime.rs");
-		var __v2 = use("Runtime.rs");
-		content = __v1.trim(__v2.spaceless(content));
+		var __v5 = use("Runtime.rs");
+		var __v6 = use("Runtime.rs");
+		content = __v5.trim(__v6.spaceless(content));
 		return content;
 	},
 	/**

@@ -57,19 +57,19 @@ Object.assign(BayLang.LangES6.TranslatorES6Html,
 		{
 			return use("Runtime.Vector").from([t,t.expression.constructor.toString(op_code.value)]);
 		}
-		var __v0 = use("BayLang.OpCodes.OpHtmlValue");
-		if (op_code instanceof __v0)
+		var __v1 = use("BayLang.OpCodes.OpHtmlValue");
+		if (op_code instanceof __v1)
 		{
-			var __v1 = use("BayLang.OpCodes.OpHtmlValue");
 			var __v2 = use("BayLang.OpCodes.OpHtmlValue");
-			if (op_code.kind == __v1.KIND_RAW)
+			var __v3 = use("BayLang.OpCodes.OpHtmlValue");
+			if (op_code.kind == __v2.KIND_RAW)
 			{
 				var res = t.expression.constructor.Expression(t, op_code.value);
 				t = Runtime.rtl.attr(res, 0);
 				var value = Runtime.rtl.attr(res, 1);
 				return use("Runtime.Vector").from([t,value]);
 			}
-			else if (op_code.kind == __v2.KIND_JSON)
+			else if (op_code.kind == __v3.KIND_JSON)
 			{
 				var res = t.expression.constructor.Expression(t, op_code.value);
 				t = Runtime.rtl.attr(res, 0);
@@ -135,18 +135,18 @@ Object.assign(BayLang.LangES6.TranslatorES6Html,
 			}
 			else if (is_event)
 			{
-				var __v4 = use("Runtime.rs");
-				var event_name = __v4.substr(attr_key, 7);
-				var __v5 = use("Runtime.rs");
-				attr_key = __v5.substr(attr_key, 7);
 				var __v6 = use("Runtime.rs");
-				if (__v6.substr(attr_key, 0, 2) != "on")
+				var event_name = __v6.substr(attr_key, 7);
+				var __v7 = use("Runtime.rs");
+				attr_key = __v7.substr(attr_key, 7);
+				var __v8 = use("Runtime.rs");
+				if (__v8.substr(attr_key, 0, 2) != "on")
 				{
-					var __v7 = use("Runtime.rs");
-					var __v8 = use("Runtime.rs");
-					var first = __v7.upper(__v8.substr(attr_key, 0, 1));
 					var __v9 = use("Runtime.rs");
-					var second = __v9.substr(attr_key, 1);
+					var __v10 = use("Runtime.rs");
+					var first = __v9.upper(__v10.substr(attr_key, 0, 1));
+					var __v11 = use("Runtime.rs");
+					var second = __v11.substr(attr_key, 1);
 					attr_key = "on" + use("Runtime.rtl").toStr(first) + use("Runtime.rtl").toStr(second);
 				}
 			}
@@ -190,8 +190,8 @@ Object.assign(BayLang.LangES6.TranslatorES6Html,
 		/* Attrs */
 		if (attr_class.count() > 0)
 		{
-			var __v2 = use("Runtime.rs");
-			res_attrs.push("\"class\":" + use("Runtime.rtl").toStr("this._class_name([") + use("Runtime.rtl").toStr(__v2.join(", ", attr_class)) + use("Runtime.rtl").toStr("])"));
+			var __v12 = use("Runtime.rs");
+			res_attrs.push("\"class\":" + use("Runtime.rtl").toStr("this._class_name([") + use("Runtime.rtl").toStr(__v12.join(", ", attr_class)) + use("Runtime.rtl").toStr("])"));
 		}
 		if (attr_key_value != "")
 		{
@@ -211,19 +211,19 @@ Object.assign(BayLang.LangES6.TranslatorES6Html,
 		{
 			if (is_component)
 			{
-				var __v2 = use("Runtime.rs");
-				res_attrs.push("\"data_widget_path\": \"" + use("Runtime.rtl").toStr(__v2.join(".", t.debug_component)) + use("Runtime.rtl").toStr("\""));
+				var __v13 = use("Runtime.rs");
+				res_attrs.push("\"data_widget_path\": \"" + use("Runtime.rtl").toStr(__v13.join(".", t.debug_component)) + use("Runtime.rtl").toStr("\""));
 			}
 			else
 			{
-				var __v3 = use("Runtime.rs");
-				res_attrs.push("\"data-widget-path\": \"" + use("Runtime.rtl").toStr(__v3.join(".", t.debug_component)) + use("Runtime.rtl").toStr("\""));
+				var __v14 = use("Runtime.rs");
+				res_attrs.push("\"data-widget-path\": \"" + use("Runtime.rtl").toStr(__v14.join(".", t.debug_component)) + use("Runtime.rtl").toStr("\""));
 			}
 		}
 		if (res_attrs.count() > 0)
 		{
-			var __v2 = use("Runtime.rs");
-			attr_s = "{" + use("Runtime.rtl").toStr(__v2.join(",", res_attrs)) + use("Runtime.rtl").toStr("}");
+			var __v15 = use("Runtime.rs");
+			attr_s = "{" + use("Runtime.rtl").toStr(__v15.join(",", res_attrs)) + use("Runtime.rtl").toStr("}");
 		}
 		else
 		{
@@ -251,7 +251,7 @@ Object.assign(BayLang.LangES6.TranslatorES6Html,
 		var str_var_name = t.expression.constructor.toString(var_name);
 		var __v0 = use("BayLang.OpCodes.OpHtmlContent");
 		var __v1 = use("BayLang.OpCodes.OpHtmlValue");
-		var __v2 = use("BayLang.OpCodes.OpHtmlTag");
+		var __v4 = use("BayLang.OpCodes.OpHtmlTag");
 		if (op_code instanceof __v0)
 		{
 			var item_value = t.expression.constructor.toString(op_code.value);
@@ -289,7 +289,7 @@ Object.assign(BayLang.LangES6.TranslatorES6Html,
 				content += use("Runtime.rtl").toStr(t.s("this._t(" + use("Runtime.rtl").toStr(var_name) + use("Runtime.rtl").toStr(", ") + use("Runtime.rtl").toStr(item_value) + use("Runtime.rtl").toStr(");")));
 			}
 		}
-		else if (op_code instanceof __v2)
+		else if (op_code instanceof __v4)
 		{
 			var new_var_name = "";
 			var res = t.constructor.incSaveOpCode(t);
@@ -362,8 +362,8 @@ Object.assign(BayLang.LangES6.TranslatorES6Html,
 			var save_op_codes = t.save_op_codes;
 			/*int save_op_code_inc = t.save_op_code_inc;*/
 			var item_value = "";
-			var __v3 = use("BayLang.OpCodes.OpCall");
-			if (op_code instanceof __v3)
+			var __v5 = use("BayLang.OpCodes.OpCall");
+			if (op_code instanceof __v5)
 			{
 				var res = t.expression.constructor.OpCall(t, op_code);
 				t = Runtime.rtl.attr(res, 0);
@@ -448,8 +448,8 @@ Object.assign(BayLang.LangES6.TranslatorES6Html,
 		var content = "() => {";
 		if (args != null)
 		{
-			var __v0 = use("BayLang.OpCodes.OpDeclareFunction");
-			var res = t.operator.constructor.OpDeclareFunctionArgs(t, new __v0(use("Runtime.Map").from({"args":args,"is_context":false})));
+			var __v1 = use("BayLang.OpCodes.OpDeclareFunction");
+			var res = t.operator.constructor.OpDeclareFunctionArgs(t, new __v1(use("Runtime.Map").from({"args":args,"is_context":false})));
 			content = "(" + use("Runtime.rtl").toStr(Runtime.rtl.attr(res, 1)) + use("Runtime.rtl").toStr(") => {");
 		}
 		t = t.levelInc();

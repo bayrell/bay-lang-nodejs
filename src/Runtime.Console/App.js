@@ -77,17 +77,17 @@ Object.assign(Runtime.Console.App.prototype,
 			return Promise.resolve(this.getExitCode(-1));
 		}
 		/* Find command */
-		var __v0 = use("Runtime.Callback");
-		var command_run = new __v0(class_name, "run");
+		var __v2 = use("Runtime.Callback");
+		var command_run = new __v2(class_name, "run");
 		if (!command_run.exists())
 		{
-			var __v1 = use("Runtime.Callback");
-			var __v2 = use("Runtime.rtl");
-			command_run = new __v1(__v2.newInstance(class_name), "run");
+			var __v3 = use("Runtime.Callback");
+			var __v4 = use("Runtime.rtl");
+			command_run = new __v3(__v4.newInstance(class_name), "run");
 			if (!command_run.exists())
 			{
-				var __v3 = use("Runtime.io");
-				__v3.print_error("Command " + use("Runtime.rtl").toStr(cmd) + use("Runtime.rtl").toStr(" not found"));
+				var __v5 = use("Runtime.io");
+				__v5.print_error("Command " + use("Runtime.rtl").toStr(cmd) + use("Runtime.rtl").toStr(" not found"));
 				return Promise.resolve(this.getExitCode(-1));
 			}
 		}

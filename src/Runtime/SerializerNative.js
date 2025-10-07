@@ -72,8 +72,8 @@ Object.assign(Runtime.SerializerNative.prototype,
 		{
 			return value.toArray();
 		}
-		var __v0 = use("Runtime.Dict");
-		if (value instanceof __v0)
+		var __v1 = use("Runtime.Dict");
+		if (value instanceof __v1)
 		{
 			return value.toObject();
 		}

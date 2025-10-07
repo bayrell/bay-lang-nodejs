@@ -245,12 +245,12 @@ Object.assign(BayLang.LangBay.TranslatorBayHtml.prototype,
 			{
 				args_content.push(" ");
 			}
-			var __v0 = use("Runtime.rs");
-			args_content.push("use=\"" + use("Runtime.rtl").toStr(__v0.join(",", vars)) + use("Runtime.rtl").toStr("\""));
+			var __v1 = use("Runtime.rs");
+			args_content.push("use=\"" + use("Runtime.rtl").toStr(__v1.join(",", vars)) + use("Runtime.rtl").toStr("\""));
 		}
 		/* Slot args */
-		var __v0 = use("Runtime.rs");
-		var args = __v0.join("", args_content);
+		var __v2 = use("Runtime.rs");
+		var args = __v2.join("", args_content);
 		if (args != "")
 		{
 			args = " " + use("Runtime.rtl").toStr(args);

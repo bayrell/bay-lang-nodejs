@@ -175,21 +175,21 @@ Object.assign(Runtime.Serializer.prototype,
 		var callback = null;
 		if (this.callback_name != null)
 		{
-			var __v0 = use("Runtime.Callback");
-			var callback = new __v0(instance, this.callback_name);
+			var __v1 = use("Runtime.Callback");
+			var callback = new __v1(instance, this.callback_name);
 			if (callback.exists())
 			{
 				callback = null;
 			}
 		}
 		/* Apply object serialize */
-		var __v1 = use("Runtime.SerializeInterface");
+		var __v3 = use("Runtime.SerializeInterface");
 		if (callback)
 		{
-			var __v0 = use("Runtime.rtl");
-			__v0.apply(callback, use("Runtime.Vector").from([this,value]));
+			var __v2 = use("Runtime.rtl");
+			__v2.apply(callback, use("Runtime.Vector").from([this,value]));
 		}
-		else if (Runtime.rtl.is_implements(instance, __v1))
+		else if (Runtime.rtl.is_implements(instance, __v3))
 		{
 			instance.serialize(this, value);
 		}
@@ -231,20 +231,20 @@ Object.assign(Runtime.Serializer.prototype,
 			return new __v1(value);
 		}
 		/* Struct */
-		var __v0 = use("Runtime.rtl");
-		if (__v0.is_instanceof(class_name, "Runtime.BaseStruct"))
+		var __v2 = use("Runtime.rtl");
+		if (__v2.is_instanceof(class_name, "Runtime.BaseStruct"))
 		{
 			value.remove("__class_name__");
 			value = this.decodeDict(value);
-			var __v1 = use("Runtime.rtl");
-			var object = __v1.newInstance(class_name, use("Runtime.Vector").from([value]));
+			var __v3 = use("Runtime.rtl");
+			var object = __v3.newInstance(class_name, use("Runtime.Vector").from([value]));
 			return object;
 		}
 		/* Create object by class name */
-		var __v0 = use("Runtime.rtl");
-		var __v1 = use("Runtime.rtl");
-		var __v2 = use("Runtime.rtl");
-		if (__v0.exists(__v1.find_class(class_name)) && __v2.is_instanceof(class_name, "Runtime.BaseObject"))
+		var __v4 = use("Runtime.rtl");
+		var __v5 = use("Runtime.rtl");
+		var __v6 = use("Runtime.rtl");
+		if (__v4.exists(__v5.find_class(class_name)) && __v6.is_instanceof(class_name, "Runtime.BaseObject"))
 		{
 			return this.createObject(value, object_value, create);
 		}
@@ -266,14 +266,14 @@ Object.assign(Runtime.Serializer.prototype,
 		{
 			return value;
 		}
-		var __v0 = use("Runtime.BaseObject");
-		if (value instanceof __v0)
+		var __v1 = use("Runtime.BaseObject");
+		if (value instanceof __v1)
 		{
 			return value;
 		}
 		/* Decode object */
-		var __v0 = use("Runtime.Dict");
-		if (this.allowObjects() && value instanceof __v0 && (value.has("__class_name__") || create))
+		var __v2 = use("Runtime.Dict");
+		if (this.allowObjects() && value instanceof __v2 && (value.has("__class_name__") || create))
 		{
 			return this.decodeObject(value, object_value, create);
 		}
@@ -324,21 +324,21 @@ Object.assign(Runtime.Serializer.prototype,
 		var callback = null;
 		if (this.callback_name != null)
 		{
-			var __v0 = use("Runtime.Callback");
-			var callback = new __v0(value, this.callback_name);
+			var __v1 = use("Runtime.Callback");
+			var callback = new __v1(value, this.callback_name);
 			if (callback.exists())
 			{
 				callback = null;
 			}
 		}
 		/* Apply object serialize */
-		var __v1 = use("Runtime.SerializeInterface");
+		var __v3 = use("Runtime.SerializeInterface");
 		if (callback)
 		{
-			var __v0 = use("Runtime.rtl");
-			__v0.apply(callback, use("Runtime.Vector").from([this,new_value]));
+			var __v2 = use("Runtime.rtl");
+			__v2.apply(callback, use("Runtime.Vector").from([this,new_value]));
 		}
-		else if (Runtime.rtl.is_implements(value, __v1))
+		else if (Runtime.rtl.is_implements(value, __v3))
 		{
 			value.serialize(this, new_value);
 		}
@@ -410,29 +410,29 @@ Object.assign(Runtime.Serializer.prototype,
 			return value;
 		}
 		/* Encode Collection or Dict */
-		var __v0 = use("Runtime.Collection");
-		if (value instanceof __v0)
+		var __v1 = use("Runtime.Collection");
+		if (value instanceof __v1)
 		{
 			return this.encodeCollection(value);
 		}
-		var __v0 = use("Runtime.Dict");
-		if (value instanceof __v0)
+		var __v2 = use("Runtime.Dict");
+		if (value instanceof __v2)
 		{
 			return this.encodeDict(value);
 		}
 		/* Encode Object */
-		var __v0 = use("Runtime.Date");
-		var __v1 = use("Runtime.DateTime");
-		var __v2 = use("Runtime.BaseObject");
-		if (value instanceof __v0)
+		var __v3 = use("Runtime.Date");
+		var __v4 = use("Runtime.DateTime");
+		var __v5 = use("Runtime.BaseObject");
+		if (value instanceof __v3)
 		{
 			return this.encodeDate(value);
 		}
-		else if (value instanceof __v1)
+		else if (value instanceof __v4)
 		{
 			return this.encodeDateTime(value);
 		}
-		else if (value instanceof __v2)
+		else if (value instanceof __v5)
 		{
 			return this.encodeObject(value);
 		}

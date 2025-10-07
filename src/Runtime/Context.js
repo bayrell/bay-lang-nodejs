@@ -146,11 +146,11 @@ Object.assign(Runtime.Context.prototype,
 		/* Init providers */
 		await this.initProviders();
 		/* Hook init app */
-		var __v0 = use("Runtime.Hooks.RuntimeHook");
-		await this.callHookAsync(__v0.INIT);
+		var __v1 = use("Runtime.Hooks.RuntimeHook");
+		await this.callHookAsync(__v1.INIT);
 		/* Init app */
-		var __v1 = use("Runtime.rtl");
-		if (this.app != null && __v1.method_exists(this.app, "init"))
+		var __v2 = use("Runtime.rtl");
+		if (this.app != null && __v2.method_exists(this.app, "init"))
 		{
 			await this.app.init();
 		}
@@ -178,8 +178,8 @@ Object.assign(Runtime.Context.prototype,
 			await this.app.start();
 		}
 		/* Hook launched app */
-		var __v1 = use("Runtime.Hooks.RuntimeHook");
-		await this.callHookAsync(__v1.LAUNCHED);
+		var __v2 = use("Runtime.Hooks.RuntimeHook");
+		await this.callHookAsync(__v2.LAUNCHED);
 		/* Set started */
 		this.started = true;
 	},
@@ -382,19 +382,19 @@ Object.assign(Runtime.Context,
 		if (params.has("modules"))
 		{
 			var modules = params.get("modules");
-			var __v0 = use("Runtime.Collection");
-			if (!(modules instanceof __v0))
+			var __v2 = use("Runtime.Collection");
+			if (!(modules instanceof __v2))
 			{
-				var __v1 = use("Runtime.Collection");
-				modules = __v1.from(modules);
+				var __v3 = use("Runtime.Collection");
+				modules = __v3.from(modules);
 			}
 			params.set("modules", modules.toVector());
 		}
 		/* Setup default environments */
 		if (!params.has("environments"))
 		{
-			var __v0 = use("Runtime.Map");
-			params.set("environments", new __v0());
+			var __v4 = use("Runtime.Map");
+			params.set("environments", new __v4());
 		}
 		var env = Runtime.rtl.attr(params, "environments");
 		if (!env)
@@ -421,8 +421,8 @@ Object.assign(Runtime.Context,
 		{
 			env.set("TZ_OFFSET", 0);
 		}
-		var __v0 = use("Runtime.rtl");
-		var instance = __v0.newInstance(this.getClassName());
+		var __v5 = use("Runtime.rtl");
+		var instance = __v5.newInstance(this.getClassName());
 		if (params.has("base_path"))
 		{
 			instance.base_path = params.get("base_path");

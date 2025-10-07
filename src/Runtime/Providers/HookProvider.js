@@ -66,12 +66,12 @@ Object.assign(Runtime.Providers.HookProvider.prototype,
 		var priorities = Runtime.rtl.attr(this.hooks, hook_name);
 		if (!priorities.has(priority))
 		{
-			var __v0 = use("Runtime.Vector");
-			priorities.set(priority, new __v0());
+			var __v1 = use("Runtime.Vector");
+			priorities.set(priority, new __v1());
 		}
 		var methods_list = priorities.get(priority);
-		var __v0 = use("Runtime.Callback");
-		methods_list.push(new __v0(obj, method_name));
+		var __v2 = use("Runtime.Callback");
+		methods_list.push(new __v2(obj, method_name));
 	},
 	/**
 	 * Remove hook
@@ -87,8 +87,8 @@ Object.assign(Runtime.Providers.HookProvider.prototype,
 		var priorities = Runtime.rtl.attr(this.hooks, hook_name);
 		if (!priorities.has(priority))
 		{
-			var __v0 = use("Runtime.Vector");
-			priorities.setValue(priority, new __v0());
+			var __v1 = use("Runtime.Vector");
+			priorities.setValue(priority, new __v1());
 		}
 		var methods_list = priorities.get(priority);
 		var index = methods_list.find((info) =>

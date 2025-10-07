@@ -567,35 +567,35 @@ Object.assign(BayLang.LangBay.ParserBayExpression,
 						var res = this.readTernary(look);
 						parser = Runtime.rtl.attr(res, 0);
 						arg2 = Runtime.rtl.attr(res, 1);
-						var __v5 = use("BayLang.OpCodes.OpCall");
-						var __v6 = use("BayLang.OpCodes.OpAttr");
-						var __v7 = use("BayLang.OpCodes.OpAttr");
-						var __v8 = use("BayLang.OpCodes.OpIdentifier");
-						var __v9 = use("BayLang.OpCodes.OpIdentifier");
-						var __v10 = use("BayLang.OpCodes.OpIdentifier");
-						value = new __v5(use("Runtime.Map").from({"args":use("Runtime.Vector").from([arg2]),"obj":new __v6(use("Runtime.Map").from({"kind":__v7.KIND_STATIC,"obj":new __v8(use("Runtime.Map").from({"kind":__v9.KIND_SYS_TYPE,"caret_start":caret_start,"caret_end":parser.caret,"value":"rtl"})),"value":new __v10(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.caret,"value":"m_def"})),"caret_start":caret_start,"caret_end":parser.caret})),"caret_start":caret_start,"caret_end":parser.caret}));
+						var __v13 = use("BayLang.OpCodes.OpCall");
+						var __v14 = use("BayLang.OpCodes.OpAttr");
+						var __v15 = use("BayLang.OpCodes.OpAttr");
+						var __v16 = use("BayLang.OpCodes.OpIdentifier");
+						var __v17 = use("BayLang.OpCodes.OpIdentifier");
+						var __v18 = use("BayLang.OpCodes.OpIdentifier");
+						value = new __v13(use("Runtime.Map").from({"args":use("Runtime.Vector").from([arg2]),"obj":new __v14(use("Runtime.Map").from({"kind":__v15.KIND_STATIC,"obj":new __v16(use("Runtime.Map").from({"kind":__v17.KIND_SYS_TYPE,"caret_start":caret_start,"caret_end":parser.caret,"value":"rtl"})),"value":new __v18(use("Runtime.Map").from({"caret_start":caret_start,"caret_end":parser.caret,"value":"m_def"})),"caret_start":caret_start,"caret_end":parser.caret})),"caret_start":caret_start,"caret_end":parser.caret}));
 					}
 				}
 				else if (look_token.content == "method" || look_token.content == "." || look_token.content == ":" || look_token.content == "::")
 				{
 					parser = look;
-					var __v5 = use("BayLang.OpCodes.OpPipe");
-					kind = __v5.KIND_CALL;
+					var __v19 = use("BayLang.OpCodes.OpPipe");
+					kind = __v19.KIND_CALL;
 					/* Set pipe */
 					var save_find_ident = parser.find_ident;
 					parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["find_ident"]), false);
 					parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["is_pipe"]), true);
 					if (look_token.content == ".")
 					{
-						var __v6 = use("BayLang.OpCodes.OpPipe");
-						kind = __v6.KIND_METHOD;
-						var __v7 = use("BayLang.OpCodes.OpAttr");
-						parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["pipe_kind"]), __v7.KIND_ATTR);
+						var __v20 = use("BayLang.OpCodes.OpPipe");
+						kind = __v20.KIND_METHOD;
+						var __v21 = use("BayLang.OpCodes.OpAttr");
+						parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["pipe_kind"]), __v21.KIND_ATTR);
 					}
 					else
 					{
-						var __v8 = use("BayLang.OpCodes.OpAttr");
-						parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["pipe_kind"]), __v8.KIND_STATIC);
+						var __v22 = use("BayLang.OpCodes.OpAttr");
+						parser = Runtime.rtl.setAttr(parser, Runtime.Collection.from(["pipe_kind"]), __v22.KIND_STATIC);
 					}
 					var res = parser.parser_base.constructor.readDynamic(parser);
 					parser = Runtime.rtl.attr(res, 0);
@@ -606,22 +606,22 @@ Object.assign(BayLang.LangBay.ParserBayExpression,
 				}
 				else if (look_token.content == "curry")
 				{
-					var __v6 = use("BayLang.OpCodes.OpPipe");
-					kind = __v6.KIND_CALL;
+					var __v23 = use("BayLang.OpCodes.OpPipe");
+					kind = __v23.KIND_CALL;
 					var res = parser.parser_base.constructor.readCurry(parser);
 					parser = Runtime.rtl.attr(res, 0);
 					value = Runtime.rtl.attr(res, 1);
 				}
 				else
 				{
-					var __v7 = use("BayLang.OpCodes.OpPipe");
-					kind = __v7.KIND_CALL;
+					var __v24 = use("BayLang.OpCodes.OpPipe");
+					kind = __v24.KIND_CALL;
 					var res = parser.parser_base.constructor.readDynamic(parser);
 					parser = Runtime.rtl.attr(res, 0);
 					value = Runtime.rtl.attr(res, 1);
 				}
-				var __v0 = use("BayLang.OpCodes.OpPipe");
-				op_code = new __v0(use("Runtime.Map").from({"obj":op_code,"kind":kind,"value":value,"is_async":is_async,"is_monad":is_monad,"caret_start":caret_start,"caret_end":parser.caret}));
+				var __v25 = use("BayLang.OpCodes.OpPipe");
+				op_code = new __v25(use("Runtime.Map").from({"obj":op_code,"kind":kind,"value":value,"is_async":is_async,"is_monad":is_monad,"caret_start":caret_start,"caret_end":parser.caret}));
 				var res = parser.parser_base.constructor.readToken(parser);
 				look = Runtime.rtl.attr(res, 0);
 				look_token = Runtime.rtl.attr(res, 1);

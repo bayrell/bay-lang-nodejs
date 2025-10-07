@@ -68,8 +68,8 @@ Object.assign(BayLang.OpCodes.OpModule.prototype,
 				{
 					break;
 				}
-				var __v2 = use("Runtime.rs");
-				if (__v2.compare(class_name, item.name) == -1)
+				var __v3 = use("Runtime.rs");
+				if (__v3.compare(class_name, item.name) == -1)
 				{
 					break;
 				}

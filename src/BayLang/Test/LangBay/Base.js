@@ -74,8 +74,8 @@ Object.assign(BayLang.Test.LangBay.Base.prototype,
 			var __v0 = use("Runtime.rs");
 			console.log(__v0.join("", result));
 		}
-		var __v0 = use("Runtime.rs");
-		return use("Runtime.Vector").from([op_code,__v0.join("", result)]);
+		var __v1 = use("Runtime.rs");
+		return use("Runtime.Vector").from([op_code,__v1.join("", result)]);
 	},
 	testNumber: function()
 	{
