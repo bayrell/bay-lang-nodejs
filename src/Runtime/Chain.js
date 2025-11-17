@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
-const Callback = use("Runtime.Callback");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,12 +18,10 @@ const Callback = use("Runtime.Callback");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Chain = class extends Callback
+Runtime.Chain = class extends use("Runtime.Method")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -40,7 +38,7 @@ Runtime.Chain = class extends Callback
 	
 	
 	/**
-	 * Check callback
+	 * Check method
 	 */
 	check()
 	{
@@ -58,9 +56,10 @@ Runtime.Chain = class extends Callback
 	 */
 	add(f, priority)
 	{
+		const Map = use("Runtime.Map");
 		if (priority == undefined) priority = 100;
 		this.chain.push(Map.create({
-			"callback": f,
+			"method": f,
 			"priority": priority,
 		}));
 		return this;
@@ -82,11 +81,11 @@ Runtime.Chain = class extends Callback
 	apply(args)
 	{
 		if (args == undefined) args = null;
-		for (var i = 0; i < this.chain.count(); i++)
+		for (let i = 0; i < this.chain.count(); i++)
 		{
-			var item = this.chain.get(i);
-			var f = item.get("callback");
-			obj[this.name].bind(obj).apply(null, args);
+			let item = this.chain.get(i);
+			let f = item.get("method");
+			f.apply(args);
 		}
 	}
 	
@@ -95,12 +94,13 @@ Runtime.Chain = class extends Callback
 	_init()
 	{
 		super._init();
-		this.chain = [];
+		const Vector = use("Runtime.Vector");
+		this.chain = new Vector();
 	}
 	static getClassName(){ return "Runtime.Chain"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.Chain);
 module.exports = {

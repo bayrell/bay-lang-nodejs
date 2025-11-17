@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,13 +17,11 @@ const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpPreprocessorIfCode = class extends BaseOpCode
+BayLang.OpCodes.OpPreprocessorIfCode = class extends use("BayLang.OpCodes.BaseOpCode")
 {
-	
-	
 	/**
 	 * Serialize object
 	 */
@@ -44,9 +42,9 @@ BayLang.OpCodes.OpPreprocessorIfCode = class extends BaseOpCode
 		this.content = null;
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpPreprocessorIfCode"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.OpCodes.OpPreprocessorIfCode);
 module.exports = {

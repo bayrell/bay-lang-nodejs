@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,13 +18,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBayBase = class extends BaseObject
+BayLang.LangBay.ParserBayBase = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -44,10 +42,10 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 		if (name == "") return false;
 		if (name == "@") return true;
 		if (Caret.isNumber(rs.charAt(name, 0))) return false;
-		var sz = rs.strlen(name);
-		for (var i = 0; i < sz; i++)
+		let sz = rs.strlen(name);
+		for (let i = 0; i < sz; i++)
 		{
-			var ch = rs.charAt(name, i);
+			let ch = rs.charAt(name, i);
 			if (Caret.isChar(ch) || Caret.isNumber(ch) || ch == "_") continue;
 			return false;
 		}
@@ -72,10 +70,11 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 	{
 		const Caret = use("BayLang.Caret");
 		const OpNumber = use("BayLang.OpCodes.OpNumber");
+		const Map = use("Runtime.Map");
 		if (flag_negative == undefined) flag_negative = false;
-		var caret_start = reader.start();
+		let caret_start = reader.start();
 		/* Read number */
-		var value = reader.readToken();
+		let value = reader.readToken();
 		if (value == "")
 		{
 			throw caret_start.expected("Number");
@@ -92,7 +91,7 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 		}
 		/* Returns op_code */
 		return new OpNumber(Map.create({
-			"value": flag_negative ? ("-" + String(value)) : value,
+			"value": flag_negative ? "-" + String(value) : value,
 			"caret_start": caret_start,
 			"caret_end": reader.caret(),
 		}));
@@ -105,17 +104,18 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 	readString(reader)
 	{
 		const OpString = use("BayLang.OpCodes.OpString");
-		var caret_start = reader.caret();
-		var str_char = reader.readToken();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.caret();
+		let str_char = reader.readToken();
 		/* Read begin string char */
 		if (str_char != "'" && str_char != "\"")
 		{
 			throw caret_start.expected("String");
 		}
 		/* Read string value */
-		var caret = reader.caret();
-		var value_str = "";
-		var ch = caret.nextChar();
+		let caret = reader.caret();
+		let value_str = "";
+		let ch = caret.nextChar();
 		while (!caret.eof() && ch != str_char)
 		{
 			if (ch == "\\")
@@ -125,7 +125,7 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 				{
 					throw caret.expected("End of string");
 				}
-				var ch2 = caret.readChar();
+				let ch2 = caret.readChar();
 				if (ch2 == "n") value_str += "\n";
 				else if (ch2 == "r") value_str += "\r";
 				else if (ch2 == "t") value_str += "\t";
@@ -164,17 +164,18 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 	readComment(reader)
 	{
 		const OpComment = use("BayLang.OpCodes.OpComment");
+		const Map = use("Runtime.Map");
 		/* Init caret */
-		var caret = reader.caret();
+		let caret = reader.caret();
 		caret.skip_comments = false;
 		/* Caret start */
-		var caret_start = caret.copy().skipSpace();
+		let caret_start = caret.copy().skipSpace();
 		/* Read begin coment */
 		caret_start.matchString("/*");
 		caret.seek(caret_start);
 		/* Read comment value */
-		var value_str = "";
-		var ch2 = caret.nextString(2);
+		let value_str = "";
+		let ch2 = caret.nextString(2);
 		while (!caret.eof() && ch2 != "*/")
 		{
 			value_str += caret.readChar();
@@ -215,9 +216,10 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 	readIdentifier(reader)
 	{
 		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		/* Read identifier */
-		var name = reader.readToken();
+		let name = reader.readToken();
 		if (!this.constructor.isIdentifier(name) || this.constructor.isReserved(name))
 		{
 			throw reader.expected("Identifier");
@@ -236,9 +238,11 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 	 */
 	readEntityName(reader)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpEntityName = use("BayLang.OpCodes.OpEntityName");
-		var caret_start = reader.start();
-		var items = [];
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
+		let items = new Vector();
 		/* Read name */
 		items.push(this.readIdentifier(reader));
 		/* Read names */
@@ -261,15 +265,17 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 	 */
 	readTypeIdentifier(reader, find_entity, read_generic)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpTypeIdentifier = use("BayLang.OpCodes.OpTypeIdentifier");
+		const Map = use("Runtime.Map");
 		if (find_entity == undefined) find_entity = true;
 		if (read_generic == undefined) read_generic = true;
-		var caret_start = reader.start();
-		var entity_name = this.readEntityName(reader);
+		let caret_start = reader.start();
+		let entity_name = this.readEntityName(reader);
 		/* Find entity */
 		if (find_entity) this.parser.findEntity(entity_name);
 		/* Read generics */
-		var generics = [];
+		let generics = new Vector();
 		if (reader.nextToken() == "<" && read_generic)
 		{
 			reader.matchToken("<");
@@ -301,21 +307,23 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 	 */
 	readCollection(reader)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpPreprocessorIfDef = use("BayLang.OpCodes.OpPreprocessorIfDef");
 		const OpCollection = use("BayLang.OpCodes.OpCollection");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		reader.matchToken("[");
-		var items = [];
+		let items = new Vector();
 		while (!reader.eof() && reader.nextToken() != "]")
 		{
 			if (this.skipComment(reader))
 			{
 				continue;
 			}
-			var op_code_item = null;
+			let op_code_item = null;
 			/* Prepocessor */
-			var is_preprocessor = false;
-			var next_token = reader.nextToken();
+			let is_preprocessor = false;
+			let next_token = reader.nextToken();
 			if (next_token == "#switch" || next_token == "#ifcode" || next_token == "#ifdef")
 			{
 				is_preprocessor = true;
@@ -345,11 +353,13 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 	 */
 	readDict(reader)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpDictPair = use("BayLang.OpCodes.OpDictPair");
+		const Map = use("Runtime.Map");
 		const OpDict = use("BayLang.OpCodes.OpDict");
-		var caret_start = reader.start();
+		let caret_start = reader.start();
 		reader.matchToken("{");
-		var items = [];
+		let items = new Vector();
 		while (!reader.eof() && reader.nextToken() != "}")
 		{
 			if (reader.nextToken() == "/")
@@ -357,20 +367,23 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 				this.readComment(reader);
 				continue;
 			}
-			var is_preprocessor = false;
-			var condition = null;
+			let is_preprocessor = false;
+			let condition = null;
 			/* Prepocessor */
-			var next_token = reader.nextToken();
+			let next_token = reader.nextToken();
 			if (next_token == "#ifdef")
 			{
 				is_preprocessor = true;
 				reader.matchToken("#ifdef");
+				let save_find_variable = this.parser.find_variable;
+				this.parser.find_variable = false;
 				condition = this.parser.parser_expression.readExpression(reader);
+				this.parser.find_variable = save_find_variable;
 				reader.matchToken("then");
 			}
-			var op_code_name = this.readString(reader);
+			let op_code_name = this.readString(reader);
 			reader.matchToken(":");
-			var op_code_item = this.parser.parser_expression.readExpression(reader);
+			let op_code_item = this.parser.parser_expression.readExpression(reader);
 			items.push(new OpDictPair(Map.create({
 				"key": op_code_name,
 				"expression": op_code_item,
@@ -399,15 +412,17 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 	 */
 	readNew(reader)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpNew = use("BayLang.OpCodes.OpNew");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		reader.matchToken("new");
-		var pattern = this.readTypeIdentifier(reader);
-		var args = [];
+		let pattern = this.readTypeIdentifier(reader);
+		let args = new Vector();
 		if (reader.nextToken() == "{")
 		{
-			var item = this.readDict(reader);
-			args = [item];
+			let item = this.readDict(reader);
+			args = new Vector(item);
 		}
 		else if (reader.nextToken() == "(")
 		{
@@ -428,9 +443,10 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 	readClassOf(reader)
 	{
 		const OpClassOf = use("BayLang.OpCodes.OpClassOf");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		reader.matchToken("classof");
-		var entity_name = this.readEntityName(reader);
+		let entity_name = this.readEntityName(reader);
 		return new OpClassOf(Map.create({
 			"entity_name": entity_name,
 			"caret_start": caret_start,
@@ -445,7 +461,7 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 	readItem(reader)
 	{
 		const Caret = use("BayLang.Caret");
-		var next_token = reader.nextToken();
+		let next_token = reader.nextToken();
 		if (Caret.isNumber(next_token))
 		{
 			return this.readNumber(reader);
@@ -472,34 +488,36 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 	readDynamic(reader, read_function)
 	{
 		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
+		const Vector = use("Runtime.Vector");
 		const OpTypeIdentifier = use("BayLang.OpCodes.OpTypeIdentifier");
+		const Map = use("Runtime.Map");
 		const OpEntityName = use("BayLang.OpCodes.OpEntityName");
 		const OpAttr = use("BayLang.OpCodes.OpAttr");
 		if (read_function == undefined) read_function = true;
-		var caret_start = reader.start();
+		let caret_start = reader.start();
 		/* Read await */
-		var is_await = false;
+		let is_await = false;
 		if (reader.nextToken() == "await")
 		{
 			is_await = true;
 			reader.matchToken("await");
 		}
-		var item = this.readItem(reader);
-		if (reader.nextToken() == ".")
+		let item = this.readItem(reader);
+		if (reader.nextToken() == "." && item instanceof OpIdentifier)
 		{
 			this.parser.findVariable(item);
 		}
-		var operations = [".", "::", "[", "("];
+		let operations = new Vector(".", "::", "[", "(");
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
 		{
-			var next_token = reader.nextToken();
+			let next_token = reader.nextToken();
 			if (next_token == "." || next_token == "::")
 			{
 				if (next_token == "::" && item instanceof OpIdentifier)
 				{
 					item = new OpTypeIdentifier(Map.create({
 						"entity_name": new OpEntityName(Map.create({
-							"items": [item],
+							"items": new Vector(item),
 							"caret_start": item.caret_start,
 							"caret_end": item.caret_end,
 						})),
@@ -508,9 +526,9 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 					}));
 				}
 				reader.matchToken(next_token);
-				var op_code_item = this.readIdentifier(reader);
+				let op_code_item = this.readIdentifier(reader);
 				item = new OpAttr(Map.create({
-					"kind": (next_token == ".") ? OpAttr.KIND_ATTR : OpAttr.KIND_STATIC,
+					"kind": next_token == "." ? OpAttr.KIND_ATTR : OpAttr.KIND_STATIC,
 					"prev": item,
 					"next": op_code_item,
 					"caret_start": caret_start,
@@ -532,7 +550,7 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 			}
 			else if (next_token == "[")
 			{
-				var op_code_item = this.readCollection(reader);
+				let op_code_item = this.readCollection(reader);
 				item = new OpAttr(Map.create({
 					"kind": OpAttr.KIND_DYNAMIC,
 					"prev": item,
@@ -553,9 +571,9 @@ BayLang.LangBay.ParserBayBase = class extends BaseObject
 		this.parser = null;
 	}
 	static getClassName(){ return "BayLang.LangBay.ParserBayBase"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangBay.ParserBayBase);
 module.exports = {

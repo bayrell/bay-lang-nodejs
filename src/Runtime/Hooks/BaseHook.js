@@ -1,8 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const rtl = use("Runtime.rtl");
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,12 +17,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.BaseHook = class extends BaseObject
+if (typeof Runtime.Hooks == 'undefined') Runtime.Hooks = {};
+Runtime.Hooks.BaseHook = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Create hook
 	 */
@@ -42,13 +40,9 @@ Runtime.BaseHook = class extends BaseObject
 	setup(params)
 	{
 		if (params == null) return;
+		this.hook = params.get("hook");
+		this.provider = params.get("provider");
 	}
-	
-	
-	/**
-	 * Returns method name by hook name
-	 */
-	getMethodName(hook_name){ return ""; }
 	
 	
 	/**
@@ -56,16 +50,12 @@ Runtime.BaseHook = class extends BaseObject
 	 */
 	register(hook_name, method_name, priority)
 	{
+		const Method = use("Runtime.Method");
 		if (method_name == undefined) method_name = "";
 		if (priority == undefined) priority = 100;
-		if (rtl.isInt(method_name))
-		{
-			priority = method_name;
-			method_name = "";
-		}
-		if (method_name == "") method_name = this.getMethodName(hook_name);
-		if (method_name == "") return;
-		this.provider.register(hook_name, this, method_name, priority);
+		let chain = this.provider.getChain(hook_name);
+		if (!chain) return;
+		chain.add(new Method(this, method_name), priority);
 	}
 	
 	
@@ -84,12 +74,12 @@ Runtime.BaseHook = class extends BaseObject
 		this.hook = null;
 		this.provider = null;
 	}
-	static getClassName(){ return "Runtime.BaseHook"; }
-	static getMethodsList(){ return []; }
+	static getClassName(){ return "Runtime.Hooks.BaseHook"; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
-use.add(Runtime.BaseHook);
+use.add(Runtime.Hooks.BaseHook);
 module.exports = {
-	"BaseHook": Runtime.BaseHook,
+	"BaseHook": Runtime.Hooks.BaseHook,
 };

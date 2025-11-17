@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,13 +17,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.TranslatorBayOperator = class extends BaseObject
+BayLang.LangBay.TranslatorBayOperator = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -43,10 +41,10 @@ BayLang.LangBay.TranslatorBayOperator = class extends BaseObject
 		{
 			this.translator.expression.OpTypeIdentifier(op_code.pattern, result);
 		}
-		var values_count = op_code.items.count();
-		for (var i = 0; i < values_count; i++)
+		let values_count = op_code.items.count();
+		for (let i = 0; i < values_count; i++)
 		{
-			var op_code_value = op_code.items.get(i);
+			let op_code_value = op_code.items.get(i);
 			if (op_code.pattern || i > 0)
 			{
 				result.push(" ");
@@ -147,9 +145,9 @@ BayLang.LangBay.TranslatorBayOperator = class extends BaseObject
 		this.translateItems(op_code.if_true, result);
 		if (op_code.if_else && op_code.if_else.count() > 0)
 		{
-			for (var i = 0; i < op_code.if_else.count(); i++)
+			for (let i = 0; i < op_code.if_else.count(); i++)
 			{
-				var op_code_item = op_code.if_else.get(i);
+				let op_code_item = op_code.if_else.get(i);
 				result.push(this.translator.newLine());
 				result.push("else if (");
 				this.translator.expression.translate(op_code_item.condition, result);
@@ -185,10 +183,10 @@ BayLang.LangBay.TranslatorBayOperator = class extends BaseObject
 		this.translateItems(op_code.op_try, result);
 		if (op_code.items && op_code.items.count() > 0)
 		{
-			var items_count = op_code.items.count();
-			for (var i = 0; i < items_count; i++)
+			let items_count = op_code.items.count();
+			for (let i = 0; i < items_count; i++)
 			{
-				var op_code_item = op_code.items.get(i);
+				let op_code_item = op_code.items.get(i);
 				result.push(this.translator.newLine());
 				result.push("catch (");
 				this.translator.expression.OpTypeIdentifier(op_code_item.pattern, result);
@@ -322,6 +320,7 @@ BayLang.LangBay.TranslatorBayOperator = class extends BaseObject
 	translateItems(op_code, result)
 	{
 		const OpItems = use("BayLang.OpCodes.OpItems");
+		const Vector = use("Runtime.Vector");
 		if (!(op_code instanceof OpItems))
 		{
 			result.push(" ");
@@ -341,13 +340,13 @@ BayLang.LangBay.TranslatorBayOperator = class extends BaseObject
 		result.push("{");
 		this.translator.levelInc();
 		/* Items */
-		var items_count = op_code.items.count();
-		for (var i = 0; i < items_count; i++)
+		let items_count = op_code.items.count();
+		for (let i = 0; i < items_count; i++)
 		{
-			var op_code_item = op_code.items.get(i);
-			var result_items = [];
+			let op_code_item = op_code.items.get(i);
+			let result_items = new Vector();
 			this.translator.last_semicolon = false;
-			var flag = this.translateItem(op_code_item, result_items);
+			let flag = this.translateItem(op_code_item, result_items);
 			if (flag)
 			{
 				result.push(this.translator.newLine());
@@ -369,9 +368,9 @@ BayLang.LangBay.TranslatorBayOperator = class extends BaseObject
 		this.translator = null;
 	}
 	static getClassName(){ return "BayLang.LangBay.TranslatorBayOperator"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangBay.TranslatorBayOperator);
 module.exports = {

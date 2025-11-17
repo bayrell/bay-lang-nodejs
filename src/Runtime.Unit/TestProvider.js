@@ -2,8 +2,8 @@
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
 const rs = use("Runtime.rs");
-const BaseProvider = use("Runtime.BaseProvider");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -19,13 +19,11 @@ const BaseProvider = use("Runtime.BaseProvider");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
-Runtime.Unit.TestProvider = class extends BaseProvider
+Runtime.Unit.TestProvider = class extends use("Runtime.BaseProvider")
 {
-	
-	
 	/**
 	 * Start provider
 	 */
@@ -59,14 +57,14 @@ Runtime.Unit.TestProvider = class extends BaseProvider
 	static async run(test_name)
 	{
 		if (test_name == undefined) test_name = "";
-		var provider = new Runtime.Unit.TestProvider();
+		let provider = new Runtime.Unit.TestProvider();
 		await provider.start();
 		if (test_name == "")
 		{
 			rtl.print("List of all tests:");
-			for (var i = 0; i < provider.count(); i++)
+			for (let i = 0; i < provider.count(); i++)
 			{
-				var test = provider.get(i);
+				let test = provider.get(i);
 				rtl.print(i + 1 + String(") ") + String(test.name));
 			}
 			return;
@@ -80,13 +78,13 @@ Runtime.Unit.TestProvider = class extends BaseProvider
 	 */
 	static async runAll()
 	{
-		var provider = new Runtime.Unit.TestProvider();
+		let provider = new Runtime.Unit.TestProvider();
 		await provider.start();
-		for (var i = 0; i < provider.count(); i++)
+		for (let i = 0; i < provider.count(); i++)
 		{
-			var test = provider.get(i);
+			let test = provider.get(i);
 			rtl.print("Run " + String(test.name));
-			var error_code = await provider.runTestByName(test.name);
+			let error_code = await provider.runTestByName(test.name);
 			if (error_code != 1)
 			{
 				return;
@@ -100,8 +98,8 @@ Runtime.Unit.TestProvider = class extends BaseProvider
 	 */
 	async runTestByName(test_name)
 	{
-		var error_code = 0;
-		var arr = rs.split("::", test_name);
+		let error_code = 0;
+		let arr = rs.split("::", test_name);
 		if (arr.count() == 1)
 		{
 			/* Run all test in class */
@@ -122,12 +120,12 @@ Runtime.Unit.TestProvider = class extends BaseProvider
 	static isTestMethod(method_info)
 	{
 		const Test = use("Runtime.Unit.Test");
-		var annotations = method_info["annotations"];
+		let annotations = method_info["annotations"];
 		if (annotations)
 		{
-			for (var j = 0; j < annotations.count(); j++)
+			for (let j = 0; j < annotations.count(); j++)
 			{
-				var annotation = annotations.get(j);
+				let annotation = annotations.get(j);
 				if (annotation instanceof Test)
 				{
 					return true;
@@ -144,12 +142,13 @@ Runtime.Unit.TestProvider = class extends BaseProvider
 	getTestMethods(class_name)
 	{
 		const Callback = use("Runtime.Callback");
-		var getMethodsList = new Callback(class_name, "getMethodsList");
-		var getMethodInfoByName = new Callback(class_name, "getMethodInfoByName");
-		var methods = getMethodsList.apply();
+		let getMethodsList = new Callback(class_name, "getMethodsList");
+		let getMethodInfoByName = new Callback(class_name, "getMethodInfoByName");
+		let methods = getMethodsList.apply();
 		methods = methods.filter((method_name) =>
 		{
-			var method_info = getMethodInfoByName.apply([method_name]);
+			const Vector = use("Runtime.Vector");
+			let method_info = getMethodInfoByName.apply(new Vector(method_name));
 			return this.constructor.isTestMethod(method_info);
 		});
 		return methods;
@@ -161,12 +160,12 @@ Runtime.Unit.TestProvider = class extends BaseProvider
 	 */
 	async runTestClass(class_name)
 	{
-		var error_code = 1;
-		var methods = this.getTestMethods(class_name);
-		for (var i = 0; i < methods.count(); i++)
+		let error_code = 1;
+		let methods = this.getTestMethods(class_name);
+		for (let i = 0; i < methods.count(); i++)
 		{
-			var method_name = methods.get(i);
-			var result = await this.runTestMethod(class_name, method_name);
+			let method_name = methods.get(i);
+			let result = await this.runTestMethod(class_name, method_name);
 			if (result != 1)
 			{
 				error_code = -1;
@@ -189,13 +188,13 @@ Runtime.Unit.TestProvider = class extends BaseProvider
 		const Callback = use("Runtime.Callback");
 		const ItemNotFound = use("Runtime.Exceptions.ItemNotFound");
 		const AssertException = use("Runtime.Exceptions.AssertException");
-		var error_code = 0;
+		let error_code = 0;
 		try
 		{
-			var callback = new Callback(class_name, method_name);
+			let callback = new Callback(class_name, method_name);
 			if (!callback.exists())
 			{
-				var obj = rtl.newInstance(class_name);
+				let obj = rtl.newInstance(class_name);
 				callback = new Callback(obj, method_name);
 			}
 			if (callback.exists())
@@ -230,12 +229,13 @@ Runtime.Unit.TestProvider = class extends BaseProvider
 	_init()
 	{
 		super._init();
-		this.tests_list = [];
+		const Vector = use("Runtime.Vector");
+		this.tests_list = new Vector();
 	}
 	static getClassName(){ return "Runtime.Unit.TestProvider"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.Unit.TestProvider);
 module.exports = {

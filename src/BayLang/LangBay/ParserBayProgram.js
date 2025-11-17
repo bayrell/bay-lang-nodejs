@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,13 +17,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBayProgram = class extends BaseObject
+BayLang.LangBay.ParserBayProgram = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -40,13 +38,14 @@ BayLang.LangBay.ParserBayProgram = class extends BaseObject
 	readNamespace(reader)
 	{
 		const OpNamespace = use("BayLang.OpCodes.OpNamespace");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		/* Read module name */
 		reader.matchToken("namespace");
-		var entity_name = this.parser.parser_base.readEntityName(reader);
-		var module_name = entity_name.getName();
+		let entity_name = this.parser.parser_base.readEntityName(reader);
+		let module_name = entity_name.getName();
 		/* Create op_code */
-		var op_code = new OpNamespace(Map.create({
+		let op_code = new OpNamespace(Map.create({
 			"caret_start": caret_start,
 			"caret_end": reader.caret(),
 			"name": module_name,
@@ -65,13 +64,14 @@ BayLang.LangBay.ParserBayProgram = class extends BaseObject
 	readUse(reader)
 	{
 		const OpUse = use("BayLang.OpCodes.OpUse");
-		var look = null;
-		var name = null;
-		var caret_start = reader.start();
-		var alias = "";
+		const Map = use("Runtime.Map");
+		let look = null;
+		let name = null;
+		let caret_start = reader.start();
+		let alias = "";
 		/* Read module name */
 		reader.matchToken("use");
-		var module_name = this.parser.parser_base.readEntityName(reader);
+		let module_name = this.parser.parser_base.readEntityName(reader);
 		/* Read alias */
 		if (reader.nextToken() == "as")
 		{
@@ -94,12 +94,36 @@ BayLang.LangBay.ParserBayProgram = class extends BaseObject
 	
 	
 	/**
+	 * Annotation
+	 */
+	readAnnotation(reader)
+	{
+		const OpAnnotation = use("BayLang.OpCodes.OpAnnotation");
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
+		reader.matchToken("@");
+		let name = this.parser.parser_base.readTypeIdentifier(reader);
+		let params = null;
+		if (reader.nextToken() == "{")
+		{
+			params = this.parser.parser_base.readDict(reader);
+		}
+		return new OpAnnotation(Map.create({
+			"name": name,
+			"params": params,
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+		}));
+	}
+	
+	
+	/**
 	 * Read module
 	 */
 	readModuleItem(reader)
 	{
 		const OpPreprocessorIfDef = use("BayLang.OpCodes.OpPreprocessorIfDef");
-		var next_token = reader.nextTokenComments();
+		let next_token = reader.nextTokenComments();
 		/* Namespace */
 		if (next_token == "namespace")
 		{
@@ -108,6 +132,10 @@ BayLang.LangBay.ParserBayProgram = class extends BaseObject
 		else if (next_token == "use")
 		{
 			return this.readUse(reader);
+		}
+		else if (next_token == "@")
+		{
+			return this.readAnnotation(reader);
 		}
 		else if (next_token == "abstract" || next_token == "class" || next_token == "interface")
 		{
@@ -131,18 +159,32 @@ BayLang.LangBay.ParserBayProgram = class extends BaseObject
 	parse(reader)
 	{
 		const CoreParser = use("BayLang.CoreParser");
+		const Vector = use("Runtime.Vector");
+		const OpAnnotation = use("BayLang.OpCodes.OpAnnotation");
+		const OpDeclareClass = use("BayLang.OpCodes.OpDeclareClass");
 		const OpModule = use("BayLang.OpCodes.OpModule");
+		const Map = use("Runtime.Map");
 		this.parser.current_block = CoreParser.BLOCK_PROGRAM;
-		var items = [];
-		var caret_start = reader.start();
+		let annotations = new Vector();
+		let items = new Vector();
+		let caret_start = reader.start();
 		/* Read module */
 		while (!reader.eof() && reader.nextToken() != "" && reader.nextToken() != "#endswitch" && reader.nextToken() != "#case" && reader.nextToken() != "#endif")
 		{
-			var next_token = reader.nextToken();
+			let next_token = reader.nextToken();
 			/* Read module item */
-			var op_code = this.readModuleItem(reader);
-			if (op_code)
+			let op_code = this.readModuleItem(reader);
+			if (op_code instanceof OpAnnotation)
 			{
+				annotations.push(op_code);
+			}
+			else if (op_code)
+			{
+				if (op_code instanceof OpDeclareClass)
+				{
+					op_code.annotations = annotations;
+					annotations = new Vector();
+				}
 				items.push(op_code);
 			}
 			else
@@ -171,9 +213,9 @@ BayLang.LangBay.ParserBayProgram = class extends BaseObject
 		this.parser = null;
 	}
 	static getClassName(){ return "BayLang.LangBay.ParserBayProgram"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangBay.ParserBayProgram);
 module.exports = {

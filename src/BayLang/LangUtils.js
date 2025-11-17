@@ -1,6 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -16,7 +17,7 @@ const use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 BayLang.LangUtils = class
 {
@@ -30,8 +31,9 @@ BayLang.LangUtils = class
 	 */
 	static parseCommand(command)
 	{
-		var from_lang = "";
-		var to_lang = "";
+		const Map = use("Runtime.Map");
+		let from_lang = "";
+		let to_lang = "";
 		if (command == "bay_to_bay")
 		{
 			from_lang = "bay";
@@ -123,9 +125,9 @@ BayLang.LangUtils = class
 	{
 	}
 	static getClassName(){ return "BayLang.LangUtils"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangUtils);
 module.exports = {

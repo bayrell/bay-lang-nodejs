@@ -1,6 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -16,7 +17,7 @@ const use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
 Runtime.re = class
 {
@@ -69,9 +70,10 @@ Runtime.re = class
 	static matchAll(r, s, pattern)
 	{
 		if (pattern == undefined) pattern = "";
+		const Vector = use("Runtime.Vector");
 		pattern = "g" + pattern;
 		
-		var arr = [];
+		var arr = new Vector();
 		var r = new RegExp(r, pattern);
 		
 		if (s.matchAll == undefined)
@@ -81,10 +83,10 @@ Runtime.re = class
 				arr.push(m);
 			}
 		}
-		else arr = [...s.matchAll(r)];
+		else arr = Vector.create(s.matchAll(r));
 		
 		if (arr.length == 0) return null;
-		return arr.map((v) => Runtime.Vector.from(v));
+		return arr.map((v) => Vector.create(v));
 		return null;
 	}
 	
@@ -109,9 +111,9 @@ Runtime.re = class
 	{
 	}
 	static getClassName(){ return "Runtime.re"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.re);
 module.exports = {

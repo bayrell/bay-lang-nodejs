@@ -1,6 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
-/*!
+const use = require('bay-lang').use;
+const rs = use("Runtime.rs");
+const Test = use("Runtime.Unit.Test");
+const Map = use("Runtime.Map");
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -16,54 +20,58 @@ var use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Test == 'undefined') BayLang.Test = {};
 if (typeof BayLang.Test.LangBay == 'undefined') BayLang.Test.LangBay = {};
-BayLang.Test.LangBay.Html = function()
-{
-};
-Object.assign(BayLang.Test.LangBay.Html.prototype,
+BayLang.Test.LangBay.Html = class
 {
 	/**
 	 * Reset
 	 */
-	reset: function()
+	reset()
 	{
-		var __v0 = use("BayLang.LangBay.ParserBay");
-		this.parser = new __v0();
-		this.parser = this.parser.constructor.reset(this.parser);
-		var __v1 = use("BayLang.LangBay.TranslatorBay");
-		this.translator = new __v1();
+		const ParserBay = use("BayLang.LangBay.ParserBay");
+		const TranslatorBay = use("BayLang.LangBay.TranslatorBay");
+		this.parser = new ParserBay();
+		this.parser = this.parser.reset(this.parser);
+		this.translator = new TranslatorBay();
 		this.translator.reset();
-	},
+	}
+	
+	
 	/**
 	 * Set content
 	 */
-	setContent: function(content)
+	setContent(content)
 	{
 		this.parser.setContent(content);
-	},
+	}
+	
+	
 	/**
 	 * Add variable
 	 */
-	addVar: function(var_name)
+	addVar(var_name)
 	{
-		var parser = this.parser;
+		let parser = this.parser;
 		parser.vars.set(var_name, true);
 		this.parser = parser;
-	},
+	}
+	
+	
 	/**
 	 * Translate
 	 */
-	translate: function(content, debug)
+	translate(content, debug)
 	{
+		const Vector = use("Runtime.Vector");
 		if (debug == undefined) debug = false;
-		var result = use("Runtime.Vector").from([]);
+		let result = new Vector();
 		this.setContent(content);
 		/* Parse */
-		var res = this.parser.parser_program.constructor.readProgram(this.parser);
-		var op_code = res.get(1);
+		let res = this.parser.parser_program.readProgram(this.parser);
+		let op_code = res.get(1);
 		/* Translate */
 		this.translator.html.translate(op_code, result);
 		/* Debug output */
@@ -71,842 +79,588 @@ Object.assign(BayLang.Test.LangBay.Html.prototype,
 		{
 			console.log(op_code);
 			console.log(result);
-			var __v0 = use("Runtime.rs");
-			console.log(__v0.join("", result));
+			console.log(rs.join("", result));
 		}
-		var __v1 = use("Runtime.rs");
-		return use("Runtime.Vector").from([op_code,__v1.join("", result)]);
-	},
-	test1: function()
+		return new Vector(op_code, rs.join("", result));
+	}
+	
+	
+	test1()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	test2: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	test2()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<use name=\"App.Test\" />","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	test3: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<use name=\"App.Test\" />",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	test3()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<use name=\"App.Test\" as=\"TestAlias\" />","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	test4: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<use name=\"App.Test\" as=\"TestAlias\" />",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	test4()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<use name=\"Runtime.Web.Button\" component=\"true\" />","<use name=\"Runtime.Web.Text\" component=\"true\" />","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testTemplate1: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<use name=\"Runtime.Web.Button\" component=\"true\" />",
+			"<use name=\"Runtime.Web.Text\" component=\"true\" />",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testTemplate1()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<template>","</template>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testTemplate2: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<template>",
+			"</template>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testTemplate2()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<template name=\"renderItem\">","</template>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testTemplate3: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<template name=\"renderItem\">",
+			"</template>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testTemplate3()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<template name=\"renderItem\" args=\"int a, int b\">","</template>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testComponent1: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<template name=\"renderItem\" args=\"int a, int b\">",
+			"</template>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testComponent1()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<use name=\"Runtime.Web.Button\" />","","<template>","\t<Button />","</template>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testComponent2: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<use name=\"Runtime.Web.Button\" />",
+			"",
+			"<template>",
+			"\t<Button />",
+			"</template>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testComponent2()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<use name=\"Runtime.Web.Button\" />","","<template>","\t<Button>","\t\tContent","\t</Button>","</template>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testComponent3: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<use name=\"Runtime.Web.Button\" />",
+			"",
+			"<template>",
+			"\t<Button>",
+			"\t\tContent",
+			"\t</Button>",
+			"</template>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testComponent3()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<use name=\"Runtime.Web.Button\" />","","<template>","\t<Button>","\t\t{{ this.model.content }}","\t</Button>","</template>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testComponent4: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<use name=\"Runtime.Web.Button\" />",
+			"",
+			"<template>",
+			"\t<Button>",
+			"\t\t{{ this.model.content }}",
+			"\t</Button>",
+			"</template>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testComponent4()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<use name=\"Runtime.Web.Button\" />","","<template>","\t<Button @model={{ this.model }} />","</template>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testComponent5: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<use name=\"Runtime.Web.Button\" />",
+			"",
+			"<template>",
+			"\t<Button @model={{ this.model }} />",
+			"</template>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testComponent5()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<use name=\"Runtime.Web.Button\" />","","<template>","\t<Button name=\"test\" />","</template>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testContent1: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<use name=\"Runtime.Web.Button\" />",
+			"",
+			"<template>",
+			"\t<Button name=\"test\" />",
+			"</template>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testContent1()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<template>","\t<div class=\"widget_test\">Text</div>","</template>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testContent2: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<template>",
+			"\t<div class=\"widget_test\">Text</div>",
+			"</template>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testContent2()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<template>","\t<div class=\"widget_test\">{{ \"Text\" }}</div>","</template>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testContent3: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<template>",
+			"\t<div class=\"widget_test\">{{ \"Text\" }}</div>",
+			"</template>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testContent3()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<template>","\t<div class=\"widget_test\">@raw{{ \"Text\" }}</div>","</template>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testClick: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<template>",
+			"\t<div class=\"widget_test\">@raw{{ \"Text\" }}</div>",
+			"</template>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testClick()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<template>","\t<button","\t\tclass=\"widget_test\"","\t\t@event:click={{","\t\t\tvoid ()","\t\t\t{","\t\t\t\tthis.onClick();","\t\t\t}","\t\t}}","\t>","\t\tTest","\t</button>","</template>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testScript1: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<template>",
+			"\t<button",
+			"\t\tclass=\"widget_test\"",
+			"\t\t@event:click={{",
+			"\t\t\tvoid ()",
+			"\t\t\t{",
+			"\t\t\t\tthis.onClick();",
+			"\t\t\t}",
+			"\t\t}}",
+			"\t>",
+			"\t\tTest",
+			"\t</button>",
+			"</template>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testScript1()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<use name=\"Runtime.Web.Button\" />","","<template>","</template>","","<script>","","void test(){}","","</script>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testSlot1: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<use name=\"Runtime.Web.Button\" />",
+			"",
+			"<template>",
+			"</template>",
+			"",
+			"<script>",
+			"",
+			"void test(){}",
+			"",
+			"</script>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testSlot1()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<use name=\"Runtime.Widget.Button\" component=\"true\" />","<use name=\"Runtime.Widget.Image\" component=\"true\" />","<use name=\"Runtime.Widget.TextImage\" component=\"true\" />","","<template>","\t<TextImage>","\t\t<slot name=\"image\">","\t\t\t<Image src=\"/assets/images/test.jpeg\" />","\t\t</slot>","\t\t<slot name=\"text\">","\t\t\t<div class=\"image_text\">Text</div>","\t\t</slot>","\t</TextImage>","</template>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testSlot2: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<use name=\"Runtime.Widget.Button\" component=\"true\" />",
+			"<use name=\"Runtime.Widget.Image\" component=\"true\" />",
+			"<use name=\"Runtime.Widget.TextImage\" component=\"true\" />",
+			"",
+			"<template>",
+			"\t<TextImage>",
+			"\t\t<slot name=\"image\">",
+			"\t\t\t<Image src=\"/assets/images/test.jpeg\" />",
+			"\t\t</slot>",
+			"\t\t<slot name=\"text\">",
+			"\t\t\t<div class=\"image_text\">Text</div>",
+			"\t\t</slot>",
+			"\t</TextImage>",
+			"</template>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testSlot2()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<use name=\"Runtime.Widget.Button\" component=\"true\" />","<use name=\"Runtime.Widget.Image\" component=\"true\" />","<use name=\"Runtime.Widget.TextImage\" component=\"true\" />","","<template>","\t<TextImage>","\t\t<slot name=\"image\" args=\"Dict params\">","\t\t\t<Image src={{ params.get(\"image\") }} />","\t\t</slot>","\t\t<slot name=\"text\" args=\"Dict params\">","\t\t\t<div class=\"image_text\">{{ params.get(\"label\") }}</div>","\t\t</slot>","\t</TextImage>","</template>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testStyle1: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<use name=\"Runtime.Widget.Button\" component=\"true\" />",
+			"<use name=\"Runtime.Widget.Image\" component=\"true\" />",
+			"<use name=\"Runtime.Widget.TextImage\" component=\"true\" />",
+			"",
+			"<template>",
+			"\t<TextImage>",
+			"\t\t<slot name=\"image\" args=\"Dict params\">",
+			"\t\t\t<Image src={{ params.get(\"image\") }} />",
+			"\t\t</slot>",
+			"\t\t<slot name=\"text\" args=\"Dict params\">",
+			"\t\t\t<div class=\"image_text\">{{ params.get(\"label\") }}</div>",
+			"\t\t</slot>",
+			"\t</TextImage>",
+			"</template>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testStyle1()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<style>",".page_title{","\tfont-size: 18px;","\ttext-align: center;","}","</style>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testStyle2: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<style>",
+			".page_title{",
+			"\tfont-size: 18px;",
+			"\ttext-align: center;",
+			"}",
+			"</style>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testStyle2()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<style global=\"true\">",".page_title{","\tfont-size: 18px;","\ttext-align: center;","}","</style>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testStyle3: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<style global=\"true\">",
+			".page_title{",
+			"\tfont-size: 18px;",
+			"\ttext-align: center;",
+			"}",
+			"</style>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testStyle3()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<style global=\"true\">",".main_page{","background-image: ${ \"test\" };","}","</style>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testStyle4: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<style global=\"true\">",
+			".main_page{",
+			"background-image: ${ \"test\" };",
+			"}",
+			"</style>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testStyle4()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<style global=\"true\">","@font-face{","}","</style>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	testStyle5: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<style global=\"true\">",
+			"@font-face{",
+			"}",
+			"</style>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testStyle5()
 	{
+		const Vector = use("Runtime.Vector");
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		var __v0 = use("Runtime.rs");
-		var content = __v0.join("\n", use("Runtime.Vector").from(["<class name=\"App.Component\">","","<style global=\"true\">",".main_page{",".test{","font-size: 16px;","}","}","</style>","","</class>"]));
-		var res = this.translate(content);
-		var __v1 = use("Runtime.Unit.AssertHelper");
-		__v1.equalValue(content, res.get(1), content);
-	},
-	_init: function()
+		let content = rs.join("\n", new Vector(
+			"<class name=\"App.Component\">",
+			"",
+			"<style global=\"true\">",
+			".main_page{",
+			".test{",
+			"font-size: 16px;",
+			"}",
+			"}",
+			"</style>",
+			"",
+			"</class>",
+		));
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		this.parser = null;
-		this.translator = null;
-	},
-});
-Object.assign(BayLang.Test.LangBay.Html,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+	}
+	static getClassName(){ return "BayLang.Test.LangBay.Html"; }
+	static getMethodsList()
 	{
-		return "BayLang.Test.LangBay";
-	},
-	getClassName: function()
+		const Vector = use("Runtime.Vector");
+		return new Vector("test1", "test2", "test3", "test4", "testTemplate1", "testTemplate2", "testTemplate3", "testComponent1", "testComponent2", "testComponent3", "testComponent4", "testComponent5", "testContent1", "testContent2", "testContent3", "testClick", "testScript1", "testSlot1", "testSlot2", "testStyle1", "testStyle2", "testStyle3", "testStyle4", "testStyle5");
+	}
+	static getMethodInfoByName(field_name)
 	{
-		return "BayLang.Test.LangBay.Html";
-	},
-	getParentClassName: function()
-	{
-		return "";
-	},
-	getClassInfo: function()
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function()
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
+		const Vector = use("Runtime.Vector");
+		if (field_nane == "test1") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "test2") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "test3") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "test4") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testTemplate1") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testTemplate2") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testTemplate3") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testComponent1") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testComponent2") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testComponent3") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testComponent4") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testComponent5") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testContent1") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testContent2") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testContent3") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testClick") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testScript1") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testSlot1") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testSlot2") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testStyle1") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testStyle2") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testStyle3") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testStyle4") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testStyle5") return new Vector(
+			new Test(new Map())
+		);
 		return null;
-	},
-	getMethodsList: function()
-	{
-		var a=[
-			"test1",
-			"test2",
-			"test3",
-			"test4",
-			"testTemplate1",
-			"testTemplate2",
-			"testTemplate3",
-			"testComponent1",
-			"testComponent2",
-			"testComponent3",
-			"testComponent4",
-			"testComponent5",
-			"testContent1",
-			"testContent2",
-			"testContent3",
-			"testClick",
-			"testScript1",
-			"testSlot1",
-			"testSlot2",
-			"testStyle1",
-			"testStyle2",
-			"testStyle3",
-			"testStyle4",
-			"testStyle5",
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(field_name)
-	{
-		if (field_name == "test1")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v0(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "test2")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v1(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "test3")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v2(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "test4")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v3(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testTemplate1")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v4(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testTemplate2")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v5(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testTemplate3")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v6(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testComponent1")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v7(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testComponent2")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v8(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testComponent3")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v9(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testComponent4")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v10(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testComponent5")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var __v11 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v11(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testContent1")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var __v11 = use("Runtime.Unit.Test");
-			var __v12 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v12(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testContent2")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var __v11 = use("Runtime.Unit.Test");
-			var __v12 = use("Runtime.Unit.Test");
-			var __v13 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v13(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testContent3")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var __v11 = use("Runtime.Unit.Test");
-			var __v12 = use("Runtime.Unit.Test");
-			var __v13 = use("Runtime.Unit.Test");
-			var __v14 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v14(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testClick")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var __v11 = use("Runtime.Unit.Test");
-			var __v12 = use("Runtime.Unit.Test");
-			var __v13 = use("Runtime.Unit.Test");
-			var __v14 = use("Runtime.Unit.Test");
-			var __v15 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v15(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testScript1")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var __v11 = use("Runtime.Unit.Test");
-			var __v12 = use("Runtime.Unit.Test");
-			var __v13 = use("Runtime.Unit.Test");
-			var __v14 = use("Runtime.Unit.Test");
-			var __v15 = use("Runtime.Unit.Test");
-			var __v16 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v16(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testSlot1")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var __v11 = use("Runtime.Unit.Test");
-			var __v12 = use("Runtime.Unit.Test");
-			var __v13 = use("Runtime.Unit.Test");
-			var __v14 = use("Runtime.Unit.Test");
-			var __v15 = use("Runtime.Unit.Test");
-			var __v16 = use("Runtime.Unit.Test");
-			var __v17 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v17(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testSlot2")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var __v11 = use("Runtime.Unit.Test");
-			var __v12 = use("Runtime.Unit.Test");
-			var __v13 = use("Runtime.Unit.Test");
-			var __v14 = use("Runtime.Unit.Test");
-			var __v15 = use("Runtime.Unit.Test");
-			var __v16 = use("Runtime.Unit.Test");
-			var __v17 = use("Runtime.Unit.Test");
-			var __v18 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v18(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testStyle1")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var __v11 = use("Runtime.Unit.Test");
-			var __v12 = use("Runtime.Unit.Test");
-			var __v13 = use("Runtime.Unit.Test");
-			var __v14 = use("Runtime.Unit.Test");
-			var __v15 = use("Runtime.Unit.Test");
-			var __v16 = use("Runtime.Unit.Test");
-			var __v17 = use("Runtime.Unit.Test");
-			var __v18 = use("Runtime.Unit.Test");
-			var __v19 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v19(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testStyle2")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var __v11 = use("Runtime.Unit.Test");
-			var __v12 = use("Runtime.Unit.Test");
-			var __v13 = use("Runtime.Unit.Test");
-			var __v14 = use("Runtime.Unit.Test");
-			var __v15 = use("Runtime.Unit.Test");
-			var __v16 = use("Runtime.Unit.Test");
-			var __v17 = use("Runtime.Unit.Test");
-			var __v18 = use("Runtime.Unit.Test");
-			var __v19 = use("Runtime.Unit.Test");
-			var __v20 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v20(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testStyle3")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var __v11 = use("Runtime.Unit.Test");
-			var __v12 = use("Runtime.Unit.Test");
-			var __v13 = use("Runtime.Unit.Test");
-			var __v14 = use("Runtime.Unit.Test");
-			var __v15 = use("Runtime.Unit.Test");
-			var __v16 = use("Runtime.Unit.Test");
-			var __v17 = use("Runtime.Unit.Test");
-			var __v18 = use("Runtime.Unit.Test");
-			var __v19 = use("Runtime.Unit.Test");
-			var __v20 = use("Runtime.Unit.Test");
-			var __v21 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v21(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testStyle4")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var __v11 = use("Runtime.Unit.Test");
-			var __v12 = use("Runtime.Unit.Test");
-			var __v13 = use("Runtime.Unit.Test");
-			var __v14 = use("Runtime.Unit.Test");
-			var __v15 = use("Runtime.Unit.Test");
-			var __v16 = use("Runtime.Unit.Test");
-			var __v17 = use("Runtime.Unit.Test");
-			var __v18 = use("Runtime.Unit.Test");
-			var __v19 = use("Runtime.Unit.Test");
-			var __v20 = use("Runtime.Unit.Test");
-			var __v21 = use("Runtime.Unit.Test");
-			var __v22 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v22(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testStyle5")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var __v11 = use("Runtime.Unit.Test");
-			var __v12 = use("Runtime.Unit.Test");
-			var __v13 = use("Runtime.Unit.Test");
-			var __v14 = use("Runtime.Unit.Test");
-			var __v15 = use("Runtime.Unit.Test");
-			var __v16 = use("Runtime.Unit.Test");
-			var __v17 = use("Runtime.Unit.Test");
-			var __v18 = use("Runtime.Unit.Test");
-			var __v19 = use("Runtime.Unit.Test");
-			var __v20 = use("Runtime.Unit.Test");
-			var __v21 = use("Runtime.Unit.Test");
-			var __v22 = use("Runtime.Unit.Test");
-			var __v23 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v23(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		return null;
-	},
-});use.add(BayLang.Test.LangBay.Html);
-module.exports = BayLang.Test.LangBay.Html;
+	}
+	static getInterfaces(){ return []; }
+};
+use.add(BayLang.Test.LangBay.Html);
+module.exports = {
+	"Html": BayLang.Test.LangBay.Html,
+};

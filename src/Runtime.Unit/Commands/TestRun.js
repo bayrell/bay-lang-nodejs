@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
-const BaseCommand = use("Runtime.Console.BaseCommand");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,11 +18,11 @@ const BaseCommand = use("Runtime.Console.BaseCommand");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
 if (typeof Runtime.Unit.Commands == 'undefined') Runtime.Unit.Commands = {};
-Runtime.Unit.Commands.TestRun = class extends BaseCommand
+Runtime.Unit.Commands.TestRun = class extends use("Runtime.Console.BaseCommand")
 {
 	/**
 	 * Returns name
@@ -41,23 +41,23 @@ Runtime.Unit.Commands.TestRun = class extends BaseCommand
 	 */
 	static async run()
 	{
-		var test_name = Runtime.rtl.getContext().cli_args[2];
-		var error_code = this.SUCCESS;
+		let test_name = Runtime.rtl.getContext().cli_args[2];
+		let error_code = this.SUCCESS;
 		if (test_name == null)
 		{
 			/* List all tests */
 			rtl.print("List of all tests:");
-			var tests = Runtime.rtl.getContext().provider("Runtime.Unit.TestProvider");
-			for (var i = 0; i < tests.count(); i++)
+			let tests = Runtime.rtl.getContext().provider("Runtime.Unit.TestProvider");
+			for (let i = 0; i < tests.count(); i++)
 			{
-				var test = tests.get(i);
+				let test = tests.get(i);
 				rtl.print(i + 1 + String(") ") + String(rtl.color("yellow", test.name)));
 			}
 		}
 		else
 		{
 			/* Run current test */
-			var tests = Runtime.rtl.getContext().provider("Runtime.Unit.TestProvider");
+			let tests = Runtime.rtl.getContext().provider("Runtime.Unit.TestProvider");
 			error_code = await tests.runTestByName(test_name);
 			if (error_code == 1)
 			{
@@ -78,9 +78,9 @@ Runtime.Unit.Commands.TestRun = class extends BaseCommand
 		super._init();
 	}
 	static getClassName(){ return "Runtime.Unit.Commands.TestRun"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.Unit.Commands.TestRun);
 module.exports = {

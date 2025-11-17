@@ -1,6 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -16,7 +17,7 @@ const use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 BayLang.Compiler.ModuleDescription = class
@@ -41,6 +42,7 @@ BayLang.Compiler.ModuleDescription = class
 	 */
 	static requiredModules()
 	{
+		const Map = use("Runtime.Map");
 		return Map.create({
 			"BayLang": "*",
 			"BayLang.Test": "*",
@@ -54,15 +56,16 @@ BayLang.Compiler.ModuleDescription = class
 	 */
 	static entities()
 	{
-		
-		const ConsoleCommand = use("Runtime.Console.Annotations.ConsoleCommand");return [
+		const Vector = use("Runtime.Vector");
+		const ConsoleCommand = use("Runtime.Console.Annotations.ConsoleCommand");
+		return new Vector(
 			new ConsoleCommand("BayLang.Compiler.Commands.Compile"),
 			new ConsoleCommand("BayLang.Compiler.Commands.Make"),
 			new ConsoleCommand("BayLang.Compiler.Commands.MakeAll"),
 			new ConsoleCommand("BayLang.Compiler.Commands.Modules"),
 			new ConsoleCommand("BayLang.Compiler.Commands.Version"),
 			new ConsoleCommand("BayLang.Compiler.Commands.Watch"),
-		];
+		);
 	}
 	
 	
@@ -71,9 +74,9 @@ BayLang.Compiler.ModuleDescription = class
 	{
 	}
 	static getClassName(){ return "BayLang.Compiler.ModuleDescription"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.Compiler.ModuleDescription);
 module.exports = {

@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const TranslatorES6Expression = use("BayLang.LangES6.TranslatorES6Expression");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,10 +17,10 @@ const TranslatorES6Expression = use("BayLang.LangES6.TranslatorES6Expression");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangNode == 'undefined') BayLang.LangNode = {};
-BayLang.LangNode.TranslatorNodeExpression = class extends TranslatorES6Expression
+BayLang.LangNode.TranslatorNodeExpression = class extends use("BayLang.LangES6.TranslatorES6Expression")
 {
 	/* ========= Class init functions ========= */
 	_init()
@@ -28,9 +28,9 @@ BayLang.LangNode.TranslatorNodeExpression = class extends TranslatorES6Expressio
 		super._init();
 	}
 	static getClassName(){ return "BayLang.LangNode.TranslatorNodeExpression"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangNode.TranslatorNodeExpression);
 module.exports = {

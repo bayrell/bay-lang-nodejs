@@ -1,7 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseObject = use("Runtime.BaseObject");
-/*!
+const rs = use("Runtime.rs");
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,13 +18,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangPHP == 'undefined') BayLang.LangPHP = {};
-BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
+BayLang.LangPHP.TranslatorPHPExpression = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -37,11 +36,13 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 	/**
 	 * OpIdentifier
 	 */
-	OpIdentifier(op_code, result)
+	OpIdentifier(op_code, result, is_const)
 	{
+		const Vector = use("Runtime.Vector");
+		let variables = new Vector("null", "static", "true", "false");
 		if (op_code.value == "print") result.push("echo");
-		else if (op_code.value == "null") result.push("null");
-		else if (op_code.value == "static") result.push("static");
+		else if (op_code.value == "var_dump") result.push("var_dump");
+		else if (variables.indexOf(op_code.value) >= 0) result.push(op_code.value);
 		else if (op_code.value == "this")
 		{
 			if (this.translator.class_function && this.translator.class_function.isStatic())
@@ -65,11 +66,11 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 		{
 			if (this.translator.uses.has(op_code.value))
 			{
-				var class_name = this.translator.uses.get(op_code.value);
+				let class_name = this.translator.uses.get(op_code.value);
 				if (class_name == this.translator.current_class_name) result.push("static");
 				else result.push("\\" + String(this.translator.getModuleName(class_name)));
 			}
-			else result.push("$" + String(op_code.value));
+			else result.push(!is_const ? "$" + String(op_code.value) : op_code.value);
 		}
 		this.translator.opcode_level = 20;
 	}
@@ -104,13 +105,13 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 		const OpTypeIdentifier = use("BayLang.OpCodes.OpTypeIdentifier");
 		if (!items) return;
 		/* Get items count */
-		var items_count = items.count();
+		let items_count = items.count();
 		if (items_count == 0) return;
 		/* Output generics */
 		result.push("<");
-		for (var i = 0; i < items_count; i++)
+		for (let i = 0; i < items_count; i++)
 		{
-			var op_code_item = items.get(i);
+			let op_code_item = items.get(i);
 			if (op_code_item instanceof OpIdentifier)
 			{
 				this.OpIdentifier(op_code_item, result);
@@ -130,15 +131,21 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 	 */
 	OpTypeIdentifier(op_code, result)
 	{
-		var name = op_code.entity_name.getName();
+		let name = op_code.entity_name.getName();
 		if (this.translator.uses.has(name))
 		{
 			result.push("\\" + String(this.translator.getModuleName(this.translator.uses.get(name))));
 		}
 		else
 		{
-			var pattern = op_code.entity_name.items.last();
-			result.push(pattern.value);
+			if (rs.indexOf(name, ".") >= 0)
+			{
+				result.push("\\" + String(this.translator.getModuleName(name)));
+			}
+			else
+			{
+				result.push(name);
+			}
 		}
 	}
 	
@@ -148,25 +155,26 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 	 */
 	OpCollection(op_code, result)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpPreprocessorIfCode = use("BayLang.OpCodes.OpPreprocessorIfCode");
 		const OpPreprocessorIfDef = use("BayLang.OpCodes.OpPreprocessorIfDef");
 		const OpPreprocessorSwitch = use("BayLang.OpCodes.OpPreprocessorSwitch");
-		var is_multiline = op_code.isMultiLine();
-		result.push("new \\Runtime\\Collection(");
+		let is_multiline = op_code.isMultiLine();
+		result.push("new \\Runtime\\Vector(");
 		if (is_multiline)
 		{
 			this.translator.levelInc();
 		}
-		var i = 0;
-		var items_count = op_code.items.count();
-		var last_result = true;
+		let i = 0;
+		let items_count = op_code.items.count();
+		let last_result = true;
 		while (i < items_count)
 		{
-			var op_code_item = op_code.items.get(i);
-			var result1 = [];
+			let op_code_item = op_code.items.get(i);
+			let result1 = new Vector();
 			/* Preprocessor */
-			var is_result = false;
-			var is_preprocessor = true;
+			let is_result = false;
+			let is_preprocessor = true;
 			if (op_code_item instanceof OpPreprocessorIfCode)
 			{
 				is_result = this.translator.program.OpPreprocessorIfCode(op_code_item, result1);
@@ -185,7 +193,7 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 				this.translate(op_code_item, result1);
 			}
 			last_result = !is_preprocessor || is_result;
-			if (last_result)
+			if (last_result && result1.count() > 0)
 			{
 				if (is_multiline) result.push(this.translator.newLine());
 				result.appendItems(result1);
@@ -208,7 +216,7 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 	 */
 	OpDict(op_code, result)
 	{
-		var is_multiline = op_code.isMultiLine();
+		let is_multiline = op_code.isMultiLine();
 		if (op_code.items.count() == 0 && !is_multiline)
 		{
 			result.push("new \\Runtime\\Map()");
@@ -221,15 +229,15 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 			this.translator.levelInc();
 		}
 		/* Items */
-		var i = 0;
-		var items_count = op_code.items.count();
+		let i = 0;
+		let items_count = op_code.items.count();
 		while (i < items_count)
 		{
-			var op_code_item = op_code.items.get(i);
+			let op_code_item = op_code.items.get(i);
 			/* Preprocessor */
 			if (op_code_item.condition != null)
 			{
-				var name = op_code_item.condition.value;
+				let name = op_code_item.condition.value;
 				if (!this.translator.preprocessor_flags.has(name))
 				{
 					i++;
@@ -266,9 +274,10 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 	{
 		const Vector = use("Runtime.Vector");
 		const OpAttr = use("BayLang.OpCodes.OpAttr");
+		const OpNew = use("BayLang.OpCodes.OpNew");
 		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
-		var attrs = new Vector();
-		var op_code_first = op_code;
+		let attrs = new Vector();
+		let op_code_first = op_code;
 		while (op_code_first instanceof OpAttr)
 		{
 			attrs.push(op_code_first);
@@ -276,14 +285,19 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 		}
 		attrs.reverse();
 		/* First op_code */
+		let is_bracket = op_code_first instanceof OpNew;
+		if (is_bracket) result.push("(");
 		this.translateItem(op_code_first, result);
+		if (is_bracket) result.push(")");
+		/* Is static function */
+		let is_static = this.translator.class_function && this.translator.class_function.isStatic();
 		/* Attrs */
-		for (var i = 0; i < attrs.count(); i++)
+		for (let i = 0; i < attrs.count(); i++)
 		{
-			var item_attr = attrs.get(i);
+			let item_attr = attrs.get(i);
 			if (item_attr.kind == OpAttr.KIND_ATTR)
 			{
-				if (this.translator.class_function.isStatic() && item_attr.prev instanceof OpIdentifier && item_attr.prev.value == "this")
+				if (is_static && item_attr.prev instanceof OpIdentifier && item_attr.prev.value == "this")
 				{
 					result.push("::");
 				}
@@ -298,7 +312,7 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 			else if (item_attr.kind == OpAttr.KIND_DYNAMIC)
 			{
 				result.push("[");
-				for (var j = 0; j < item_attr.next.items.count(); j++)
+				for (let j = 0; j < item_attr.next.items.count(); j++)
 				{
 					this.translate(item_attr.next.items.get(j), result);
 					if (j < item_attr.next.items.count() - 1) result.push(", ");
@@ -317,8 +331,8 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 	{
 		if (op_code.entity_name.items.count() == 1)
 		{
-			var item = op_code.entity_name.items.last();
-			var name = item.value;
+			let item = op_code.entity_name.items.last();
+			let name = item.value;
 			if (this.translator.uses.has(name))
 			{
 				result.push(this.translator.toString(this.translator.uses.get(name)));
@@ -343,9 +357,11 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
 		if (op_code.item instanceof OpIdentifier && op_code.item.value == "parent")
 		{
-			if (this.translator.class_function && this.translator.class_function.name != "constructor")
+			if (this.translator.class_function)
 			{
-				result.push("parent::" + String(this.translator.class_function.name));
+				let name = this.translator.class_function.name;
+				if (name == "constructor") name = "__construct";
+				result.push("parent::" + String(name));
 			}
 			else
 			{
@@ -357,10 +373,10 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 			this.translateItem(op_code.item, result);
 		}
 		result.push("(");
-		var args_count = op_code.args.count();
-		for (var i = 0; i < args_count; i++)
+		let args_count = op_code.args.count();
+		for (let i = 0; i < args_count; i++)
 		{
-			var op_code_item = op_code.args.get(i);
+			let op_code_item = op_code.args.get(i);
 			this.Expression(op_code_item, result);
 			if (i < args_count - 1) result.push(", ");
 		}
@@ -377,10 +393,10 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 		result.push("new ");
 		this.OpTypeIdentifier(op_code.pattern, result);
 		result.push("(");
-		var args_count = op_code.args.count();
-		for (var i = 0; i < args_count; i++)
+		let args_count = op_code.args.count();
+		for (let i = 0; i < args_count; i++)
 		{
-			var op_code_item = op_code.args.get(i);
+			let op_code_item = op_code.args.get(i);
 			this.Expression(op_code_item, result);
 			if (i < args_count - 1) result.push(", ");
 		}
@@ -394,11 +410,12 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 	 */
 	OpMath(op_code, result)
 	{
-		var result1 = [];
+		const Vector = use("Runtime.Vector");
+		let result1 = new Vector();
 		this.Expression(op_code.value1, result1);
-		var opcode_level1 = this.translator.opcode_level;
-		var op = "";
-		var opcode_level = 0;
+		let opcode_level1 = this.translator.opcode_level;
+		let op = "";
+		let opcode_level = 0;
 		if (op_code.math == "!")
 		{
 			opcode_level = 16;
@@ -522,7 +539,7 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 		if (op_code.math == "implements")
 		{
 			opcode_level = 10;
-			op = "implements";
+			op = "instanceof";
 		}
 		if (op_code.math == "bitnot")
 		{
@@ -579,9 +596,9 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 			}
 			if (op == "~") op = ".";
 			result.push(" " + String(op) + String(" "));
-			var result2 = [];
+			let result2 = new Vector();
 			this.Expression(op_code.value2, result2);
-			var opcode_level2 = this.translator.opcode_level;
+			let opcode_level2 = this.translator.opcode_level;
 			if (opcode_level2 < opcode_level)
 			{
 				result.push("(");
@@ -602,9 +619,10 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 	 */
 	OpTernary(op_code, result)
 	{
-		var result1 = [];
+		const Vector = use("Runtime.Vector");
+		let result1 = new Vector();
 		this.translate(op_code.condition, result1);
-		if (this.translator.opcode_level < 19)
+		if (this.translator.opcode_level < 9)
 		{
 			result.push("(");
 			result.appendItems(result1);
@@ -614,10 +632,10 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 		{
 			result.appendItems(result1);
 		}
-		result1 = [];
+		result1 = new Vector();
 		result.push(" ? ");
 		this.translate(op_code.if_true, result1);
-		if (this.translator.opcode_level < 19)
+		if (this.translator.opcode_level < 9)
 		{
 			result.push("(");
 			result.appendItems(result1);
@@ -627,10 +645,10 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 		{
 			result.appendItems(result1);
 		}
-		result1 = [];
+		result1 = new Vector();
 		result.push(" : ");
 		this.translate(op_code.if_false, result1);
-		if (this.translator.opcode_level < 19)
+		if (this.translator.opcode_level < 9)
 		{
 			result.push("(");
 			result.appendItems(result1);
@@ -640,6 +658,7 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 		{
 			result.appendItems(result1);
 		}
+		this.translator.opcode_level = 0;
 	}
 	
 	
@@ -744,9 +763,9 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends BaseObject
 		this.translator = null;
 	}
 	static getClassName(){ return "BayLang.LangPHP.TranslatorPHPExpression"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangPHP.TranslatorPHPExpression);
 module.exports = {

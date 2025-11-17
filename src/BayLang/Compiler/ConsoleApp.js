@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const App = use("Runtime.Console.App");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,10 +17,10 @@ const App = use("Runtime.Console.App");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
-BayLang.Compiler.ConsoleApp = class extends App
+BayLang.Compiler.ConsoleApp = class extends use("Runtime.Console.App")
 {
 	/**
 	 * Main entry point
@@ -37,9 +37,9 @@ BayLang.Compiler.ConsoleApp = class extends App
 		super._init();
 	}
 	static getClassName(){ return "BayLang.Compiler.ConsoleApp"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.Compiler.ConsoleApp);
 module.exports = {

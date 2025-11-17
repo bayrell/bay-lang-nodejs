@@ -1,6 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -16,7 +17,7 @@ const use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
 Runtime.ModuleDescription = class
 {
@@ -46,11 +47,14 @@ Runtime.ModuleDescription = class
 	 */
 	static entities()
 	{
-		
-		const Provider = use("Runtime.Entity.Provider");return [
+		const Vector = use("Runtime.Vector");
+		const Provider = use("Runtime.Entity.Provider");
+		return new Vector(
+			new Provider("hash", "Runtime.Providers.GlobalHash"),
 			new Provider("output", "Runtime.Providers.OutputProvider"),
 			new Provider("hook", "Runtime.Providers.HookProvider"),
-		];
+			new Provider("render", "Runtime.Providers.RenderProvider"),
+		);
 	}
 	
 	
@@ -59,9 +63,9 @@ Runtime.ModuleDescription = class
 	{
 	}
 	static getClassName(){ return "Runtime.ModuleDescription"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.ModuleDescription);
 module.exports = {

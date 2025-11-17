@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const CoreParser = use("BayLang.CoreParser");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,22 +17,20 @@ const CoreParser = use("BayLang.CoreParser");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangPHP == 'undefined') BayLang.LangPHP = {};
-BayLang.LangPHP.ParserPHP = class extends CoreParser
+BayLang.LangPHP.ParserPHP = class extends use("BayLang.CoreParser")
 {
-	/* Parsers */
-	
-	
 	/**
 	 * Returns true if registered variable
 	 */
 	isRegisteredVariable(name)
 	{
-		var variables = [
+		const Vector = use("Runtime.Vector");
+		let variables = new Vector(
 			"echo",
-		];
+		);
 		if (variables.indexOf(name) == -1) return false;
 		return true;
 	}
@@ -43,7 +41,7 @@ BayLang.LangPHP.ParserPHP = class extends CoreParser
 	 */
 	addVariable(op_code)
 	{
-		var name = op_code.value;
+		let name = op_code.value;
 		this.vars.set(name, true);
 	}
 	
@@ -53,7 +51,7 @@ BayLang.LangPHP.ParserPHP = class extends CoreParser
 	 */
 	findVariable(op_code)
 	{
-		var name = op_code.value;
+		let name = op_code.value;
 		if (this.vars.has(name)) return true;
 		if (this.isRegisteredVariable(name)) return true;
 		return false;
@@ -65,7 +63,7 @@ BayLang.LangPHP.ParserPHP = class extends CoreParser
 	 */
 	parse()
 	{
-		var reader = this.createReader();
+		let reader = this.createReader();
 		return this.parser_program.parse(reader);
 	}
 	
@@ -86,9 +84,9 @@ BayLang.LangPHP.ParserPHP = class extends CoreParser
 		this.parser_program = new ParserPHPProgram(this);
 	}
 	static getClassName(){ return "BayLang.LangPHP.ParserPHP"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangPHP.ParserPHP);
 module.exports = {

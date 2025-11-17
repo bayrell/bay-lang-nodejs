@@ -1,7 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseObject = use("Runtime.BaseObject");
-/*!
+const rs = use("Runtime.rs");
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,13 +18,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangPHP == 'undefined') BayLang.LangPHP = {};
-BayLang.LangPHP.TranslatorPHPOperator = class extends BaseObject
+BayLang.LangPHP.TranslatorPHPOperator = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -41,11 +40,11 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends BaseObject
 	{
 		const OpAttr = use("BayLang.OpCodes.OpAttr");
 		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
-		var flag = false;
-		var values_count = op_code.items.count();
-		for (var i = 0; i < values_count; i++)
+		let flag = false;
+		let values_count = op_code.items.count();
+		for (let i = 0; i < values_count; i++)
 		{
-			var op_code_item = op_code.items.get(i);
+			let op_code_item = op_code.items.get(i);
 			if (!op_code_item.expression) continue;
 			if (i > 0) result.push(this.translator.newLine());
 			flag = true;
@@ -59,7 +58,7 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends BaseObject
 			}
 			if (op_code_item.expression)
 			{
-				var op = op_code_item.op;
+				let op = op_code_item.op;
 				if (op == "~=") op = ".=";
 				else if (op == "") op = "=";
 				result.push(" " + String(op) + String(" "));
@@ -149,9 +148,9 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends BaseObject
 		this.translateItems(op_code.if_true, result);
 		if (op_code.if_else && op_code.if_else.count() > 0)
 		{
-			for (var i = 0; i < op_code.if_else.count(); i++)
+			for (let i = 0; i < op_code.if_else.count(); i++)
 			{
-				var op_code_item = op_code.if_else.get(i);
+				let op_code_item = op_code.if_else.get(i);
 				result.push(this.translator.newLine());
 				result.push("else if (");
 				this.translator.expression.translate(op_code_item.condition, result);
@@ -187,10 +186,10 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends BaseObject
 		this.translateItems(op_code.op_try, result);
 		if (op_code.items && op_code.items.count() > 0)
 		{
-			var items_count = op_code.items.count();
-			for (var i = 0; i < items_count; i++)
+			let items_count = op_code.items.count();
+			for (let i = 0; i < items_count; i++)
 			{
-				var op_code_item = op_code.items.get(i);
+				let op_code_item = op_code.items.get(i);
 				result.push(this.translator.newLine());
 				result.push("catch (");
 				if (op_code_item.pattern.entity_name.getName() == "var")
@@ -202,7 +201,7 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends BaseObject
 					this.translator.expression.OpTypeIdentifier(op_code_item.pattern, result);
 				}
 				result.push(" ");
-				result.push(op_code_item.name.value);
+				result.push("$" + String(op_code_item.name.value));
 				result.push(")");
 				this.translateItems(op_code_item.content, result);
 			}
@@ -232,8 +231,32 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends BaseObject
 	 */
 	OpComment(op_code, result)
 	{
+		let lines = rs.split("\n", op_code.value);
+		if (lines.count() == 1)
+		{
+			result.push("/*");
+			result.push(op_code.value);
+			result.push("*/");
+			return;
+		}
+		let first_line = rs.trim(lines.get(0));
+		if (first_line == "") lines = lines.slice(1);
+		if (rs.trim(lines.get(lines.count() - 1)) == "" && lines.count() > 1)
+		{
+			lines = lines.slice(0, lines.count() - 1);
+		}
 		result.push("/*");
-		result.push(op_code.value);
+		for (let i = 0; i < lines.count(); i++)
+		{
+			let line = lines.get(i);
+			let start = 0;
+			let len = rs.strlen(line);
+			while (start < len && rs.charAt(line, start) == "\t") start++;
+			if (start < len && rs.charAt(line, start) == "*") start++;
+			result.push(this.translator.newLine());
+			result.push(rs.substr(line, start));
+		}
+		result.push(this.translator.newLine());
 		result.push("*/");
 	}
 	
@@ -351,9 +374,21 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends BaseObject
 	translateItems(op_code, result, match_brackets)
 	{
 		const OpItems = use("BayLang.OpCodes.OpItems");
+		const Vector = use("Runtime.Vector");
 		const OpPreprocessorIfDef = use("BayLang.OpCodes.OpPreprocessorIfDef");
 		const OpPreprocessorSwitch = use("BayLang.OpCodes.OpPreprocessorSwitch");
 		if (match_brackets == undefined) match_brackets = true;
+		if (this.translator.current_function.is_html)
+		{
+			result.push(this.translator.newLine());
+			result.push("{");
+			this.translator.levelInc();
+			this.translator.html.OpHtmlItems(op_code, result);
+			this.translator.levelDec();
+			result.push(this.translator.newLine());
+			result.push("}");
+			return;
+		}
 		if (!(op_code instanceof OpItems))
 		{
 			result.push(" ");
@@ -376,13 +411,13 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends BaseObject
 			this.translator.levelInc();
 		}
 		/* Items */
-		var items_count = op_code.items.count();
-		for (var i = 0; i < items_count; i++)
+		let items_count = op_code.items.count();
+		for (let i = 0; i < items_count; i++)
 		{
-			var op_code_item = op_code.items.get(i);
-			var result_items = [];
+			let op_code_item = op_code.items.get(i);
+			let result_items = new Vector();
 			this.translator.last_semicolon = false;
-			var flag = this.translateItem(op_code_item, result_items);
+			let flag = this.translateItem(op_code_item, result_items);
 			if (flag)
 			{
 				if (!(op_code_item instanceof OpPreprocessorIfDef || op_code_item instanceof OpPreprocessorSwitch))
@@ -410,9 +445,9 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends BaseObject
 		this.translator = null;
 	}
 	static getClassName(){ return "BayLang.LangPHP.TranslatorPHPOperator"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangPHP.TranslatorPHPOperator);
 module.exports = {

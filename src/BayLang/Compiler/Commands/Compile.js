@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
-const BaseCommand = use("Runtime.Console.BaseCommand");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,11 +18,11 @@ const BaseCommand = use("Runtime.Console.BaseCommand");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
-BayLang.Compiler.Commands.Compile = class extends BaseCommand
+BayLang.Compiler.Commands.Compile = class extends use("Runtime.Console.BaseCommand")
 {
 	/**
 	 * Returns name
@@ -44,9 +44,9 @@ BayLang.Compiler.Commands.Compile = class extends BaseCommand
 		const LangUtils = use("BayLang.LangUtils");
 		const fs = use("Runtime.fs");
 		const ParserError = use("BayLang.Exceptions.ParserError");
-		var command = Runtime.rtl.getContext().cli_args[2];
-		var src_file_name = Runtime.rtl.getContext().cli_args[3];
-		var dest_file_name = Runtime.rtl.getContext().cli_args[4];
+		let command = Runtime.rtl.getContext().cli_args[2];
+		let src_file_name = Runtime.rtl.getContext().cli_args[3];
+		let dest_file_name = Runtime.rtl.getContext().cli_args[4];
 		/* Check command */
 		if (!command)
 		{
@@ -67,9 +67,9 @@ BayLang.Compiler.Commands.Compile = class extends BaseCommand
 			return this.FAIL;
 		}
 		rtl.print("Convert " + String(src_file_name) + String(" to ") + String(dest_file_name));
-		var res = LangUtils.parseCommand(command);
-		var parser = LangUtils.createParser(res.get("from"));
-		var translator = LangUtils.createTranslator(res.get("to"));
+		let res = LangUtils.parseCommand(command);
+		let parser = LangUtils.createParser(res.get("from"));
+		let translator = LangUtils.createTranslator(res.get("to"));
 		/* Check file exists */
 		if (!await fs.isFile(src_file_name))
 		{
@@ -77,9 +77,9 @@ BayLang.Compiler.Commands.Compile = class extends BaseCommand
 			return this.FAIL;
 		}
 		/* Read file name */
-		var op_code = null;
-		var content = await fs.readFile(src_file_name);
-		var output = "";
+		let op_code = null;
+		let content = await fs.readFile(src_file_name);
+		let output = "";
 		/* Translate file */
 		try
 		{
@@ -114,9 +114,9 @@ BayLang.Compiler.Commands.Compile = class extends BaseCommand
 		super._init();
 	}
 	static getClassName(){ return "BayLang.Compiler.Commands.Compile"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.Compiler.Commands.Compile);
 module.exports = {

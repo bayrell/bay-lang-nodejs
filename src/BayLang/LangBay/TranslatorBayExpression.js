@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,13 +17,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
+BayLang.LangBay.TranslatorBayExpression = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -73,13 +71,13 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 		const OpTypeIdentifier = use("BayLang.OpCodes.OpTypeIdentifier");
 		if (!items) return;
 		/* Get items count */
-		var items_count = items.count();
+		let items_count = items.count();
 		if (items_count == 0) return;
 		/* Output generics */
 		result.push("<");
-		for (var i = 0; i < items_count; i++)
+		for (let i = 0; i < items_count; i++)
 		{
-			var op_code_item = items.get(i);
+			let op_code_item = items.get(i);
 			if (op_code_item instanceof OpIdentifier)
 			{
 				this.OpIdentifier(op_code_item, result);
@@ -99,7 +97,7 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 	 */
 	OpTypeIdentifier(op_code, result)
 	{
-		var pattern = op_code.entity_name.items.last();
+		let pattern = op_code.entity_name.items.last();
 		result.push(pattern.value);
 		this.OpCodeGenerics(op_code.generics, result);
 	}
@@ -111,17 +109,18 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 	OpCollection(op_code, result)
 	{
 		const OpPreprocessorIfDef = use("BayLang.OpCodes.OpPreprocessorIfDef");
-		var is_multiline = op_code.isMultiLine();
+		const Vector = use("Runtime.Vector");
+		let is_multiline = op_code.isMultiLine();
 		result.push("[");
 		if (is_multiline)
 		{
 			this.translator.levelInc();
 		}
-		var i = 0;
-		var items_count = op_code.items.count();
+		let i = 0;
+		let items_count = op_code.items.count();
 		while (i < items_count)
 		{
-			var op_code_item = op_code.items.get(i);
+			let op_code_item = op_code.items.get(i);
 			if (is_multiline)
 			{
 				result.push(this.translator.newLine());
@@ -129,8 +128,8 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 			/* Preprocessor */
 			if (op_code_item instanceof OpPreprocessorIfDef)
 			{
-				var items = [];
-				var condition = op_code_item.condition.value;
+				let items = new Vector();
+				let condition = op_code_item.condition.value;
 				while (op_code_item != null && op_code_item instanceof OpPreprocessorIfDef && op_code_item.condition.value == condition)
 				{
 					items.push(op_code_item);
@@ -164,11 +163,11 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 	 */
 	OpPreprocessorCollection(items, result)
 	{
-		var condition = items.get(0).condition.value;
+		let condition = items.get(0).condition.value;
 		result.push("#ifdef " + String(condition) + String(" then"));
-		for (var i = 0; i < items.count(); i++)
+		for (let i = 0; i < items.count(); i++)
 		{
-			var op_code_item = items.get(i);
+			let op_code_item = items.get(i);
 			result.push(this.translator.newLine());
 			this.translate(op_code_item.items, result);
 			result.push(",");
@@ -183,7 +182,8 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 	 */
 	OpDict(op_code, result)
 	{
-		var is_multiline = op_code.isMultiLine();
+		const Vector = use("Runtime.Vector");
+		let is_multiline = op_code.isMultiLine();
 		if (op_code.items.count() == 0 && !is_multiline)
 		{
 			result.push("{");
@@ -197,11 +197,11 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 			this.translator.levelInc();
 		}
 		/* Items */
-		var i = 0;
-		var items_count = op_code.items.count();
+		let i = 0;
+		let items_count = op_code.items.count();
 		while (i < items_count)
 		{
-			var op_code_item = op_code.items.get(i);
+			let op_code_item = op_code.items.get(i);
 			if (is_multiline)
 			{
 				result.push(this.translator.newLine());
@@ -209,8 +209,8 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 			/* Preprocessor */
 			if (op_code_item.condition != null)
 			{
-				var items = [];
-				var condition = op_code_item.condition.value;
+				let items = new Vector();
+				let condition = op_code_item.condition.value;
 				while (op_code_item != null && op_code_item.condition != null)
 				{
 					items.push(op_code_item);
@@ -244,11 +244,11 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 	 */
 	OpPreprocessorDict(items, result)
 	{
-		var condition = items.get(0).condition.value;
+		let condition = items.get(0).condition.value;
 		result.push("#ifdef " + String(condition) + String(" then"));
-		for (var i = 0; i < items.count(); i++)
+		for (let i = 0; i < items.count(); i++)
 		{
-			var op_code_item = items.get(i);
+			let op_code_item = items.get(i);
 			result.push(this.translator.newLine());
 			result.push(this.translator.toString(op_code_item.key));
 			result.push(": ");
@@ -267,8 +267,8 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 	{
 		const Vector = use("Runtime.Vector");
 		const OpAttr = use("BayLang.OpCodes.OpAttr");
-		var attrs = new Vector();
-		var op_code_first = op_code;
+		let attrs = new Vector();
+		let op_code_first = op_code;
 		while (op_code_first instanceof OpAttr)
 		{
 			attrs.push(op_code_first);
@@ -278,9 +278,9 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 		/* first op_code */
 		this.translateItem(op_code_first, result);
 		/* Attrs */
-		for (var i = 0; i < attrs.count(); i++)
+		for (let i = 0; i < attrs.count(); i++)
 		{
-			var item_attr = attrs.get(i);
+			let item_attr = attrs.get(i);
 			if (item_attr.kind == OpAttr.KIND_ATTR)
 			{
 				result.push(".");
@@ -321,10 +321,10 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 		}
 		this.translateItem(op_code.item, result);
 		result.push("(");
-		var args_count = op_code.args.count();
-		for (var i = 0; i < args_count; i++)
+		let args_count = op_code.args.count();
+		for (let i = 0; i < args_count; i++)
 		{
-			var op_code_item = op_code.args.get(i);
+			let op_code_item = op_code.args.get(i);
 			this.Expression(op_code_item, result);
 			if (i < args_count - 1) result.push(", ");
 		}
@@ -348,10 +348,10 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 		else
 		{
 			result.push("(");
-			var args_count = op_code.args.count();
-			for (var i = 0; i < args_count; i++)
+			let args_count = op_code.args.count();
+			for (let i = 0; i < args_count; i++)
 			{
-				var op_code_item = op_code.args.get(i);
+				let op_code_item = op_code.args.get(i);
 				this.Expression(op_code_item, result);
 				if (i < args_count - 1) result.push(", ");
 			}
@@ -366,11 +366,12 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 	 */
 	OpMath(op_code, result)
 	{
-		var result1 = [];
+		const Vector = use("Runtime.Vector");
+		let result1 = new Vector();
 		this.Expression(op_code.value1, result1);
-		var opcode_level1 = this.translator.opcode_level;
-		var op = "";
-		var opcode_level = 0;
+		let opcode_level1 = this.translator.opcode_level;
+		let op = "";
+		let opcode_level = 0;
 		if (op_code.math == "!")
 		{
 			opcode_level = 16;
@@ -561,9 +562,9 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 				result.appendItems(result1);
 			}
 			result.push(" " + String(op) + String(" "));
-			var result2 = [];
+			let result2 = new Vector();
 			this.Expression(op_code.value2, result2);
-			var opcode_level2 = this.translator.opcode_level;
+			let opcode_level2 = this.translator.opcode_level;
 			if (opcode_level2 < opcode_level)
 			{
 				result.push("(");
@@ -584,7 +585,8 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 	 */
 	OpTernary(op_code, result)
 	{
-		var result1 = [];
+		const Vector = use("Runtime.Vector");
+		let result1 = new Vector();
 		this.translate(op_code.condition, result1);
 		if (this.translator.opcode_level < 19)
 		{
@@ -596,7 +598,7 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 		{
 			result.appendItems(result1);
 		}
-		result1 = [];
+		result1 = new Vector();
 		result.push(" ? ");
 		this.translate(op_code.if_true, result1);
 		if (this.translator.opcode_level < 19)
@@ -609,7 +611,7 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 		{
 			result.appendItems(result1);
 		}
-		result1 = [];
+		result1 = new Vector();
 		result.push(" : ");
 		this.translate(op_code.if_false, result1);
 		if (this.translator.opcode_level < 19)
@@ -721,9 +723,9 @@ BayLang.LangBay.TranslatorBayExpression = class extends BaseObject
 		this.translator = null;
 	}
 	static getClassName(){ return "BayLang.LangBay.TranslatorBayExpression"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangBay.TranslatorBayExpression);
 module.exports = {

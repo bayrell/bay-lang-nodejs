@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,13 +18,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.TranslatorBayHtml = class extends BaseObject
+BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -51,12 +49,13 @@ BayLang.LangBay.TranslatorBayHtml = class extends BaseObject
 	 */
 	OpUse(op_code, result)
 	{
-		var items = rs.split(".", op_code.name);
-		var last_name = items.last();
+		const Vector = use("Runtime.Vector");
+		let items = rs.split(".", op_code.name);
+		let last_name = items.last();
 		/* Get attrs */
-		var attrs = [
+		let attrs = new Vector(
 			"name=\"" + String(op_code.name) + String("\""),
-		];
+		);
 		/* Add alias name */
 		if (op_code.alias != "" && op_code.alias != last_name)
 		{
@@ -99,10 +98,10 @@ BayLang.LangBay.TranslatorBayHtml = class extends BaseObject
 			return true;
 		});
 		if (is_multiline) this.translator.levelInc();
-		var attrs_count = op_code_attrs.count();
-		for (var i = 0; i < attrs_count; i++)
+		let attrs_count = op_code_attrs.count();
+		for (let i = 0; i < attrs_count; i++)
 		{
-			var op_code_attr = op_code_attrs.get(i);
+			let op_code_attr = op_code_attrs.get(i);
 			if (is_multiline) result.push(this.translator.newLine());
 			result.push(op_code_attr.key);
 			result.push("=");
@@ -143,10 +142,10 @@ BayLang.LangBay.TranslatorBayHtml = class extends BaseObject
 	isOpHtmlTagMultiline(op_code)
 	{
 		const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");
-		var attrs_count = 0;
-		for (var i = 0; i < op_code.attrs.count(); i++)
+		let attrs_count = 0;
+		for (let i = 0; i < op_code.attrs.count(); i++)
 		{
-			var op_code_attr = op_code.attrs.get(i);
+			let op_code_attr = op_code.attrs.get(i);
 			if (op_code_attr.key != "@key_debug") attrs_count++;
 			if (op_code_attr.caret_start && op_code_attr.caret_start.y > 0)
 			{
@@ -168,12 +167,13 @@ BayLang.LangBay.TranslatorBayHtml = class extends BaseObject
 	 */
 	OpHtmlTag(op_code, result)
 	{
-		var is_multiline = op_code.isMultiLine();
-		var is_multiline_attrs = this.isOpHtmlTagMultiline(op_code);
+		const Vector = use("Runtime.Vector");
+		let is_multiline = op_code.isMultiLine();
+		let is_multiline_attrs = this.isOpHtmlTagMultiline(op_code);
 		/* Component attrs */
-		var args_content = [];
+		let args_content = new Vector();
 		this.OpHtmlAttrs(op_code.attrs, args_content, is_multiline_attrs);
-		var args = rs.join("", args_content);
+		let args = rs.join("", args_content);
 		if (args != "" && !is_multiline_attrs) args = " " + String(args);
 		if (op_code.items == null)
 		{
@@ -202,16 +202,17 @@ BayLang.LangBay.TranslatorBayHtml = class extends BaseObject
 	 */
 	OpHtmlSlot(op_code, result)
 	{
+		const Vector = use("Runtime.Vector");
 		/* Slot attrs */
-		var args_content = [];
+		let args_content = new Vector();
 		this.OpHtmlAttrs(op_code.attrs, args_content);
 		/* Add slot args */
 		if (op_code.args)
 		{
-			var args = op_code.args.map((item) =>
+			let args = op_code.args.map((item) =>
 			{
 				const Vector = use("Runtime.Vector");
-				var res = new Vector();
+				let res = new Vector();
 				this.translator.expression.OpTypeIdentifier(item.pattern, res);
 				res.push(" ");
 				res.push(item.name);
@@ -223,12 +224,12 @@ BayLang.LangBay.TranslatorBayHtml = class extends BaseObject
 		/* Add slot vars */
 		if (op_code.vars)
 		{
-			var vars = op_code.vars.map((item) => { return item.value; });
+			let vars = op_code.vars.map((item) => { return item.value; });
 			if (args_content.count() > 0) args_content.push(" ");
 			args_content.push("use=\"" + String(rs.join(",", vars)) + String("\""));
 		}
 		/* Slot args */
-		var args = rs.join("", args_content);
+		let args = rs.join("", args_content);
 		if (args != "") args = " " + String(args);
 		/* Begin slot */
 		result.push("<slot name=\"" + String(op_code.name) + String("\"") + String(args) + String(">"));
@@ -305,8 +306,8 @@ BayLang.LangBay.TranslatorBayHtml = class extends BaseObject
 	OpHtmlItems(op_code, result, is_multiline)
 	{
 		if (is_multiline == undefined) is_multiline = true;
-		var items_count = op_code.items.count();
-		for (var i = 0; i < items_count; i++)
+		let items_count = op_code.items.count();
+		for (let i = 0; i < items_count; i++)
 		{
 			if (is_multiline) result.push(this.translator.newLine());
 			this.OpHtmlItem(op_code.items.get(i), result);
@@ -319,6 +320,7 @@ BayLang.LangBay.TranslatorBayHtml = class extends BaseObject
 	 */
 	translateTemplate(op_code, result)
 	{
+		const Vector = use("Runtime.Vector");
 		if (!op_code.is_html) return;
 		/* Begin template */
 		if (op_code.name == "render")
@@ -327,12 +329,12 @@ BayLang.LangBay.TranslatorBayHtml = class extends BaseObject
 		}
 		else
 		{
-			var args_content = [];
+			let args_content = new Vector();
 			if (op_code.args && op_code.args.count() > 0)
 			{
 				this.translator.program.OpDeclareFunctionArgs(op_code, args_content);
 			}
-			var args = rs.join("", args_content);
+			let args = rs.join("", args_content);
 			if (args != "") args = " args=\"" + String(args) + String("\"");
 			result.push("<template name=\"" + String(op_code.name) + String("\"") + String(args) + String(">"));
 		}
@@ -391,30 +393,30 @@ BayLang.LangBay.TranslatorBayHtml = class extends BaseObject
 	{
 		if (op_code.items.count() == 0) return;
 		/* Get styles */
-		var styles = op_code.items.filter((op_code) => { const OpHtmlStyle = use("BayLang.OpCodes.OpHtmlStyle");return op_code instanceof OpHtmlStyle; });
+		let styles = op_code.items.filter((op_code) => { const OpHtmlStyle = use("BayLang.OpCodes.OpHtmlStyle");return op_code instanceof OpHtmlStyle; });
 		/* Translate styles */
-		for (var i = 0; i < styles.count(); i++)
+		for (let i = 0; i < styles.count(); i++)
 		{
 			result.push(this.translator.newLine());
-			var op_code_item = styles.get(i);
+			let op_code_item = styles.get(i);
 			this.translateStyle(op_code_item, result);
 		}
 		/* Get templates */
-		var templates = op_code.items.filter((op_code) => { const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");return op_code instanceof OpDeclareFunction && op_code.is_html; });
+		let templates = op_code.items.filter((op_code) => { const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");return op_code instanceof OpDeclareFunction && op_code.is_html; });
 		/* Translate template */
-		for (var i = 0; i < templates.count(); i++)
+		for (let i = 0; i < templates.count(); i++)
 		{
 			result.push(this.translator.newLine());
-			var op_code_item = templates.get(i);
+			let op_code_item = templates.get(i);
 			this.translateClassItem(op_code_item, result);
 		}
 		/* Get scripts */
-		var scripts = op_code.items.filter((op_code) =>
+		let scripts = op_code.items.filter((op_code) =>
 		{
-			
 			const OpAnnotation = use("BayLang.OpCodes.OpAnnotation");
 			const OpAssign = use("BayLang.OpCodes.OpAssign");
-			const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");return op_code instanceof OpAnnotation || op_code instanceof OpAssign || op_code instanceof OpDeclareFunction && !op_code.is_html && !op_code.name == "components";
+			const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");
+			return op_code instanceof OpAnnotation || op_code instanceof OpAssign || op_code instanceof OpDeclareFunction && !op_code.is_html && !op_code.name == "components";
 		});
 		/* Translate scripts */
 		if (scripts.count() > 0)
@@ -423,9 +425,9 @@ BayLang.LangBay.TranslatorBayHtml = class extends BaseObject
 			result.push("<script>");
 			result.push(this.translator.newLine());
 			result.push(this.translator.newLine());
-			for (var i = 0; i < scripts.count(); i++)
+			for (let i = 0; i < scripts.count(); i++)
 			{
-				var op_code_item = scripts.get(i);
+				let op_code_item = scripts.get(i);
 				this.translator.program.translateClassItem(op_code_item, result);
 				result.push(this.translator.newLine());
 			}
@@ -442,24 +444,25 @@ BayLang.LangBay.TranslatorBayHtml = class extends BaseObject
 	translate(op_code, result)
 	{
 		const lib = use("Runtime.lib");
-		var space = op_code.items.findItem(lib.isInstance("BayLang.OpCodes.OpNamespace"));
-		var component = op_code.items.findItem(lib.isInstance("BayLang.OpCodes.OpDeclareClass"));
-		var uses = op_code.items.filter(lib.isInstance("BayLang.OpCodes.OpUse"));
+		const Vector = use("Runtime.Vector");
+		let space = op_code.items.findItem(lib.isInstance("BayLang.OpCodes.OpNamespace"));
+		let component = op_code.items.findItem(lib.isInstance("BayLang.OpCodes.OpDeclareClass"));
+		let uses = op_code.items.filter(lib.isInstance("BayLang.OpCodes.OpUse"));
 		if (!component) return;
 		/* Get component name */
-		var component_names = [];
+		let component_names = new Vector();
 		if (space) component_names.push(space.name);
 		component_names.push(component.name);
-		var component_name = rs.join(".", component_names);
+		let component_name = rs.join(".", component_names);
 		result.push("<class name=\"" + String(component_name) + String("\">"));
 		result.push(this.translator.newLine());
 		/* Add uses */
 		if (uses.count() > 0)
 		{
 			result.push(this.translator.newLine());
-			for (var i = 0; i < uses.count(); i++)
+			for (let i = 0; i < uses.count(); i++)
 			{
-				var use_item = uses.get(i);
+				let use_item = uses.get(i);
 				this.OpUse(use_item, result);
 				result.push(this.translator.newLine());
 			}
@@ -481,9 +484,9 @@ BayLang.LangBay.TranslatorBayHtml = class extends BaseObject
 		this.translator = null;
 	}
 	static getClassName(){ return "BayLang.LangBay.TranslatorBayHtml"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangBay.TranslatorBayHtml);
 module.exports = {

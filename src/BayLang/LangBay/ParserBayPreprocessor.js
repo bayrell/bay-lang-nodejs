@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,13 +18,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBayPreprocessor = class extends BaseObject
+BayLang.LangBay.ParserBayPreprocessor = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -40,15 +38,17 @@ BayLang.LangBay.ParserBayPreprocessor = class extends BaseObject
 	 */
 	readSwitch(reader, current_block)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpPreprocessorSwitch = use("BayLang.OpCodes.OpPreprocessorSwitch");
+		const Map = use("Runtime.Map");
 		if (current_block == undefined) current_block = "";
-		var caret_start = reader.start();
-		var items = [];
+		let caret_start = reader.start();
+		let items = new Vector();
 		reader.matchToken("#switch");
 		while (!reader.eof() && reader.nextToken() != "#endswitch")
 		{
 			reader.matchToken("#case");
-			var op_code_item = null;
+			let op_code_item = null;
 			if (reader.nextToken() == "ifdef")
 			{
 				op_code_item = this.readIfDef(reader, current_block);
@@ -73,23 +73,25 @@ BayLang.LangBay.ParserBayPreprocessor = class extends BaseObject
 	 */
 	readIfCode(reader)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpPreprocessorIfCode = use("BayLang.OpCodes.OpPreprocessorIfCode");
-		var caret_start = reader.start();
-		var is_switch = false;
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
+		let is_switch = false;
 		if (reader.nextToken() == "#ifcode") reader.matchToken("#ifcode");
 		else
 		{
 			is_switch = true;
 			reader.matchToken("ifcode");
 		}
-		var save_find_variable = this.parser.find_variable;
+		let save_find_variable = this.parser.find_variable;
 		this.parser.find_variable = false;
-		var expression = this.parser.parser_expression.readExpression(reader);
+		let expression = this.parser.parser_expression.readExpression(reader);
 		this.parser.find_variable = save_find_variable;
 		reader.matchToken("then");
 		/* Read content */
-		var content = [];
-		var caret = reader.caret();
+		let content = new Vector();
+		let caret = reader.caret();
 		while (!caret.eof() && !(caret.isNextString("#endif") || caret.isNextString("#case") || caret.isNextString("#endswitch")))
 		{
 			content.push(caret.readChar());
@@ -111,9 +113,11 @@ BayLang.LangBay.ParserBayPreprocessor = class extends BaseObject
 	readIfDef(reader, current_block)
 	{
 		const OpPreprocessorIfDef = use("BayLang.OpCodes.OpPreprocessorIfDef");
+		const Vector = use("Runtime.Vector");
 		const OpItems = use("BayLang.OpCodes.OpItems");
-		var caret_start = reader.start();
-		var is_switch = false;
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
+		let is_switch = false;
 		if (reader.nextToken() == "#ifdef") reader.matchToken("#ifdef");
 		else
 		{
@@ -121,13 +125,13 @@ BayLang.LangBay.ParserBayPreprocessor = class extends BaseObject
 			reader.matchToken("ifdef");
 		}
 		/* Read expression */
-		var save_find_variable = this.parser.find_variable;
+		let save_find_variable = this.parser.find_variable;
 		this.parser.find_variable = false;
-		var expression = this.parser.parser_expression.readExpression(reader);
+		let expression = this.parser.parser_expression.readExpression(reader);
 		this.parser.find_variable = save_find_variable;
 		reader.matchToken("then");
 		/* Read content */
-		var content = null;
+		let content = null;
 		if (current_block == OpPreprocessorIfDef.KIND_PROGRAM)
 		{
 			content = this.parser.parser_program.parse(reader);
@@ -142,10 +146,10 @@ BayLang.LangBay.ParserBayPreprocessor = class extends BaseObject
 		}
 		else if (current_block == OpPreprocessorIfDef.KIND_COLLECTION)
 		{
-			var items = [];
+			let items = new Vector();
 			while (!reader.eof() && reader.nextToken() != "#endif")
 			{
-				var op_code_item = this.parser.parser_expression.readExpression(reader);
+				let op_code_item = this.parser.parser_expression.readExpression(reader);
 				items.push(op_code_item);
 				if (reader.nextToken() == "," || reader.nextToken() != "#endif")
 				{
@@ -206,9 +210,9 @@ BayLang.LangBay.ParserBayPreprocessor = class extends BaseObject
 		this.parser = null;
 	}
 	static getClassName(){ return "BayLang.LangBay.ParserBayPreprocessor"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangBay.ParserBayPreprocessor);
 module.exports = {

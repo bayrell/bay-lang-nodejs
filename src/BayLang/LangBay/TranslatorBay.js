@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
-const CoreTranslator = use("BayLang.CoreTranslator");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,14 +18,11 @@ const CoreTranslator = use("BayLang.CoreTranslator");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.TranslatorBay = class extends CoreTranslator
+BayLang.LangBay.TranslatorBay = class extends use("BayLang.CoreTranslator")
 {
-	/* Translators */
-	
-	
 	/**
 	 * Returns string
 	 */
@@ -46,7 +43,8 @@ BayLang.LangBay.TranslatorBay = class extends CoreTranslator
 	 */
 	translate(op_code)
 	{
-		var content = [];
+		const Vector = use("Runtime.Vector");
+		let content = new Vector();
 		if (op_code.is_component)
 		{
 			this.html.translate(op_code, content);
@@ -73,9 +71,9 @@ BayLang.LangBay.TranslatorBay = class extends CoreTranslator
 		this.html = new TranslatorBayHtml(this);
 	}
 	static getClassName(){ return "BayLang.LangBay.TranslatorBay"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangBay.TranslatorBay);
 module.exports = {

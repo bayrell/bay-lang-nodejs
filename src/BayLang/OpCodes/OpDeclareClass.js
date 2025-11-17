@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,10 +17,10 @@ const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpDeclareClass = class extends BaseOpCode
+BayLang.OpCodes.OpDeclareClass = class extends use("BayLang.OpCodes.BaseOpCode")
 {
 	static KIND_CLASS = "class";
 	static KIND_STRUCT = "struct";
@@ -59,8 +59,8 @@ BayLang.OpCodes.OpDeclareClass = class extends BaseOpCode
 	 */
 	getOffset()
 	{
-		var res = super.getOffset();
-		var op_comment = this.comments.first();
+		let res = super.getOffset();
+		let op_comment = this.comments.first();
 		if (op_comment)
 		{
 			res.set("start", op_comment.caret_start.y);
@@ -74,7 +74,7 @@ BayLang.OpCodes.OpDeclareClass = class extends BaseOpCode
 	 */
 	findFunction(name)
 	{
-		return this.items.findItem((op_code) => { const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");return op_code instanceof OpDeclareFunction && op_code.name == name; });
+		return this.content.items.find((op_code) => { const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");return op_code instanceof OpDeclareFunction && op_code.name == name; });
 	}
 	
 	
@@ -101,9 +101,9 @@ BayLang.OpCodes.OpDeclareClass = class extends BaseOpCode
 		this.is_model = false;
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpDeclareClass"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.OpCodes.OpDeclareClass);
 module.exports = {

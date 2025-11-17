@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
-const BaseCommand = use("Runtime.Console.BaseCommand");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,11 +18,11 @@ const BaseCommand = use("Runtime.Console.BaseCommand");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
 if (typeof Runtime.Unit.Commands == 'undefined') Runtime.Unit.Commands = {};
-Runtime.Unit.Commands.TestAll = class extends BaseCommand
+Runtime.Unit.Commands.TestAll = class extends use("Runtime.Console.BaseCommand")
 {
 	/**
 	 * Returns name
@@ -41,13 +41,13 @@ Runtime.Unit.Commands.TestAll = class extends BaseCommand
 	 */
 	static async run()
 	{
-		var error_code = this.SUCCESS;
+		let error_code = this.SUCCESS;
 		/* List all tests */
 		rtl.print("Run all tests:");
-		var tests = Runtime.rtl.getContext().provider("Runtime.Unit.TestProvider");
-		for (var i = 0; i < tests.count(); i++)
+		let tests = Runtime.rtl.getContext().provider("Runtime.Unit.TestProvider");
+		for (let i = 0; i < tests.count(); i++)
 		{
-			var test = tests.get(i);
+			let test = tests.get(i);
 			error_code = await tests.runTestByName(test.name);
 			if (error_code != this.SUCCESS)
 			{
@@ -72,9 +72,9 @@ Runtime.Unit.Commands.TestAll = class extends BaseCommand
 		super._init();
 	}
 	static getClassName(){ return "Runtime.Unit.Commands.TestAll"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.Unit.Commands.TestAll);
 module.exports = {

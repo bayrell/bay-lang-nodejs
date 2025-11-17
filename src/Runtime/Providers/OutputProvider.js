@@ -2,8 +2,8 @@
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
 const rs = use("Runtime.rs");
-const BaseProvider = use("Runtime.BaseProvider");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -19,18 +19,17 @@ const BaseProvider = use("Runtime.BaseProvider");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Providers == 'undefined') Runtime.Providers = {};
-Runtime.Providers.OutputProvider = class extends BaseProvider
+Runtime.Providers.OutputProvider = class extends use("Runtime.BaseProvider")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
 	constructor()
 	{
+		const Map = use("Runtime.Map");
 		super();
 		this.color_table = Map.create({
 			"black": "0;30",
@@ -218,7 +217,7 @@ Runtime.Providers.OutputProvider = class extends BaseProvider
 	 */
 	getColor(color)
 	{
-		var color = rs.lower(color);
+		color = rs.lower(color);
 		if (this.color_table.has(color)) return this.color_table.get(color);
 		if (rs.strlen(color) > 5) return "0";
 		return color;
@@ -229,12 +228,13 @@ Runtime.Providers.OutputProvider = class extends BaseProvider
 	_init()
 	{
 		super._init();
+		const Map = use("Runtime.Map");
 		this.color_table = new Map();
 	}
 	static getClassName(){ return "Runtime.Providers.OutputProvider"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.Providers.OutputProvider);
 module.exports = {

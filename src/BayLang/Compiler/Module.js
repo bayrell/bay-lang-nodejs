@@ -2,8 +2,8 @@
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
 const rs = use("Runtime.rs");
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -19,13 +19,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
-BayLang.Compiler.Module = class extends BaseObject
+BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -46,11 +44,11 @@ BayLang.Compiler.Module = class extends BaseObject
 		this.path = module_path;
 		if (!await fs.isFolder(this.path)) return;
 		/* Module json file */
-		var module_json_path = this.path + String("/") + String("module.json");
+		let module_json_path = this.path + String("/") + String("module.json");
 		if (!await fs.isFile(module_json_path)) return;
 		/* Read file */
-		var content = await fs.readFile(module_json_path);
-		var module_info = rtl.jsonDecode(content);
+		let content = await fs.readFile(module_json_path);
+		let module_info = rtl.jsonDecode(content);
 		if (!module_info) return;
 		if (!module_info.has("name")) return;
 		this.is_exists = true;
@@ -105,8 +103,7 @@ BayLang.Compiler.Module = class extends BaseObject
 	/**
 	 * Returns source folder path
 	 */
-	getSourceFolderPath(){ const fs = use("Runtime.fs");return this.src_path ? fs.join([this.getPath(), this.src_path]) : null; }
-	
+	getSourceFolderPath(){ const fs = use("Runtime.fs");const Vector = use("Runtime.Vector");return this.src_path ? fs.join(new Vector(this.getPath(), this.src_path)) : null; }
 	
 	
 	/**
@@ -115,8 +112,9 @@ BayLang.Compiler.Module = class extends BaseObject
 	getDestFolderPath(lang)
 	{
 		const fs = use("Runtime.fs");
+		const Vector = use("Runtime.Vector");
 		if (!this.dest_path.has(lang)) return "";
-		return fs.join([this.getPath(), this.dest_path.get(lang)]);
+		return fs.join(new Vector(this.getPath(), this.dest_path.get(lang)));
 	}
 	
 	
@@ -125,9 +123,9 @@ BayLang.Compiler.Module = class extends BaseObject
 	 */
 	getRelativeSourcePath(file_path)
 	{
-		var source_path = this.getSourceFolderPath();
+		let source_path = this.getSourceFolderPath();
 		if (!source_path) return null;
-		var source_path_sz = rs.strlen(source_path);
+		let source_path_sz = rs.strlen(source_path);
 		if (rs.substr(file_path, 0, source_path_sz) != source_path) return null;
 		return rs.addFirstSlash(rs.substr(file_path, source_path_sz));
 	}
@@ -146,12 +144,12 @@ BayLang.Compiler.Module = class extends BaseObject
 	{
 		const re = use("Runtime.re");
 		if (!this.allow) return false;
-		var success = false;
-		for (var i = 0; i < this.allow.count(); i++)
+		let success = false;
+		for (let i = 0; i < this.allow.count(); i++)
 		{
-			var file_match = this.allow.get(i);
+			let file_match = this.allow.get(i);
 			if (file_match == "") continue;
-			var res = re.match(file_match, file_name);
+			let res = re.match(file_match, file_name);
 			/* Ignore */
 			if (rs.charAt(file_match, 0) == "!")
 			{
@@ -179,12 +177,13 @@ BayLang.Compiler.Module = class extends BaseObject
 	{
 		const re = use("Runtime.re");
 		if (!this.exclude) return false;
-		for (var i = 0; i < this.exclude.count(); i++)
+		if (!relative_src_file_path) return false;
+		for (let i = 0; i < this.exclude.count(); i++)
 		{
-			var file_match = this.exclude.get(i);
+			let file_match = this.exclude.get(i);
 			if (file_match == "") continue;
 			file_match = re.replace("\\/", "\\/", file_match);
-			var res = re.match(file_match, relative_src_file_path);
+			let res = re.match(file_match, relative_src_file_path);
 			if (res)
 			{
 				return true;
@@ -201,7 +200,7 @@ BayLang.Compiler.Module = class extends BaseObject
 	{
 		const fs = use("Runtime.fs");
 		/* Check if class name start with module name */
-		var module_name_sz = rs.strlen(this.getName());
+		let module_name_sz = rs.strlen(this.getName());
 		if (rs.substr(class_name, 0, module_name_sz) != this.getName())
 		{
 			return "";
@@ -209,8 +208,8 @@ BayLang.Compiler.Module = class extends BaseObject
 		/* Remove module name from class name */
 		class_name = rs.substr(class_name, module_name_sz);
 		/* Return path to class name */
-		var path = this.getSourceFolderPath();
-		var arr = rs.split(".", class_name);
+		let path = this.getSourceFolderPath();
+		let arr = rs.split(".", class_name);
 		arr.prepend(path);
 		return fs.join(arr) + String(".bay");
 	}
@@ -219,8 +218,7 @@ BayLang.Compiler.Module = class extends BaseObject
 	/**
 	 * Resolve source path
 	 */
-	resolveSourceFilePath(relative_src_file_path){ const fs = use("Runtime.fs");return fs.join([this.getSourceFolderPath(), relative_src_file_path]); }
-	
+	resolveSourceFilePath(relative_src_file_path){ const fs = use("Runtime.fs");const Vector = use("Runtime.Vector");return fs.join(new Vector(this.getSourceFolderPath(), relative_src_file_path)); }
 	
 	
 	/**
@@ -229,11 +227,12 @@ BayLang.Compiler.Module = class extends BaseObject
 	resolveDestFilePath(relative_src_file_path, lang)
 	{
 		const fs = use("Runtime.fs");
+		const Vector = use("Runtime.Vector");
 		const re = use("Runtime.re");
-		var dest_folder_path = this.getDestFolderPath(lang);
+		let dest_folder_path = this.getDestFolderPath(lang);
 		if (dest_folder_path == "") return "";
 		/* Get dest file path */
-		var dest_file_path = fs.join([dest_folder_path, relative_src_file_path]);
+		let dest_file_path = fs.join(new Vector(dest_folder_path, relative_src_file_path));
 		/* Resolve extension */
 		if (lang == "php")
 		{
@@ -272,9 +271,9 @@ BayLang.Compiler.Module = class extends BaseObject
 	 */
 	inModuleList(module_names)
 	{
-		for (var i = 0; i < module_names.count(); i++)
+		for (let i = 0; i < module_names.count(); i++)
 		{
-			var module_name = module_names.get(i);
+			let module_name = module_names.get(i);
 			if (this.name == module_name) return true;
 			if (this.hasGroup(module_name)) return true;
 		}
@@ -291,16 +290,16 @@ BayLang.Compiler.Module = class extends BaseObject
 		const ParserBay = use("BayLang.LangBay.ParserBay");
 		if (lang == undefined) lang = "";
 		/* Get src file path */
-		var src_file_path = this.resolveSourceFilePath(relative_src_file_path);
+		let src_file_path = this.resolveSourceFilePath(relative_src_file_path);
 		if (src_file_path == "") return false;
 		if (!this.checkFile(src_file_path)) return false;
 		/* Read file */
 		if (!await fs.isFile(src_file_path)) return false;
-		var file_content = await fs.readFile(src_file_path);
+		let file_content = await fs.readFile(src_file_path);
 		/* Parse file */
-		var parser = new ParserBay();
+		let parser = new ParserBay();
 		parser.setContent(file_content);
-		var file_op_code = parser.parse();
+		let file_op_code = parser.parse();
 		if (!file_op_code) return false;
 		/* Translate project languages */
 		this.translateLanguages(relative_src_file_path, file_op_code, lang);
@@ -321,10 +320,10 @@ BayLang.Compiler.Module = class extends BaseObject
 		}
 		else
 		{
-			var languages = this.project.getLanguages();
-			for (var i = 0; i < languages.count(); i++)
+			let languages = this.project.getLanguages();
+			for (let i = 0; i < languages.count(); i++)
 			{
-				var lang = languages.get(i);
+				let lang = languages.get(i);
 				if (lang == "bay") continue;
 				await this.translate(relative_src_file_path, op_code, lang);
 			}
@@ -340,15 +339,15 @@ BayLang.Compiler.Module = class extends BaseObject
 		const LangUtils = use("BayLang.LangUtils");
 		const fs = use("Runtime.fs");
 		/* Get dest file path */
-		var dest_file_path = this.resolveDestFilePath(relative_src_file_path, lang);
+		let dest_file_path = this.resolveDestFilePath(relative_src_file_path, lang);
 		if (dest_file_path == "") return false;
 		/* Create translator */
-		var translator = LangUtils.createTranslator(lang);
+		let translator = LangUtils.createTranslator(lang);
 		if (!translator) return false;
 		/* Translate */
-		var dest_file_content = translator.translate(op_code);
+		let dest_file_content = translator.translate(op_code);
 		/* Create dest folder if not exists */
-		var dest_dir_name = rs.dirname(dest_file_path);
+		let dest_dir_name = rs.dirname(dest_file_path);
 		if (!await fs.isFolder(dest_dir_name))
 		{
 			await fs.mkdir(dest_dir_name);
@@ -364,12 +363,12 @@ BayLang.Compiler.Module = class extends BaseObject
 	 */
 	getProjectAssets()
 	{
-		var project_assets = this.project.getAssets();
+		let project_assets = this.project.getAssets();
 		project_assets = project_assets.filter((asset) =>
 		{
 			if (!asset.has("modules")) return false;
 			/* Check module in modules names */
-			var modules = asset.get("modules");
+			let modules = asset.get("modules");
 			if (!modules) return false;
 			if (!rtl.isCollection(modules)) return false;
 			if (!this.inModuleList(modules)) return false;
@@ -384,11 +383,11 @@ BayLang.Compiler.Module = class extends BaseObject
 	 */
 	async updateAssets()
 	{
-		var languages = this.project.getLanguages();
+		let languages = this.project.getLanguages();
 		if (languages.indexOf("es6") == -1) return;
 		/* Builds assets with current module */
-		var project_assets = this.getProjectAssets();
-		for (var i = 0; i < project_assets.count(); i++)
+		let project_assets = this.getProjectAssets();
+		for (let i = 0; i < project_assets.count(); i++)
 		{
 			await this.project.buildAsset(project_assets.get(i));
 		}
@@ -399,6 +398,7 @@ BayLang.Compiler.Module = class extends BaseObject
 	_init()
 	{
 		super._init();
+		const Map = use("Runtime.Map");
 		this.project = null;
 		this.is_exists = false;
 		this.path = "";
@@ -414,9 +414,9 @@ BayLang.Compiler.Module = class extends BaseObject
 		this.exclude = null;
 	}
 	static getClassName(){ return "BayLang.Compiler.Module"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return ["Runtime.Serialize.SerializeInterface"]; }
+	static getInterfaces(){ return ["Runtime.Serialize.SerializeInterface"]; }
 };
 use.add(BayLang.Compiler.Module);
 module.exports = {

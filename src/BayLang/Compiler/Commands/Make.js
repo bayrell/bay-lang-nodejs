@@ -2,8 +2,8 @@
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
 const rs = use("Runtime.rs");
-const BaseCommand = use("Runtime.Console.BaseCommand");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -19,11 +19,11 @@ const BaseCommand = use("Runtime.Console.BaseCommand");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
-BayLang.Compiler.Commands.Make = class extends BaseCommand
+BayLang.Compiler.Commands.Make = class extends use("Runtime.Console.BaseCommand")
 {
 	/**
 	 * Returns name
@@ -42,13 +42,13 @@ BayLang.Compiler.Commands.Make = class extends BaseCommand
 	 */
 	async buildAsset(project, module)
 	{
-		var languages = project.getLanguages();
+		let languages = project.getLanguages();
 		if (languages.indexOf("es6") != -1)
 		{
-			var project_assets = module.getProjectAssets();
-			for (var i = 0; i < project_assets.count(); i++)
+			let project_assets = module.getProjectAssets();
+			for (let i = 0; i < project_assets.count(); i++)
 			{
-				var asset_item = project_assets.get(i);
+				let asset_item = project_assets.get(i);
 				await project.buildAsset(asset_item);
 				rtl.print("Bundle to => " + String(asset_item.get("dest")));
 			}
@@ -62,15 +62,16 @@ BayLang.Compiler.Commands.Make = class extends BaseCommand
 	async compile(project, module, lang)
 	{
 		const fs = use("Runtime.fs");
+		const Vector = use("Runtime.Vector");
 		const ParserUnknownError = use("BayLang.Exceptions.ParserUnknownError");
 		if (lang == undefined) lang = "";
-		var is_success = true;
-		var module_src_path = module.getSourceFolderPath();
-		var files = await fs.listDirRecursive(module_src_path);
-		for (var i = 0; i < files.count(); i++)
+		let is_success = true;
+		let module_src_path = module.getSourceFolderPath();
+		let files = await fs.listDirRecursive(module_src_path);
+		for (let i = 0; i < files.count(); i++)
 		{
-			var file_name = files[i];
-			var file_path = fs.join([module_src_path, file_name]);
+			let file_name = files[i];
+			let file_path = fs.join(new Vector(module_src_path, file_name));
 			/* Detect is file */
 			if (!await fs.isFile(file_path))
 			{
@@ -84,7 +85,7 @@ BayLang.Compiler.Commands.Make = class extends BaseCommand
 			/* Compile */
 			try
 			{
-				var extension = rs.extname(file_name);
+				let extension = rs.extname(file_name);
 				if (extension == "bay")
 				{
 					rtl.print(file_name);
@@ -127,29 +128,29 @@ BayLang.Compiler.Commands.Make = class extends BaseCommand
 	{
 		const Modules = use("BayLang.Compiler.Commands.Modules");
 		const Project = use("BayLang.Compiler.Project");
-		var module_name = Runtime.rtl.getContext().cli_args[2];
-		var lang = Runtime.rtl.getContext().cli_args[3];
+		let module_name = Runtime.rtl.getContext().cli_args[2];
+		let lang = Runtime.rtl.getContext().cli_args[3];
 		if (!module_name)
 		{
 			Modules.showModules();
 			return 0;
 		}
 		/* Read project */
-		var project = await Project.readProject(Runtime.rtl.getContext().base_path);
+		let project = await Project.readProject(Runtime.rtl.getContext().base_path);
 		if (!project)
 		{
 			rtl.error("Project not found");
 			return;
 		}
 		/* Get module */
-		var module = project.getModule(module_name);
+		let module = project.getModule(module_name);
 		if (!module)
 		{
 			rtl.error("Module not found");
 			return;
 		}
 		/* Compile module */
-		var is_success = await this.compile(project, module, lang);
+		let is_success = await this.compile(project, module, lang);
 		if (!is_success)
 		{
 			return this.constructor.ERROR;
@@ -164,9 +165,9 @@ BayLang.Compiler.Commands.Make = class extends BaseCommand
 		super._init();
 	}
 	static getClassName(){ return "BayLang.Compiler.Commands.Make"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.Compiler.Commands.Make);
 module.exports = {

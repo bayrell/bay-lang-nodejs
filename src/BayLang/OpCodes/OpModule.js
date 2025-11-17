@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
-const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,13 +18,11 @@ const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpModule = class extends BaseOpCode
+BayLang.OpCodes.OpModule = class extends use("BayLang.OpCodes.BaseOpCode")
 {
-	
-	
 	/**
 	 * Serialize object
 	 */
@@ -44,6 +42,7 @@ BayLang.OpCodes.OpModule = class extends BaseOpCode
 	{
 		const lib = use("Runtime.lib");
 		const OpUse = use("BayLang.OpCodes.OpUse");
+		const Map = use("Runtime.Map");
 		if (alias_name == undefined) alias_name = "";
 		if (is_component == undefined) is_component = true;
 		if (alias_name != "")
@@ -51,8 +50,8 @@ BayLang.OpCodes.OpModule = class extends BaseOpCode
 			this.uses.set(alias_name, class_name);
 		}
 		/* Add op_code */
-		var pos = this.items.find(lib.isInstance("BayLang.OpCodes.OpNamespace"));
-		var op_code = new OpUse(Map.create({
+		let pos = this.items.find(lib.isInstance("BayLang.OpCodes.OpNamespace"));
+		let op_code = new OpUse(Map.create({
 			"alias": alias_name,
 			"name": class_name,
 			"is_component": is_component,
@@ -62,7 +61,7 @@ BayLang.OpCodes.OpModule = class extends BaseOpCode
 			pos = pos + 1;
 			while (pos < this.items.count())
 			{
-				var item = this.items.get(pos);
+				let item = this.items.get(pos);
 				if (item == null) break;
 				if (!(item instanceof OpUse)) break;
 				if (rs.compare(class_name, item.name) == -1) break;
@@ -88,10 +87,10 @@ BayLang.OpCodes.OpModule = class extends BaseOpCode
 	 */
 	findModule(class_name)
 	{
-		var keys = this.uses.keys();
-		for (var i = 0; i < keys.count(); i++)
+		let keys = this.uses.keys();
+		for (let i = 0; i < keys.count(); i++)
 		{
-			var key_name = keys.get(i);
+			let key_name = keys.get(i);
 			if (this.uses.get(key_name) == class_name) return key_name;
 		}
 		return null;
@@ -102,7 +101,6 @@ BayLang.OpCodes.OpModule = class extends BaseOpCode
 	 * Find class
 	 */
 	findClass(){ const lib = use("Runtime.lib");return this.items ? this.items.findItem(lib.isInstance("BayLang.OpCodes.OpDeclareClass")) : null; }
-	
 	
 	
 	/**
@@ -129,9 +127,9 @@ BayLang.OpCodes.OpModule = class extends BaseOpCode
 		this.is_component = false;
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpModule"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.OpCodes.OpModule);
 module.exports = {

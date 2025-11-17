@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,13 +17,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBayOperator = class extends BaseObject
+BayLang.LangBay.ParserBayOperator = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -40,9 +38,10 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 	readReturn(reader)
 	{
 		const OpReturn = use("BayLang.OpCodes.OpReturn");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		reader.matchToken("return");
-		var expression = null;
+		let expression = null;
 		if (reader.nextToken() != ";")
 		{
 			expression = this.parser.parser_expression.readExpression(reader);
@@ -69,9 +68,10 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 	readThrow(reader)
 	{
 		const OpThrow = use("BayLang.OpCodes.OpThrow");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		reader.matchToken("throw");
-		var expression = this.parser.parser_expression.readExpression(reader);
+		let expression = this.parser.parser_expression.readExpression(reader);
 		return new OpThrow(Map.create({
 			"expression": expression,
 			"caret_start": caret_start,
@@ -85,22 +85,24 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 	 */
 	readTry(reader)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpTryCatchItem = use("BayLang.OpCodes.OpTryCatchItem");
+		const Map = use("Runtime.Map");
 		const OpTryCatch = use("BayLang.OpCodes.OpTryCatch");
-		var caret_start = reader.start();
+		let caret_start = reader.start();
 		reader.matchToken("try");
-		var op_try = this.parse(reader);
-		var items = [];
+		let op_try = this.parse(reader);
+		let items = new Vector();
 		while (!reader.eof() && reader.nextToken() == "catch")
 		{
-			var caret_start = reader.start();
+			let caret_start = reader.start();
 			reader.matchToken("catch");
 			reader.matchToken("(");
-			var pattern = this.parser.parser_base.readTypeIdentifier(reader);
-			var name = this.parser.parser_base.readIdentifier(reader);
+			let pattern = this.parser.parser_base.readTypeIdentifier(reader);
+			let name = this.parser.parser_base.readIdentifier(reader);
 			this.parser.addVariable(name, pattern);
 			reader.matchToken(")");
-			var content = this.parse(reader);
+			let content = this.parse(reader);
 			items.push(new OpTryCatchItem(Map.create({
 				"name": name,
 				"pattern": pattern,
@@ -123,35 +125,37 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 	 */
 	readIf(reader)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpIfElse = use("BayLang.OpCodes.OpIfElse");
+		const Map = use("Runtime.Map");
 		const OpIf = use("BayLang.OpCodes.OpIf");
-		var caret_start = reader.start();
-		var if_true = null;
-		var if_false = null;
-		var if_else = [];
+		let caret_start = reader.start();
+		let if_true = null;
+		let if_false = null;
+		let if_else = new Vector();
 		/* Read condition */
 		reader.matchToken("if");
 		reader.matchToken("(");
-		var condition = this.parser.parser_expression.readExpression(reader);
+		let condition = this.parser.parser_expression.readExpression(reader);
 		reader.matchToken(")");
 		/* Read content */
 		if_true = this.readContent(reader);
 		this.parser.parser_base.skipComment(reader);
 		/* Read content */
-		var caret_last = null;
-		var operations = ["else", "elseif"];
+		let caret_last = null;
+		let operations = new Vector("else", "elseif");
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
 		{
-			var token = reader.readToken();
+			let token = reader.readToken();
 			if (token == "elseif" || token == "else" && reader.nextToken() == "if")
 			{
 				/* Read condition */
 				if (reader.nextToken() == "if") reader.readToken();
 				reader.matchToken("(");
-				var if_else_condition = this.parser.parser_expression.readExpression(reader);
+				let if_else_condition = this.parser.parser_expression.readExpression(reader);
 				reader.matchToken(")");
 				/* Read content */
-				var if_else_content = this.readContent(reader);
+				let if_else_content = this.readContent(reader);
 				/* Add op_code */
 				if_else.push(new OpIfElse(Map.create({
 					"condition": if_else_condition,
@@ -186,21 +190,22 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 	readFor(reader)
 	{
 		const OpFor = use("BayLang.OpCodes.OpFor");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		/* Read for */
 		reader.matchToken("for");
 		reader.matchToken("(");
 		/* Read assing */
-		var expr1 = this.readAssign(reader);
+		let expr1 = this.readAssign(reader);
 		reader.matchToken(";");
 		/* Read expression */
-		var expr2 = this.parser.parser_expression.readExpression(reader);
+		let expr2 = this.parser.parser_expression.readExpression(reader);
 		reader.matchToken(";");
 		/* Read operator */
-		var expr3 = this.readInc(reader);
+		let expr3 = this.readInc(reader);
 		reader.matchToken(")");
 		/* Read content */
-		var content = this.readContent(reader);
+		let content = this.readContent(reader);
 		/* Returns op_code */
 		return new OpFor(Map.create({
 			"expr1": expr1,
@@ -219,14 +224,15 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 	readWhile(reader)
 	{
 		const OpWhile = use("BayLang.OpCodes.OpWhile");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		/* Read condition */
 		reader.matchToken("while");
 		reader.matchToken("(");
-		var condition = this.parser.parser_expression.readExpression(reader);
+		let condition = this.parser.parser_expression.readExpression(reader);
 		reader.matchToken(")");
 		/* Read items */
-		var content = null;
+		let content = null;
 		if (reader.nextToken() == "{")
 		{
 			content = this.parse(reader);
@@ -250,20 +256,22 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 	 */
 	readAssign(reader)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpInc = use("BayLang.OpCodes.OpInc");
+		const Map = use("Runtime.Map");
 		const OpAssignValue = use("BayLang.OpCodes.OpAssignValue");
 		const OpAssign = use("BayLang.OpCodes.OpAssign");
 		const OpFlags = use("BayLang.OpCodes.OpFlags");
-		var caret_start = reader.start();
-		var items = [];
+		let caret_start = reader.start();
+		let items = new Vector();
 		/* Read value */
-		var pattern = null;
-		var value = this.parser.parser_base.readDynamic(reader, false);
+		let pattern = null;
+		let value = this.parser.parser_base.readDynamic(reader, false);
 		/* Read increment */
 		if (reader.nextToken() == "++" || reader.nextToken() == "--")
 		{
-			var kind = "";
-			var operation = reader.readToken();
+			let kind = "";
+			let operation = reader.readToken();
 			if (operation == "++") kind = OpInc.KIND_INC;
 			else if (operation == "--") kind = OpInc.KIND_DEC;
 			/* Returns op_code */
@@ -275,8 +283,8 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 			}));
 		}
 		/* Read items */
-		var operations = ["=", "+=", "-=", "~="];
-		var next_token = reader.nextToken();
+		let operations = new Vector("=", "+=", "-=", "~=");
+		let next_token = reader.nextToken();
 		if (operations.indexOf(next_token) == -1)
 		{
 			reader.init(caret_start);
@@ -285,11 +293,11 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 			this.parser.findEntity(pattern.entity_name);
 			while (!reader.eof())
 			{
-				var caret_value_start = reader.start();
+				let caret_value_start = reader.start();
 				/* Read assign value */
 				value = this.parser.parser_base.readIdentifier(reader);
 				/* Read expression */
-				var expression = null;
+				let expression = null;
 				if (reader.nextToken() == "=")
 				{
 					reader.matchToken("=");
@@ -311,8 +319,8 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 		}
 		else
 		{
-			var op = reader.readToken();
-			var expression = this.parser.parser_expression.readExpression(reader);
+			let op = reader.readToken();
+			let expression = this.parser.parser_expression.readExpression(reader);
 			items.push(new OpAssignValue(Map.create({
 				"op": op,
 				"value": value,
@@ -338,11 +346,12 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 	readInc(reader)
 	{
 		const OpInc = use("BayLang.OpCodes.OpInc");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		/* Read identifier */
-		var item = this.parser.parser_base.readIdentifier(reader);
+		let item = this.parser.parser_base.readIdentifier(reader);
 		/* Read kind */
-		var kind = reader.readToken();
+		let kind = reader.readToken();
 		if (kind == "++") kind = OpInc.KIND_INC;
 		else if (kind == "--") kind = OpInc.KIND_DEC;
 		else throw reader.expected("++ or --");
@@ -363,9 +372,11 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 	{
 		const OpPreprocessorIfDef = use("BayLang.OpCodes.OpPreprocessorIfDef");
 		const OpBreak = use("BayLang.OpCodes.OpBreak");
+		const Map = use("Runtime.Map");
 		const OpContinue = use("BayLang.OpCodes.OpContinue");
-		var next_token = reader.nextTokenComments();
-		var caret_start = reader.start();
+		const OpCall = use("BayLang.OpCodes.OpCall");
+		let next_token = reader.nextTokenComments();
+		let caret_start = reader.start();
 		/* Comment */
 		if (next_token == "/")
 		{
@@ -420,10 +431,10 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 			return this.readWhile(reader);
 		}
 		/* Save caret */
-		var save_caret = reader.caret();
+		let save_caret = reader.caret();
 		/* Try to read call function */
-		var op_code = this.parser.parser_function.readCallFunction(reader);
-		if (op_code) return op_code;
+		let op_code = this.parser.parser_base.readDynamic(reader);
+		if (op_code instanceof OpCall) return op_code;
 		/* Restore reader */
 		reader.init(save_caret);
 		/* Assign operator */
@@ -440,7 +451,7 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 		{
 			return this.parse(reader);
 		}
-		var content = this.readOperator(reader);
+		let content = this.readOperator(reader);
 		reader.matchToken(";");
 		return content;
 	}
@@ -449,20 +460,23 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 	/**
 	 * Read operators
 	 */
-	parse(reader, match_brackets)
+	parse(reader, match_brackets, end_tag)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpItems = use("BayLang.OpCodes.OpItems");
+		const Map = use("Runtime.Map");
 		if (match_brackets == undefined) match_brackets = true;
-		var caret_start = reader.start();
-		var items = [];
+		if (end_tag == undefined) end_tag = "";
+		let caret_start = reader.start();
+		let items = new Vector();
 		/* Read begin tag */
 		if (match_brackets) reader.matchToken("{");
 		/* Save var */
-		var save_vars = this.parser.saveVars();
+		let save_vars = this.parser.saveVars();
 		/* Read operators */
-		while (!reader.eof() && reader.nextToken() != "}" && reader.nextToken() != "#endswitch" && reader.nextToken() != "#case" && reader.nextToken() != "#endif")
+		while (!reader.eof() && reader.nextToken() != "}" && reader.nextToken() != "#endswitch" && reader.nextToken() != "#case" && reader.nextToken() != "#endif" && reader.nextToken() != end_tag)
 		{
-			var op_code = this.readOperator(reader);
+			let op_code = this.readOperator(reader);
 			if (op_code)
 			{
 				items.push(op_code);
@@ -497,9 +511,9 @@ BayLang.LangBay.ParserBayOperator = class extends BaseObject
 		this.parser = null;
 	}
 	static getClassName(){ return "BayLang.LangBay.ParserBayOperator"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangBay.ParserBayOperator);
 module.exports = {

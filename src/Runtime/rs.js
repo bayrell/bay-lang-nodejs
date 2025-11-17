@@ -1,6 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
-/*!
+const rtl = use("Runtime.rtl");
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -16,7 +18,7 @@ const use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
 Runtime.rs = class
 {
@@ -42,14 +44,13 @@ Runtime.rs = class
 	{
 		if (length == undefined) length = null;
 		var _rtl = use("Runtime.rtl");
-		var _rs = use("Runtime.rs");
 		if (start < 0) start = s.length + start;
 		if (length === null){
 			return _rtl.toStr(s).substring(start);
 		}
 		var end = start + length;
 		if (length < 0){
-			var sz = _rs.strlen(s);
+			var sz = this.strlen(s);
 			end = sz + length;
 		}
 		return _rtl.toStr(s).substring(start, end);
@@ -157,12 +158,14 @@ Runtime.rs = class
 	static split(delimiter, s, limit)
 	{
 		if (limit == undefined) limit = -1;
-		var _rtl = use("Runtime.rtl");
+		const rtl = use("Runtime.rtl");
+		const RuntimeVector = use("Runtime.Vector");
+		
 		var arr = null;
-		if (!_rtl.exists(limit))
+		if (!rtl.exists(limit))
 			arr = s.split(delimiter);
 		arr = s.split(delimiter, limit);
-		return arr;
+		return RuntimeVector.create(arr);
 	}
 	
 	
@@ -176,12 +179,12 @@ Runtime.rs = class
 	static splitArr(delimiters, s, limit)
 	{
 		if (limit == undefined) limit = -1;
-		var _rtl = use("Runtime.rtl");
-		var _Collection = use("Runtime.Collection");
+		const rtl = use("Runtime.rtl");
+		const RuntimeVector = use("Runtime.Vector");
 		
 		var arr = null;
 		var delimiter = new RegExp("[" + delimiters.join("") + "]", "g");
-		if (!_rtl.exists(limit))
+		if (!rtl.exists(limit))
 		{
 			arr = s.split(delimiter);
 		}
@@ -189,7 +192,7 @@ Runtime.rs = class
 		{
 			arr = s.split(delimiter, limit);
 		}
-		return arr;
+		return RuntimeVector.create(arr);
 	}
 	
 	
@@ -213,7 +216,7 @@ Runtime.rs = class
 	static join_path(arr)
 	{
 		const re = use("Runtime.re");
-		var path = this.join("/", arr);
+		let path = this.join("/", arr);
 		path = re.replace("\\/+", "/", path);
 		path = re.replace("\\/\\.\\/", "/", path);
 		path = re.replace("\\/+$", "", path);
@@ -247,8 +250,8 @@ Runtime.rs = class
 	 */
 	static removeFirstSlash(path)
 	{
-		var i = 0;
-		var sz = this.strlen(path);
+		let i = 0;
+		let sz = this.strlen(path);
 		while (i < sz && this.substr(path, i, 1) == "/") i++;
 		return this.substr(path, i);
 	}
@@ -259,7 +262,7 @@ Runtime.rs = class
 	 */
 	static removeLastSlash(path)
 	{
-		var i = this.strlen(path) - 1;
+		let i = this.strlen(path) - 1;
 		while (i >= 0 && this.substr(path, i, 1) == "/") i--;
 		return this.substr(path, 0, i + 1);
 	}
@@ -296,15 +299,15 @@ Runtime.rs = class
 	 */
 	static pathinfo(filepath)
 	{
-		var arr1 = this.split(".", filepath);
-		var arr2 = this.split("/", filepath);
-		var filepath = filepath;
-		var extension = arr1.pop();
-		var basename = arr2.pop();
-		var dirname = this.join("/", arr2);
-		var ext_length = this.strlen(extension);
+		const Map = use("Runtime.Map");
+		let arr1 = this.split(".", filepath);
+		let arr2 = this.split("/", filepath);
+		let extension = arr1.pop();
+		let basename = arr2.pop();
+		let dirname = this.join("/", arr2);
+		let ext_length = this.strlen(extension);
 		if (ext_length > 0) ext_length++;
-		var filename = this.substr(basename, 0, -1 * ext_length);
+		let filename = this.substr(basename, 0, -1 * ext_length);
 		return Map.create({
 			"filepath": filepath,
 			"extension": extension,
@@ -322,12 +325,12 @@ Runtime.rs = class
 	 */
 	static filename(filepath)
 	{
-		var ret = this.pathinfo(filepath);
-		var res = ret.get("basename");
-		var ext = ret.get("extension");
+		let ret = this.pathinfo(filepath);
+		let res = ret.get("basename");
+		let ext = ret.get("extension");
 		if (ext != "")
 		{
-			var sz = 0 - Runtime.rs.strlen(ext) - 1;
+			let sz = 0 - Runtime.rs.strlen(ext) - 1;
 			res = Runtime.rs.substr(res, 0, sz);
 		}
 		return res;
@@ -341,8 +344,8 @@ Runtime.rs = class
 	 */
 	static basename(filepath)
 	{
-		var ret = this.pathinfo(filepath);
-		var res = ret.get("basename");
+		let ret = this.pathinfo(filepath);
+		let res = ret.get("basename");
 		return res;
 	}
 	
@@ -354,8 +357,8 @@ Runtime.rs = class
 	 */
 	static extname(filepath)
 	{
-		var ret = this.pathinfo(filepath);
-		var res = ret.get("extension");
+		let ret = this.pathinfo(filepath);
+		let res = ret.get("extension");
 		return res;
 	}
 	
@@ -367,8 +370,8 @@ Runtime.rs = class
 	 */
 	static dirname(filepath)
 	{
-		var ret = this.pathinfo(filepath);
-		var res = ret.get("dirname");
+		let ret = this.pathinfo(filepath);
+		let res = ret.get("dirname");
 		return res;
 	}
 	
@@ -427,6 +430,19 @@ Runtime.rs = class
 	
 	
 	/**
+	 * Decode HTML
+	 */
+	static htmlDecode(s)
+	{
+		const he = require("he");
+		return he.decode(s);
+	}
+	
+	
+	static decodeHtml(s){ return this.htmlDecode(s); }
+	
+	
+	/**
 	 * Escape HTML special chars
 	 * @param string s
 	 * @return string
@@ -435,7 +451,7 @@ Runtime.rs = class
 	{
 		if (s == null) return "";
 		var obj = {
-			"<":"&lt;",
+			"<": "&lt;",
 			">": "&gt;", 
 			"&": "&amp;",
 			'"': '&quot;',
@@ -445,6 +461,8 @@ Runtime.rs = class
 		};
 		return (new String(s)).replace(/[<>&"'`=]/g, function(v){ return obj[v]; });
 	}
+	
+	
 	static escapeHtml(s){ return this.htmlEscape(s); }
 	
 	
@@ -499,19 +517,21 @@ Runtime.rs = class
 	 */
 	static parse_url(s)
 	{
-		var pos;
-		var uri, query, hash;
+		const Map = use("Runtime.Map");
+		let pos;
+		let uri, query, hash;
 		pos = this.indexOf(s, "#");
-		s = (pos >= 0) ? this.substr(s, 0, pos) : s;
-		hash = (pos >= 0) ? this.substr(s, pos + 1) : "";
+		s = pos >= 0 ? this.substr(s, 0, pos) : s;
+		hash = pos >= 0 ? this.substr(s, pos + 1) : "";
 		pos = this.indexOf(s, "?");
-		uri = (pos >= 0) ? this.substr(s, 0, pos) : s;
-		query = (pos >= 0) ? this.substr(s, pos + 1) : "";
-		var arr = this.split("&", query);
-		var arr2 = arr.filter((s) => { return s != ""; }).transition((item) =>
+		uri = pos >= 0 ? this.substr(s, 0, pos) : s;
+		query = pos >= 0 ? this.substr(s, pos + 1) : "";
+		let arr = this.split("&", query);
+		let arr2 = arr.filter((s) => { return s != ""; }).transition((item) =>
 		{
-			var arr = this.split("=", item);
-			return [arr[1], arr[0]];
+			const Vector = use("Runtime.Vector");
+			let arr = this.split("=", item);
+			return new Vector(arr[1], arr[0]);
 		});
 		return Map.create({
 			"uri": uri,
@@ -529,14 +549,14 @@ Runtime.rs = class
 	 */
 	static url_get_add(s, key, value)
 	{
-		var r = this.parse_url(s);
-		var s1 = r.get("uri");
-		var s2 = r.get("query");
-		var find = false;
-		var arr = this.split("&", s2);
+		let r = this.parse_url(s);
+		let s1 = r.get("uri");
+		let s2 = r.get("query");
+		let find = false;
+		let arr = this.split("&", s2);
 		arr = arr.map((s) =>
 		{
-			var arr = this.split("=", s);
+			let arr = this.split("=", s);
 			if (arr[0] == key)
 			{
 				find = true;
@@ -569,17 +589,17 @@ Runtime.rs = class
 			content = Runtime.rs.trim(Runtime.rs.spaceless(content));
 			return content;
 		}
-		var matches = re.matchAll("<[^>]+>", content, "i");
+		let matches = re.matchAll("<[^>]+>", content, "i");
 		if (matches)
 		{
-			for (var i = 0; i < matches.count(); i++)
+			for (let i = 0; i < matches.count(); i++)
 			{
-				var match = matches[i];
-				var tag_str = match[0];
-				var tag_match = re.matchAll("<(\\/|)([a-zA-Z]+)(|[^>]*)>", tag_str, "i");
+				let match = matches[i];
+				let tag_str = match[0];
+				let tag_match = re.matchAll("<(\\/|)([a-zA-Z]+)(|[^>]*)>", tag_str, "i");
 				if (tag_match)
 				{
-					var tag_name = this.lower(tag_match[0][2]);
+					let tag_name = this.lower(tag_match[0][2]);
 					if (allowed_tags.indexOf(tag_name) == -1)
 					{
 						content = this.replace(tag_str, "", content);
@@ -611,27 +631,80 @@ Runtime.rs = class
 	
 	
 	/**
+	 * Join class name
+	 */
+	static className(arr)
+	{
+		return Runtime.rs.join(" ", arr.map((s) => { return this.trim(s); }).filter((s) => { return s != ""; }));
+	}
+	
+	
+	/**
+	 * Merge styles
+	 */
+	static mergeStyles(class_name, items)
+	{
+		return Runtime.rs.join(" ", items.map((s) => { return this.trim(s); }).filter((s) => { return s != ""; }).map((item) => { return class_name + String("--") + String(item); }));
+	}
+	
+	
+	/**
 	 * Hash function
 	 * @param string
 	 * @return int hash
 	 */
-	static hash(s, last, x, p)
+	static hash(s, x, p)
 	{
-		if (last == undefined) last = true;
 		if (x == undefined) x = 257;
 		if (p == undefined) p = 1000000007;
-		var h = 0;
-		var sz = Runtime.rs.strlen(s);
-		for (var i = 0; i < sz; i++)
+		let h = 0;
+		let sz = Runtime.rs.strlen(s);
+		for (let i = 0; i < sz; i++)
 		{
-			var ch = Runtime.rs.ord(Runtime.rs.substr(s, i, 1));
+			let ch = Runtime.rs.ord(Runtime.rs.charAt(s, i, 1));
 			h = (h * x + ch) % p;
 		}
-		if (last)
-		{
-			h = h * x % p;
-		}
 		return h;
+	}
+	
+	
+	/**
+	 * Returns CSS Hash
+	 */
+	static getCssHash(class_name)
+	{
+		let h = Runtime.rs.hash(class_name, 337, 65537) + 65537;
+		let res = Runtime.rs.toHex(h * 337 % 65537);
+		return Runtime.rs.substr(res, -4);
+	}
+	
+	
+	/**
+	 * Returns component hash
+	 */
+	static getComponentHash(class_name)
+	{
+		const Map = use("Runtime.Map");
+		const Vector = use("Runtime.Vector");
+		if (!rtl.isString(class_name)) class_name = rtl.className(class_name);
+		let global_hash = Runtime.rtl.getContext().provider("hash");
+		let component_hash = global_hash.get("component_hash");
+		if (!component_hash)
+		{
+			component_hash = new Map();
+			global_hash.set("component_hash", component_hash);
+		}
+		if (component_hash.has(class_name)) return component_hash.get(class_name);
+		let result = new Vector();
+		let item_name = class_name;
+		while (item_name != "" && item_name != "Runtime.Component")
+		{
+			result.push("h-" + String(this.getCssHash(item_name)));
+			item_name = rtl.parentClassName(item_name);
+		}
+		let value = Runtime.rs.join(" ", result);
+		component_hash.set(class_name, value);
+		return value;
 	}
 	
 	
@@ -642,13 +715,13 @@ Runtime.rs = class
 	 */
 	static toHex(h)
 	{
-		var r = "";
-		var a = "0123456789abcdef";
+		let r = "";
+		let a = "0123456789abcdef";
 		while (h >= 0)
 		{
-			var c = h & 15;
+			let c = h & 15;
 			h = h >> 4;
-			r = Runtime.rs.substr(a, c, 1) + String(r);
+			r = Runtime.rs.charAt(a, c) + String(r);
 			if (h == 0) break;
 		}
 		return r;
@@ -674,15 +747,14 @@ Runtime.rs = class
 	 */
 	static random_string(len, spec)
 	{
-		const Math = use("Runtime.Math");
 		if (len == undefined) len = 8;
 		if (spec == undefined) spec = "aun";
-		var s = "";
-		var res = "";
-		var sz = Runtime.rs.strlen(spec);
-		for (var i = 0; i < sz; i++)
+		let s = "";
+		let res = "";
+		let sz = Runtime.rs.strlen(spec);
+		for (let i = 0; i < sz; i++)
 		{
-			var ch = spec[i];
+			let ch = spec[i];
 			if (ch == "a")
 			{
 				s += "qwertyuiopasdfghjklzxcvbnm";
@@ -700,10 +772,10 @@ Runtime.rs = class
 				s += "!@#$%^&*()-_+='\":;'.,<>?/|~";
 			}
 		}
-		var sz_s = Runtime.rs.strlen(s);
-		for (var i = 0; i < len; i++)
+		let sz_s = Runtime.rs.strlen(s);
+		for (let i = 0; i < len; i++)
 		{
-			var code = Math.random(0, sz_s - 1);
+			let code = rtl.random(0, sz_s - 1);
 			res += s[code];
 		}
 		return res;
@@ -730,9 +802,9 @@ Runtime.rs = class
 	{
 	}
 	static getClassName(){ return "Runtime.rs"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.rs);
 module.exports = {

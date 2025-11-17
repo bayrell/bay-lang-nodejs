@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,12 +18,10 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Callback = class extends BaseObject
+Runtime.Method = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -54,7 +52,7 @@ Runtime.Callback = class extends BaseObject
 	
 	
 	/**
-	 * Check callback
+	 * Check method
 	 */
 	check()
 	{
@@ -87,12 +85,12 @@ Runtime.Callback = class extends BaseObject
 		super._init();
 		this.tag = null;
 	}
-	static getClassName(){ return "Runtime.Callback"; }
-	static getMethodsList(){ return []; }
+	static getClassName(){ return "Runtime.Method"; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
-use.add(Runtime.Callback);
+use.add(Runtime.Method);
 module.exports = {
-	"Callback": Runtime.Callback,
+	"Method": Runtime.Method,
 };

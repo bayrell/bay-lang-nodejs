@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseHook = use("Runtime.BaseHook");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,74 +17,39 @@ const BaseHook = use("Runtime.BaseHook");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Hooks == 'undefined') Runtime.Hooks = {};
-Runtime.Hooks.RuntimeHook = class extends BaseHook
+Runtime.Hooks.RuntimeHook = class extends use("Runtime.Hooks.BaseHook")
 {
 	static INIT = "runtime::init";
 	static START = "runtime::start";
 	static LAUNCHED = "runtime::launched";
 	static RUN = "runtime::run";
 	static ENV = "runtime::env";
+	static COMPONENTS = "runtime::components";
+	static LAYOUT_HEADER = "runtime::header";
+	static LAYOUT_FOOTER = "runtime::footer";
+	static LAYOUT_NAME = "runtime::layout_name";
+	static CREATE_CONTAINER = "runtime::create_container";
+	static CREATE_LAYOUT = "runtime::create_layout";
+	static CHANGE_LAYOUT = "runtime::change_layout";
+	static TITLE = "runtime::title";
 	
 	
 	/**
-	 * Returns method name by hook name
+	 * Register hooks
 	 */
-	getMethodName(hook_name)
+	register_hooks()
 	{
-		if (hook_name == this.constructor.INIT) return "init";
-		if (hook_name == this.constructor.START) return "start";
-		if (hook_name == this.constructor.LAUNCHED) return "launched";
-		if (hook_name == this.constructor.RUN) return "run";
-		if (hook_name == this.constructor.ENV) return "env";
-		return "";
-	}
-	
-	
-	/**
-	 * Init context
-	 */
-	async init(d)
-	{
-		return d;
-	}
-	
-	
-	/**
-	 * Start context
-	 */
-	async start(d)
-	{
-		return d;
-	}
-	
-	
-	/**
-	 * Launched context
-	 */
-	async launched(d)
-	{
-		return d;
-	}
-	
-	
-	/**
-	 * Run entry point
-	 */
-	async run(d)
-	{
-		return d;
-	}
-	
-	
-	/**
-	 * Init context
-	 */
-	env(d)
-	{
-		return d;
+		const Vector = use("Runtime.Vector");
+		super.register_hooks();
+		this.provider.setAsync(new Vector(
+			this.constructor.INIT,
+			this.constructor.START,
+			this.constructor.LAUNCHED,
+			this.constructor.RUN,
+		));
 	}
 	
 	
@@ -94,9 +59,9 @@ Runtime.Hooks.RuntimeHook = class extends BaseHook
 		super._init();
 	}
 	static getClassName(){ return "Runtime.Hooks.RuntimeHook"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.Hooks.RuntimeHook);
 module.exports = {

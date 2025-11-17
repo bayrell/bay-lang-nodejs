@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,13 +17,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
-BayLang.LangES6.ParserES6Operator = class extends BaseObject
+BayLang.LangES6.ParserES6Operator = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -71,33 +69,35 @@ BayLang.LangES6.ParserES6Operator = class extends BaseObject
 	 */
 	readIf(reader)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpIfElse = use("BayLang.OpCodes.OpIfElse");
+		const Map = use("Runtime.Map");
 		const OpIf = use("BayLang.OpCodes.OpIf");
-		var caret_start = reader.start();
-		var if_true = null;
-		var if_false = null;
-		var if_else = [];
+		let caret_start = reader.start();
+		let if_true = null;
+		let if_false = null;
+		let if_else = new Vector();
 		/* Read condition */
 		reader.matchToken("if");
 		reader.matchToken("(");
-		var condition = this.parser.parser_expression.readExpression(reader);
+		let condition = this.parser.parser_expression.readExpression(reader);
 		reader.matchToken(")");
 		/* Read content */
 		if_true = this.readContent(reader);
 		/* Read content */
-		var operations = ["else", "elseif"];
+		let operations = new Vector("else", "elseif");
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
 		{
-			var token = reader.readToken();
+			let token = reader.readToken();
 			if (token == "elseif" || token == "else" && reader.nextToken() == "if")
 			{
 				/* Read condition */
 				if (reader.nextToken() == "if") reader.readToken();
 				reader.matchToken("(");
-				var if_else_condition = this.parser.parser_expression.readExpression(reader);
+				let if_else_condition = this.parser.parser_expression.readExpression(reader);
 				reader.matchToken(")");
 				/* Read content */
-				var if_else_content = this.readContent(reader);
+				let if_else_content = this.readContent(reader);
 				/* Add op_code */
 				if_else.push(new OpIfElse(Map.create({
 					"condition": if_else_condition,
@@ -128,21 +128,22 @@ BayLang.LangES6.ParserES6Operator = class extends BaseObject
 	readFor(reader)
 	{
 		const OpFor = use("BayLang.OpCodes.OpFor");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		/* Read for */
 		reader.matchToken("for");
 		reader.matchToken("(");
 		/* Read assing */
-		var expr1 = this.readAssign(reader);
+		let expr1 = this.readAssign(reader);
 		reader.matchToken(";");
 		/* Read expression */
-		var expr2 = this.parser.parser_expression.readExpression(reader);
+		let expr2 = this.parser.parser_expression.readExpression(reader);
 		reader.matchToken(";");
 		/* Read operator */
-		var expr3 = this.readInc(reader);
+		let expr3 = this.readInc(reader);
 		reader.matchToken(")");
 		/* Read content */
-		var content = this.readContent(reader);
+		let content = this.readContent(reader);
 		/* Returns op_code */
 		return new OpFor(Map.create({
 			"expr1": expr1,
@@ -161,14 +162,15 @@ BayLang.LangES6.ParserES6Operator = class extends BaseObject
 	readWhile(reader)
 	{
 		const OpWhile = use("BayLang.OpCodes.OpWhile");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		/* Read condition */
 		reader.matchToken("while");
 		reader.matchToken("(");
-		var condition = this.parser.parser_expression.readExpression(reader);
+		let condition = this.parser.parser_expression.readExpression(reader);
 		reader.matchToken(")");
 		/* Read items */
-		var content = null;
+		let content = null;
 		if (reader.nextToken() == "{")
 		{
 			content = this.parse(reader);
@@ -192,15 +194,17 @@ BayLang.LangES6.ParserES6Operator = class extends BaseObject
 	 */
 	readAssign(reader, pattern)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpInc = use("BayLang.OpCodes.OpInc");
 		const OpTypeIdentifier = use("BayLang.OpCodes.OpTypeIdentifier");
 		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
+		const Map = use("Runtime.Map");
 		const OpAssignValue = use("BayLang.OpCodes.OpAssignValue");
 		const OpAssign = use("BayLang.OpCodes.OpAssign");
 		const OpFlags = use("BayLang.OpCodes.OpFlags");
 		if (pattern == undefined) pattern = null;
-		var caret_start = reader.start();
-		var items = [];
+		let caret_start = reader.start();
+		let items = new Vector();
 		/* Read pattern */
 		if (pattern == null)
 		{
@@ -209,8 +213,8 @@ BayLang.LangES6.ParserES6Operator = class extends BaseObject
 		/* Read increment */
 		if (reader.nextToken() == "++" || reader.nextToken() == "--")
 		{
-			var kind = "";
-			var operation = reader.readToken();
+			let kind = "";
+			let operation = reader.readToken();
 			if (operation == "++") kind = OpInc.KIND_INC;
 			else if (operation == "--") kind = OpInc.KIND_DEC;
 			/* Find identifier */
@@ -232,19 +236,19 @@ BayLang.LangES6.ParserES6Operator = class extends BaseObject
 			}));
 		}
 		/* Read items */
-		var operations = ["=", "+=", "-=", "~="];
-		var next_token = reader.nextToken();
+		let operations = new Vector("=", "+=", "-=", "~=");
+		let next_token = reader.nextToken();
 		if (operations.indexOf(next_token) == -1)
 		{
 			while (!reader.eof())
 			{
-				var caret_value_start = reader.start();
+				let caret_value_start = reader.start();
 				/* Read assign value */
-				var value = this.parser.parser_base.readIdentifier(reader);
+				let value = this.parser.parser_base.readIdentifier(reader);
 				/* Register variable */
 				this.parser.addVariable(value, pattern);
 				/* Read expression */
-				var expression = null;
+				let expression = null;
 				if (reader.nextToken() == "=")
 				{
 					reader.matchToken("=");
@@ -266,7 +270,7 @@ BayLang.LangES6.ParserES6Operator = class extends BaseObject
 		else
 		{
 			/* Get value */
-			var value = pattern;
+			let value = pattern;
 			pattern = null;
 			/* Find identifier */
 			if (value instanceof OpTypeIdentifier)
@@ -279,8 +283,8 @@ BayLang.LangES6.ParserES6Operator = class extends BaseObject
 			}
 			this.parser.findVariable(value);
 			/* Read expression */
-			var op = reader.readToken();
-			var expression = this.parser.parser_expression.readExpression(reader);
+			let op = reader.readToken();
+			let expression = this.parser.parser_expression.readExpression(reader);
 			items.push(new OpAssignValue(Map.create({
 				"op": op,
 				"value": value,
@@ -306,11 +310,12 @@ BayLang.LangES6.ParserES6Operator = class extends BaseObject
 	readInc(reader)
 	{
 		const OpInc = use("BayLang.OpCodes.OpInc");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		/* Read identifier */
-		var item = this.parser.parser_base.readIdentifier(reader);
+		let item = this.parser.parser_base.readIdentifier(reader);
 		/* Read kind */
-		var kind = reader.readToken();
+		let kind = reader.readToken();
 		if (kind == "++") kind = OpInc.KIND_INC;
 		else if (kind == "--") kind = OpInc.KIND_DEC;
 		else throw reader.expected("++ or --");
@@ -330,9 +335,10 @@ BayLang.LangES6.ParserES6Operator = class extends BaseObject
 	readOperator(reader)
 	{
 		const OpBreak = use("BayLang.OpCodes.OpBreak");
+		const Map = use("Runtime.Map");
 		const OpContinue = use("BayLang.OpCodes.OpContinue");
-		var next_token = reader.nextToken();
-		var caret_start = reader.start();
+		let next_token = reader.nextToken();
+		let caret_start = reader.start();
 		/* Comment */
 		if (next_token == "/")
 		{
@@ -381,9 +387,9 @@ BayLang.LangES6.ParserES6Operator = class extends BaseObject
 			return this.readWhile(reader);
 		}
 		/* Save caret */
-		var save_caret = reader.caret();
+		let save_caret = reader.caret();
 		/* Try to read call function */
-		var op_code = this.parser.parser_function.readCallFunction(reader);
+		let op_code = this.parser.parser_function.readCallFunction(reader);
 		if (op_code) return op_code;
 		/* Restore reader */
 		reader.init(save_caret);
@@ -401,7 +407,7 @@ BayLang.LangES6.ParserES6Operator = class extends BaseObject
 		{
 			return this.parse(reader);
 		}
-		var content = this.readOperator(reader);
+		let content = this.readOperator(reader);
 		reader.matchToken(";");
 		return content;
 	}
@@ -412,15 +418,17 @@ BayLang.LangES6.ParserES6Operator = class extends BaseObject
 	 */
 	parse(reader)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpItems = use("BayLang.OpCodes.OpItems");
-		var caret_start = reader.start();
-		var items = [];
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
+		let items = new Vector();
 		/* Read begin tag */
 		reader.matchToken("{");
 		/* Read operators */
 		while (!reader.eof() && reader.nextToken() != "}")
 		{
-			var op_code = this.readOperator(reader);
+			let op_code = this.readOperator(reader);
 			if (op_code)
 			{
 				items.push(op_code);
@@ -453,9 +461,9 @@ BayLang.LangES6.ParserES6Operator = class extends BaseObject
 		this.parser = null;
 	}
 	static getClassName(){ return "BayLang.LangES6.ParserES6Operator"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangES6.ParserES6Operator);
 module.exports = {

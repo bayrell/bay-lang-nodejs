@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,12 +18,10 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.CoreParser = class extends BaseObject
+BayLang.CoreParser = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Save vars
 	 */
@@ -44,7 +42,7 @@ BayLang.CoreParser = class extends BaseObject
 	 */
 	addVariable(op_code, pattern)
 	{
-		var name = op_code.value;
+		let name = op_code.value;
 		this.vars.set(name, pattern);
 	}
 	
@@ -67,8 +65,9 @@ BayLang.CoreParser = class extends BaseObject
 	{
 		const TokenReader = use("BayLang.TokenReader");
 		const Caret = use("BayLang.Caret");
+		const Map = use("Runtime.Map");
 		const Reference = use("Runtime.Reference");
-		var reader = new TokenReader();
+		let reader = new TokenReader();
 		reader.init(new Caret(Map.create({
 			"content": new Reference(this.content),
 			"tab_size": this.tab_size,
@@ -90,6 +89,7 @@ BayLang.CoreParser = class extends BaseObject
 	_init()
 	{
 		super._init();
+		const Map = use("Runtime.Map");
 		this.file_name = "";
 		this.content = "";
 		this.content_size = 0;
@@ -102,9 +102,9 @@ BayLang.CoreParser = class extends BaseObject
 		this.current_namespace_name = "";
 	}
 	static getClassName(){ return "BayLang.CoreParser"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.CoreParser);
 module.exports = {

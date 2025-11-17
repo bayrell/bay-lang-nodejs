@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,13 +17,11 @@ const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpFlags = class extends BaseOpCode
+BayLang.OpCodes.OpFlags = class extends use("BayLang.OpCodes.BaseOpCode")
 {
-	
-	
 	/**
 	 * Serialize object
 	 */
@@ -43,13 +41,13 @@ BayLang.OpCodes.OpFlags = class extends BaseOpCode
 	}
 	
 	
-	
 	/**
 	 * Get flags
 	 */
 	static getFlags()
 	{
-		return [
+		const Vector = use("Runtime.Vector");
+		return new Vector(
 			"async",
 			"export",
 			"static",
@@ -59,15 +57,15 @@ BayLang.OpCodes.OpFlags = class extends BaseOpCode
 			"declare",
 			"protected",
 			"serializable",
+			"computed",
 			"cloneable",
 			"assignable",
 			"memorize",
 			"multiblock",
 			"pure",
 			"props",
-		];
+		);
 	}
-	
 	
 	
 	/**
@@ -75,7 +73,7 @@ BayLang.OpCodes.OpFlags = class extends BaseOpCode
 	 */
 	static hasFlag(flag_name)
 	{
-		if (flag_name == "async" || flag_name == "export" || flag_name == "static" || flag_name == "const" || flag_name == "public" || flag_name == "private" || flag_name == "declare" || flag_name == "protected" || flag_name == "serializable" || flag_name == "cloneable" || flag_name == "assignable" || flag_name == "memorize" || flag_name == "multiblock" || flag_name == "lambda" || flag_name == "pure" || flag_name == "props")
+		if (flag_name == "async" || flag_name == "export" || flag_name == "static" || flag_name == "const" || flag_name == "public" || flag_name == "private" || flag_name == "declare" || flag_name == "protected" || flag_name == "serializable" || flag_name == "computed" || flag_name == "cloneable" || flag_name == "assignable" || flag_name == "memorize" || flag_name == "multiblock" || flag_name == "lambda" || flag_name == "pure" || flag_name == "props")
 		{
 			return true;
 		}
@@ -87,12 +85,13 @@ BayLang.OpCodes.OpFlags = class extends BaseOpCode
 	_init()
 	{
 		super._init();
-		this.items = [];
+		const Vector = use("Runtime.Vector");
+		this.items = new Vector();
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpFlags"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return ["Runtime.SerializeInterface"]; }
+	static getInterfaces(){ return ["Runtime.SerializeInterface"]; }
 };
 use.add(BayLang.OpCodes.OpFlags);
 module.exports = {

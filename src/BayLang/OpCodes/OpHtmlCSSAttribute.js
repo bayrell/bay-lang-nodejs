@@ -1,11 +1,10 @@
 "use strict;"
 const use = require('bay-lang').use;
-const rtl = use("Runtime.rtl");
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -18,43 +17,22 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
-if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Factory = class extends BaseObject
+*/
+if (typeof BayLang == 'undefined') BayLang = {};
+if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
+BayLang.OpCodes.OpHtmlCSSAttribute = class extends use("BayLang.OpCodes.BaseOpCode")
 {
-	
-	
-	/**
-	 * Create factory
-	 */
-	constructor(name, args)
-	{
-		if (args == undefined) args = null;
-		super(Map.create({
-			"name": name,
-			"args": args,
-		}));
-	}
-	
-	
-	/**
-	 * Create new object
-	 */
-	createInstance(){ return rtl.newInstance(this.name, this.args); }
-	
-	
 	/* ========= Class init functions ========= */
 	_init()
 	{
 		super._init();
-		this.args = null;
 	}
-	static getClassName(){ return "Runtime.Factory"; }
-	static getMethodsList(){ return []; }
+	static getClassName(){ return "BayLang.OpCodes.OpHtmlCSSAttribute"; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return ["Runtime.FactoryInterface"]; }
+	static getInterfaces(){ return []; }
 };
-use.add(Runtime.Factory);
+use.add(BayLang.OpCodes.OpHtmlCSSAttribute);
 module.exports = {
-	"Factory": Runtime.Factory,
+	"OpHtmlCSSAttribute": BayLang.OpCodes.OpHtmlCSSAttribute,
 };

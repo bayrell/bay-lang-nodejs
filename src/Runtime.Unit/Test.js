@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const Entity = use("Runtime.Entity.Entity");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,10 +17,10 @@ const Entity = use("Runtime.Entity.Entity");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
-Runtime.Unit.Test = class extends Entity
+Runtime.Unit.Test = class extends use("Runtime.Entity.Entity")
 {
 	/* ========= Class init functions ========= */
 	_init()
@@ -28,9 +28,9 @@ Runtime.Unit.Test = class extends Entity
 		super._init();
 	}
 	static getClassName(){ return "Runtime.Unit.Test"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.Unit.Test);
 module.exports = {

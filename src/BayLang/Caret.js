@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,40 +18,10 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.Caret = class extends BaseObject
+BayLang.Caret = class extends use("Runtime.BaseObject")
 {
-	/**
-	 * Content
-	 */
-	
-	
-	/**
-	 * Caret pos in file
-	 */
-	
-	
-	/**
-	 * Caret pos X
-	 */
-	
-	
-	/**
-	 * Caret pos Y
-	 */
-	
-	
-	/**
-	 * Tab size
-	 */
-	
-	
-	/**
-	 * Skip comments
-	 */
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -81,8 +51,9 @@ BayLang.Caret = class extends BaseObject
 	 */
 	clone(items)
 	{
-		
-		if (items == undefined) items = null;return new BayLang.Caret(Map.create({
+		const Map = use("Runtime.Map");
+		if (items == undefined) items = null;
+		return new BayLang.Caret(Map.create({
 			"file_name": items ? items.get("file_name", this.file_name) : this.file_name,
 			"content": items ? items.get("content", this.content) : this.content,
 			"content_sz": items ? items.get("content_sz", this.content_sz) : this.content_sz,
@@ -127,6 +98,7 @@ BayLang.Caret = class extends BaseObject
 	 */
 	getPosition()
 	{
+		const Map = use("Runtime.Map");
 		return Map.create({
 			"offset": this.x + 1,
 			"line": this.y + 1,
@@ -209,7 +181,7 @@ BayLang.Caret = class extends BaseObject
 	 */
 	readChar()
 	{
-		var ch = rs.charAt(this.content.ref, this.pos);
+		let ch = rs.charAt(this.content.ref, this.pos);
 		this.shift(ch);
 		return ch;
 	}
@@ -220,11 +192,11 @@ BayLang.Caret = class extends BaseObject
 	 */
 	readString(count)
 	{
-		var s = this.nextString(count);
-		var count = rs.strlen(s);
-		for (var i = 0; i < count; i++)
+		let s = this.nextString(count);
+		let count_chars = rs.strlen(s);
+		for (let i = 0; i < count_chars; i++)
 		{
-			var ch = rs.charAt(s, i);
+			let ch = rs.charAt(s, i);
 			this.shift(ch);
 		}
 		return s;
@@ -256,7 +228,7 @@ BayLang.Caret = class extends BaseObject
 	 */
 	matchChar(ch)
 	{
-		var next = this.nextChar();
+		let next = this.nextChar();
 		if (next != ch)
 		{
 			throw this.expected(ch);
@@ -270,8 +242,8 @@ BayLang.Caret = class extends BaseObject
 	 */
 	matchString(s)
 	{
-		var count = rs.strlen(s);
-		var next_string = this.nextString(count);
+		let count = rs.strlen(s);
+		let next_string = this.nextString(count);
 		if (next_string != s)
 		{
 			throw this.expected(s);
@@ -288,14 +260,12 @@ BayLang.Caret = class extends BaseObject
 	static isChar(ch){ return rs.indexOf("qazwsxedcrfvtgbyhnujmikolp", rs.lower(ch)) !== -1; }
 	
 	
-	
 	/**
 	 * Return true if is number
 	 * @param char ch
 	 * @return boolean
 	 */
 	static isNumberChar(ch){ return rs.indexOf("0123456789", ch) !== -1; }
-	
 	
 	
 	/**
@@ -306,7 +276,6 @@ BayLang.Caret = class extends BaseObject
 	static isHexChar(ch){ return rs.indexOf("0123456789abcdef", rs.lower(ch)) !== -1; }
 	
 	
-	
 	/**
 	 * Return true if is string of numbers
 	 * @param string s
@@ -314,8 +283,8 @@ BayLang.Caret = class extends BaseObject
 	 */
 	static isNumber(s)
 	{
-		var sz = rs.strlen(s);
-		for (var i = 0; i < sz; i++)
+		let sz = rs.strlen(s);
+		for (let i = 0; i < sz; i++)
 		{
 			if (!this.isNumberChar(rs.charAt(s, i))) return false;
 		}
@@ -406,11 +375,12 @@ BayLang.Caret = class extends BaseObject
 	 */
 	readToken()
 	{
+		const Vector = use("Runtime.Vector");
 		/* Skip token */
 		this.skipToken();
 		if (this.eof()) return "";
 		/* Read special token */
-		var token = this.readSpecialToken();
+		let token = this.readSpecialToken();
 		if (token)
 		{
 			this.readString(rs.strlen(token));
@@ -419,7 +389,7 @@ BayLang.Caret = class extends BaseObject
 		/* Read char */
 		if (!this.isTokenChar(this.nextChar())) return this.readChar();
 		/* Read token */
-		var items = [];
+		let items = new Vector();
 		while (!this.eof() && this.isTokenChar(this.nextChar()))
 		{
 			items.push(this.readChar());
@@ -434,7 +404,7 @@ BayLang.Caret = class extends BaseObject
 	readSpecialToken()
 	{
 		if (this.eof()) return "";
-		var s = this.nextString(10);
+		let s = this.nextString(10);
 		if (s == "#endswitch") return s;
 		s = this.nextString(7);
 		if (s == "#ifcode" || s == "#switch" || s == "#elseif" || s == "%render") return s;
@@ -447,7 +417,7 @@ BayLang.Caret = class extends BaseObject
 		s = this.nextString(3);
 		if (s == "!--" || s == "!==" || s == "===" || s == "..." || s == "#if" || s == "%if") return s;
 		s = this.nextString(2);
-		if (s == "==" || s == "!=" || s == "<=" || s == ">=" || s == "=>" || s == "->" || s == "|>" || s == "||" || s == "&&" || s == "::" || s == "+=" || s == "-=" || s == "~=" || s == "**" || s == "<<" || s == ">>" || s == "++" || s == "--") return s;
+		if (s == "{{" || s == "}}" || s == "==" || s == "!=" || s == "<=" || s == ">=" || s == "=>" || s == "->" || s == "|>" || s == "</" || s == "/>" || s == "||" || s == "&&" || s == "::" || s == "+=" || s == "-=" || s == "~=" || s == "**" || s == "<<" || s == ">>" || s == "++" || s == "--") return s;
 		return "";
 	}
 	
@@ -466,9 +436,9 @@ BayLang.Caret = class extends BaseObject
 		this.skip_comments = true;
 	}
 	static getClassName(){ return "BayLang.Caret"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return ["Runtime.SerializeInterface"]; }
+	static getInterfaces(){ return ["Runtime.SerializeInterface"]; }
 };
 use.add(BayLang.Caret);
 module.exports = {

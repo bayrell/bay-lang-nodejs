@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,13 +18,10 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.CoreTranslator = class extends BaseObject
+BayLang.CoreTranslator = class extends use("Runtime.BaseObject")
 {
-	/* State */
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -33,6 +30,28 @@ BayLang.CoreTranslator = class extends BaseObject
 		super();
 		this.uses.set("Collection", "Runtime.Collection");
 		this.uses.set("Dict", "Runtime.Dict");
+	}
+	
+	
+	/**
+	 * Use module
+	 */
+	useModule(module_name)
+	{
+		return module_name;
+	}
+	
+	
+	/**
+	 * Returns module name
+	 */
+	getUseModule(module_name)
+	{
+		if (this.uses.get(module_name))
+		{
+			return this.useModule(this.uses.get(module_name));
+		}
+		return this.useModule(module_name);
 	}
 	
 	
@@ -47,6 +66,7 @@ BayLang.CoreTranslator = class extends BaseObject
 		}
 		else
 		{
+			if (rs.indexOf(class_name, ".") >= 0) return class_name;
 			return this.current_namespace_name + String(".") + String(class_name);
 		}
 	}
@@ -81,14 +101,57 @@ BayLang.CoreTranslator = class extends BaseObject
 	
 	
 	/**
+	 * Increment component hash
+	 */
+	componentHashInc()
+	{
+		this.component_hash_inc = this.component_hash_inc + 1;
+		return this.component_hash_inc - 1;
+	}
+	
+	
+	/**
+	 * Increment variable
+	 */
+	varInc()
+	{
+		this.var_inc = this.var_inc + 1;
+		return "__v" + String(this.var_inc - 1);
+	}
+	
+	
+	/**
+	 * Decrement variable
+	 */
+	varDec()
+	{
+		this.var_inc = this.var_inc - 1;
+	}
+	
+	
+	/**
+	 * Save var
+	 */
+	saveVar(content)
+	{
+		const Map = use("Runtime.Map");
+		let var_name = this.varInc();
+		this.save_var.push(Map.create({"name": var_name, "content": content}));
+		return var_name;
+	}
+	
+	
+	/**
 	 * Returns new line with indent
 	 */
 	newLine(count)
 	{
+		const Vector = use("Runtime.Vector");
 		if (count == undefined) count = 1;
+		if (!this.allow_multiline) return "";
 		if (count == 1) return this.crlf + String(rs.str_repeat(this.indent, this.indent_level));
-		var arr = [];
-		for (var i = 0; i < count; i++)
+		let arr = new Vector();
+		for (let i = 0; i < count; i++)
 		{
 			arr.push(this.crlf + String(rs.str_repeat(this.indent, this.indent_level)));
 		}
@@ -118,6 +181,8 @@ BayLang.CoreTranslator = class extends BaseObject
 	_init()
 	{
 		super._init();
+		const Map = use("Runtime.Map");
+		const Vector = use("Runtime.Vector");
 		this.opcode_level = 0;
 		this.indent_level = 0;
 		this.last_semicolon = false;
@@ -129,16 +194,24 @@ BayLang.CoreTranslator = class extends BaseObject
 		this.class_items = new Map();
 		this.current_class = null;
 		this.class_function = null;
+		this.current_module = null;
+		this.html_var_names = new Vector();
+		this.save_var = new Vector();
+		this.var_inc = 0;
+		this.component_hash_inc = 0;
 		this.current_block = "";
 		this.current_class_name = "";
 		this.current_namespace_name = "";
+		this.html_kind = "";
 		this.parent_class_name = "";
+		this.allow_multiline = true;
+		this.is_html_props = false;
 		this.is_operator_block = false;
 	}
 	static getClassName(){ return "BayLang.CoreTranslator"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.CoreTranslator);
 module.exports = {

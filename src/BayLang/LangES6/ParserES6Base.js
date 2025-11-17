@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,13 +18,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
-BayLang.LangES6.ParserES6Base = class extends BaseObject
+BayLang.LangES6.ParserES6Base = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -43,10 +41,10 @@ BayLang.LangES6.ParserES6Base = class extends BaseObject
 		const Caret = use("BayLang.Caret");
 		if (name == "") return false;
 		if (Caret.isNumber(rs.charAt(name, 0))) return false;
-		var sz = rs.strlen(name);
-		for (var i = 0; i < sz; i++)
+		let sz = rs.strlen(name);
+		for (let i = 0; i < sz; i++)
 		{
-			var ch = rs.charAt(name, i);
+			let ch = rs.charAt(name, i);
 			if (Caret.isChar(ch) || Caret.isNumber(ch) || ch == "_") continue;
 			return false;
 		}
@@ -71,10 +69,11 @@ BayLang.LangES6.ParserES6Base = class extends BaseObject
 	{
 		const Caret = use("BayLang.Caret");
 		const OpNumber = use("BayLang.OpCodes.OpNumber");
+		const Map = use("Runtime.Map");
 		if (flag_negative == undefined) flag_negative = false;
-		var caret_start = reader.start();
+		let caret_start = reader.start();
 		/* Read number */
-		var value = reader.readToken();
+		let value = reader.readToken();
 		if (value == "")
 		{
 			throw caret_start.expected("Number");
@@ -91,7 +90,7 @@ BayLang.LangES6.ParserES6Base = class extends BaseObject
 		}
 		/* Returns op_code */
 		return new OpNumber(Map.create({
-			"value": flag_negative ? ("-" + String(value)) : value,
+			"value": flag_negative ? "-" + String(value) : value,
 			"caret_start": caret_start,
 			"caret_end": reader.caret(),
 		}));
@@ -104,17 +103,18 @@ BayLang.LangES6.ParserES6Base = class extends BaseObject
 	readString(reader)
 	{
 		const OpString = use("BayLang.OpCodes.OpString");
-		var caret_start = reader.start();
-		var str_char = reader.readToken();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
+		let str_char = reader.readToken();
 		/* Read begin string char */
 		if (str_char != "'" && str_char != "\"")
 		{
 			throw caret_start.expected("String");
 		}
 		/* Read string value */
-		var caret = reader.caret();
-		var value_str = "";
-		var ch = caret.nextChar();
+		let caret = reader.caret();
+		let value_str = "";
+		let ch = caret.nextChar();
 		while (!caret.eof() && ch != str_char)
 		{
 			if (ch == "\\")
@@ -124,7 +124,7 @@ BayLang.LangES6.ParserES6Base = class extends BaseObject
 				{
 					throw caret.expected("End of string");
 				}
-				var ch2 = caret.readChar();
+				let ch2 = caret.readChar();
 				if (ch2 == "n") value_str += "\n";
 				else if (ch2 == "r") value_str += "\r";
 				else if (ch2 == "t") value_str += "\t";
@@ -163,15 +163,16 @@ BayLang.LangES6.ParserES6Base = class extends BaseObject
 	readComment(reader)
 	{
 		const OpComment = use("BayLang.OpCodes.OpComment");
-		var caret_start = reader.start();
-		var str_char = reader.readToken();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
+		let str_char = reader.readToken();
 		/* Read begin coment */
 		reader.matchToken("/");
 		reader.matchToken("*");
 		/* Read comment value */
-		var caret = reader.caret();
-		var value_str = "";
-		var ch2 = caret.nextString(2);
+		let caret = reader.caret();
+		let value_str = "";
+		let ch2 = caret.nextString(2);
 		while (!caret.eof() && ch2 != "*/")
 		{
 			value_str += caret.readChar();
@@ -201,9 +202,10 @@ BayLang.LangES6.ParserES6Base = class extends BaseObject
 	readIdentifier(reader)
 	{
 		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		/* Read identifier */
-		var name = reader.readToken();
+		let name = reader.readToken();
 		if (!this.constructor.isIdentifier(name) || this.constructor.isReserved(name))
 		{
 			throw reader.expected("Identifier");
@@ -222,9 +224,11 @@ BayLang.LangES6.ParserES6Base = class extends BaseObject
 	 */
 	readEntityName(reader)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpEntityName = use("BayLang.OpCodes.OpEntityName");
-		var caret_start = reader.start();
-		var items = [];
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
+		let items = new Vector();
 		/* Read name */
 		items.push(this.readIdentifier(reader));
 		/* Read names */
@@ -248,24 +252,26 @@ BayLang.LangES6.ParserES6Base = class extends BaseObject
 	readTypeIdentifier(reader, read_generic)
 	{
 		const OpTypeIdentifier = use("BayLang.OpCodes.OpTypeIdentifier");
+		const Map = use("Runtime.Map");
 		const OpEntityName = use("BayLang.OpCodes.OpEntityName");
+		const Vector = use("Runtime.Vector");
 		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
 		if (read_generic == undefined) read_generic = true;
-		var caret_start = reader.start();
+		let caret_start = reader.start();
 		/* Read var */
 		if (reader.nextToken() == "var")
 		{
 			reader.readToken();
-			var caret_end = reader.caret();
+			let caret_end = reader.caret();
 			return new OpTypeIdentifier(Map.create({
 				"entity_name": new OpEntityName(Map.create({
-					"items": [
+					"items": new Vector(
 						new OpIdentifier(Map.create({
 							"value": "var",
 							"caret_start": caret_start,
 							"caret_end": caret_end,
 						})),
-					],
+					),
 					"caret_start": caret_start,
 					"caret_end": caret_end,
 				})),
@@ -274,7 +280,7 @@ BayLang.LangES6.ParserES6Base = class extends BaseObject
 			}));
 		}
 		/* Read entity name */
-		var entity_name = this.readEntityName(reader);
+		let entity_name = this.readEntityName(reader);
 		return new OpTypeIdentifier(Map.create({
 			"entity_name": entity_name,
 			"caret_start": caret_start,
@@ -332,9 +338,9 @@ BayLang.LangES6.ParserES6Base = class extends BaseObject
 		this.parser = null;
 	}
 	static getClassName(){ return "BayLang.LangES6.ParserES6Base"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangES6.ParserES6Base);
 module.exports = {

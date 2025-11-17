@@ -2,7 +2,8 @@
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
 const rs = use("Runtime.rs");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,11 +19,10 @@ const rs = use("Runtime.rs");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
 Runtime.RawString = class
 {
-	
 	/**
 	 * Constructor
 	 */
@@ -42,7 +42,10 @@ Runtime.RawString = class
 	toString()
 	{
 		return this.s;
-	}/**
+	}
+	
+	
+	/**
 	 * Normalize array
 	 */
 	static normalize(item)
@@ -70,9 +73,9 @@ Runtime.RawString = class
 	{
 	}
 	static getClassName(){ return "Runtime.RawString"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return ["Runtime.StringInterface"]; }
+	static getInterfaces(){ return ["Runtime.StringInterface"]; }
 };
 use.add(Runtime.RawString);
 module.exports = {

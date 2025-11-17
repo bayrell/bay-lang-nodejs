@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const CoreParser = use("BayLang.CoreParser");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,21 +17,20 @@ const CoreParser = use("BayLang.CoreParser");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
-BayLang.LangBay.ParserBay = class extends CoreParser
+BayLang.LangBay.ParserBay = class extends use("BayLang.CoreParser")
 {
-	/* Parsers */
-	
-	
 	/**
 	 * Returns true if registered variable
 	 */
 	isRegisteredVariable(name)
 	{
-		var variables = [
+		const Vector = use("Runtime.Vector");
+		let variables = new Vector(
 			"print",
+			"var_dump",
 			"rs",
 			"rtl",
 			"parent",
@@ -40,7 +39,9 @@ BayLang.LangBay.ParserBay = class extends CoreParser
 			"null",
 			"true",
 			"false",
-		];
+			"document",
+			"window",
+		);
 		if (variables.indexOf(name) == -1) return false;
 		return true;
 	}
@@ -51,7 +52,8 @@ BayLang.LangBay.ParserBay = class extends CoreParser
 	 */
 	isSystemType(name)
 	{
-		var variables = [
+		const Vector = use("Runtime.Vector");
+		let variables = new Vector(
 			"var",
 			"void",
 			"bool",
@@ -74,7 +76,7 @@ BayLang.LangBay.ParserBay = class extends CoreParser
 			"Vector",
 			"Map",
 			"ArrayInterface",
-		];
+		);
 		if (variables.indexOf(name) == -1) return false;
 		return true;
 	}
@@ -86,7 +88,7 @@ BayLang.LangBay.ParserBay = class extends CoreParser
 	findIdentifier(op_code)
 	{
 		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
-		var name = op_code.value;
+		let name = op_code.value;
 		if (this.vars.has(name) || this.isRegisteredVariable(name))
 		{
 			op_code.kind = OpIdentifier.KIND_VARIABLE;
@@ -104,7 +106,7 @@ BayLang.LangBay.ParserBay = class extends CoreParser
 	findVariable(op_code)
 	{
 		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
-		var name = op_code.value;
+		let name = op_code.value;
 		this.findIdentifier(op_code);
 		if (op_code.kind == OpIdentifier.KIND_VARIABLE) return;
 		throw op_code.caret_end.error("Unknown variable '" + String(name) + String("'"));
@@ -117,7 +119,7 @@ BayLang.LangBay.ParserBay = class extends CoreParser
 	findType(op_code)
 	{
 		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
-		var name = op_code.value;
+		let name = op_code.value;
 		if (op_code.kind == OpIdentifier.KIND_TYPE) return;
 		throw op_code.caret_end.error("Unknown type '" + String(name) + String("'"));
 	}
@@ -130,7 +132,7 @@ BayLang.LangBay.ParserBay = class extends CoreParser
 	{
 		/* Find name */
 		if (op_code.items.count() != 1) return;
-		var op_code_item = op_code.items.get(0);
+		let op_code_item = op_code.items.get(0);
 		if (this.uses.has(op_code_item.value)) return;
 		if (this.isSystemType(op_code_item.value)) return;
 		throw op_code.caret_end.error("Unknown identifier '" + String(op_code_item.value) + String("'"));
@@ -144,9 +146,9 @@ BayLang.LangBay.ParserBay = class extends CoreParser
 	{
 		if (items && items.count() > 0)
 		{
-			for (var i = 0; i < items.count(); i++)
+			for (let i = 0; i < items.count(); i++)
 			{
-				var item = items.get(i);
+				let item = items.get(i);
 				this.uses.set(item.entity_name.getName(), item);
 				this.addGenericUse(item.generics);
 			}
@@ -159,7 +161,11 @@ BayLang.LangBay.ParserBay = class extends CoreParser
 	 */
 	parse()
 	{
-		var reader = this.createReader();
+		let reader = this.createReader();
+		if (reader.nextToken() == "<")
+		{
+			return this.parser_html.parse(reader);
+		}
 		return this.parser_program.parse(reader);
 	}
 	
@@ -186,9 +192,9 @@ BayLang.LangBay.ParserBay = class extends CoreParser
 		this.parser_program = new ParserBayProgram(this);
 	}
 	static getClassName(){ return "BayLang.LangBay.ParserBay"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangBay.ParserBay);
 module.exports = {

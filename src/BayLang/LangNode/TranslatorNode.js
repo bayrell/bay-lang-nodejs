@@ -2,8 +2,8 @@
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
 const rtl = use("Runtime.rtl");
-const TranslatorES6 = use("BayLang.LangES6.TranslatorES6");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -19,15 +19,11 @@ const TranslatorES6 = use("BayLang.LangES6.TranslatorES6");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangNode == 'undefined') BayLang.LangNode = {};
-BayLang.LangNode.TranslatorNode = class extends TranslatorES6
+BayLang.LangNode.TranslatorNode = class extends use("BayLang.LangES6.TranslatorES6")
 {
-	
-	/* Flags */
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -45,9 +41,10 @@ BayLang.LangNode.TranslatorNode = class extends TranslatorES6
 	 */
 	setUseModules(use_modules)
 	{
+		const Map = use("Runtime.Map");
 		if (use_modules == undefined) use_modules = null;
 		if (use_modules == null) use_modules = new Map();
-		var save_use_modules = this.use_modules.get("local").copy();
+		let save_use_modules = this.use_modules.get("local").copy();
 		this.use_modules.set("local", use_modules);
 		return save_use_modules;
 	}
@@ -58,17 +55,17 @@ BayLang.LangNode.TranslatorNode = class extends TranslatorES6
 	 */
 	useModule(module_name)
 	{
-		var is_global = false;
+		let is_global = false;
 		if (module_name == this.current_class_name) return module_name;
 		if (module_name == "Runtime.rtl" || module_name == "Runtime.rs")
 		{
 			is_global = true;
 		}
-		var arr = rs.split(".", module_name);
-		var alias_name = arr.last();
+		let arr = rs.split(".", module_name);
+		let alias_name = arr.last();
 		if (this.uses.has(alias_name))
 		{
-			var modules = this.use_modules.get(is_global ? "global" : "local");
+			let modules = this.use_modules.get(is_global ? "global" : "local");
 			modules.set(alias_name, module_name);
 			return alias_name;
 		}
@@ -84,11 +81,11 @@ BayLang.LangNode.TranslatorNode = class extends TranslatorES6
 		if (is_multiline == undefined) is_multiline = true;
 		if (use_modules == undefined) use_modules = null;
 		if (use_modules == null) use_modules = this.use_modules.get("local");
-		var keys = rtl.list(use_modules.keys());
-		for (var i = 0; i < keys.count(); i++)
+		let keys = rtl.list(use_modules.keys());
+		for (let i = 0; i < keys.count(); i++)
 		{
-			var alias_name = keys.get(i);
-			var module_name = use_modules.get(alias_name);
+			let alias_name = keys.get(i);
+			let module_name = use_modules.get(alias_name);
 			if (is_multiline) result.push(this.newLine());
 			result.push("const " + String(alias_name) + String(" = use(") + String(this.toString(module_name)) + String(");"));
 		}
@@ -100,14 +97,17 @@ BayLang.LangNode.TranslatorNode = class extends TranslatorES6
 	 */
 	translate(op_code)
 	{
-		var result = [];
+		const Vector = use("Runtime.Vector");
+		let result = new Vector();
 		result.push("\"use strict;\"");
 		result.push(this.newLine());
 		result.push("const use = require('bay-lang').use;");
-		/*result.push(this.newLine());
-		result.push("const {rtl, rs} = use.rtl();");*/
+		/*
+		result.push(this.newLine());
+		result.push("const {rtl, rs} = use.rtl();");
+		*/
 		/* Translate program */
-		var result1 = [];
+		let result1 = new Vector();
 		result1.push(this.newLine());
 		this.program.translate(op_code, result1);
 		/* Add use */
@@ -126,6 +126,7 @@ BayLang.LangNode.TranslatorNode = class extends TranslatorES6
 		super._init();
 		const TranslatorNodeExpression = use("BayLang.LangNode.TranslatorNodeExpression");
 		const TranslatorNodeProgram = use("BayLang.LangNode.TranslatorNodeProgram");
+		const Map = use("Runtime.Map");
 		this.expression = new TranslatorNodeExpression(this);
 		this.program = new TranslatorNodeProgram(this);
 		this.use_modules = Map.create({
@@ -136,9 +137,9 @@ BayLang.LangNode.TranslatorNode = class extends TranslatorES6
 		this.use_window = false;
 	}
 	static getClassName(){ return "BayLang.LangNode.TranslatorNode"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangNode.TranslatorNode);
 module.exports = {

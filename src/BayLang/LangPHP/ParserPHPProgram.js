@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,13 +17,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangPHP == 'undefined') BayLang.LangPHP = {};
-BayLang.LangPHP.ParserPHPProgram = class extends BaseObject
+BayLang.LangPHP.ParserPHPProgram = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -40,13 +38,14 @@ BayLang.LangPHP.ParserPHPProgram = class extends BaseObject
 	readNamespace(reader)
 	{
 		const OpNamespace = use("BayLang.OpCodes.OpNamespace");
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let caret_start = reader.start();
 		/* Read module name */
 		reader.matchToken("namespace");
-		var entity_name = this.parser.parser_base.readEntityName(reader);
-		var module_name = entity_name.getName();
+		let entity_name = this.parser.parser_base.readEntityName(reader);
+		let module_name = entity_name.getName();
 		/* Create op_code */
-		var op_code = new OpNamespace(Map.create({
+		let op_code = new OpNamespace(Map.create({
 			"caret_start": caret_start,
 			"caret_end": reader.caret(),
 			"name": module_name,
@@ -65,13 +64,14 @@ BayLang.LangPHP.ParserPHPProgram = class extends BaseObject
 	readUse(reader)
 	{
 		const OpUse = use("BayLang.OpCodes.OpUse");
-		var look = null;
-		var name = null;
-		var caret_start = reader.start();
-		var alias = "";
+		const Map = use("Runtime.Map");
+		let look = null;
+		let name = null;
+		let caret_start = reader.start();
+		let alias = "";
 		/* Read module name */
 		reader.matchToken("use");
-		var module_name = this.parser.parser_base.readEntityName(reader);
+		let module_name = this.parser.parser_base.readEntityName(reader);
 		/* Read alias */
 		if (reader.nextToken() == "as")
 		{
@@ -92,7 +92,7 @@ BayLang.LangPHP.ParserPHPProgram = class extends BaseObject
 	 */
 	readModuleItem(reader)
 	{
-		var next_token = reader.nextToken();
+		let next_token = reader.nextToken();
 		/* Namespace */
 		if (next_token == "namespace")
 		{
@@ -115,17 +115,19 @@ BayLang.LangPHP.ParserPHPProgram = class extends BaseObject
 	 */
 	parse(reader)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpModule = use("BayLang.OpCodes.OpModule");
-		var items = [];
-		var caret_start = reader.start();
+		const Map = use("Runtime.Map");
+		let items = new Vector();
+		let caret_start = reader.start();
 		/* Read PHP token */
 		reader.matchToken("<?php");
 		/* Read module */
 		while (!reader.eof() && reader.nextToken() != "")
 		{
-			var next_token = reader.nextToken();
+			let next_token = reader.nextToken();
 			/* Read module item */
-			var op_code = this.readModuleItem(reader);
+			let op_code = this.readModuleItem(reader);
 			if (op_code)
 			{
 				items.push(op_code);
@@ -156,9 +158,9 @@ BayLang.LangPHP.ParserPHPProgram = class extends BaseObject
 		this.parser = null;
 	}
 	static getClassName(){ return "BayLang.LangPHP.ParserPHPProgram"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangPHP.ParserPHPProgram);
 module.exports = {

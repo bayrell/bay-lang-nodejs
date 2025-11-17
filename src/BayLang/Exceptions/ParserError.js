@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const ParserUnknownError = use("BayLang.Exceptions.ParserUnknownError");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,10 +17,10 @@ const ParserUnknownError = use("BayLang.Exceptions.ParserUnknownError");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Exceptions == 'undefined') BayLang.Exceptions = {};
-BayLang.Exceptions.ParserError = class extends ParserUnknownError
+BayLang.Exceptions.ParserError = class extends use("BayLang.Exceptions.ParserUnknownError")
 {
 	constructor(s, caret, file, code, prev)
 	{
@@ -36,13 +36,13 @@ BayLang.Exceptions.ParserError = class extends ParserUnknownError
 	
 	buildErrorMessage()
 	{
-		var error_str = this.getErrorMessage();
-		var file = this.getFileName();
-		var line = this.getErrorLine();
-		var pos = this.getErrorPos();
+		let error_str = this.getErrorMessage();
+		let file = this.getFileName();
+		let line = this.getErrorLine();
+		let pos = this.getErrorPos();
 		if (line != -1)
 		{
-			error_str += " at Ln:" + String(line) + String((pos != "") ? (", Pos:" + String(pos)) : "");
+			error_str += " at Ln:" + String(line) + String(pos != "" ? ", Pos:" + String(pos) : "");
 		}
 		if (file != "")
 		{
@@ -58,9 +58,9 @@ BayLang.Exceptions.ParserError = class extends ParserUnknownError
 		super._init();
 	}
 	static getClassName(){ return "BayLang.Exceptions.ParserError"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.Exceptions.ParserError);
 module.exports = {

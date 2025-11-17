@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,9 +17,9 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.BuilderOpCode = class extends BaseObject
+BayLang.BuilderOpCode = class extends use("Runtime.BaseObject")
 {
 	/**
 	 * Add slot
@@ -27,8 +27,9 @@ BayLang.BuilderOpCode = class extends BaseObject
 	addSlot(op_code, name)
 	{
 		const OpHtmlSlot = use("BayLang.OpCodes.OpHtmlSlot");
+		const Map = use("Runtime.Map");
 		const OpHtmlItems = use("BayLang.OpCodes.OpHtmlItems");
-		var slot = new OpHtmlSlot(Map.create({
+		let slot = new OpHtmlSlot(Map.create({
 			"name": name,
 			"items": new OpHtmlItems(),
 		}));
@@ -43,9 +44,11 @@ BayLang.BuilderOpCode = class extends BaseObject
 	addTag(op_code, name)
 	{
 		const OpHtmlTag = use("BayLang.OpCodes.OpHtmlTag");
+		const Map = use("Runtime.Map");
+		const Vector = use("Runtime.Vector");
 		const OpHtmlItems = use("BayLang.OpCodes.OpHtmlItems");
-		var tag = new OpHtmlTag(Map.create({
-			"attrs": [],
+		let tag = new OpHtmlTag(Map.create({
+			"attrs": new Vector(),
 			"items": new OpHtmlItems(),
 			"tag_name": name,
 		}));
@@ -60,9 +63,9 @@ BayLang.BuilderOpCode = class extends BaseObject
 		super._init();
 	}
 	static getClassName(){ return "BayLang.BuilderOpCode"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.BuilderOpCode);
 module.exports = {

@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const ParserUnknownError = use("BayLang.Exceptions.ParserUnknownError");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,10 +17,10 @@ const ParserUnknownError = use("BayLang.Exceptions.ParserUnknownError");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Exceptions == 'undefined') BayLang.Exceptions = {};
-BayLang.Exceptions.ParserEOF = class extends ParserUnknownError
+BayLang.Exceptions.ParserEOF = class extends use("BayLang.Exceptions.ParserUnknownError")
 {
 	constructor(prev)
 	{
@@ -36,9 +36,9 @@ BayLang.Exceptions.ParserEOF = class extends ParserUnknownError
 		super._init();
 	}
 	static getClassName(){ return "BayLang.Exceptions.ParserEOF"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.Exceptions.ParserEOF);
 module.exports = {

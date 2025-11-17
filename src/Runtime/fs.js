@@ -1,7 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,7 +18,7 @@ const rs = use("Runtime.rs");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
 const fs = require('fs');
 const { promisify } = require('util');
@@ -43,7 +44,7 @@ Runtime.fs = class
 	static join(arr)
 	{
 		const re = use("Runtime.re");
-		var path = rs.join(this.DIRECTORY_SEPARATOR, arr);
+		let path = rs.join(this.DIRECTORY_SEPARATOR, arr);
 		path = re.replace("\\/+", "/", path);
 		path = re.replace("\\/\\.\\/", "/", path);
 		path = re.replace("\\/+$", "", path);
@@ -168,20 +169,20 @@ Runtime.fs = class
 	{
 		const Vector = use("Runtime.Vector");
 		if (parent_name == undefined) parent_name = "";
-		var res = new Vector();
-		var items = await this.listDir(dirpath);
-		for (var i = 0; i < items.count(); i++)
+		let res = new Vector();
+		let items = await this.listDir(dirpath);
+		for (let i = 0; i < items.count(); i++)
 		{
-			var item_name = items.get(i);
-			var item_path = this.join([dirpath, item_name]);
-			var item_name2 = this.join([parent_name, item_name]);
+			let item_name = items.get(i);
+			let item_path = this.join(new Vector(dirpath, item_name));
+			let item_name2 = this.join(new Vector(parent_name, item_name));
 			if (item_name == "." || item_name == "..") continue;
 			item_name2 = rs.removeFirstSlash(item_name2);
 			res.push(item_name2);
-			var is_dir = await this.isDir(item_path);
+			let is_dir = await this.isDir(item_path);
 			if (is_dir)
 			{
-				var sub_items = await this.listDirRecursive(item_path, item_name2);
+				let sub_items = await this.listDirRecursive(item_path, item_name2);
 				res.appendItems(sub_items);
 			}
 		}
@@ -210,9 +211,9 @@ Runtime.fs = class
 	{
 	}
 	static getClassName(){ return "Runtime.fs"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.fs);
 module.exports = {

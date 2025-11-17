@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
-const BaseCommand = use("Runtime.Console.BaseCommand");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,11 +18,11 @@ const BaseCommand = use("Runtime.Console.BaseCommand");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
-BayLang.Compiler.Commands.Watch = class extends BaseCommand
+BayLang.Compiler.Commands.Watch = class extends use("Runtime.Console.BaseCommand")
 {
 	/**
 	 * Returns name
@@ -45,28 +45,31 @@ BayLang.Compiler.Commands.Watch = class extends BaseCommand
 		const Make = use("BayLang.Compiler.Commands.Make");
 		const ParserUnknownError = use("BayLang.Exceptions.ParserUnknownError");
 		/* Read project */
-		var project = await Project.readProject(Runtime.rtl.getContext().base_path);
+		let project = await Project.readProject(Runtime.rtl.getContext().base_path);
 		if (!project)
 		{
 			rtl.error("Project not found");
 			return;
 		}
-		var make = new Make();
-		var module = project.findModuleByFileName(changed_file_path);
+		let make = new Make();
+		let module = project.findModuleByFileName(changed_file_path);
 		if (module)
 		{
 			try
 			{
-				var file_path = module.getRelativeSourcePath(changed_file_path);
-				var result = await module.compile(file_path);
+				let file_path = module.getRelativeSourcePath(changed_file_path);
+				if (!file_path) return;
+				if (module.checkExclude(file_path)) return;
+				let result = await module.compile(file_path);
 				if (result)
 				{
 					rtl.print(changed_file_path);
-					var languages = project.getLanguages();
-					for (var i = 0; i < languages.count(); i++)
+					await rtl.wait(1000);
+					let languages = project.getLanguages();
+					for (let i = 0; i < languages.count(); i++)
 					{
-						var lang = languages.get(i);
-						var dest_file_path = module.resolveDestFilePath(file_path, lang);
+						let lang = languages.get(i);
+						let dest_file_path = module.resolveDestFilePath(file_path, lang);
 						rtl.print("=> " + String(dest_file_path));
 					}
 					await make.buildAsset(project, module);
@@ -102,7 +105,7 @@ BayLang.Compiler.Commands.Watch = class extends BaseCommand
 				chokidar
 					.watch(rtl.getContext().base_path)
 					.on('change', (path, stat) => {
-						setTimeout(()=>{ this.onChangeFile(path); }, 500);
+						this.onChangeFile(path);
 					})
 				;
 				
@@ -120,9 +123,9 @@ BayLang.Compiler.Commands.Watch = class extends BaseCommand
 		super._init();
 	}
 	static getClassName(){ return "BayLang.Compiler.Commands.Watch"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.Compiler.Commands.Watch);
 module.exports = {

@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const Chain = use("Runtime.Chain");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,9 +17,9 @@ const Chain = use("Runtime.Chain");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.ChainAsync = class extends Chain
+Runtime.ChainAsync = class extends use("Runtime.Chain")
 {
 	/**
 	 * Apply chain
@@ -27,13 +27,13 @@ Runtime.ChainAsync = class extends Chain
 	apply(args)
 	{
 		if (args == undefined) args = null;
-		var f = async () =>
+		let f = async () =>
 		{
-			for (var i = 0; i < this.chain.count(); i++)
+			for (let i = 0; i < this.chain.count(); i++)
 			{
-				var item = this.chain.get(i);
-				var f = item.get("callback");
-				var res = obj[this.name].bind(obj).apply(null, args);
+				let item = this.chain.get(i);
+				let f = item.get("method");
+				let res = f.apply(args);
 				if (res instanceof Promise) await res;
 			}
 		};
@@ -47,9 +47,9 @@ Runtime.ChainAsync = class extends Chain
 		super._init();
 	}
 	static getClassName(){ return "Runtime.ChainAsync"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.ChainAsync);
 module.exports = {

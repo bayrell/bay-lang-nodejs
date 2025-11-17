@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,13 +17,11 @@ const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpTypeIdentifier = class extends BaseOpCode
+BayLang.OpCodes.OpTypeIdentifier = class extends use("BayLang.OpCodes.BaseOpCode")
 {
-	
-	
 	/**
 	 * Serialize object
 	 */
@@ -32,6 +30,27 @@ BayLang.OpCodes.OpTypeIdentifier = class extends BaseOpCode
 		super.serialize(serializer, data);
 		serializer.process(this, "entity_name", data);
 		serializer.process(this, "generics", data);
+	}
+	
+	
+	/**
+	 * Create Type Identifier
+	 */
+	static create(name)
+	{
+		const Map = use("Runtime.Map");
+		const OpEntityName = use("BayLang.OpCodes.OpEntityName");
+		const Vector = use("Runtime.Vector");
+		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
+		return new BayLang.OpCodes.OpTypeIdentifier(Map.create({
+			"entity_name": new OpEntityName(Map.create({
+				"items": new Vector(
+					new OpIdentifier(Map.create({
+						"value": name,
+					})),
+				),
+			})),
+		}));
 	}
 	
 	
@@ -44,9 +63,9 @@ BayLang.OpCodes.OpTypeIdentifier = class extends BaseOpCode
 		this.generics = null;
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpTypeIdentifier"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.OpCodes.OpTypeIdentifier);
 module.exports = {

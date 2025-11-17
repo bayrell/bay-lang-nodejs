@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const RuntimeException = use("Runtime.Exceptions.RuntimeException");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,10 +17,10 @@ const RuntimeException = use("Runtime.Exceptions.RuntimeException");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Exceptions == 'undefined') BayLang.Exceptions = {};
-BayLang.Exceptions.DeclaredClass = class extends RuntimeException
+BayLang.Exceptions.DeclaredClass = class extends use("Runtime.Exceptions.RuntimeException")
 {
 	constructor(prev)
 	{
@@ -35,9 +35,9 @@ BayLang.Exceptions.DeclaredClass = class extends RuntimeException
 		super._init();
 	}
 	static getClassName(){ return "BayLang.Exceptions.DeclaredClass"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.Exceptions.DeclaredClass);
 module.exports = {

@@ -1,8 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
-const CoreTranslator = use("BayLang.CoreTranslator");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,15 +18,11 @@ const CoreTranslator = use("BayLang.CoreTranslator");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
-BayLang.LangES6.TranslatorES6 = class extends CoreTranslator
+BayLang.LangES6.TranslatorES6 = class extends use("BayLang.CoreTranslator")
 {
-	/* Translators */
-	
-	/* Flags */
-	
 	/**
 	 * Constructor
 	 */
@@ -36,6 +32,7 @@ BayLang.LangES6.TranslatorES6 = class extends CoreTranslator
 		this.uses.set("rtl", "Runtime.rtl");
 		this.uses.set("rs", "Runtime.rs");
 		this.uses.set("BaseObject", "Runtime.BaseObject");
+		this.uses.set("Map", "Runtime.Map");
 		this.uses.set("Vector", "Runtime.Vector");
 		this.preprocessor_flags.set("FRONTEND", true);
 		this.preprocessor_flags.set("ES6", true);
@@ -80,6 +77,19 @@ BayLang.LangES6.TranslatorES6 = class extends CoreTranslator
 	
 	
 	/**
+	 * Returns module name
+	 */
+	getUseModule(module_name)
+	{
+		if (this.uses.get(module_name))
+		{
+			return this.useModule(this.uses.get(module_name));
+		}
+		return this.useModule(module_name);
+	}
+	
+	
+	/**
 	 * Add use modules
 	 */
 	addUseModules(result)
@@ -92,7 +102,8 @@ BayLang.LangES6.TranslatorES6 = class extends CoreTranslator
 	 */
 	translate(op_code)
 	{
-		var content = [];
+		const Vector = use("Runtime.Vector");
+		let content = new Vector();
 		content.push("\"use strict;\"");
 		content.push(this.newLine());
 		this.program.translate(op_code, content);
@@ -104,21 +115,25 @@ BayLang.LangES6.TranslatorES6 = class extends CoreTranslator
 	_init()
 	{
 		super._init();
+		const TranslatorStyle = use("BayLang.LangStyle.TranslatorStyle");
 		const TranslatorES6Expression = use("BayLang.LangES6.TranslatorES6Expression");
 		const TranslatorES6Operator = use("BayLang.LangES6.TranslatorES6Operator");
 		const TranslatorES6Program = use("BayLang.LangES6.TranslatorES6Program");
 		const TranslatorES6Html = use("BayLang.LangES6.TranslatorES6Html");
+		const TranslatorHelper = use("BayLang.TranslatorHelper");
+		this.style = new TranslatorStyle(this);
 		this.expression = new TranslatorES6Expression(this);
 		this.operator = new TranslatorES6Operator(this);
 		this.program = new TranslatorES6Program(this);
 		this.html = new TranslatorES6Html(this);
+		this.helper = new TranslatorHelper(this);
 		this.use_module_name = false;
 		this.use_window = true;
 	}
 	static getClassName(){ return "BayLang.LangES6.TranslatorES6"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.LangES6.TranslatorES6);
 module.exports = {

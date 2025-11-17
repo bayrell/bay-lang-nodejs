@@ -31,5 +31,6 @@ require(__dirname + "/src/BayLang/index.js");
 //process.exit();
 
 /* Get classes */
-let rtl = use("Runtime.rtl");
-rtl.runApp("BayLang.Compiler.ConsoleApp", ["BayLang.Compiler"]);
+const rtl = use("Runtime.rtl");
+const Vector = use("Runtime.Vector");
+rtl.runApp("BayLang.Compiler.ConsoleApp", new Vector("BayLang.Compiler"));

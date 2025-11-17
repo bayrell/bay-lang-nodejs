@@ -1,7 +1,8 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,7 +18,7 @@ const rtl = use("Runtime.rtl");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Unit == 'undefined') Runtime.Unit = {};
 Runtime.Unit.AssertHelper = class
@@ -27,8 +28,8 @@ Runtime.Unit.AssertHelper = class
 	 */
 	static equalValueType(value1, value2, message)
 	{
-		var type1 = rtl.getType(value1);
-		var type2 = rtl.getType(value2);
+		let type1 = rtl.getType(value1);
+		let type2 = rtl.getType(value2);
 		rtl.assert(type1 == type2, message);
 	}
 	
@@ -39,8 +40,8 @@ Runtime.Unit.AssertHelper = class
 	static equalValue(value1, value2, message)
 	{
 		this.equalValueType(value1, value2, message);
-		var value_type1 = rtl.getType(value1);
-		var value_type2 = rtl.getType(value2);
+		let value_type1 = rtl.getType(value1);
+		let value_type2 = rtl.getType(value2);
 		rtl.assert(value_type1 == value_type2, message);
 		if (rtl.isScalarValue(value1))
 		{
@@ -70,10 +71,10 @@ Runtime.Unit.AssertHelper = class
 		{
 			rtl.assert(false, message);
 		}
-		for (var i = 0; i < c1.count(); i++)
+		for (let i = 0; i < c1.count(); i++)
 		{
-			var value1 = c1.get(i);
-			var value2 = c2.get(i);
+			let value1 = c1.get(i);
+			let value2 = c2.get(i);
 			this.equalValue(value1, value2, message);
 		}
 	}
@@ -84,22 +85,22 @@ Runtime.Unit.AssertHelper = class
 	 */
 	static equalDict(d1, d2, message)
 	{
-		var d1_keys = d1.keys();
-		var d2_keys = d2.keys();
-		for (var i = 0; i < d1_keys.count(); i++)
+		let d1_keys = d1.keys();
+		let d2_keys = d2.keys();
+		for (let i = 0; i < d1_keys.count(); i++)
 		{
-			var key1 = d1_keys.get(i);
+			let key1 = d1_keys.get(i);
 			if (!d2.has(key1))
 			{
 				rtl.assert(false, message);
 			}
-			var value1 = d1.get(key1);
-			var value2 = d2.get(key1);
+			let value1 = d1.get(key1);
+			let value2 = d2.get(key1);
 			this.equalValue(value1, value2, message);
 		}
-		for (var i = 0; i < d2_keys.count(); i++)
+		for (let i = 0; i < d2_keys.count(); i++)
 		{
-			var key2 = d2_keys.get(i);
+			let key2 = d2_keys.get(i);
 			if (!d1.has(key2))
 			{
 				rtl.assert(false, message);
@@ -113,9 +114,9 @@ Runtime.Unit.AssertHelper = class
 	{
 	}
 	static getClassName(){ return "Runtime.Unit.AssertHelper"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.Unit.AssertHelper);
 module.exports = {

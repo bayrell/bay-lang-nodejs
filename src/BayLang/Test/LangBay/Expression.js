@@ -1,6 +1,10 @@
 "use strict;"
-var use = require('bay-lang').use;
-/*!
+const use = require('bay-lang').use;
+const rs = use("Runtime.rs");
+const Test = use("Runtime.Unit.Test");
+const Map = use("Runtime.Map");
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -16,54 +20,58 @@ var use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Test == 'undefined') BayLang.Test = {};
 if (typeof BayLang.Test.LangBay == 'undefined') BayLang.Test.LangBay = {};
-BayLang.Test.LangBay.Expression = function()
-{
-};
-Object.assign(BayLang.Test.LangBay.Expression.prototype,
+BayLang.Test.LangBay.Expression = class
 {
 	/**
 	 * Reset
 	 */
-	reset: function()
+	reset()
 	{
-		var __v0 = use("BayLang.LangBay.ParserBay");
-		this.parser = new __v0();
-		this.parser = this.parser.constructor.reset(this.parser);
-		var __v1 = use("BayLang.LangBay.TranslatorBay");
-		this.translator = new __v1();
+		const ParserBay = use("BayLang.LangBay.ParserBay");
+		const TranslatorBay = use("BayLang.LangBay.TranslatorBay");
+		this.parser = new ParserBay();
+		this.parser = this.parser.reset(this.parser);
+		this.translator = new TranslatorBay();
 		this.translator.reset();
-	},
+	}
+	
+	
 	/**
 	 * Set content
 	 */
-	setContent: function(content)
+	setContent(content)
 	{
 		this.parser.setContent(content);
-	},
+	}
+	
+	
 	/**
 	 * Add variable
 	 */
-	addVar: function(var_name)
+	addVar(var_name)
 	{
-		var parser = this.parser;
+		let parser = this.parser;
 		parser.vars.set(var_name, true);
 		this.parser = parser;
-	},
+	}
+	
+	
 	/**
 	 * Translate
 	 */
-	translate: function(content, debug)
+	translate(content, debug)
 	{
+		const Vector = use("Runtime.Vector");
 		if (debug == undefined) debug = false;
-		var result = use("Runtime.Vector").from([]);
+		let result = new Vector();
 		this.setContent(content);
 		/* Parse */
-		var res = this.parser.parser_expression.constructor.readExpression(this.parser);
-		var op_code = res.get(1);
+		let res = this.parser.parser_expression.readExpression(this.parser);
+		let op_code = res.get(1);
 		/* Translate */
 		this.translator.expression.translate(op_code, result);
 		/* Debug output */
@@ -71,396 +79,203 @@ Object.assign(BayLang.Test.LangBay.Expression.prototype,
 		{
 			console.log(op_code);
 			console.log(result);
-			var __v0 = use("Runtime.rs");
-			console.log(__v0.join("", result));
+			console.log(rs.join("", result));
 		}
-		var __v1 = use("Runtime.rs");
-		return use("Runtime.Vector").from([op_code,__v1.join("", result)]);
-	},
-	testMath1: function()
+		return new Vector(op_code, rs.join("", result));
+	}
+	
+	
+	testMath1()
 	{
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("a");
 		this.addVar("b");
-		var content = "a + b";
-		var res = this.translate(content);
-		var __v0 = use("Runtime.Unit.AssertHelper");
-		__v0.equalValue(content, res.get(1), content);
-	},
-	testMath2: function()
+		let content = "a + b";
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testMath2()
 	{
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("a");
 		this.addVar("b");
-		var content = "a * b";
-		var res = this.translate(content);
-		var __v0 = use("Runtime.Unit.AssertHelper");
-		__v0.equalValue(content, res.get(1), content);
-	},
-	testMath3: function()
+		let content = "a * b";
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testMath3()
 	{
-		this.reset();
-		this.addVar("a");
-		this.addVar("b");
-		this.addVar("c");
-		var content = "a + b * c";
-		var res = this.translate(content);
-		var __v0 = use("Runtime.Unit.AssertHelper");
-		__v0.equalValue(content, res.get(1), content);
-	},
-	testMath4: function()
-	{
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("a");
 		this.addVar("b");
 		this.addVar("c");
-		var content = "(a + b) * c";
-		var res = this.translate(content);
-		var __v0 = use("Runtime.Unit.AssertHelper");
-		__v0.equalValue(content, res.get(1), content);
-	},
-	testMath5: function()
+		let content = "a + b * c";
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testMath4()
 	{
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("a");
 		this.addVar("b");
 		this.addVar("c");
-		var content = "a * (b + c)";
-		var res = this.translate(content);
-		var __v0 = use("Runtime.Unit.AssertHelper");
-		__v0.equalValue(content, res.get(1), content);
-	},
-	testMath6: function()
+		let content = "(a + b) * c";
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testMath5()
 	{
-		this.reset();
-		this.addVar("a");
-		var content = "not a";
-		var res = this.translate(content);
-		var __v0 = use("Runtime.Unit.AssertHelper");
-		__v0.equalValue(content, res.get(1), content);
-	},
-	testMath7: function()
-	{
-		this.reset();
-		this.addVar("a");
-		this.addVar("b");
-		var content = "not (a or b)";
-		var res = this.translate(content);
-		var __v0 = use("Runtime.Unit.AssertHelper");
-		__v0.equalValue(content, res.get(1), content);
-	},
-	testMath8: function()
-	{
-		this.reset();
-		this.addVar("a");
-		this.addVar("b");
-		var content = "not a or b";
-		var res = this.translate(content);
-		var __v0 = use("Runtime.Unit.AssertHelper");
-		__v0.equalValue(content, res.get(1), content);
-	},
-	testFn1: function()
-	{
-		this.reset();
-		this.addVar("a");
-		this.addVar("b");
-		var content = "a(this.a + this.b)";
-		var res = this.translate(content);
-		var __v0 = use("Runtime.Unit.AssertHelper");
-		__v0.equalValue(content, res.get(1), content);
-	},
-	testFn2: function()
-	{
-		this.reset();
-		this.addVar("a");
-		this.addVar("b");
-		var content = "a() + b()";
-		var res = this.translate(content);
-		var __v0 = use("Runtime.Unit.AssertHelper");
-		__v0.equalValue(content, res.get(1), content);
-	},
-	testFn3: function()
-	{
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("a");
 		this.addVar("b");
 		this.addVar("c");
-		var content = "(a() + b()) * c()";
-		var res = this.translate(content);
-		var __v0 = use("Runtime.Unit.AssertHelper");
-		__v0.equalValue(content, res.get(1), content);
-	},
-	test1: function()
+		let content = "a * (b + c)";
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testMath6()
 	{
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
+		this.reset();
+		this.addVar("a");
+		let content = "not a";
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testMath7()
+	{
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
+		this.reset();
+		this.addVar("a");
+		this.addVar("b");
+		let content = "not (a or b)";
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testMath8()
+	{
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
+		this.reset();
+		this.addVar("a");
+		this.addVar("b");
+		let content = "not a or b";
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testFn1()
+	{
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
+		this.reset();
+		this.addVar("a");
+		this.addVar("b");
+		let content = "a(this.a + this.b)";
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testFn2()
+	{
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
+		this.reset();
+		this.addVar("a");
+		this.addVar("b");
+		let content = "a() + b()";
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	testFn3()
+	{
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
+		this.reset();
+		this.addVar("a");
+		this.addVar("b");
+		this.addVar("c");
+		let content = "(a() + b()) * c()";
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	test1()
+	{
+		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("io");
 		this.addVar("class_name");
 		this.addVar("method_name");
-		var content = "io::print(class_name ~ \"::\" ~ method_name ~ " + use("Runtime.rtl").toStr("\" \" ~ io::color(\"green\", \"Ok\"))");
-		var res = this.translate(content);
-		var __v0 = use("Runtime.Unit.AssertHelper");
-		__v0.equalValue(content, res.get(1), content);
-	},
-	_init: function()
+		let content = "io::print(class_name ~ \"::\" ~ method_name ~ " + String("\" \" ~ io::color(\"green\", \"Ok\"))");
+		let res = this.translate(content);
+		AssertHelper.equalValue(content, res.get(1), content);
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
 	{
-		this.parser = null;
-		this.translator = null;
-	},
-});
-Object.assign(BayLang.Test.LangBay.Expression,
-{
-	/* ======================= Class Init Functions ======================= */
-	getNamespace: function()
+	}
+	static getClassName(){ return "BayLang.Test.LangBay.Expression"; }
+	static getMethodsList()
 	{
-		return "BayLang.Test.LangBay";
-	},
-	getClassName: function()
+		const Vector = use("Runtime.Vector");
+		return new Vector("testMath1", "testMath2", "testMath3", "testMath4", "testMath5", "testMath6", "testMath7", "testMath8", "testFn1", "testFn2", "testFn3", "test1");
+	}
+	static getMethodInfoByName(field_name)
 	{
-		return "BayLang.Test.LangBay.Expression";
-	},
-	getParentClassName: function()
-	{
-		return "";
-	},
-	getClassInfo: function()
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
-		return Map.from({
-			"annotations": Vector.from([
-			]),
-		});
-	},
-	getFieldsList: function()
-	{
-		var a = [];
-		return use("Runtime.Vector").from(a);
-	},
-	getFieldInfoByName: function(field_name)
-	{
-		var Vector = use("Runtime.Vector");
-		var Map = use("Runtime.Map");
+		const Vector = use("Runtime.Vector");
+		if (field_nane == "testMath1") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testMath2") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testMath3") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testMath4") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testMath5") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testMath6") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testMath7") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testMath8") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testFn1") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testFn2") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "testFn3") return new Vector(
+			new Test(new Map())
+		);if (field_nane == "test1") return new Vector(
+			new Test(new Map())
+		);
 		return null;
-	},
-	getMethodsList: function()
-	{
-		var a=[
-			"testMath1",
-			"testMath2",
-			"testMath3",
-			"testMath4",
-			"testMath5",
-			"testMath6",
-			"testMath7",
-			"testMath8",
-			"testFn1",
-			"testFn2",
-			"testFn3",
-			"test1",
-		];
-		return use("Runtime.Vector").from(a);
-	},
-	getMethodInfoByName: function(field_name)
-	{
-		if (field_name == "testMath1")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v0(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testMath2")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v1(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testMath3")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v2(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testMath4")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v3(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testMath5")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v4(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testMath6")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v5(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testMath7")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v6(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testMath8")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v7(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testFn1")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v8(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testFn2")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v9(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "testFn3")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v10(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		if (field_name == "test1")
-		{
-			var __v0 = use("Runtime.Unit.Test");
-			var __v1 = use("Runtime.Unit.Test");
-			var __v2 = use("Runtime.Unit.Test");
-			var __v3 = use("Runtime.Unit.Test");
-			var __v4 = use("Runtime.Unit.Test");
-			var __v5 = use("Runtime.Unit.Test");
-			var __v6 = use("Runtime.Unit.Test");
-			var __v7 = use("Runtime.Unit.Test");
-			var __v8 = use("Runtime.Unit.Test");
-			var __v9 = use("Runtime.Unit.Test");
-			var __v10 = use("Runtime.Unit.Test");
-			var __v11 = use("Runtime.Unit.Test");
-			var Vector = use("Runtime.Vector");
-			var Map = use("Runtime.Map");
-			return Map.from({
-				"annotations": Vector.from([
-					new __v11(use("Runtime.Map").from({})),
-				]),
-			});
-		}
-		return null;
-	},
-});use.add(BayLang.Test.LangBay.Expression);
-module.exports = BayLang.Test.LangBay.Expression;
+	}
+	static getInterfaces(){ return []; }
+};
+use.add(BayLang.Test.LangBay.Expression);
+module.exports = {
+	"Expression": BayLang.Test.LangBay.Expression,
+};

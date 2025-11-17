@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,13 +17,11 @@ const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpDeclareFunction = class extends BaseOpCode
+BayLang.OpCodes.OpDeclareFunction = class extends use("BayLang.OpCodes.BaseOpCode")
 {
-	
-	
 	/**
 	 * Serialize object
 	 */
@@ -54,12 +52,10 @@ BayLang.OpCodes.OpDeclareFunction = class extends BaseOpCode
 	}
 	
 	
-	
 	/**
 	 * Returns true if is flag
 	 */
 	isFlag(flag_name){ return this.flags != null && this.flags.isFlag(flag_name); }
-	
 	
 	
 	/**
@@ -67,8 +63,8 @@ BayLang.OpCodes.OpDeclareFunction = class extends BaseOpCode
 	 */
 	getOffset()
 	{
-		var res = super.getOffset();
-		var op_comment = this.comments.first();
+		let res = super.getOffset();
+		let op_comment = this.comments ? this.comments.first() : null;
 		if (op_comment)
 		{
 			res.set("start", op_comment.caret_start.y);
@@ -89,7 +85,7 @@ BayLang.OpCodes.OpDeclareFunction = class extends BaseOpCode
 			return this.expression;
 		}
 		if (!(this.items instanceof OpItems)) return null;
-		var op_code_item = this.items.items.get(0);
+		let op_code_item = this.items.items.get(0);
 		if (!(op_code_item instanceof OpReturn)) return null;
 		return op_code_item.expression;
 	}
@@ -113,9 +109,9 @@ BayLang.OpCodes.OpDeclareFunction = class extends BaseOpCode
 		this.is_html_default_args = false;
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpDeclareFunction"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.OpCodes.OpDeclareFunction);
 module.exports = {

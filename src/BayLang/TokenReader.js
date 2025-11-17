@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,12 +17,10 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
-BayLang.TokenReader = class extends BaseObject
+BayLang.TokenReader = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Init token reader
 	 */
@@ -63,7 +61,7 @@ BayLang.TokenReader = class extends BaseObject
 	 */
 	readToken()
 	{
-		var token = this.next_token;
+		let token = this.next_token;
 		this.main_caret.seek(this.next_caret);
 		this.next_token = this.next_caret.readToken();
 		return token;
@@ -75,7 +73,7 @@ BayLang.TokenReader = class extends BaseObject
 	 */
 	nextTokenComments()
 	{
-		var caret = this.main_caret.copy();
+		let caret = this.main_caret.copy();
 		caret.skip_comments = false;
 		return caret.readToken();
 	}
@@ -121,9 +119,9 @@ BayLang.TokenReader = class extends BaseObject
 		this.next_token = "";
 	}
 	static getClassName(){ return "BayLang.TokenReader"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.TokenReader);
 module.exports = {

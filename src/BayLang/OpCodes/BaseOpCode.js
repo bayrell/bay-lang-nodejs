@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,10 +17,10 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.BaseOpCode = class extends BaseObject
+BayLang.OpCodes.BaseOpCode = class extends use("Runtime.BaseObject")
 {
 	static op = "";
 	
@@ -32,7 +32,7 @@ BayLang.OpCodes.BaseOpCode = class extends BaseObject
 	{
 		if (params == undefined) params = null;
 		super();
-		this.assign(params);
+		this._assign_values(params);
 	}
 	
 	
@@ -62,6 +62,7 @@ BayLang.OpCodes.BaseOpCode = class extends BaseObject
 	 */
 	getOffset()
 	{
+		const Map = use("Runtime.Map");
 		return Map.create({
 			"start": this.caret_start ? this.caret_start.y : 0,
 			"end": this.caret_end ? this.caret_end.y : 0,
@@ -108,9 +109,9 @@ BayLang.OpCodes.BaseOpCode = class extends BaseObject
 		this.caret_end = null;
 	}
 	static getClassName(){ return "BayLang.OpCodes.BaseOpCode"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return ["Runtime.SerializeInterface"]; }
+	static getInterfaces(){ return ["Runtime.SerializeInterface"]; }
 };
 use.add(BayLang.OpCodes.BaseOpCode);
 module.exports = {

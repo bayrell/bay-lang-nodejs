@@ -1,6 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -16,54 +17,21 @@ const use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
 Runtime.rtl = class
 {
-	/* Log level */
-	
-	/**
-	 * Fatal error. Application stoped
-	 */
 	static LOG_FATAL = 0;
-	
-	/**
-	 * Critical error. Application damaged, but works
-	 */
 	static LOG_CRITICAL = 2;
-	
-	/**
-	 * Any Application error or exception
-	 */
 	static LOG_ERROR = 4;
-	
-	/**
-	 * Log warning. Developer should attention to this
-	 */
 	static LOG_WARNING = 6;
-	
-	/**
-	 * Information about any event
-	 */
 	static LOG_INFO = 8;
-	
-	/**
-	 * Debug level 1
-	 */
 	static LOG_DEBUG = 10;
-	
-	/**
-	 * Debug level 2
-	 */
 	static LOG_DEBUG2 = 12;
-	
-	/* Status codes */
 	static STATUS_PLAN = 0;
 	static STATUS_DONE = 1;
 	static STATUS_PROCESS = 100;
 	static STATUS_FAIL = -1;
-	
-	/* Errors */
 	static ERROR_NULL = 0;
 	static ERROR_OK = 1;
 	static ERROR_PROCCESS = 100;
@@ -95,8 +63,6 @@ Runtime.rtl = class
 	static ERROR_HTTP_OK = -200;
 	static ERROR_HTTP_BAD_GATEWAY = -502;
 	static ERROR_USER = -10000;
-	
-	/* Serializer */
 	static ALLOW_OBJECTS = 1;
 	static JSON_PRETTY = 8;
 	
@@ -119,10 +85,13 @@ Runtime.rtl = class
 		{
 			class_name = typeof window != "undefined" ? window[class_name] : use(class_name);
 		}
+		else if (class_name && !(class_name instanceof Function))
+		{
+			class_name = class_name.constructor;
+		}
 		if (class_name == undefined || class_name == null) return null;
-		if (!(class_name instanceof Function)) class_name = class_name.constructor;
 		
-		return class_name instanceof Function ? class_name : null;
+		return class_name;
 	}
 	
 	
@@ -133,7 +102,7 @@ Runtime.rtl = class
 	{
 		if (this.isString(class_name)) return class_name;
 		var obj = this.findClass(class_name);
-		return (obj && obj.getClassName) ? obj.getClassName() : "";
+		return obj && obj.getClassName ? obj.getClassName() : "";
 	}
 	
 	
@@ -157,11 +126,11 @@ Runtime.rtl = class
 		if (obj == null) return false;
 		obj = this.className(obj);
 		if (!this.isString(obj)) return false;
-		var parent_class_name = obj;
+		let parent_class_name = obj;
 		while (parent_class_name != "")
 		{
 			if (parent_class_name == class_name) return true;
-			var parent_class_name = this.parentClassName(parent_class_name);
+			parent_class_name = this.parentClassName(parent_class_name);
 		}
 	}
 	
@@ -187,7 +156,7 @@ Runtime.rtl = class
 	 */
 	static classExists(class_name)
 	{
-		var obj = this.findClass(class_name);
+		let obj = this.findClass(class_name);
 		return obj != null;
 	}
 	
@@ -242,6 +211,15 @@ Runtime.rtl = class
 	
 	
 	/**
+	 * Set attr to item
+	 */
+	static setAttr(item, name, value)
+	{
+		item[name] = value;
+	}
+	
+	
+	/**
 	 * Return true if value is exists
 	 * @param var value
 	 * @return bool
@@ -266,11 +244,29 @@ Runtime.rtl = class
 	
 	
 	/**
+	 * Returns true if object
+	 */
+	static isObject(value)
+	{
+		return value instanceof use("Runtime.BaseObject");
+	}
+	
+	
+	/**
 	 * Returns true if value is collection
 	 */
 	static isCollection(value)
 	{
 		return Array.isArray(value);
+	}
+	
+	
+	/**
+	 * Returns true if value is map
+	 */
+	static isMap(value)
+	{
+		return value instanceof Map;
 	}
 	
 	
@@ -284,7 +280,6 @@ Runtime.rtl = class
 	
 	
 	/* ================================= Lib Functions =================================== */
-	
 	static compare(order, f)
 	{
 		if (f == undefined) f = null;
@@ -301,14 +296,15 @@ Runtime.rtl = class
 		};
 	}
 	
-	/* =============================== Convert Functions ================================= */
 	
+	/* =============================== Convert Functions ================================= */
 	/**
 	 * Convert generator to list
 	 */
 	static list(generator)
 	{
-		return [...generator];
+		const Vector = this.findClass("Runtime.Vector");
+		return new Vector(...generator);
 		return generator;
 	}
 	
@@ -342,16 +338,60 @@ Runtime.rtl = class
 	
 	
 	/**
+	 * Convert primitive to object
+	 */
+	static toNative(obj)
+	{
+		const RuntimeMap = this.findClass("Runtime.Map");
+		const RuntimeVector = this.findClass("Runtime.Vector");
+		if (obj instanceof RuntimeVector)
+		{
+			return obj.map((value) => { return this.toNative(value); });
+		}
+		else if (obj instanceof RuntimeMap)
+		{
+			return obj.map((value) => { return this.toNative(value); }).toObject();
+		}
+		return obj;
+	}
+	
+	
+	/**
+	 * Convert native to primitive
+	 */
+	static fromNative(obj)
+	{
+		if (obj === null || obj === undefined)
+		{
+			return null;
+		}
+		if (Array.isArray(obj))
+		{
+			const RuntimeVector = this.findClass("Runtime.Vector");
+			return RuntimeVector.create(obj.map(item => this.fromNative(item)));
+		}
+		if (typeof obj == "object")
+		{
+			const RuntimeMap = this.findClass("Runtime.Map");
+			return RuntimeMap.create(obj).map(item => this.fromNative(item));
+		}
+		return obj;
+	}
+	
+	
+	/**
 	 * Json Decode
 	 */
 	static jsonDecode(obj)
 	{
 		try
 		{
+			const RuntimeVector = this.findClass("Runtime.Vector");
+			const RuntimeMap = this.findClass("Runtime.Map");
 			obj = JSON.parse(obj, (key, value) => {
 				if (value === null) return null;
-				if (Array.isArray(value)) return value;
-				if (typeof value == "object") return Map.create(value);
+				if (Array.isArray(value)) return RuntimeVector.create(value);
+				if (typeof value == "object") return RuntimeMap.create(value);
 				return value;
 			});
 		}
@@ -370,7 +410,6 @@ Runtime.rtl = class
 	
 	
 	/* ================================== IO Functions =================================== */
-	
 	/**
 	 * Print message to output
 	 */
@@ -378,7 +417,7 @@ Runtime.rtl = class
 	{
 		if (new_line == undefined) new_line = true;
 		if (type == undefined) type = "";
-		var output = Runtime.rtl.getContext().provider("output");
+		let output = Runtime.rtl.getContext().provider("output");
 		output.print(message, new_line, type);
 	}
 	
@@ -388,7 +427,7 @@ Runtime.rtl = class
 	 */
 	static error(message)
 	{
-		var output = Runtime.rtl.getContext().provider("output");
+		let output = Runtime.rtl.getContext().provider("output");
 		output.error(message);
 	}
 	
@@ -398,7 +437,7 @@ Runtime.rtl = class
 	 */
 	static color(color, message)
 	{
-		var output = Runtime.rtl.getContext().provider("output");
+		let output = Runtime.rtl.getContext().provider("output");
 		return output.color(color, message);
 	}
 	
@@ -408,7 +447,7 @@ Runtime.rtl = class
 	 */
 	static log(type, message)
 	{
-		var p = Runtime.rtl.getContext().provider("log");
+		let p = Runtime.rtl.getContext().provider("log");
 		p.log(type, message);
 	}
 	
@@ -418,13 +457,12 @@ Runtime.rtl = class
 	 */
 	static input()
 	{
-		var input = Runtime.rtl.getContext().provider("input");
+		let input = Runtime.rtl.getContext().provider("input");
 		return input.input();
 	}
 	
 	
 	/* ================================= Math Functions ================================== */
-	
 	/**
 	 * Returns random value x, where 0 <= x < 1
 	 * @return double
@@ -455,8 +493,6 @@ Runtime.rtl = class
 		return this.round(this.urandom() * (b - a) + a);
 	}
 	
-	
-	/* ================================ Context Functions ================================ */
 	
 	static _global_context = null;
 	
@@ -489,7 +525,7 @@ Runtime.rtl = class
 	{
 		const Context = use("Runtime.Context");
 		/* Create contenxt */
-		var context = new Context(Context.initParams(params));
+		let context = new Context(Context.initParams(params));
 		/* Setup global context */
 		this.setContext(context);
 		/* Init context */
@@ -499,23 +535,35 @@ Runtime.rtl = class
 	
 	
 	/**
+	 * Create app
+	 */
+	static async createApp(app, modules)
+	{
+		const Map = use("Runtime.Map");
+		const Vector = use("Runtime.Vector");
+		const Provider = use("Runtime.Entity.Provider");
+		let params = Map.create({
+			"providers": new Vector(
+				new Provider("app", app),
+			),
+			"modules": modules,
+		});
+		let context = await this.createContext(params);
+		await context.start();
+		return context;
+	}
+	
+	
+	/**
 	 * Run app
 	 */
 	static async runApp(app, modules)
 	{
-		const Provider = use("Runtime.Entity.Provider");
 		try
 		{
-			var params = Map.create({
-				"providers": [
-					new Provider("app", app),
-				],
-				"modules": modules,
-			});
-			var context = await this.createContext(params);
-			await context.start();
-			var app = context.provider("app");
-			return await app.main();
+			let context = await this.createApp(app, modules);
+			let provider = context.provider("app");
+			return await provider.main();
 		}
 		catch (e)
 		{
@@ -526,16 +574,49 @@ Runtime.rtl = class
 	}
 	
 	
+	/**
+	 * Mount app
+	 */
+	static async mount(app_data, element, callback)
+	{
+		const Map = use("Runtime.Map");
+		if (callback == undefined) callback = null;
+		app_data = this.fromNative(app_data);
+		/* Create context */
+		let modules = app_data.get("modules");
+		let context = await this.createContext(Map.create({
+			"modules": modules,
+		}));
+		/* Render app */
+		let render = context.factory("render");
+		let result = render.mount(app_data, element);
+		if (callback)
+		{
+			callback(result);
+		}
+	}
+	
+	
+	/* ================================= Other Functions ================================= */
+	static async wait(timeout)
+	{
+		return new Promise((resolve, reject) => {
+			setTimeout(()=>{ resolve(); }, timeout);
+		});
+	}
+	
+	
 	/* ========= Class init functions ========= */
 	_init()
 	{
 	}
 	static getClassName(){ return "Runtime.rtl"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.rtl);
+
 module.exports = {
 	"rtl": Runtime.rtl,
 };

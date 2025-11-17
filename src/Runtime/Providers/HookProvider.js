@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseProvider = use("Runtime.BaseProvider");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,27 +17,27 @@ const BaseProvider = use("Runtime.BaseProvider");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Providers == 'undefined') Runtime.Providers = {};
-Runtime.Providers.HookProvider = class extends BaseProvider
+Runtime.Providers.HookProvider = class extends use("Runtime.BaseProvider")
 {
-	
-	
 	/**
 	 * Init provider
 	 */
 	async init()
 	{
 		const Vector = use("Runtime.Vector");
-		var hooks = Runtime.rtl.getContext().getEntities("Runtime.Entity.Hook");
+		const Map = use("Runtime.Map");
+		let hooks = Runtime.rtl.getContext().getEntities("Runtime.Entity.Hook");
 		this.base_hooks = new Vector();
-		for (var i = 0; i < hooks.count(); i++)
+		for (let i = 0; i < hooks.count(); i++)
 		{
-			var hook = hooks[i];
-			var base_hook = hook.createHook();
-			base_hook.hook = hook;
-			base_hook.provider = this;
+			let hook = hooks[i];
+			let base_hook = hook.createInstance(Map.create({
+				"hook": hook,
+				"provider": this,
+			}));
 			base_hook.register_hooks();
 			this.base_hooks.push(base_hook);
 		}
@@ -54,61 +54,48 @@ Runtime.Providers.HookProvider = class extends BaseProvider
 	
 	
 	/**
-	 * Register hook
+	 * Set async
 	 */
-	register(hook_name, obj, method_name, priority)
+	setAsync(arr)
 	{
-		const Vector = use("Runtime.Vector");
-		const Callback = use("Runtime.Callback");
-		if (priority == undefined) priority = 100;
-		if (!this.hooks.has(hook_name)) this.hooks.set(hook_name, new Map());
-		var priorities = this.hooks[hook_name];
-		if (!priorities.has(priority)) priorities.set(priority, new Vector());
-		var methods_list = priorities.get(priority);
-		methods_list.push(new Callback(obj, method_name));
-	}
-	
-	
-	/**
-	 * Remove hook
-	 */
-	remove(hook_name, obj, method_name, priority)
-	{
-		const Vector = use("Runtime.Vector");
-		if (priority == undefined) priority = 100;
-		if (!this.hooks.has(hook_name)) this.hooks.setValue(hook_name, new Map());
-		var priorities = this.hooks[hook_name];
-		if (!priorities.has(priority)) priorities.setValue(priority, new Vector());
-		var methods_list = priorities.get(priority);
-		var index = methods_list.find((info) =>
+		for (let i = 0; i < arr.count(); i++)
 		{
-			return info.obj == obj && info.name == method_name;
-		});
-		if (index > -1)
-		{
-			methods_list.removePosition(index);
+			let hook_name = arr.get(i);
+			this.async_hooks.set(hook_name, true);
 		}
 	}
 	
 	
 	/**
-	 * Returns method list
+	 * Returns if chain is async
 	 */
-	getMethods(hook_name)
+	isAsync(name)
 	{
-		const Vector = use("Runtime.Vector");
-		const lib = use("Runtime.lib");
-		if (!this.hooks.has(hook_name)) return [];
-		var res = new Vector();
-		var priorities = this.hooks[hook_name];
-		var priorities_keys = priorities.keys().sort(lib.compareInt());
-		for (var i = 0; i < priorities_keys.count(); i++)
-		{
-			var priority = priorities_keys[i];
-			var methods_list = priorities.get(priority);
-			res.appendItems(methods_list);
-		}
-		return res.toCollection();
+		if (!this.async_hooks.has(name)) return false;
+		return this.async_hooks.get(name);
+	}
+	
+	
+	/**
+	 * Create chain
+	 */
+	createChain(name, is_async)
+	{
+		const ChainAsync = use("Runtime.ChainAsync");
+		const Chain = use("Runtime.Chain");
+		if (this.chains.has(name)) return;
+		if (is_async) this.chains.set(name, new ChainAsync());
+		else this.chains.set(name, new Chain());
+	}
+	
+	
+	/**
+	 * Returns chain
+	 */
+	getChain(name)
+	{
+		if (!this.chains.has(name)) this.createChain(name, this.isAsync(name));
+		return this.chains.get(name);
 	}
 	
 	
@@ -117,7 +104,23 @@ Runtime.Providers.HookProvider = class extends BaseProvider
 	 */
 	apply(hook_name, params)
 	{
+		const ChainAsync = use("Runtime.ChainAsync");
+		const Vector = use("Runtime.Vector");
 		if (params == undefined) params = null;
+		let chain = this.chains.get(hook_name);
+		if (!chain) return params;
+		if (chain instanceof ChainAsync)
+		{
+			let f = async () =>
+			{
+				const Vector = use("Runtime.Vector");
+				await chain.apply(new Vector(params));
+				return params;
+			};
+			return f();
+		}
+		chain.apply(new Vector(params));
+		return params;
 	}
 	
 	
@@ -125,13 +128,16 @@ Runtime.Providers.HookProvider = class extends BaseProvider
 	_init()
 	{
 		super._init();
-		this.base_hooks = [];
-		this.hooks = new Map();
+		const Vector = use("Runtime.Vector");
+		const Map = use("Runtime.Map");
+		this.base_hooks = new Vector();
+		this.chains = new Map();
+		this.async_hooks = new Map();
 	}
 	static getClassName(){ return "Runtime.Providers.HookProvider"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return []; }
+	static getInterfaces(){ return []; }
 };
 use.add(Runtime.Providers.HookProvider);
 module.exports = {

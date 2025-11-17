@@ -2,8 +2,8 @@
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
 const rs = use("Runtime.rs");
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -19,13 +19,11 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
-BayLang.Compiler.Project = class extends BaseObject
+BayLang.Compiler.Project = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -40,7 +38,7 @@ BayLang.Compiler.Project = class extends BaseObject
 	 */
 	static async readProject(project_path)
 	{
-		var project = new BayLang.Compiler.Project();
+		let project = new BayLang.Compiler.Project();
 		await project.read(project_path);
 		if (!project.exists()) return null;
 		await project.readModules();
@@ -54,13 +52,14 @@ BayLang.Compiler.Project = class extends BaseObject
 	async read(project_path)
 	{
 		const fs = use("Runtime.fs");
+		const Vector = use("Runtime.Vector");
 		this.info = null;
 		this.path = project_path;
-		var project_json_path = fs.join([this.path, "project.json"]);
+		let project_json_path = fs.join(new Vector(this.path, "project.json"));
 		if (!await fs.isFolder(this.path)) return;
 		if (!await fs.isFile(project_json_path)) return;
 		/* Read file */
-		var content = await fs.readFile(project_json_path);
+		let content = await fs.readFile(project_json_path);
 		this.info = rtl.jsonDecode(content);
 	}
 	
@@ -71,8 +70,9 @@ BayLang.Compiler.Project = class extends BaseObject
 	async save()
 	{
 		const fs = use("Runtime.fs");
-		var project_json_path = fs.join([this.path, "project.json"]);
-		var content = rtl.json_encode(this.info, rtl.JSON_PRETTY);
+		const Vector = use("Runtime.Vector");
+		let project_json_path = fs.join(new Vector(this.path, "project.json"));
+		let content = rtl.json_encode(this.info, rtl.JSON_PRETTY);
 		await fs.saveFile(project_json_path, content);
 	}
 	
@@ -157,13 +157,13 @@ BayLang.Compiler.Project = class extends BaseObject
 	/**
 	 * Returns assets
 	 */
-	getAssets(){ return this.exists() ? this.info.get("assets") : []; }
+	getAssets(){ const Vector = use("Runtime.Vector");return this.exists() ? this.info.get("assets") : new Vector(); }
 	
 	
 	/**
 	 * Returns languages
 	 */
-	getLanguages(){ return this.exists() ? this.info.get("languages") : []; }
+	getLanguages(){ const Vector = use("Runtime.Vector");return this.exists() ? this.info.get("languages") : new Vector(); }
 	
 	
 	/**
@@ -184,7 +184,7 @@ BayLang.Compiler.Project = class extends BaseObject
 	getModulesByGroupName(group_name)
 	{
 		/* Get modules */
-		var modules = this.modules.transition((module, module_name) => { return module; });
+		let modules = this.modules.transition((module, module_name) => { return module; });
 		/* Filter modules by group */
 		modules = modules.filter((module) => { return module.hasGroup(group_name); });
 		/* Get names */
@@ -199,16 +199,16 @@ BayLang.Compiler.Project = class extends BaseObject
 	 */
 	findModuleByFileName(file_name)
 	{
-		var res = null;
-		var module_path_sz = -1;
-		var module_names = rtl.list(this.modules.keys());
-		for (var i = 0; i < module_names.count(); i++)
+		let res = null;
+		let module_path_sz = -1;
+		let module_names = rtl.list(this.modules.keys());
+		for (let i = 0; i < module_names.count(); i++)
 		{
-			var module_name = module_names.get(i);
-			var module = this.modules.get(module_name);
+			let module_name = module_names.get(i);
+			let module = this.modules.get(module_name);
 			if (module.checkFile(file_name))
 			{
-				var sz = rs.strlen(module.path);
+				let sz = rs.strlen(module.path);
 				if (module_path_sz < sz)
 				{
 					module_path_sz = sz;
@@ -225,6 +225,7 @@ BayLang.Compiler.Project = class extends BaseObject
 	 */
 	async readModules()
 	{
+		const Map = use("Runtime.Map");
 		this.modules = new Map();
 		/* Read sub modules */
 		await this.readSubModules(this.path, this.info.get("modules"));
@@ -237,7 +238,7 @@ BayLang.Compiler.Project = class extends BaseObject
 	async readModule(folder_path)
 	{
 		const Module = use("BayLang.Compiler.Module");
-		var module = new Module(this);
+		let module = new Module(this);
 		await module.read(folder_path);
 		if (module.exists())
 		{
@@ -255,13 +256,14 @@ BayLang.Compiler.Project = class extends BaseObject
 	async readSubModules(path, items)
 	{
 		const fs = use("Runtime.fs");
+		const Vector = use("Runtime.Vector");
 		if (!items) return;
-		for (var i = 0; i < items.count(); i++)
+		for (let i = 0; i < items.count(); i++)
 		{
-			var item = items.get(i);
-			var module_src = item.get("src");
-			var module_type = item.get("type");
-			var folder_path = fs.join([path, module_src]);
+			let item = items.get(i);
+			let module_src = item.get("src");
+			let module_type = item.get("type");
+			let folder_path = fs.join(new Vector(path, module_src));
 			/* Read from folder */
 			if (module_type == "folder")
 			{
@@ -281,15 +283,16 @@ BayLang.Compiler.Project = class extends BaseObject
 	async readModuleFromFolder(folder_path)
 	{
 		const fs = use("Runtime.fs");
+		const Vector = use("Runtime.Vector");
 		if (!await fs.isFolder(folder_path)) return;
-		var items = await fs.listDir(folder_path);
-		for (var i = 0; i < items.count(); i++)
+		let items = await fs.listDir(folder_path);
+		for (let i = 0; i < items.count(); i++)
 		{
-			var file_name = items.get(i);
+			let file_name = items.get(i);
 			if (file_name == ".") continue;
 			if (file_name == "..") continue;
 			/* Read module */
-			await this.readModule(fs.join([folder_path, file_name]));
+			await this.readModule(fs.join(new Vector(folder_path, file_name)));
 		}
 	}
 	
@@ -299,18 +302,19 @@ BayLang.Compiler.Project = class extends BaseObject
 	 */
 	sortRequiredModules(modules)
 	{
-		var result = [];
-		var add_module;
+		const Vector = use("Runtime.Vector");
+		let result = new Vector();
+		let add_module;
 		add_module = (module_name) =>
 		{
 			if (modules.indexOf(module_name) == -1) return;
 			/* Get module by name */
-			var module = this.modules.get(module_name);
+			let module = this.modules.get(module_name);
 			if (!module) return;
 			/* Add required modules */
 			if (module.required_modules != null)
 			{
-				for (var i = 0; i < module.required_modules.count(); i++)
+				for (let i = 0; i < module.required_modules.count(); i++)
 				{
 					add_module(module.required_modules.get(i));
 				}
@@ -321,7 +325,7 @@ BayLang.Compiler.Project = class extends BaseObject
 				result.push(module_name);
 			}
 		};
-		for (var i = 0; i < modules.count(); i++)
+		for (let i = 0; i < modules.count(); i++)
 		{
 			add_module(modules.get(i));
 		}
@@ -334,15 +338,16 @@ BayLang.Compiler.Project = class extends BaseObject
 	 */
 	getAssetModules(asset)
 	{
-		var modules = asset.get("modules");
+		const Vector = use("Runtime.Vector");
+		let modules = asset.get("modules");
 		/* Extends modules */
-		var new_modules = [];
+		let new_modules = new Vector();
 		modules.each((module_name) =>
 		{
 			if (rs.substr(module_name, 0, 1) == "@")
 			{
 				/* Get group modules by name */
-				var group_modules = this.getModulesByGroupName(module_name);
+				let group_modules = this.getModulesByGroupName(module_name);
 				/* Append group modules */
 				new_modules.appendItems(group_modules);
 			}
@@ -364,41 +369,42 @@ BayLang.Compiler.Project = class extends BaseObject
 	async buildAsset(asset)
 	{
 		const fs = use("Runtime.fs");
-		var asset_path_relative = asset.get("dest");
+		const Vector = use("Runtime.Vector");
+		let asset_path_relative = asset.get("dest");
 		if (asset_path_relative == "") return;
 		/* Get asset dest path */
-		var asset_path = fs.join([this.path, asset_path_relative]);
-		var asset_content = "";
+		let asset_path = fs.join(new Vector(this.path, asset_path_relative));
+		let asset_content = "";
 		/* Get modules names in asset */
-		var modules = this.getAssetModules(asset);
-		for (var i = 0; i < modules.count(); i++)
+		let modules = this.getAssetModules(asset);
+		for (let i = 0; i < modules.count(); i++)
 		{
-			var module_name = modules.get(i);
-			var module = this.modules.get(module_name);
+			let module_name = modules.get(i);
+			let module = this.modules.get(module_name);
 			if (!module) continue;
 			/* Get files */
-			for (var j = 0; j < module.assets.count(); j++)
+			for (let j = 0; j < module.assets.count(); j++)
 			{
-				var file_name = module.assets.get(j);
-				var file_source_path = module.resolveSourceFilePath(file_name);
-				var file_dest_path = module.resolveDestFilePath(file_name, "es6");
+				let file_name = module.assets.get(j);
+				let file_source_path = module.resolveSourceFilePath(file_name);
+				let file_dest_path = module.resolveDestFilePath(file_name, "es6");
 				if (file_dest_path)
 				{
 					if (await fs.isFile(file_dest_path))
 					{
-						var content = await fs.readFile(file_dest_path);
+						let content = await fs.readFile(file_dest_path);
 						asset_content += content + String("\n");
 					}
 					else if (await fs.isFile(file_source_path) && rs.extname(file_source_path) == "js")
 					{
-						var content = await fs.readFile(file_source_path);
+						let content = await fs.readFile(file_source_path);
 						asset_content += content + String("\n");
 					}
 				}
 			}
 		}
 		/* Create directory if does not exists */
-		var dir_name = rs.dirname(asset_path);
+		let dir_name = rs.dirname(asset_path);
 		if (!await fs.isDir(dir_name))
 		{
 			await fs.mkdir(dir_name);
@@ -412,14 +418,15 @@ BayLang.Compiler.Project = class extends BaseObject
 	_init()
 	{
 		super._init();
+		const Map = use("Runtime.Map");
 		this.path = "";
 		this.info = new Map();
 		this.modules = null;
 	}
 	static getClassName(){ return "BayLang.Compiler.Project"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return ["Runtime.Serialize.SerializeInterface"]; }
+	static getInterfaces(){ return ["Runtime.Serialize.SerializeInterface"]; }
 };
 use.add(BayLang.Compiler.Project);
 module.exports = {

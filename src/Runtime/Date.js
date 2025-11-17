@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-const BaseObject = use("Runtime.BaseObject");
-/*!
+/*
+!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,12 +17,10 @@ const BaseObject = use("Runtime.BaseObject");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
- */
+*/
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Date = class extends BaseObject
+Runtime.Date = class extends use("Runtime.BaseObject")
 {
-	
-	
 	/**
 	 * Constructor
 	 */
@@ -44,6 +42,7 @@ Runtime.Date = class extends BaseObject
 	 */
 	toMap()
 	{
+		const Map = use("Runtime.Map");
 		return Map.create({
 			"y": this.y,
 			"m": this.m,
@@ -87,9 +86,9 @@ Runtime.Date = class extends BaseObject
 		this.d = 0;
 	}
 	static getClassName(){ return "Runtime.Date"; }
-	static getMethodsList(){ return []; }
+	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(field_name){ return ["Runtime.StringInterface"]; }
+	static getInterfaces(){ return ["Runtime.StringInterface"]; }
 };
 use.add(Runtime.Date);
 Runtime.Date.prototype.toObject = function()
