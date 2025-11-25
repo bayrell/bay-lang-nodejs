@@ -5,7 +5,7 @@ const rtl = use("Runtime.rtl");
 !
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ Runtime.Console.Commands.Help = class extends use("Runtime.Console.BaseCommand")
 	 */
 	static async run()
 	{
-		const Callback = use("Runtime.Callback");
+		const Method = use("Runtime.Method");
 		rtl.print("Methods:");
 		let commands = Runtime.rtl.getContext().provider("Runtime.Console.CommandsList");
 		let keys = commands.getCommands();
@@ -49,7 +49,7 @@ Runtime.Console.Commands.Help = class extends use("Runtime.Console.BaseCommand")
 		{
 			let command_name = keys.get(i);
 			let class_name = commands.getCommandByName(command_name);
-			let getDescription = new Callback(class_name, "getDescription");
+			let getDescription = new Method(class_name, "getDescription");
 			let command_description = getDescription.apply();
 			rtl.print(rtl.color("yellow", command_name) + String(" - ") + String(command_description));
 		}

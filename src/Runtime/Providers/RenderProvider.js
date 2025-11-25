@@ -6,7 +6,7 @@ const rs = use("Runtime.rs");
 !
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -88,6 +88,30 @@ Runtime.Providers.RenderProvider = class extends use("Runtime.BaseProvider")
 	
 	
 	/**
+	 * Add replace component
+	 */
+	addComponent(component, name)
+	{
+		this.components.set(component, name);
+	}
+	
+	
+	/**
+	 * Returns find element
+	 */
+	findElement(vdom)
+	{
+		if (vdom.is_component)
+		{
+			let name = vdom.name;
+			if (this.components.has(name)) name = this.components.get(name);
+			return rtl.findClass(name);
+		}
+		return vdom.name;
+	}
+	
+	
+	/**
 	 * Render
 	 */
 	render(vdom)
@@ -112,7 +136,7 @@ Runtime.Providers.RenderProvider = class extends use("Runtime.BaseProvider")
 			return content;
 		}
 		let children = content;
-		if (!rtl.isString(vdom.name))
+		if (vdom.is_component)
 		{
 			let slots = vdom.slots.map((f) =>
 			{
@@ -139,7 +163,8 @@ Runtime.Providers.RenderProvider = class extends use("Runtime.BaseProvider")
 				attrs["innerHTML"] = vdom.attrs.get("@raw");
 			}
 		}
-		return h(vdom.name, attrs, children);
+		let name = this.findElement(vdom);
+		return h(name, attrs, children);
 	}
 	
 	
@@ -147,7 +172,9 @@ Runtime.Providers.RenderProvider = class extends use("Runtime.BaseProvider")
 	_init()
 	{
 		super._init();
+		const Map = use("Runtime.Map");
 		this.enable_ssr = true;
+		this.components = new Map();
 	}
 	static getClassName(){ return "Runtime.Providers.RenderProvider"; }
 	static getMethodsList(){ return null; }

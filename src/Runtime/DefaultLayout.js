@@ -4,7 +4,7 @@ const rtl = use("Runtime.rtl");
 /*
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ Runtime.DefaultLayout = {
 			if (class_name)
 			{
 				/* Element class_name */
-				__v.element(rtl.findClass(class_name), new Runtime.Map({"model": model}));
+				__v.element(class_name, new Runtime.Map({"model": model}));
 			}
 			
 			return __v;
@@ -74,7 +74,7 @@ Runtime.DefaultLayout = {
 				else if (rtl.isString(class_name))
 				{
 					/* Element class_name */
-					__v.element(rtl.findClass(class_name));
+					__v.element(class_name);
 				}
 			}
 			
@@ -108,7 +108,7 @@ Runtime.DefaultLayout = {
 			
 			/* Element script */
 			let __v0 = __v.element("script");
-			__v0.push("var app_data = ");
+			__v0.push("var app_data =");
 			__v0.push(rtl.jsonEncode(this.container.getData()));
 			__v0.push(";\n\t\tRuntime.rtl.mount(app_data, document.querySelector(\".root_container\"), function (result){\n\t\t\twindow[\"app\"] = result.get(\"app\");\n\t\t\twindow[\"app_layout\"] = result.get(\"layout\");\n\t\t});");
 			

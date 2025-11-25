@@ -6,7 +6,7 @@ const rtl = use("Runtime.rtl");
 !
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -74,6 +74,7 @@ Runtime.VirtualDom = class extends use("Runtime.BaseObject")
 		let item = this.constructor.newInstance(new Vector(this.component));
 		item.setName(name);
 		item.setAttrs(attrs);
+		if (name == "script" || name == "style") item.is_raw = true;
 		this.push(item);
 		return item;
 	}
@@ -112,6 +113,21 @@ Runtime.VirtualDom = class extends use("Runtime.BaseObject")
 	slot(slot_name, content)
 	{
 		this.slots.set(slot_name, content);
+	}
+	
+	
+	/**
+	 * Render vdom to string
+	 */
+	render()
+	{
+		const Vector = use("Runtime.Vector");
+		const RenderContent = use("Runtime.Providers.RenderContent");
+		let content = new Vector();
+		let provider = new RenderContent();
+		provider.components = Runtime.rtl.getContext().provider("render").components;
+		provider.render(this, content);
+		return rs.join("", content);
 	}
 	
 	

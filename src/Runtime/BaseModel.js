@@ -5,7 +5,7 @@ const rtl = use("Runtime.rtl");
 !
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -51,7 +51,6 @@ Runtime.BaseModel = class extends use("Runtime.BaseObject")
 		this.layout = this.parent_widget ? this.parent_widget.layout : null;
 		/* Setup params */
 		this.component = params.has("component") ? params.get("component") : this.component;
-		this.widget_name = params.get("widget_name");
 	}
 	
 	
@@ -68,21 +67,7 @@ Runtime.BaseModel = class extends use("Runtime.BaseObject")
 	 */
 	serialize(serializer, data)
 	{
-		const Method = use("Runtime.Method");
 		serializer.process(this, "component", data);
-		serializer.process(this, "widget_name", data);
-		serializer.process(this, "widgets", data, new Method(this, "serializeCreateWidget"));
-	}
-	
-	
-	/**
-	 * Serialize widget
-	 */
-	serializeCreateWidget(serializer, data)
-	{
-		let class_name = data.get("__class_name__");
-		let widget = this.addWidget(class_name);
-		return widget;
 	}
 	
 	
@@ -91,13 +76,6 @@ Runtime.BaseModel = class extends use("Runtime.BaseObject")
 	 */
 	async loadData(container)
 	{
-		let keys = rtl.list(this.widgets.keys());
-		for (let i = 0; i < keys.count(); i++)
-		{
-			let widget_name = keys.get(i);
-			let widget = this.widgets.get(widget_name);
-			await widget.loadData(container);
-		}
 	}
 	
 	
@@ -110,9 +88,9 @@ Runtime.BaseModel = class extends use("Runtime.BaseObject")
 	
 	
 	/**
-	 * Add widget
+	 * Create widget
 	 */
-	addWidget(class_name, params)
+	createWidget(class_name, params)
 	{
 		const Map = use("Runtime.Map");
 		const Vector = use("Runtime.Vector");
@@ -120,24 +98,7 @@ Runtime.BaseModel = class extends use("Runtime.BaseObject")
 		if (params == null) params = new Map();
 		if (!params.has("parent_widget")) params.set("parent_widget", this);
 		let widget = rtl.newInstance(class_name, new Vector(params));
-		let widget_name = params.get("widget_name");
-		if (widget_name) this.widgets.set(widget_name, widget);
 		return widget;
-	}
-	
-	
-	/**
-	 * Returns widget by name
-	 */
-	getWidget(name){ return this.widgets.get(name); }
-	
-	
-	/**
-	 * Set widget
-	 */
-	setWidget(name, widget)
-	{
-		this.widgets.set(name, widget);
 	}
 	
 	
@@ -145,12 +106,11 @@ Runtime.BaseModel = class extends use("Runtime.BaseObject")
 	_init()
 	{
 		super._init();
-		const Map = use("Runtime.Map");
+		const Listener = use("Runtime.Listener");
 		this.layout = null;
 		this.parent_widget = null;
+		this.listener = new Listener(this);
 		this.component = "";
-		this.widget_name = "";
-		this.widgets = new Map();
 	}
 	static getClassName(){ return "Runtime.BaseModel"; }
 	static getMethodsList(){ return null; }

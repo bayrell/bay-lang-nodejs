@@ -5,7 +5,7 @@ const rs = use("Runtime.rs");
 !
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 	 */
 	initStorage()
 	{
-		this.storage = this.addWidget("Runtime.BaseStorage");
+		this.storage = this.createWidget("Runtime.BaseStorage");
 	}
 	
 	
@@ -57,11 +57,25 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 	 */
 	serialize(serializer, data)
 	{
+		const Method = use("Runtime.Method");
 		super.serialize(serializer, data);
 		serializer.process(this, "components", data);
 		serializer.process(this, "current_page_model", data);
 		serializer.process(this, "lang", data);
+		serializer.process(this, "theme", data);
 		serializer.process(this, "title", data);
+		serializer.process(this, "pages", data, new Method(this, "serializePage"));
+		serializer.process(this, "storage", data);
+	}
+	
+	
+	/**
+	 * Serialize page
+	 */
+	serializePage(serializer, data)
+	{
+		let class_name = data.get("__class_name__");
+		return this.createWidget(class_name, data);
 	}
 	
 	
@@ -77,7 +91,7 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 	/**
 	 * Returns page model
 	 */
-	getPageModel(){ return this.widgets.get(this.current_page_model); }
+	getPageModel(){ return this.pages.get(this.current_page_model); }
 	
 	
 	/**
@@ -89,11 +103,12 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 		if (params == undefined) params = null;
 		if (!params) params = new Map();
 		this.current_page_model = class_name;
-		let page = this.getWidget(class_name);
+		let page = this.pages.get(class_name);
 		if (!page)
 		{
 			params.set("widget_name", class_name);
-			page = this.addWidget(class_name, params);
+			page = this.createWidget(class_name, params);
+			this.pages.set(class_name, page);
 		}
 		return page;
 	}
@@ -107,13 +122,28 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 		const RuntimeHook = use("Runtime.Hooks.RuntimeHook");
 		const Map = use("Runtime.Map");
 		if (full_title == undefined) full_title = false;
-		let d = Runtime.rtl.getContext().hook(RuntimeHook.TITLE, Map.create({
+		let res = Runtime.rtl.getContext().hook(RuntimeHook.TITLE, Map.create({
 			"layout": this,
 			"title": title,
 			"title_orig": title,
 			"full_title": full_title,
 		}));
-		this.title = d.get("title");
+		this.title = res.get("title");
+	}
+	
+	
+	/**
+	 * Assets
+	 */
+	assets(path)
+	{
+		const RuntimeHook = use("Runtime.Hooks.RuntimeHook");
+		const Map = use("Runtime.Map");
+		let res = Runtime.rtl.getContext().hook(RuntimeHook.ASSETS, Map.create({
+			"layout": this,
+			"path": path,
+		}));
+		return res.get("path");
 	}
 	
 	
@@ -190,8 +220,10 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 	{
 		super._init();
 		const Vector = use("Runtime.Vector");
+		const Map = use("Runtime.Map");
 		this.storage = null;
 		this.components = new Vector();
+		this.pages = new Map();
 		this.component = "Runtime.DefaultLayout";
 		this.current_page_model = "";
 		this.name = "";

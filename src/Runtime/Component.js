@@ -3,7 +3,7 @@ const use = require('bay-lang').use;
 /*
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,6 +25,12 @@ Runtime.Component = {
 		model: {default: null},
 		class: {default: ""},
 	},
+	data: function()
+	{
+		return {
+			parent_component: null,
+		};
+	},
 	methods:
 	{
 		render: function()
@@ -43,11 +49,26 @@ Runtime.Component = {
 	return f ? f() : null;
 		},
 		/**
+		 * Returns parent
+		 */
+		getParent: function()
+		{
+			return this.$parent;
+		},
+		/**
 		 * Returns ref
 		 */
 		getRef: function(name)
 		{
 			return this.$refs[name];
+		},
+		/**
+		 * Emit message
+		 */
+		emit: function(message)
+		{
+			message.src = this;
+	this.$emit(message.name, message);
 		},
 		hash: function(s, f){ if (f == undefined) f = null;return f; },
 		getClassName: function(){ return "Runtime.Component"; },

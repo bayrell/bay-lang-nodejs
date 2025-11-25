@@ -1,6 +1,5 @@
 "use strict;"
 const use = require('bay-lang').use;
-const rtl = use("Runtime.rtl");
 /*
 !
  *  BayLang Technology
@@ -20,58 +19,17 @@ const rtl = use("Runtime.rtl");
  *  limitations under the License.
 */
 if (typeof Runtime == 'undefined') Runtime = {};
-if (typeof Runtime.Exceptions == 'undefined') Runtime.Exceptions = {};
-Runtime.Exceptions.ApiError = class extends use("Runtime.Exceptions.RuntimeException")
+Runtime.Message = class extends use("Runtime.BaseObject")
 {
-	constructor(prev)
-	{
-		if (prev == undefined) prev = null;
-		super(prev.getErrorMessage(), rtl.ERROR_API_ERROR, prev);
-	}
-	
-	
 	/**
-	 * Returns error message
+	 * Create message
 	 */
-	getErrorMessage()
+	constructor(params)
 	{
-		return this.prev.getErrorMessage();
-	}
-	
-	
-	/**
-	 * Returns error code
-	 */
-	getErrorCode()
-	{
-		return this.prev.getErrorCode();
-	}
-	
-	
-	/**
-	 * Returns error file name
-	 */
-	getFileName()
-	{
-		return this.prev.getFileName();
-	}
-	
-	
-	/**
-	 * Returns error line
-	 */
-	getErrorLine()
-	{
-		return this.prev.getErrorLine();
-	}
-	
-	
-	/**
-	 * Returns error position
-	 */
-	getErrorPos()
-	{
-		return this.prev.getErrorPos();
+		if (params == undefined) params = null;
+		super();
+		/* Setup params */
+		this._assign_values(params);
 	}
 	
 	
@@ -79,13 +37,16 @@ Runtime.Exceptions.ApiError = class extends use("Runtime.Exceptions.RuntimeExcep
 	_init()
 	{
 		super._init();
+		this.data = null;
+		this.name = "";
+		this.src = null;
 	}
-	static getClassName(){ return "Runtime.Exceptions.ApiError"; }
+	static getClassName(){ return "Runtime.Message"; }
 	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
 	static getInterfaces(){ return []; }
 };
-use.add(Runtime.Exceptions.ApiError);
+use.add(Runtime.Message);
 module.exports = {
-	"ApiError": Runtime.Exceptions.ApiError,
+	"Message": Runtime.Message,
 };

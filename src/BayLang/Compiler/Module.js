@@ -286,6 +286,7 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 	 */
 	async compile(relative_src_file_path, lang)
 	{
+		const Vector = use("Runtime.Vector");
 		const fs = use("Runtime.fs");
 		const ParserBay = use("BayLang.LangBay.ParserBay");
 		if (lang == undefined) lang = "";
@@ -293,16 +294,29 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 		let src_file_path = this.resolveSourceFilePath(relative_src_file_path);
 		if (src_file_path == "") return false;
 		if (!this.checkFile(src_file_path)) return false;
+		if (this.checkExclude(relative_src_file_path)) return false;
+		/* Check extension */
+		let arr = new Vector("bay", "es6", "php", "py", "ui");
+		let extension = rs.extname(src_file_path);
+		if (arr.indexOf(extension) == -1) return false;
 		/* Read file */
 		if (!await fs.isFile(src_file_path)) return false;
 		let file_content = await fs.readFile(src_file_path);
 		/* Parse file */
-		let parser = new ParserBay();
-		parser.setContent(file_content);
-		let file_op_code = parser.parse();
-		if (!file_op_code) return false;
+		let file_op_code = null;
+		if (extension == "bay")
+		{
+			let parser = new ParserBay();
+			parser.setContent(file_content);
+			file_op_code = parser.parse();
+			if (!file_op_code) return false;
+		}
+		else
+		{
+			lang = extension;
+		}
 		/* Translate project languages */
-		this.translateLanguages(relative_src_file_path, file_op_code, lang);
+		this.translateLanguages(relative_src_file_path, file_op_code ? file_op_code : file_content, lang);
 		return true;
 	}
 	
@@ -337,6 +351,7 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 	async translate(relative_src_file_path, op_code, lang)
 	{
 		const LangUtils = use("BayLang.LangUtils");
+		const BaseOpCode = use("BayLang.OpCodes.BaseOpCode");
 		const fs = use("Runtime.fs");
 		/* Get dest file path */
 		let dest_file_path = this.resolveDestFilePath(relative_src_file_path, lang);
@@ -345,7 +360,15 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 		let translator = LangUtils.createTranslator(lang);
 		if (!translator) return false;
 		/* Translate */
-		let dest_file_content = translator.translate(op_code);
+		let dest_file_content = "";
+		if (op_code instanceof BaseOpCode)
+		{
+			dest_file_content = translator.translate(op_code);
+		}
+		else if (rtl.isString(op_code))
+		{
+			dest_file_content = op_code;
+		}
 		/* Create dest folder if not exists */
 		let dest_dir_name = rs.dirname(dest_file_path);
 		if (!await fs.isFolder(dest_dir_name))

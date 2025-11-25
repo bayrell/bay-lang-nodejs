@@ -147,16 +147,15 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 		const ParserBayHtml = use("BayLang.LangBay.ParserBayHtml");
 		if (tag_name instanceof BaseOpCode)
 		{
-			let rtl = this.translator.getUseModule("rtl");
 			let item_result = new Vector();
 			this.translator.expression.translate(tag_name, item_result);
 			let value = rs.join("", item_result);
-			return new Vector(value, rtl + String(".findClass(") + String(value) + String(")"));
+			return new Vector(value, value);
 		}
 		if (ParserBayHtml.isComponent(tag_name))
 		{
 			let module_name = this.translator.getUseModule(tag_name);
-			return new Vector(module_name, module_name);
+			return new Vector(module_name, this.translator.toString(module_name));
 		}
 		return new Vector(tag_name, this.translator.toString(tag_name));
 	}

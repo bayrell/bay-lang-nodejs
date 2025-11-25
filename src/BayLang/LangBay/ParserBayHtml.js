@@ -428,6 +428,58 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 	
 	
 	/**
+	 * Read HTML string
+	 */
+	readHtmlString(reader, end_tag)
+	{
+		const Vector = use("Runtime.Vector");
+		const OpHtmlItems = use("BayLang.OpCodes.OpHtmlItems");
+		const Map = use("Runtime.Map");
+		let caret_start = reader.main_caret.copy();
+		let caret_item = caret_start.copy();
+		let caret = caret_start.copy();
+		let items = new Vector();
+		let content = new Vector();
+		let addItem = () =>
+		{
+			const Vector = use("Runtime.Vector");
+			const OpHtmlContent = use("BayLang.OpCodes.OpHtmlContent");
+			const Map = use("Runtime.Map");
+			if (content.count() == 0) return;
+			let value = rs.trim(rs.join("", content));
+			content = new Vector();
+			items.push(new OpHtmlContent(Map.create({
+				"value": value,
+				"caret_start": caret_item.copy(),
+				"caret_end": caret.copy(),
+			})));
+		};
+		while (!caret.eof() && !caret.isNextString(end_tag))
+		{
+			if (caret.isNextString("{{"))
+			{
+				addItem();
+				reader.init(caret);
+				let op_code = this.readHtmlExpression(reader);
+				items.push(op_code);
+				caret = reader.main_caret.copy();
+			}
+			else
+			{
+				content.push(caret.readChar());
+			}
+		}
+		addItem();
+		reader.init(caret);
+		return new OpHtmlItems(Map.create({
+			"items": items,
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+		}));
+	}
+	
+	
+	/**
 	 * Read html expression
 	 */
 	readHtmlExpression(reader)
@@ -495,7 +547,11 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		if (reader.nextToken() != "/>")
 		{
 			reader.matchToken(">");
-			content = this.readHtml(reader);
+			if (tag_name.value == "script" || tag_name.value == "style")
+			{
+				content = this.readHtmlString(reader, "</" + String(tag_name.value) + String(">"));
+			}
+			else content = this.readHtml(reader);
 			reader.matchToken("</");
 			if (is_variable) reader.matchToken("{");
 			if (tag_name instanceof OpIdentifier) reader.matchToken(tag_name.value);

@@ -6,7 +6,7 @@ const rtl = use("Runtime.rtl");
 !
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,8 +22,28 @@ const rtl = use("Runtime.rtl");
 */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Providers == 'undefined') Runtime.Providers = {};
-Runtime.Providers.RenderContent = class extends use("Runtime.BaseObject")
+Runtime.Providers.RenderContent = class extends use("Runtime.BaseProvider")
 {
+	/**
+	 * Add replace component
+	 */
+	addComponent(component, name)
+	{
+		this.components.set(component, name);
+	}
+	
+	
+	/**
+	 * Find component
+	 */
+	findComponent(vdom)
+	{
+		let name = vdom.name;
+		if (this.components.has(name)) name = this.compoentns.get(name);
+		return name;
+	}
+	
+	
 	/**
 	 * Render
 	 */
@@ -35,7 +55,7 @@ Runtime.Providers.RenderContent = class extends use("Runtime.BaseObject")
 		if (!vdom) return;
 		if (!(vdom instanceof VirtualDom))
 		{
-			if (parent_vdom && (parent_vdom.name == "style" || parent_vdom.name == "script" || parent_vdom.is_raw))
+			if (parent_vdom && parent_vdom.is_raw)
 			{
 				content.push(vdom);
 			}
@@ -44,7 +64,9 @@ Runtime.Providers.RenderContent = class extends use("Runtime.BaseObject")
 		}
 		if (vdom.is_component)
 		{
-			let component = rtl.newInstance(vdom.name);
+			let component_name = this.findComponent(vdom);
+			let component = rtl.newInstance(component_name);
+			component.parent_component = this.items.count() > 0 ? this.items.last() : null;
 			component.layout = vdom.component ? vdom.component.layout : null;
 			component._slots = vdom.slots;
 			let keys = rtl.list(vdom.attrs.keys());
@@ -54,7 +76,9 @@ Runtime.Providers.RenderContent = class extends use("Runtime.BaseObject")
 				rtl.setAttr(component, attr_name, vdom.attrs.get(attr_name));
 			}
 			let item = component.render();
+			this.items.push(component);
 			this.render(item, content);
+			this.items.pop();
 		}
 		else
 		{
@@ -113,6 +137,10 @@ Runtime.Providers.RenderContent = class extends use("Runtime.BaseObject")
 	_init()
 	{
 		super._init();
+		const Vector = use("Runtime.Vector");
+		const Map = use("Runtime.Map");
+		this.items = new Vector();
+		this.components = new Map();
 	}
 	static getClassName(){ return "Runtime.Providers.RenderContent"; }
 	static getMethodsList(){ return null; }

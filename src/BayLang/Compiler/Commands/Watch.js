@@ -1,6 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
+const rs = use("Runtime.rs");
 /*
 !
  *  BayLang Technology
@@ -60,6 +61,7 @@ BayLang.Compiler.Commands.Watch = class extends use("Runtime.Console.BaseCommand
 				let file_path = module.getRelativeSourcePath(changed_file_path);
 				if (!file_path) return;
 				if (module.checkExclude(file_path)) return;
+				let extension = rs.extname(file_path);
 				let result = await module.compile(file_path);
 				if (result)
 				{
@@ -70,6 +72,7 @@ BayLang.Compiler.Commands.Watch = class extends use("Runtime.Console.BaseCommand
 					{
 						let lang = languages.get(i);
 						let dest_file_path = module.resolveDestFilePath(file_path, lang);
+						if (extension != "bay" && extension != lang) continue;
 						rtl.print("=> " + String(dest_file_path));
 					}
 					await make.buildAsset(project, module);

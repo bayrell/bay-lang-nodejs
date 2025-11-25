@@ -1,12 +1,11 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
-const rs = use("Runtime.rs");
 /*
 !
  *  BayLang Technology
  *
- *  (c) Copyright 2016-2024 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -129,21 +128,29 @@ Runtime.RenderContainer = class extends use("Runtime.BaseObject")
 	
 	
 	/**
+	 * Render app
+	 */
+	renderApp()
+	{
+		let component = rtl.newInstance(this.layout.component);
+		component.container = this;
+		component.layout = this.layout;
+		let vdom = component.renderApp();
+		return vdom.render();
+	}
+	
+	
+	/**
 	 * Render layout
 	 */
 	render()
 	{
-		const Vector = use("Runtime.Vector");
 		const VirtualDom = use("Runtime.VirtualDom");
 		const Map = use("Runtime.Map");
-		const RenderContent = use("Runtime.Providers.RenderContent");
-		let content = new Vector();
 		let vdom = new VirtualDom();
 		vdom.setName(this.layout.component);
 		vdom.setAttrs(Map.create({"layout": this.layout}));
-		let provider = new RenderContent();
-		provider.render(vdom, content);
-		return rs.join("", content);
+		return vdom.render();
 	}
 	
 	
