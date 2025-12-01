@@ -41,9 +41,9 @@ BayLang.Compiler.Commands.Version = class extends use("Runtime.Console.BaseComma
 	 */
 	static async run()
 	{
-		const Callback = use("Runtime.Callback");
-		let runtime_version = new Callback("Runtime.ModuleDescription", "getModuleVersion");
-		let lang_version = new Callback("BayLang.ModuleDescription", "getModuleVersion");
+		const Method = use("Runtime.Method");
+		let runtime_version = new Method("Runtime.ModuleDescription", "getModuleVersion");
+		let lang_version = new Method("BayLang.ModuleDescription", "getModuleVersion");
 		rtl.print("Lang version: " + String(lang_version.apply()));
 		rtl.print("Runtime version: " + String(runtime_version.apply()));
 		return this.SUCCESS;

@@ -18,17 +18,13 @@
  *  limitations under the License.
  */
 
-let use = require('bay-lang').use;
+let use = require("bay-lang").use;
 
 /* Load modules */
 require(__dirname + "/src/Runtime/index.js");
 require(__dirname + "/src/Runtime.Console/index.js");
 require(__dirname + "/src/Runtime.Unit/index.js");
 require(__dirname + "/src/BayLang/index.js");
-
-//console.log(use("Runtime.Map"));
-//console.log(Object.keys(use.get_classes()));
-//process.exit();
 
 /* Get classes */
 const rtl = use("Runtime.rtl");

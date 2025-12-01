@@ -11,14 +11,16 @@
   ],
   "files": [
     "src/**/*.js",
-    "*.js"
+    "*.js",
+    "npm-shrinkwrap.json"
   ],
   "bin": {
     "bay-lang-nodejs": "./cli.js"
   },
   "main": "index.js",
   "dependencies": {
-    "chokidar": "^3.5.3",
-    "he": "^1.2.0"
+    "binary-extensions": "2.2.0",
+    "chokidar": "3.6.0",
+    "he": "1.2.0"
   }
 }
