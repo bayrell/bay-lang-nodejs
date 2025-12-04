@@ -1,7 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
-/*
-!
+const rs = use("Runtime.rs");
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,7 +17,7 @@ const use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
 BayLang.OpCodes.OpEntityName = class extends use("BayLang.OpCodes.BaseOpCode")
@@ -25,7 +25,7 @@ BayLang.OpCodes.OpEntityName = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Returns name
 	 */
-	getName(){ return this.items.map((item) => { return item.value; }).join("."); }
+	getName(){ return rs.join(".", this.items.map((item) => { return item.value; })); }
 	
 	
 	/**

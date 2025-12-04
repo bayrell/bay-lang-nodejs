@@ -1,7 +1,6 @@
 "use strict;"
 const use = require('bay-lang').use;
-/*
-!
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,7 +16,7 @@ const use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof Runtime == 'undefined') Runtime = {};
 
 Runtime.Vector = class extends Array
@@ -75,7 +74,7 @@ Runtime.Vector = class extends Array
 		for (var i=0; i<this.length; i++)
 		{
 			if (Array.isArray(this[i]))
-				res = res.concat(this[i]);
+				res = res.concat(this[i].flatten());
 			else res.push(this[i]);
 		}
 		return res;
@@ -123,11 +122,14 @@ Runtime.Vector = class extends Array
 	transition(f)
 	{
 		const RuntimeMap = use("Runtime.Map");
-		return this.reduce(function(map, value, key){
-			if (f) res = f(value, key, this);
-			else res = [value, key];
+		const map = new RuntimeMap();
+		for (let i=0; i<this.length; i++)
+		{
+			if (f) res = f(this[i], i, this);
+			else res = [this[i], i];
 			map.set(res[1], res[0]);
-		}, new RuntimeMap());
+		};
+		return map;
 	}
 	
 	

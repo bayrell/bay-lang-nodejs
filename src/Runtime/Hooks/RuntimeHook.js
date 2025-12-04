@@ -1,7 +1,6 @@
 "use strict;"
 const use = require('bay-lang').use;
-/*
-!
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,7 +16,7 @@ const use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Hooks == 'undefined') Runtime.Hooks = {};
 Runtime.Hooks.RuntimeHook = class extends use("Runtime.Hooks.BaseHook")
@@ -27,12 +26,14 @@ Runtime.Hooks.RuntimeHook = class extends use("Runtime.Hooks.BaseHook")
 	static LAUNCHED = "runtime::launched";
 	static RUN = "runtime::run";
 	static ENV = "runtime::env";
+	static MOUNT = "runtime::mount";
 	static ASSETS = "runtime::assets";
 	static COMPONENTS = "runtime::components";
 	static LAYOUT_HEADER = "runtime::header";
 	static LAYOUT_FOOTER = "runtime::footer";
 	static LAYOUT_NAME = "runtime::layout_name";
 	static CREATE_CONTAINER = "runtime::create_container";
+	static CREATE_CONTAINER_DATA = "runtime::create_container_data";
 	static CREATE_LAYOUT = "runtime::create_layout";
 	static CHANGE_LAYOUT = "runtime::change_layout";
 	static TITLE = "runtime::title";

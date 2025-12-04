@@ -2,8 +2,7 @@
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
 const rs = use("Runtime.rs");
-/*
-!
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -19,7 +18,7 @@ const rs = use("Runtime.rs");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Providers == 'undefined') Runtime.Providers = {};
 Runtime.Providers.RenderProvider = class extends use("Runtime.BaseProvider")
@@ -76,10 +75,16 @@ Runtime.Providers.RenderProvider = class extends use("Runtime.BaseProvider")
 	 */
 	mount(app_data, element)
 	{
+		const RuntimeHook = use("Runtime.Hooks.RuntimeHook");
 		const Map = use("Runtime.Map");
 		let layout = this.createLayout(app_data);
 		let app = this.createApp(layout);
 		app.mount(element, true);
+		Runtime.rtl.getContext().hook(RuntimeHook.MOUNT, Map.create({
+			"app": app,
+			"layout": layout,
+			"data": app_data,
+		}));
 		return Map.create({
 			"app": app,
 			"layout": layout,
@@ -148,6 +153,7 @@ Runtime.Providers.RenderProvider = class extends use("Runtime.BaseProvider")
 			});
 			children = slots.toObject();
 		}
+		if (children instanceof Vector) children = children.flatten();
 		let attrs = vdom.attrs;
 		if (attrs instanceof Map)
 		{

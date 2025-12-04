@@ -1,8 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
-/*
-!
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,7 +17,7 @@ const rs = use("Runtime.rs");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangPHP == 'undefined') BayLang.LangPHP = {};
 BayLang.LangPHP.TranslatorPHPOperator = class extends use("Runtime.BaseObject")
@@ -240,12 +239,13 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends use("Runtime.BaseObject")
 			return;
 		}
 		let first_line = rs.trim(lines.get(0));
-		if (first_line == "") lines = lines.slice(1);
+		let is_comment_function = first_line == "*" || first_line == "!";
+		if (is_comment_function || first_line == "") lines = lines.slice(1);
 		if (rs.trim(lines.get(lines.count() - 1)) == "" && lines.count() > 1)
 		{
 			lines = lines.slice(0, lines.count() - 1);
 		}
-		result.push("/*");
+		result.push("/*" + String(is_comment_function ? first_line : ""));
 		for (let i = 0; i < lines.count(); i++)
 		{
 			let line = lines.get(i);
@@ -257,7 +257,8 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends use("Runtime.BaseObject")
 			result.push(rs.substr(line, start));
 		}
 		result.push(this.translator.newLine());
-		result.push("*/");
+		if (is_comment_function) result.push(" */");
+		else result.push("*/");
 	}
 	
 	

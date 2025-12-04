@@ -2,8 +2,7 @@
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
 const rs = use("Runtime.rs");
-/*
-!
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -19,7 +18,7 @@ const rs = use("Runtime.rs");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 if (typeof BayLang.Compiler.Commands == 'undefined') BayLang.Compiler.Commands = {};
@@ -72,6 +71,7 @@ BayLang.Compiler.Commands.Watch = class extends use("Runtime.Console.BaseCommand
 					{
 						let lang = languages.get(i);
 						let dest_file_path = module.resolveDestFilePath(file_path, lang);
+						if (dest_file_path == "") continue;
 						if (extension != "bay" && extension != lang) continue;
 						rtl.print("=> " + String(dest_file_path));
 					}
@@ -100,13 +100,14 @@ BayLang.Compiler.Commands.Watch = class extends use("Runtime.Console.BaseCommand
 	 */
 	async run()
 	{
+		let base_path = Runtime.rtl.getContext().base_path;
 		let watch_dir = () =>
 		{
 			let chokidar = require("chokidar");
 			return new Promise(() => {
 				console.log("Start watch");
 				chokidar
-					.watch(rtl.getContext().base_path)
+					.watch(base_path)
 					.on('change', (path, stat) => {
 						this.onChangeFile(path);
 					})

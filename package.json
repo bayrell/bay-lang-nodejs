@@ -15,7 +15,7 @@
     "npm-shrinkwrap.json"
   ],
   "bin": {
-    "bay-lang-nodejs": "./cli.js"
+    "baylang-nodejs": "./cli.js"
   },
   "main": "index.js",
   "dependencies": {

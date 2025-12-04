@@ -1,8 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
-/*
-!
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,7 +17,7 @@ const rtl = use("Runtime.rtl");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof Runtime == 'undefined') Runtime = {};
 Runtime.RenderContainer = class extends use("Runtime.BaseObject")
 {
@@ -118,12 +117,19 @@ Runtime.RenderContainer = class extends use("Runtime.BaseObject")
 	{
 		const Serializer = use("Runtime.Serializer");
 		const Map = use("Runtime.Map");
+		const RuntimeHook = use("Runtime.Hooks.RuntimeHook");
 		let serializer = new Serializer();
 		let layout_data = serializer.encode(this.layout);
-		return Map.create({
+		let data = Map.create({
 			"modules": Runtime.rtl.getContext().modules,
 			"layout": layout_data,
+			"storage": new Map(),
 		});
+		let res = Runtime.rtl.getContext().hook(RuntimeHook.CREATE_CONTAINER_DATA, Map.create({
+			"container": this,
+			"data": data,
+		}));
+		return res.get("data");
 	}
 	
 	

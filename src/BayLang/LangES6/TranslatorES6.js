@@ -1,8 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
-/*
-!
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,7 +17,7 @@ const rs = use("Runtime.rs");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
 BayLang.LangES6.TranslatorES6 = class extends use("BayLang.CoreTranslator")
@@ -45,12 +44,11 @@ BayLang.LangES6.TranslatorES6 = class extends use("BayLang.CoreTranslator")
 	 */
 	toString(s)
 	{
-		const re = use("Runtime.re");
-		s = re.replace("\\\\", "\\\\", s);
-		s = re.replace("\"", "\\\"", s);
-		s = re.replace("\n", "\\n", s);
-		s = re.replace("\r", "\\r", s);
-		s = re.replace("\t", "\\t", s);
+		s = rs.replace("\\", "\\\\", s);
+		s = rs.replace("\"", "\\\"", s);
+		s = rs.replace("\n", "\\n", s);
+		s = rs.replace("\r", "\\r", s);
+		s = rs.replace("\t", "\\t", s);
 		return "\"" + String(s) + String("\"");
 	}
 	

@@ -1,7 +1,6 @@
 "use strict;"
 const use = require('bay-lang').use;
-/*
-!
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,7 +16,7 @@ const use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Providers == 'undefined') Runtime.Providers = {};
 Runtime.Providers.HookProvider = class extends use("Runtime.BaseProvider")
@@ -50,6 +49,7 @@ Runtime.Providers.HookProvider = class extends use("Runtime.BaseProvider")
 	async start()
 	{
 		await super.start();
+		this.sort();
 	}
 	
 	
@@ -73,6 +73,30 @@ Runtime.Providers.HookProvider = class extends use("Runtime.BaseProvider")
 	{
 		if (!this.async_hooks.has(name)) return false;
 		return this.async_hooks.get(name);
+	}
+	
+	
+	/**
+	 * Register hook
+	 */
+	register(hook_name, f, priority)
+	{
+		if (priority == undefined) priority = 100;
+		let chain = this.getChain(hook_name);
+		if (!chain) return;
+		chain.add(f, priority);
+	}
+	
+	
+	/**
+	 * Sort
+	 */
+	sort()
+	{
+		this.chains.each((chain) =>
+		{
+			chain.sort();
+		});
 	}
 	
 	

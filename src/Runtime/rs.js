@@ -1,8 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
-/*
-!
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,7 +17,7 @@ const rtl = use("Runtime.rtl");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof Runtime == 'undefined') Runtime = {};
 Runtime.rs = class
 {
@@ -560,7 +559,10 @@ Runtime.rs = class
 			if (arr[0] == key)
 			{
 				find = true;
-				if (value != "") return key + String("=") + String(this.htmlEscape(value));
+				if (key != "" && value != "")
+				{
+					return key + String("=") + String(this.htmlEscape(value));
+				}
 				return "";
 			}
 			return s;

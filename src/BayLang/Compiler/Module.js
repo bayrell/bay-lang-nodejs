@@ -2,8 +2,7 @@
 const use = require('bay-lang').use;
 const rtl = use("Runtime.rtl");
 const rs = use("Runtime.rs");
-/*
-!
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -19,7 +18,7 @@ const rs = use("Runtime.rs");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
@@ -439,7 +438,7 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 	static getClassName(){ return "BayLang.Compiler.Module"; }
 	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(){ return ["Runtime.Serialize.SerializeInterface"]; }
+	static getInterfaces(){ return ["Runtime.SerializeInterface"]; }
 };
 use.add(BayLang.Compiler.Module);
 module.exports = {

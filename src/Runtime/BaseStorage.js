@@ -1,7 +1,6 @@
 "use strict;"
 const use = require('bay-lang').use;
-/*
-!
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,7 +16,7 @@ const use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof Runtime == 'undefined') Runtime = {};
 Runtime.BaseStorage = class extends use("Runtime.BaseModel")
 {
@@ -28,6 +27,15 @@ Runtime.BaseStorage = class extends use("Runtime.BaseModel")
 	{
 		super.serialize(serializer, data);
 		serializer.process(this, "frontend_params", data);
+	}
+	
+	
+	/**
+	 * Set frontend params
+	 */
+	set(key, value)
+	{
+		this.frontend_params.set(key, value);
 	}
 	
 	

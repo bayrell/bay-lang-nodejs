@@ -1,7 +1,6 @@
 "use strict;"
 const use = require('bay-lang').use;
-/*
-!
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,7 +16,7 @@ const use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof Runtime == 'undefined') Runtime = {};
 Runtime.rtl = class
 {
@@ -280,9 +279,10 @@ Runtime.rtl = class
 	
 	
 	/* ================================= Lib Functions =================================== */
-	static compare(order, f)
+	static compare(f, order)
 	{
 		if (f == undefined) f = null;
+		if (order == undefined) order = "asc";
 		return (a, b) =>
 		{
 			if (f)
@@ -290,9 +290,9 @@ Runtime.rtl = class
 				a = f(a);
 				b = f(b);
 			}
-			if (a < b) return 1;
-			if (a > b) return -1;
-			return 0;
+			if (a == b) return 0;
+			if (order == "asc") return a < b ? -1 : 1;
+			return a > b ? -1 : 1;
 		};
 	}
 	
@@ -587,6 +587,8 @@ Runtime.rtl = class
 		let context = await this.createContext(Map.create({
 			"modules": modules,
 		}));
+		/* Start context */
+		await context.start();
 		/* Render app */
 		let render = context.factory("render");
 		let result = render.mount(app_data, element);

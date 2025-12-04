@@ -1,8 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
-/*
-!
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -18,7 +17,7 @@ const rs = use("Runtime.rs");
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangES6 == 'undefined') BayLang.LangES6 = {};
 BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
@@ -115,7 +114,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 			else
 			{
 				if (key == "class") value = new Vector(value);
-				result.set(key, new Vector(value));
+				result.set(key, value);
 			}
 		}
 		/* Add class name */

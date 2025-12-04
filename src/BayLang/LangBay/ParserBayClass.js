@@ -1,7 +1,6 @@
 "use strict;"
 const use = require('bay-lang').use;
-/*
-!
+/*!
  *  BayLang Technology
  *
  *  (c) Copyright 2016-2025 "Ildar Bikmamatov" <support@bayrell.org>
@@ -17,7 +16,7 @@ const use = require('bay-lang').use;
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
-*/
+ */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.LangBay == 'undefined') BayLang.LangBay = {};
 BayLang.LangBay.ParserBayClass = class extends use("Runtime.BaseObject")
@@ -222,7 +221,7 @@ BayLang.LangBay.ParserBayClass = class extends use("Runtime.BaseObject")
 		let class_implements = new Vector();
 		/* Read class name */
 		let class_name = this.parser.parser_base.readTypeIdentifier(reader, false);
-		this.parser.uses.set(class_name.entity_name.getName(), this.parser.current_namespace + String(".") + String(class_name.entity_name.getName()));
+		this.parser.uses.set(class_name.entity_name.getName(), this.parser.current_namespace_name + String(".") + String(class_name.entity_name.getName()));
 		/* Add generics */
 		let save_uses = this.parser.uses.copy();
 		this.parser.addGenericUse(class_name.generics);
