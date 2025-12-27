@@ -54,7 +54,7 @@ BayLang.Compiler.Project = class extends use("Runtime.BaseObject")
 		const Vector = use("Runtime.Vector");
 		this.info = null;
 		this.path = project_path;
-		let project_json_path = fs.join(new Vector(this.path, "project.json"));
+		let project_json_path = fs.join(Vector.create([this.path, "project.json"]));
 		if (!await fs.isFolder(this.path)) return;
 		if (!await fs.isFile(project_json_path)) return;
 		/* Read file */
@@ -70,7 +70,7 @@ BayLang.Compiler.Project = class extends use("Runtime.BaseObject")
 	{
 		const fs = use("Runtime.fs");
 		const Vector = use("Runtime.Vector");
-		let project_json_path = fs.join(new Vector(this.path, "project.json"));
+		let project_json_path = fs.join(Vector.create([this.path, "project.json"]));
 		let content = rtl.json_encode(this.info, rtl.JSON_PRETTY);
 		await fs.saveFile(project_json_path, content);
 	}
@@ -156,13 +156,13 @@ BayLang.Compiler.Project = class extends use("Runtime.BaseObject")
 	/**
 	 * Returns assets
 	 */
-	getAssets(){ const Vector = use("Runtime.Vector");return this.exists() ? this.info.get("assets") : new Vector(); }
+	getAssets(){ const Vector = use("Runtime.Vector");return this.exists() ? this.info.get("assets") : Vector.create([]); }
 	
 	
 	/**
 	 * Returns languages
 	 */
-	getLanguages(){ const Vector = use("Runtime.Vector");return this.exists() ? this.info.get("languages") : new Vector(); }
+	getLanguages(){ const Vector = use("Runtime.Vector");return this.exists() ? this.info.get("languages") : Vector.create([]); }
 	
 	
 	/**
@@ -262,7 +262,7 @@ BayLang.Compiler.Project = class extends use("Runtime.BaseObject")
 			let item = items.get(i);
 			let module_src = item.get("src");
 			let module_type = item.get("type");
-			let folder_path = fs.join(new Vector(path, module_src));
+			let folder_path = fs.join(Vector.create([path, module_src]));
 			/* Read from folder */
 			if (module_type == "folder")
 			{
@@ -291,7 +291,7 @@ BayLang.Compiler.Project = class extends use("Runtime.BaseObject")
 			if (file_name == ".") continue;
 			if (file_name == "..") continue;
 			/* Read module */
-			await this.readModule(fs.join(new Vector(folder_path, file_name)));
+			await this.readModule(fs.join(Vector.create([folder_path, file_name])));
 		}
 	}
 	
@@ -302,7 +302,7 @@ BayLang.Compiler.Project = class extends use("Runtime.BaseObject")
 	sortRequiredModules(modules)
 	{
 		const Vector = use("Runtime.Vector");
-		let result = new Vector();
+		let result = Vector.create([]);
 		let add_module;
 		add_module = (module_name) =>
 		{
@@ -340,7 +340,7 @@ BayLang.Compiler.Project = class extends use("Runtime.BaseObject")
 		const Vector = use("Runtime.Vector");
 		let modules = asset.get("modules");
 		/* Extends modules */
-		let new_modules = new Vector();
+		let new_modules = Vector.create([]);
 		modules.each((module_name) =>
 		{
 			if (rs.substr(module_name, 0, 1) == "@")
@@ -372,7 +372,7 @@ BayLang.Compiler.Project = class extends use("Runtime.BaseObject")
 		let asset_path_relative = asset.get("dest");
 		if (asset_path_relative == "") return;
 		/* Get asset dest path */
-		let asset_path = fs.join(new Vector(this.path, asset_path_relative));
+		let asset_path = fs.join(Vector.create([this.path, asset_path_relative]));
 		let asset_content = "";
 		/* Get modules names in asset */
 		let modules = this.getAssetModules(asset);

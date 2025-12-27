@@ -264,7 +264,7 @@ BayLang.LangPHP.TranslatorPHPProgram = class extends use("Runtime.BaseObject")
 			let item = op_code.items.get(i);
 			if (item instanceof OpPreprocessorIfCode)
 			{
-				let result1 = new Vector();
+				let result1 = Vector.create([]);
 				if (this.OpPreprocessorIfCode(item, result1))
 				{
 					result.push(this.translator.newLine());
@@ -319,10 +319,11 @@ BayLang.LangPHP.TranslatorPHPProgram = class extends use("Runtime.BaseObject")
 	/**
 	 * OpDeclareFunction
 	 */
-	OpDeclareFunction(op_code, result)
+	OpDeclareFunction(op_code, result, use_name)
 	{
 		const OpDeclareClass = use("BayLang.OpCodes.OpDeclareClass");
 		const OpItems = use("BayLang.OpCodes.OpItems");
+		if (use_name == undefined) use_name = true;
 		/*if (not (op_code.pattern instanceof OpTypeIdentifier)) return;*/
 		/* Setup current function */
 		let old_function = this.translator.current_function;
@@ -345,7 +346,7 @@ BayLang.LangPHP.TranslatorPHPProgram = class extends use("Runtime.BaseObject")
 		/* Function name */
 		result.push("function ");
 		if (op_code.name == "constructor") result.push("__construct");
-		else result.push(op_code.name);
+		else if (use_name) result.push(op_code.name);
 		/* Arguments */
 		result.push("(");
 		this.OpDeclareFunctionArgs(op_code, result);
@@ -485,7 +486,7 @@ BayLang.LangPHP.TranslatorPHPProgram = class extends use("Runtime.BaseObject")
 		let next_new_line = true, prev_next_new_line = true;
 		for (let i = 0; i < op_code.content.count(); i++)
 		{
-			let item_result = new Vector();
+			let item_result = Vector.create([]);
 			let op_code_item = op_code.content.get(i);
 			if (next_new_line && !(op_code_item instanceof OpPreprocessorIfDef || op_code_item instanceof OpPreprocessorSwitch))
 			{
@@ -627,7 +628,7 @@ BayLang.LangPHP.TranslatorPHPProgram = class extends use("Runtime.BaseObject")
 				result.push("}");
 			}
 			/* Get methods with annotations */
-			let methods = new Vector();
+			let methods = Vector.create([]);
 			this.translator.helper.getMethodsWithAnnotations(op_code.content, methods);
 			/* Get methods list */
 			result.push(this.translator.newLine());
@@ -659,12 +660,12 @@ BayLang.LangPHP.TranslatorPHPProgram = class extends use("Runtime.BaseObject")
 				result.push(this.translator.newLine());
 				result.push("{");
 				this.translator.levelInc();
-				result.push(this.translator.newLine());
 				for (let i = 0; i < methods.count(); i++)
 				{
 					let op_code_item = methods.get(i);
 					let method_name = this.translator.toString(op_code_item.name);
-					result.push("if ($field_nane == " + String(method_name) + String(") "));
+					result.push(this.translator.newLine());
+					result.push("if ($field_name == " + String(method_name) + String(") "));
 					this.OpAnnotation(op_code_item.annotations, result);
 				}
 				result.push(this.translator.newLine());

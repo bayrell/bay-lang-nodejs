@@ -32,13 +32,13 @@ BayLang.Test.Translator.Operator = class
 	{
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
-		let message = new Vector(
+		let message = Vector.create([
 			command,
 			"Missing:",
 			value1,
 			"Exists:",
 			value2,
-		);
+		]);
 		AssertHelper.equalValue(value1, value2, rs.join("\n", message));
 	}
 	
@@ -59,7 +59,7 @@ BayLang.Test.Translator.Operator = class
 		/* Init function */
 		if (callback) callback(parser, translator);
 		/* Translate file */
-		let output = new Vector();
+		let output = Vector.create([]);
 		try
 		{
 			parser.setContent(src);
@@ -101,7 +101,7 @@ BayLang.Test.Translator.Operator = class
 		if (content_php instanceof Collection) content_php = rs.join("\n", content_php);
 		if (arr == null)
 		{
-			arr = new Vector(
+			arr = Vector.create([
 				"bay_to_bay",
 				"bay_to_php",
 				"bay_to_es6",
@@ -111,7 +111,7 @@ BayLang.Test.Translator.Operator = class
 				"es6_to_es6",
 				"es6_to_bay",
 				"es6_to_php",
-			);
+			]);
 		}
 		if (arr.indexOf("bay_to_bay") >= 0)
 		{
@@ -158,10 +158,10 @@ BayLang.Test.Translator.Operator = class
 		const Vector = use("Runtime.Vector");
 		let content = Map.create({
 			"bay": "var a = 1;",
-			"php": new Vector(
+			"php": Vector.create([
 				"<?php",
 				"$a = 1;",
-			),
+			]),
 		});
 		this.test(content);
 	}
@@ -172,15 +172,15 @@ BayLang.Test.Translator.Operator = class
 		const Map = use("Runtime.Map");
 		const Vector = use("Runtime.Vector");
 		let content = Map.create({
-			"bay": new Vector(
+			"bay": Vector.create([
 				"var a = 1;",
 				"a = 2;",
-			),
-			"php": new Vector(
+			]),
+			"php": Vector.create([
 				"<?php",
 				"$a = 1;",
 				"$a = 2;",
-			),
+			]),
 		});
 		this.test(content);
 	}
@@ -191,18 +191,18 @@ BayLang.Test.Translator.Operator = class
 		const Map = use("Runtime.Map");
 		const Vector = use("Runtime.Vector");
 		let content = Map.create({
-			"bay": new Vector(
+			"bay": Vector.create([
 				"var a = 1, b = 2;",
 				"a = a + b;",
-			),
-			"php": new Vector(
+			]),
+			"php": Vector.create([
 				"<?php",
 				"$a = 1;",
 				"$b = 2;",
 				"$a = $a + $b;",
-			),
+			]),
 		});
-		this.test(content, null, new Vector(
+		this.test(content, null, Vector.create([
 			"bay_to_bay",
 			"bay_to_php",
 			"bay_to_es6",
@@ -210,7 +210,7 @@ BayLang.Test.Translator.Operator = class
 			"es6_to_es6",
 			"es6_to_bay",
 			"es6_to_php",
-		));
+		]));
 	}
 	
 	
@@ -219,25 +219,25 @@ BayLang.Test.Translator.Operator = class
 		const Map = use("Runtime.Map");
 		const Vector = use("Runtime.Vector");
 		let content = Map.create({
-			"bay": new Vector(
+			"bay": Vector.create([
 				"for (var i = 0; i < 10; i++)",
 				"{",
 				"\tprint(i);",
 				"}",
-			),
-			"es6": new Vector(
+			]),
+			"es6": Vector.create([
 				"for (var i = 0; i < 10; i++)",
 				"{",
 				"\tconsole.log(i);",
 				"}",
-			),
-			"php": new Vector(
+			]),
+			"php": Vector.create([
 				"<?php",
 				"for ($i = 0; $i < 10; $i++)",
 				"{",
 				"\techo($i);",
 				"}",
-			),
+			]),
 		});
 		this.test(content);
 	}
@@ -248,25 +248,25 @@ BayLang.Test.Translator.Operator = class
 		const Map = use("Runtime.Map");
 		const Vector = use("Runtime.Vector");
 		let content = Map.create({
-			"bay": new Vector(
+			"bay": Vector.create([
 				"if (a > b)",
 				"{",
 				"\tprint(\"Yes\");",
 				"}",
-			),
-			"es6": new Vector(
+			]),
+			"es6": Vector.create([
 				"if (a > b)",
 				"{",
 				"\tconsole.log(\"Yes\");",
 				"}",
-			),
-			"php": new Vector(
+			]),
+			"php": Vector.create([
 				"<?php",
 				"if ($a > $b)",
 				"{",
 				"\techo(\"Yes\");",
 				"}",
-			),
+			]),
 		});
 		let init = (parser, translator) =>
 		{
@@ -282,7 +282,7 @@ BayLang.Test.Translator.Operator = class
 		const Map = use("Runtime.Map");
 		const Vector = use("Runtime.Vector");
 		let content = Map.create({
-			"bay": new Vector(
+			"bay": Vector.create([
 				"if (a > b)",
 				"{",
 				"\tprint(\"Yes\");",
@@ -291,8 +291,8 @@ BayLang.Test.Translator.Operator = class
 				"{",
 				"\tprint(\"No\");",
 				"}",
-			),
-			"es6": new Vector(
+			]),
+			"es6": Vector.create([
 				"if (a > b)",
 				"{",
 				"\tconsole.log(\"Yes\");",
@@ -301,8 +301,8 @@ BayLang.Test.Translator.Operator = class
 				"{",
 				"\tconsole.log(\"No\");",
 				"}",
-			),
-			"php": new Vector(
+			]),
+			"php": Vector.create([
 				"<?php",
 				"if ($a > $b)",
 				"{",
@@ -312,7 +312,7 @@ BayLang.Test.Translator.Operator = class
 				"{",
 				"\techo(\"No\");",
 				"}",
-			),
+			]),
 		});
 		let init = (parser, translator) =>
 		{
@@ -328,7 +328,7 @@ BayLang.Test.Translator.Operator = class
 		const Map = use("Runtime.Map");
 		const Vector = use("Runtime.Vector");
 		let content = Map.create({
-			"bay": new Vector(
+			"bay": Vector.create([
 				"if (a == 1)",
 				"{",
 				"\tprint(1);",
@@ -345,8 +345,8 @@ BayLang.Test.Translator.Operator = class
 				"{",
 				"\tprint(\"No\");",
 				"}",
-			),
-			"es6": new Vector(
+			]),
+			"es6": Vector.create([
 				"if (a == 1)",
 				"{",
 				"\tconsole.log(1);",
@@ -363,8 +363,8 @@ BayLang.Test.Translator.Operator = class
 				"{",
 				"\tconsole.log(\"No\");",
 				"}",
-			),
-			"php": new Vector(
+			]),
+			"php": Vector.create([
 				"<?php",
 				"if ($a == 1)",
 				"{",
@@ -382,7 +382,7 @@ BayLang.Test.Translator.Operator = class
 				"{",
 				"\techo(\"No\");",
 				"}",
-			),
+			]),
 		});
 		let init = (parser, translator) =>
 		{
@@ -398,21 +398,21 @@ BayLang.Test.Translator.Operator = class
 		const Map = use("Runtime.Map");
 		const Vector = use("Runtime.Vector");
 		let content = Map.create({
-			"bay": new Vector(
+			"bay": Vector.create([
 				"var i = 0;",
 				"while (i < 10)",
 				"{",
 				"\ti++;",
 				"}",
-			),
-			"php": new Vector(
+			]),
+			"php": Vector.create([
 				"<?php",
 				"$i = 0;",
 				"while ($i < 10)",
 				"{",
 				"\t$i++;",
 				"}",
-			),
+			]),
 		});
 		this.test(content);
 	}
@@ -432,21 +432,28 @@ BayLang.Test.Translator.Operator = class
 	static getMethodInfoByName(field_name)
 	{
 		const Vector = use("Runtime.Vector");
-		if (field_nane == "testAssign2") return new Vector(
+		if (field_name == "testAssign2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAssign3") return new Vector(
+		);
+		if (field_name == "testAssign3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAssign4") return new Vector(
+		);
+		if (field_name == "testAssign4") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFor1") return new Vector(
+		);
+		if (field_name == "testFor1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testIf1") return new Vector(
+		);
+		if (field_name == "testIf1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testIf2") return new Vector(
+		);
+		if (field_name == "testIf2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testIf3") return new Vector(
+		);
+		if (field_name == "testIf3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testWhile1") return new Vector(
+		);
+		if (field_name == "testWhile1") return new Vector(
 			new Test(new Map())
 		);
 		return null;

@@ -80,7 +80,7 @@ BayLang.LangES6.ParserES6Function = class extends use("Runtime.BaseObject")
 		pattern = this.getPattern(pattern);
 		/* Read arguments */
 		reader.matchToken("(");
-		let args = new Vector();
+		let args = Vector.create([]);
 		while (!reader.eof() && reader.nextToken() != ")")
 		{
 			let expression = this.parser.parser_expression.readExpression(reader);

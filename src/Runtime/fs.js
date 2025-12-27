@@ -173,8 +173,8 @@ Runtime.fs = class
 		for (let i = 0; i < items.count(); i++)
 		{
 			let item_name = items.get(i);
-			let item_path = this.join(new Vector(dirpath, item_name));
-			let item_name2 = this.join(new Vector(parent_name, item_name));
+			let item_path = this.join(Vector.create([dirpath, item_name]));
+			let item_name2 = this.join(Vector.create([parent_name, item_name]));
 			if (item_name == "." || item_name == "..") continue;
 			item_name2 = rs.removeFirstSlash(item_name2);
 			res.push(item_name2);

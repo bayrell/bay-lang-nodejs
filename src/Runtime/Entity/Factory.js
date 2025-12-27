@@ -61,7 +61,7 @@ Runtime.Entity.Factory = class extends use("Runtime.Entity.Entity")
 		}
 		else if (rtl.isString(class_name))
 		{
-			instance = rtl.newInstance(class_name, new Vector(factory_params));
+			instance = rtl.newInstance(class_name, Vector.create([factory_params]));
 		}
 		return instance;
 	}

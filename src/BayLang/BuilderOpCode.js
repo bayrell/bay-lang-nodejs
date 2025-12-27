@@ -47,7 +47,7 @@ BayLang.BuilderOpCode = class extends use("Runtime.BaseObject")
 		const Vector = use("Runtime.Vector");
 		const OpHtmlItems = use("BayLang.OpCodes.OpHtmlItems");
 		let tag = new OpHtmlTag(Map.create({
-			"attrs": new Vector(),
+			"attrs": Vector.create([]),
 			"items": new OpHtmlItems(),
 			"tag_name": name,
 		}));

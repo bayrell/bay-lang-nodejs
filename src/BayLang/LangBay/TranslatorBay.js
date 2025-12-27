@@ -43,7 +43,7 @@ BayLang.LangBay.TranslatorBay = class extends use("BayLang.CoreTranslator")
 	translate(op_code)
 	{
 		const Vector = use("Runtime.Vector");
-		let content = new Vector();
+		let content = Vector.create([]);
 		if (op_code.is_component)
 		{
 			this.html.translate(op_code, content);

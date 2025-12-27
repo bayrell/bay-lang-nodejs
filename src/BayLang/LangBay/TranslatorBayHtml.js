@@ -52,9 +52,9 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 		let items = rs.split(".", op_code.name);
 		let last_name = items.last();
 		/* Get attrs */
-		let attrs = new Vector(
+		let attrs = Vector.create([
 			"name=\"" + String(op_code.name) + String("\""),
-		);
+		]);
 		/* Add alias name */
 		if (op_code.alias != "" && op_code.alias != last_name)
 		{
@@ -170,7 +170,7 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 		let is_multiline = op_code.isMultiLine();
 		let is_multiline_attrs = this.isOpHtmlTagMultiline(op_code);
 		/* Component attrs */
-		let args_content = new Vector();
+		let args_content = Vector.create([]);
 		this.OpHtmlAttrs(op_code.attrs, args_content, is_multiline_attrs);
 		let args = rs.join("", args_content);
 		if (args != "" && !is_multiline_attrs) args = " " + String(args);
@@ -203,7 +203,7 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 	{
 		const Vector = use("Runtime.Vector");
 		/* Slot attrs */
-		let args_content = new Vector();
+		let args_content = Vector.create([]);
 		this.OpHtmlAttrs(op_code.attrs, args_content);
 		/* Add slot args */
 		if (op_code.args)
@@ -328,7 +328,7 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 		}
 		else
 		{
-			let args_content = new Vector();
+			let args_content = Vector.create([]);
 			if (op_code.args && op_code.args.count() > 0)
 			{
 				this.translator.program.OpDeclareFunctionArgs(op_code, args_content);
@@ -449,7 +449,7 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 		let uses = op_code.items.filter(lib.isInstance("BayLang.OpCodes.OpUse"));
 		if (!component) return;
 		/* Get component name */
-		let component_names = new Vector();
+		let component_names = Vector.create([]);
 		if (space) component_names.push(space.name);
 		component_names.push(component.name);
 		let component_name = rs.join(".", component_names);

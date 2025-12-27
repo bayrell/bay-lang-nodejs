@@ -457,7 +457,7 @@ BayLang.LangES6.TranslatorES6Operator = class extends use("Runtime.BaseObject")
 		for (let i = 0; i < items_count; i++)
 		{
 			let op_code_item = op_code.items.get(i);
-			let result_items = new Vector();
+			let result_items = Vector.create([]);
 			this.translator.last_semicolon = false;
 			let flag = this.translateItem(op_code_item, result_items);
 			if (flag)

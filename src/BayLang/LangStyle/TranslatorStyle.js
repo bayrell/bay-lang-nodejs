@@ -39,7 +39,7 @@ BayLang.LangStyle.TranslatorStyle = class extends use("Runtime.BaseObject")
 	addSelectorContent(result, media, content)
 	{
 		const Vector = use("Runtime.Vector");
-		if (!result.has(media)) result.set(media, new Vector());
+		if (!result.has(media)) result.set(media, Vector.create([]));
 		let items = result.get(media);
 		if (rtl.isString(content)) items.push(content);
 		else if (content instanceof Vector) items.appendItems(content);
@@ -56,7 +56,7 @@ BayLang.LangStyle.TranslatorStyle = class extends use("Runtime.BaseObject")
 		const Selector = use("BayLang.LangStyle.Selector");
 		const OpHtmlCSS = use("BayLang.OpCodes.OpHtmlCSS");
 		const OpHtmlCSSAttribute = use("BayLang.OpCodes.OpHtmlCSSAttribute");
-		let item_content = new Vector();
+		let item_content = Vector.create([]);
 		let item_result = new Map();
 		/* Get hash */
 		let css_hash = rs.getCssHash(this.translator.current_class_name);

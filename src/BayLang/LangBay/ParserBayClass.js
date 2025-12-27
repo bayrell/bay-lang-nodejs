@@ -99,9 +99,9 @@ BayLang.LangBay.ParserBayClass = class extends use("Runtime.BaseObject")
 		const OpAssign = use("BayLang.OpCodes.OpAssign");
 		const OpComment = use("BayLang.OpCodes.OpComment");
 		const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");
-		let annotations = new Vector();
-		let result = new Vector();
-		let comments = new Vector();
+		let annotations = Vector.create([]);
+		let result = Vector.create([]);
+		let comments = Vector.create([]);
 		for (let i = 0; i < items.count(); i++)
 		{
 			let item = items.get(i);
@@ -113,8 +113,8 @@ BayLang.LangBay.ParserBayClass = class extends use("Runtime.BaseObject")
 			{
 				result.appendItems(comments);
 				result.push(item);
-				annotations = new Vector();
-				comments = new Vector();
+				annotations = Vector.create([]);
+				comments = Vector.create([]);
 			}
 			else if (item instanceof OpComment)
 			{
@@ -139,8 +139,8 @@ BayLang.LangBay.ParserBayClass = class extends use("Runtime.BaseObject")
 				item.comments.reverse();
 				*/
 				result.push(item);
-				annotations = new Vector();
-				comments = new Vector();
+				annotations = Vector.create([]);
+				comments = Vector.create([]);
 			}
 			else
 			{
@@ -162,7 +162,7 @@ BayLang.LangBay.ParserBayClass = class extends use("Runtime.BaseObject")
 		if (match_brackets == undefined) match_brackets = true;
 		if (end_tag == undefined) end_tag = "";
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		if (match_brackets) reader.matchToken("{");
 		/* Read class */
 		while (!reader.eof() && reader.nextToken() != "}" && reader.nextToken() != "#endswitch" && reader.nextToken() != "#case" && reader.nextToken() != "#endif" && reader.nextToken() != end_tag)
@@ -218,7 +218,7 @@ BayLang.LangBay.ParserBayClass = class extends use("Runtime.BaseObject")
 		}
 		else reader.matchToken("class");
 		let class_extends = null;
-		let class_implements = new Vector();
+		let class_implements = Vector.create([]);
 		/* Read class name */
 		let class_name = this.parser.parser_base.readTypeIdentifier(reader, false);
 		this.parser.uses.set(class_name.entity_name.getName(), this.parser.current_namespace_name + String(".") + String(class_name.entity_name.getName()));

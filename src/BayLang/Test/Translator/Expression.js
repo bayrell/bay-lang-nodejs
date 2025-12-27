@@ -32,13 +32,13 @@ BayLang.Test.Translator.Expression = class
 	{
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
-		let message = new Vector(
+		let message = Vector.create([
 			command,
 			"Missing:",
 			value1,
 			"Exists:",
 			value2,
-		);
+		]);
 		AssertHelper.equalValue(value1, value2, rs.join("\n", message));
 	}
 	
@@ -59,7 +59,7 @@ BayLang.Test.Translator.Expression = class
 		/* Init function */
 		if (callback) callback(parser, translator);
 		/* Translate file */
-		let output = new Vector();
+		let output = Vector.create([]);
 		try
 		{
 			parser.setContent(src);
@@ -302,27 +302,37 @@ BayLang.Test.Translator.Expression = class
 	static getMethodInfoByName(field_name)
 	{
 		const Vector = use("Runtime.Vector");
-		if (field_nane == "testMath1") return new Vector(
+		if (field_name == "testMath1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testMath2") return new Vector(
+		);
+		if (field_name == "testMath2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testMath3") return new Vector(
+		);
+		if (field_name == "testMath3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testMath4") return new Vector(
+		);
+		if (field_name == "testMath4") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testMath5") return new Vector(
+		);
+		if (field_name == "testMath5") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testMath6") return new Vector(
+		);
+		if (field_name == "testMath6") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testMath7") return new Vector(
+		);
+		if (field_name == "testMath7") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testMath8") return new Vector(
+		);
+		if (field_name == "testMath8") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testString") return new Vector(
+		);
+		if (field_name == "testString") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFn2") return new Vector(
+		);
+		if (field_name == "testFn2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFn3") return new Vector(
+		);
+		if (field_name == "testFn3") return new Vector(
 			new Test(new Map())
 		);
 		return null;

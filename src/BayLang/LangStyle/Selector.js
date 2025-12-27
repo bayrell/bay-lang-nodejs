@@ -75,7 +75,7 @@ BayLang.LangStyle.Selector = class extends use("Runtime.BaseObject")
 	concat(last_item, selector)
 	{
 		const Vector = use("Runtime.Vector");
-		let result = new Vector();
+		let result = Vector.create([]);
 		let last_items = rs.split(",", last_item);
 		for (let i = 0; i < last_items.count(); i++)
 		{
@@ -132,7 +132,7 @@ BayLang.LangStyle.Selector = class extends use("Runtime.BaseObject")
 		{
 			let last_item = rs.join(" ", this.path);
 			last_item = this.concat(last_item, selector);
-			this.path = new Vector(last_item);
+			this.path = Vector.create([last_item]);
 		}
 	}
 	
@@ -142,8 +142,8 @@ BayLang.LangStyle.Selector = class extends use("Runtime.BaseObject")
 	{
 		super._init();
 		const Vector = use("Runtime.Vector");
-		this.path = new Vector();
-		this.media = new Vector();
+		this.path = Vector.create([]);
+		this.media = Vector.create([]);
 		this.css_hash = "";
 	}
 	static getClassName(){ return "BayLang.LangStyle.Selector"; }

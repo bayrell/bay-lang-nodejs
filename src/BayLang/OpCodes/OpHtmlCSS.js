@@ -27,7 +27,7 @@ BayLang.OpCodes.OpHtmlCSS = class extends use("BayLang.OpCodes.BaseOpCode")
 		super._init();
 		const Vector = use("Runtime.Vector");
 		this.selector = "";
-		this.items = new Vector();
+		this.items = Vector.create([]);
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpHtmlCSS"; }
 	static getMethodsList(){ return null; }

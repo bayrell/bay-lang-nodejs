@@ -149,7 +149,7 @@ BayLang.CoreTranslator = class extends use("Runtime.BaseObject")
 		if (count == undefined) count = 1;
 		if (!this.allow_multiline) return "";
 		if (count == 1) return this.crlf + String(rs.str_repeat(this.indent, this.indent_level));
-		let arr = new Vector();
+		let arr = Vector.create([]);
 		for (let i = 0; i < count; i++)
 		{
 			arr.push(this.crlf + String(rs.str_repeat(this.indent, this.indent_level)));
@@ -195,8 +195,8 @@ BayLang.CoreTranslator = class extends use("Runtime.BaseObject")
 		this.current_function = null;
 		this.class_function = null;
 		this.current_module = null;
-		this.html_var_names = new Vector();
-		this.save_var = new Vector();
+		this.html_var_names = Vector.create([]);
+		this.save_var = Vector.create([]);
 		this.var_inc = 0;
 		this.component_hash_inc = 0;
 		this.current_block = "";

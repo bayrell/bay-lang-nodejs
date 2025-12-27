@@ -149,7 +149,7 @@ BayLang.LangBay.TranslatorBayProgram = class extends use("Runtime.BaseObject")
 			}
 		}
 		/* Function flags */
-		let flags = new Vector("async", "static", "pure");
+		let flags = Vector.create(["async", "static", "pure"]);
 		flags = flags.filter((flag_name) => { return op_code.flags ? op_code.flags.isFlag(flag_name) : false; });
 		result.push(rs.join(" ", flags));
 		if (flags.count() > 0) result.push(" ");

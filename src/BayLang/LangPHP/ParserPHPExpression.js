@@ -88,7 +88,7 @@ BayLang.LangPHP.ParserPHPExpression = class extends use("Runtime.BaseObject")
 		const OpMath = use("BayLang.OpCodes.OpMath");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
-		let operations = new Vector("not", "bitnot", "!");
+		let operations = Vector.create(["not", "bitnot", "!"]);
 		if (operations.indexOf(reader.nextToken()) >= 0)
 		{
 			let op = reader.readToken();
@@ -114,7 +114,7 @@ BayLang.LangPHP.ParserPHPExpression = class extends use("Runtime.BaseObject")
 		const OpMath = use("BayLang.OpCodes.OpMath");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
-		let operations = new Vector("<<", ">>");
+		let operations = Vector.create(["<<", ">>"]);
 		/* Read operators */
 		let op_code = this.readBitNot(reader);
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
@@ -142,7 +142,7 @@ BayLang.LangPHP.ParserPHPExpression = class extends use("Runtime.BaseObject")
 		const OpMath = use("BayLang.OpCodes.OpMath");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
-		let operations = new Vector("&");
+		let operations = Vector.create(["&"]);
 		/* Read operators */
 		let op_code = this.readBitShift(reader);
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
@@ -170,7 +170,7 @@ BayLang.LangPHP.ParserPHPExpression = class extends use("Runtime.BaseObject")
 		const OpMath = use("BayLang.OpCodes.OpMath");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
-		let operations = new Vector("|", "xor");
+		let operations = Vector.create(["|", "xor"]);
 		/* Read operators */
 		let op_code = this.readBitAnd(reader);
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
@@ -198,7 +198,7 @@ BayLang.LangPHP.ParserPHPExpression = class extends use("Runtime.BaseObject")
 		const OpMath = use("BayLang.OpCodes.OpMath");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
-		let operations = new Vector("*", "/", "%", "div", "mod");
+		let operations = Vector.create(["*", "/", "%", "div", "mod"]);
 		/* Read operators */
 		let op_code = this.readBitOr(reader);
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
@@ -226,7 +226,7 @@ BayLang.LangPHP.ParserPHPExpression = class extends use("Runtime.BaseObject")
 		const OpMath = use("BayLang.OpCodes.OpMath");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
-		let operations = new Vector("+", "-", ".");
+		let operations = Vector.create(["+", "-", "."]);
 		/* Read operators */
 		let op_code = this.readFactor(reader);
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
@@ -255,7 +255,7 @@ BayLang.LangPHP.ParserPHPExpression = class extends use("Runtime.BaseObject")
 		const OpMath = use("BayLang.OpCodes.OpMath");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
-		let operations = new Vector("~");
+		let operations = Vector.create(["~"]);
 		/* Read operators */
 		let op_code = this.readArithmetic(reader);
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
@@ -284,8 +284,8 @@ BayLang.LangPHP.ParserPHPExpression = class extends use("Runtime.BaseObject")
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
 		let op_code = this.readConcat(reader);
-		let operations1 = new Vector("===", "!==", "==", "!=", ">=", "<=", ">", "<");
-		let operations2 = new Vector("is", "implements", "instanceof");
+		let operations1 = Vector.create(["===", "!==", "==", "!=", ">=", "<=", ">", "<"]);
+		let operations2 = Vector.create(["is", "implements", "instanceof"]);
 		/* Read operators */
 		if (operations1.indexOf(reader.nextToken()) >= 0)
 		{
@@ -324,7 +324,7 @@ BayLang.LangPHP.ParserPHPExpression = class extends use("Runtime.BaseObject")
 		const OpMath = use("BayLang.OpCodes.OpMath");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
-		let operations = new Vector("and", "&&");
+		let operations = Vector.create(["and", "&&"]);
 		/* Read operators */
 		let op_code = this.readCompare(reader);
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
@@ -352,7 +352,7 @@ BayLang.LangPHP.ParserPHPExpression = class extends use("Runtime.BaseObject")
 		const OpMath = use("BayLang.OpCodes.OpMath");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
-		let operations = new Vector("or", "||");
+		let operations = Vector.create(["or", "||"]);
 		/* Read operators */
 		let op_code = this.readAnd(reader);
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)

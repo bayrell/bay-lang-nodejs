@@ -43,7 +43,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		let caret_start = reader.start();
 		reader.matchToken("<");
 		reader.matchToken("!--");
-		let value = new Vector();
+		let value = Vector.create([]);
 		while (!reader.main_caret.eof() && reader.main_caret.nextString(3) != "-->")
 		{
 			value.push(reader.main_caret.readChar());
@@ -147,12 +147,12 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 				expression = this.parser.parser_operator.parse(reader, false, open_tag);
 				expression = new OpDeclareFunction(Map.create({
 					"args": new OpItems(Map.create({
-						"items": new Vector(
+						"items": Vector.create([
 							new OpDeclareFunctionArg(Map.create({
 								"pattern": OpTypeIdentifier.create("var"),
 								"name": "event",
 							})),
-						),
+						]),
 					})),
 					"content": expression,
 					"caret_start": expression.caret_start,
@@ -204,7 +204,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		const OpHtmlAttribute = use("BayLang.OpCodes.OpHtmlAttribute");
 		const Map = use("Runtime.Map");
 		if (kind == undefined) kind = "";
-		let attrs = new Vector();
+		let attrs = Vector.create([]);
 		reader.main_caret.skipToken();
 		while (!reader.main_caret.eof() && reader.main_caret.nextChar() != ">" && reader.main_caret.nextString(2) != "/>")
 		{
@@ -253,7 +253,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 	readSelector(reader)
 	{
 		const Vector = use("Runtime.Vector");
-		let selector = new Vector();
+		let selector = Vector.create([]);
 		reader.main_caret.skipToken();
 		while (!reader.main_caret.eof() && reader.main_caret.nextChar() != "{" && reader.main_caret.nextChar() != "}")
 		{
@@ -287,7 +287,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 	{
 		const Vector = use("Runtime.Vector");
 		let caret = reader.main_caret;
-		let content = new Vector();
+		let content = Vector.create([]);
 		while (!caret.eof() && !(caret.isNextString(":") || caret.isNextString(";") || caret.isNextString("}")))
 		{
 			content.push(caret.readChar());
@@ -309,7 +309,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		let caret_start = reader.start();
 		let selector = this.readSelector(reader);
 		reader.matchToken("{");
-		let items = new Vector();
+		let items = Vector.create([]);
 		while (!reader.eof() && reader.nextToken() != "}")
 		{
 			reader.main_caret.skipToken();
@@ -358,7 +358,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		const Map = use("Runtime.Map");
 		if (end_tag == undefined) end_tag = "}";
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		while (!reader.eof() && reader.nextToken() != end_tag)
 		{
 			let op_code_item = this.readCSS(reader);
@@ -409,8 +409,8 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		const Map = use("Runtime.Map");
 		let caret_start = reader.main_caret.copy();
 		let caret = caret_start.copy();
-		let tokens = new Vector("</", "{{");
-		let content = new Vector();
+		let tokens = Vector.create(["</", "{{"]);
+		let content = Vector.create([]);
 		while (!caret.eof() && !caret.isNextChar("<") && tokens.indexOf(caret.nextString(2)) == -1)
 		{
 			content.push(caret.readChar());
@@ -437,8 +437,8 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		let caret_start = reader.main_caret.copy();
 		let caret_item = caret_start.copy();
 		let caret = caret_start.copy();
-		let items = new Vector();
-		let content = new Vector();
+		let items = Vector.create([]);
+		let content = Vector.create([]);
 		let addItem = () =>
 		{
 			const Vector = use("Runtime.Vector");
@@ -446,7 +446,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 			const Map = use("Runtime.Map");
 			if (content.count() == 0) return;
 			let value = rs.trim(rs.join("", content));
-			content = new Vector();
+			content = Vector.create([]);
 			items.push(new OpHtmlContent(Map.create({
 				"value": value,
 				"caret_start": caret_item.copy(),
@@ -651,7 +651,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		let caret_start = reader.start();
 		let if_true = null;
 		let if_false = null;
-		let if_else = new Vector();
+		let if_else = Vector.create([]);
 		/* Read condition */
 		reader.matchToken("%if");
 		reader.matchToken("(");
@@ -662,7 +662,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		this.parser.parser_base.skipComment(reader);
 		/* Read content */
 		let caret_last = null;
-		let operations = new Vector("%else", "%elseif");
+		let operations = Vector.create(["%else", "%elseif"]);
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
 		{
 			let token = reader.readToken();
@@ -730,7 +730,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		if (match_brackets == undefined) match_brackets = false;
 		if (end_tag == undefined) end_tag = "";
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		if (match_brackets && reader.nextToken() == "<")
 		{
 			let op_code_item = this.readHtmlItem(reader);
@@ -879,7 +879,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		const OpItems = use("BayLang.OpCodes.OpItems");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		while (!reader.eof() && reader.nextToken() != "</")
 		{
 			let op_code_item = this.readItem(reader);
@@ -905,7 +905,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		const OpDeclareClass = use("BayLang.OpCodes.OpDeclareClass");
 		const OpModule = use("BayLang.OpCodes.OpModule");
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		/* Read comment */
 		if (caret_start.skipSpace().nextString(2) == "<!")
 		{
@@ -924,7 +924,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		/*string class_name_value = class_name.entity_name.items.last();*/
 		let namespace_name = rs.join(".", class_name.expression.entity_name.items.slice(0, class_name.expression.entity_name.items.count() - 1).map((item) => { return item.value; }));
 		/* Change class name */
-		class_name.expression.entity_name.items = new Vector(class_name.expression.entity_name.items.last());
+		class_name.expression.entity_name.items = Vector.create([class_name.expression.entity_name.items.last()]);
 		/* Add namespace */
 		items.push(new OpNamespace(Map.create({
 			"name": namespace_name,

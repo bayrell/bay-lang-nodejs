@@ -227,7 +227,7 @@ BayLang.LangES6.ParserES6Base = class extends use("Runtime.BaseObject")
 		const OpEntityName = use("BayLang.OpCodes.OpEntityName");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		/* Read name */
 		items.push(this.readIdentifier(reader));
 		/* Read names */
@@ -264,13 +264,13 @@ BayLang.LangES6.ParserES6Base = class extends use("Runtime.BaseObject")
 			let caret_end = reader.caret();
 			return new OpTypeIdentifier(Map.create({
 				"entity_name": new OpEntityName(Map.create({
-					"items": new Vector(
+					"items": Vector.create([
 						new OpIdentifier(Map.create({
 							"value": "var",
 							"caret_start": caret_start,
 							"caret_end": caret_end,
 						})),
-					),
+					]),
 					"caret_start": caret_start,
 					"caret_end": caret_end,
 				})),

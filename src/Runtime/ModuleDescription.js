@@ -48,13 +48,13 @@ Runtime.ModuleDescription = class
 	{
 		const Vector = use("Runtime.Vector");
 		const Provider = use("Runtime.Entity.Provider");
-		return new Vector(
+		return Vector.create([
 			new Provider("hash", "Runtime.Providers.GlobalHash"),
 			new Provider("output", "Runtime.Providers.OutputProvider"),
 			new Provider("hook", "Runtime.Providers.HookProvider"),
 			new Provider("render", "Runtime.Providers.RenderContent"),
 			new Provider("render", "Runtime.Providers.RenderProvider"),
-		);
+		]);
 	}
 	
 	

@@ -57,14 +57,14 @@ BayLang.Compiler.ModuleDescription = class
 	{
 		const Vector = use("Runtime.Vector");
 		const ConsoleCommand = use("Runtime.Console.Annotations.ConsoleCommand");
-		return new Vector(
+		return Vector.create([
 			new ConsoleCommand("BayLang.Compiler.Commands.Compile"),
 			new ConsoleCommand("BayLang.Compiler.Commands.Make"),
 			new ConsoleCommand("BayLang.Compiler.Commands.MakeAll"),
 			new ConsoleCommand("BayLang.Compiler.Commands.Modules"),
 			new ConsoleCommand("BayLang.Compiler.Commands.Version"),
 			new ConsoleCommand("BayLang.Compiler.Commands.Watch"),
-		);
+		]);
 	}
 	
 	

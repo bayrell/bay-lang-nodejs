@@ -125,7 +125,7 @@ Runtime.Providers.RenderProvider = class extends use("Runtime.BaseProvider")
 		const Vector = use("Runtime.Vector");
 		const Map = use("Runtime.Map");
 		if (!(vdom instanceof VirtualDom)) return vdom;
-		let content = new Vector();
+		let content = Vector.create([]);
 		if (!vdom.attrs.has("@raw"))
 		{
 			for (let i = 0; i < vdom.items.count(); i++)
@@ -161,7 +161,7 @@ Runtime.Providers.RenderProvider = class extends use("Runtime.BaseProvider")
 			{
 				const Vector = use("Runtime.Vector");
 				if (key == "@ref") key = "ref";
-				return new Vector(value, key);
+				return Vector.create([value, key]);
 			}).filter((value, key) => { return rs.charAt(key, 0) != "@"; });
 			attrs = attrs.toObject();
 			if (vdom.attrs.has("@raw"))

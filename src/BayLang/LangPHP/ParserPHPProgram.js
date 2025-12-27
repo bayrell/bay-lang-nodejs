@@ -117,7 +117,7 @@ BayLang.LangPHP.ParserPHPProgram = class extends use("Runtime.BaseObject")
 		const Vector = use("Runtime.Vector");
 		const OpModule = use("BayLang.OpCodes.OpModule");
 		const Map = use("Runtime.Map");
-		let items = new Vector();
+		let items = Vector.create([]);
 		let caret_start = reader.start();
 		/* Read PHP token */
 		reader.matchToken("<?php");

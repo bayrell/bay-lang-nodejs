@@ -96,7 +96,7 @@ Runtime.BaseModel = class extends use("Runtime.BaseObject")
 		if (params == undefined) params = null;
 		if (params == null) params = new Map();
 		if (!params.has("parent_widget")) params.set("parent_widget", this);
-		let widget = rtl.newInstance(class_name, new Vector(params));
+		let widget = rtl.newInstance(class_name, Vector.create([params]));
 		return widget;
 	}
 	

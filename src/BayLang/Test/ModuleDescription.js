@@ -55,11 +55,11 @@ BayLang.Test.ModuleDescription = class
 	{
 		const Vector = use("Runtime.Vector");
 		const UnitTest = use("Runtime.Unit.UnitTest");
-		return new Vector(
+		return Vector.create([
 			new UnitTest("BayLang.Test.Translator.Base"),
 			new UnitTest("BayLang.Test.Translator.Expression"),
 			new UnitTest("BayLang.Test.Translator.Operator"),
-		);
+		]);
 	}
 	
 	

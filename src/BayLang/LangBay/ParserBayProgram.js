@@ -162,8 +162,8 @@ BayLang.LangBay.ParserBayProgram = class extends use("Runtime.BaseObject")
 		const OpDeclareClass = use("BayLang.OpCodes.OpDeclareClass");
 		const OpModule = use("BayLang.OpCodes.OpModule");
 		const Map = use("Runtime.Map");
-		let annotations = new Vector();
-		let items = new Vector();
+		let annotations = Vector.create([]);
+		let items = Vector.create([]);
 		let caret_start = reader.start();
 		/* Read module */
 		while (!reader.eof() && reader.nextToken() != "" && reader.nextToken() != "#endswitch" && reader.nextToken() != "#case" && reader.nextToken() != "#endif")
@@ -180,7 +180,7 @@ BayLang.LangBay.ParserBayProgram = class extends use("Runtime.BaseObject")
 				if (op_code instanceof OpDeclareClass)
 				{
 					op_code.annotations = annotations;
-					annotations = new Vector();
+					annotations = Vector.create([]);
 				}
 				items.push(op_code);
 			}

@@ -58,8 +58,8 @@ BayLang.Test.LangBay.Style = class
 		if (debug == undefined) debug = false;
 		this.setContent(content + String("}"));
 		/* Parse */
-		let items = new Vector();
-		let res = this.parser.parser_html.readCssBodyItems(this.parser, items, new Vector());
+		let items = Vector.create([]);
+		let res = this.parser.parser_html.readCssBodyItems(this.parser, items, Vector.create([]));
 		let op_code = res.get(1);
 		/* Get items */
 		items = items.map((op_code) => { return op_code.value; });
@@ -70,7 +70,7 @@ BayLang.Test.LangBay.Style = class
 			console.log(items);
 			console.log(result);
 		}
-		return new Vector(op_code, result);
+		return Vector.create([op_code, result]);
 	}
 	
 	
@@ -79,14 +79,14 @@ BayLang.Test.LangBay.Style = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			".main_page{",
 			"\tpadding: 20px;",
 			"}",
-		));
-		let css_content = rs.join("\n", new Vector(
+		]));
+		let css_content = rs.join("\n", Vector.create([
 			".main_page.h-71c3{padding: 20px}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(css_content, res.get(1), css_content);
 	}
@@ -97,16 +97,16 @@ BayLang.Test.LangBay.Style = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			".main_page{",
 			"\t.test1{",
 			"\t\tpadding: 20px;",
 			"\t}",
 			"}",
-		));
-		let css_content = rs.join("\n", new Vector(
+		]));
+		let css_content = rs.join("\n", Vector.create([
 			".main_page.h-71c3 .test1.h-71c3{padding: 20px}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(css_content, res.get(1), css_content);
 	}
@@ -117,16 +117,16 @@ BayLang.Test.LangBay.Style = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			".main_page{",
 			"\t&__test1{",
 			"\t\tpadding: 20px;",
 			"\t}",
 			"}",
-		));
-		let css_content = rs.join("\n", new Vector(
+		]));
+		let css_content = rs.join("\n", Vector.create([
 			".main_page__test1.h-71c3{padding: 20px}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(css_content, res.get(1), css_content);
 	}
@@ -137,7 +137,7 @@ BayLang.Test.LangBay.Style = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			".main_page{",
 			"\t&__test1{",
 			"\t\t&_test2{",
@@ -145,10 +145,10 @@ BayLang.Test.LangBay.Style = class
 			"\t\t}",
 			"\t}",
 			"}",
-		));
-		let css_content = rs.join("\n", new Vector(
+		]));
+		let css_content = rs.join("\n", Vector.create([
 			".main_page__test1_test2.h-71c3{padding: 20px}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(css_content, res.get(1), css_content);
 	}
@@ -159,7 +159,7 @@ BayLang.Test.LangBay.Style = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			".main_page{",
 			"\t&__test1{",
 			"\t\t.test2{",
@@ -167,10 +167,10 @@ BayLang.Test.LangBay.Style = class
 			"\t\t}",
 			"\t}",
 			"}",
-		));
-		let css_content = rs.join("\n", new Vector(
+		]));
+		let css_content = rs.join("\n", Vector.create([
 			".main_page__test1.h-71c3 .test2.h-71c3{padding: 20px}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(css_content, res.get(1), css_content);
 	}
@@ -181,7 +181,7 @@ BayLang.Test.LangBay.Style = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			".main_page{",
 			"\t.test1{",
 			"\t\t&__test2{",
@@ -189,10 +189,10 @@ BayLang.Test.LangBay.Style = class
 			"\t\t}",
 			"\t}",
 			"}",
-		));
-		let css_content = rs.join("\n", new Vector(
+		]));
+		let css_content = rs.join("\n", Vector.create([
 			".main_page.h-71c3 .test1__test2.h-71c3{padding: 20px}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(css_content, res.get(1), css_content);
 	}
@@ -203,16 +203,16 @@ BayLang.Test.LangBay.Style = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			".main_page{",
 			"\t%(Button)widget_button{",
 			"\t\tpadding: 20px;",
 			"\t}",
 			"}",
-		));
-		let css_content = rs.join("\n", new Vector(
+		]));
+		let css_content = rs.join("\n", Vector.create([
 			".main_page.h-71c3 .widget_button.h-8dd7{padding: 20px}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(css_content, res.get(1), css_content);
 	}
@@ -223,7 +223,7 @@ BayLang.Test.LangBay.Style = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			".main_page{",
 			"\t%(Button)widget_button{",
 			"\t\t&__test1{",
@@ -231,10 +231,10 @@ BayLang.Test.LangBay.Style = class
 			"\t\t}",
 			"\t}",
 			"}",
-		));
-		let css_content = rs.join("\n", new Vector(
+		]));
+		let css_content = rs.join("\n", Vector.create([
 			".main_page.h-71c3 .widget_button__test1.h-8dd7{padding: 20px}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(css_content, res.get(1), css_content);
 	}
@@ -245,7 +245,7 @@ BayLang.Test.LangBay.Style = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			".main_page{",
 			"\t%(Button)widget_button{",
 			"\t\t.test1{",
@@ -253,10 +253,10 @@ BayLang.Test.LangBay.Style = class
 			"\t\t}",
 			"\t}",
 			"}",
-		));
-		let css_content = rs.join("\n", new Vector(
+		]));
+		let css_content = rs.join("\n", Vector.create([
 			".main_page.h-71c3 .widget_button.h-8dd7 .test1.h-71c3{padding: 20px}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(css_content, res.get(1), css_content);
 	}
@@ -267,16 +267,16 @@ BayLang.Test.LangBay.Style = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			".main_page{",
 			"\tp{",
 			"\t\tfont-weight: bold;",
 			"\t}",
 			"}",
-		));
-		let css_content = rs.join("\n", new Vector(
+		]));
+		let css_content = rs.join("\n", Vector.create([
 			".main_page.h-71c3 p{font-weight: bold}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(css_content, res.get(1), css_content);
 	}
@@ -287,15 +287,15 @@ BayLang.Test.LangBay.Style = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			".main_page{",
 			"\tpadding: 20px;",
 			"\tcolor: green;",
 			"}",
-		));
-		let css_content = rs.join("\n", new Vector(
+		]));
+		let css_content = rs.join("\n", Vector.create([
 			".main_page.h-71c3{padding: 20px;color: green}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(css_content, res.get(1), css_content);
 	}
@@ -306,7 +306,7 @@ BayLang.Test.LangBay.Style = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			".main_page{",
 			"\tpadding: 20px;",
 			"\tcolor: green;",
@@ -314,11 +314,11 @@ BayLang.Test.LangBay.Style = class
 			"\t\tdisplay: none;",
 			"\t}",
 			"}",
-		));
-		let css_content = rs.join("\n", new Vector(
+		]));
+		let css_content = rs.join("\n", Vector.create([
 			".main_page.h-71c3{padding: 20px;color: green}",
 			"@media (max-width: 950px){.main_page.h-71c3{display: none}}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(css_content, res.get(1), css_content);
 	}
@@ -337,29 +337,40 @@ BayLang.Test.LangBay.Style = class
 	static getMethodInfoByName(field_name)
 	{
 		const Vector = use("Runtime.Vector");
-		if (field_nane == "test1") return new Vector(
+		if (field_name == "test1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "test2") return new Vector(
+		);
+		if (field_name == "test2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "test3") return new Vector(
+		);
+		if (field_name == "test3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "test4") return new Vector(
+		);
+		if (field_name == "test4") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "test5") return new Vector(
+		);
+		if (field_name == "test5") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "test6") return new Vector(
+		);
+		if (field_name == "test6") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "test7") return new Vector(
+		);
+		if (field_name == "test7") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "test8") return new Vector(
+		);
+		if (field_name == "test8") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "test9") return new Vector(
+		);
+		if (field_name == "test9") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "test10") return new Vector(
+		);
+		if (field_name == "test10") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "test11") return new Vector(
+		);
+		if (field_name == "test11") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "test12") return new Vector(
+		);
+		if (field_name == "test12") return new Vector(
 			new Test(new Map())
 		);
 		return null;

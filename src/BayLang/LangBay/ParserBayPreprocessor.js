@@ -42,7 +42,7 @@ BayLang.LangBay.ParserBayPreprocessor = class extends use("Runtime.BaseObject")
 		const Map = use("Runtime.Map");
 		if (current_block == undefined) current_block = "";
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		reader.matchToken("#switch");
 		while (!reader.eof() && reader.nextToken() != "#endswitch")
 		{
@@ -89,7 +89,7 @@ BayLang.LangBay.ParserBayPreprocessor = class extends use("Runtime.BaseObject")
 		this.parser.find_variable = save_find_variable;
 		reader.matchToken("then");
 		/* Read content */
-		let content = new Vector();
+		let content = Vector.create([]);
 		let caret = reader.caret();
 		while (!caret.eof() && !(caret.isNextString("#endif") || caret.isNextString("#case") || caret.isNextString("#endswitch")))
 		{
@@ -145,7 +145,7 @@ BayLang.LangBay.ParserBayPreprocessor = class extends use("Runtime.BaseObject")
 		}
 		else if (current_block == OpPreprocessorIfDef.KIND_COLLECTION)
 		{
-			let items = new Vector();
+			let items = Vector.create([]);
 			while (!reader.eof() && reader.nextToken() != "#endif")
 			{
 				let op_code_item = this.parser.parser_expression.readExpression(reader);

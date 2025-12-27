@@ -46,7 +46,7 @@ BayLang.OpCodes.OpFlags = class extends use("BayLang.OpCodes.BaseOpCode")
 	static getFlags()
 	{
 		const Vector = use("Runtime.Vector");
-		return new Vector(
+		return Vector.create([
 			"async",
 			"export",
 			"static",
@@ -63,7 +63,7 @@ BayLang.OpCodes.OpFlags = class extends use("BayLang.OpCodes.BaseOpCode")
 			"multiblock",
 			"pure",
 			"props",
-		);
+		]);
 	}
 	
 	
@@ -85,7 +85,7 @@ BayLang.OpCodes.OpFlags = class extends use("BayLang.OpCodes.BaseOpCode")
 	{
 		super._init();
 		const Vector = use("Runtime.Vector");
-		this.items = new Vector();
+		this.items = Vector.create([]);
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpFlags"; }
 	static getMethodsList(){ return null; }

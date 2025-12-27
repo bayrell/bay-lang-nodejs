@@ -271,7 +271,7 @@ BayLang.LangPHP.ParserPHPBase = class extends use("Runtime.BaseObject")
 		const OpEntityName = use("BayLang.OpCodes.OpEntityName");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.caret();
-		let items = new Vector();
+		let items = Vector.create([]);
 		/* Read name */
 		items.push(this.readIdentifier(reader));
 		/* Read names */
@@ -301,7 +301,7 @@ BayLang.LangPHP.ParserPHPBase = class extends use("Runtime.BaseObject")
 		let caret_start = reader.caret();
 		let entity_name = this.readEntityName(reader);
 		/* Read generics */
-		let generics = new Vector();
+		let generics = Vector.create([]);
 		if (reader.nextToken() == "<" && read_generic)
 		{
 			while (!reader.eof() && reader.nextToken() != ">")

@@ -68,7 +68,7 @@ BayLang.LangPHP.TranslatorPHP = class extends use("BayLang.CoreTranslator")
 	translate(op_code)
 	{
 		const Vector = use("Runtime.Vector");
-		let content = new Vector();
+		let content = Vector.create([]);
 		content.push("<?php");
 		content.push(this.newLine());
 		this.program.translate(op_code, content);

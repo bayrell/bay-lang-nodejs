@@ -64,7 +64,7 @@ BayLang.LangPHP.TranslatorPHPHtml = class extends use("Runtime.BaseObject")
 		result.push(this.translator.newLine());
 		result.push(var_name + String("->slot("));
 		result.push(this.translator.toString(op_code.name) + String(", "));
-		this.translator.expression.translate(op_code, result);
+		this.translator.program.OpDeclareFunction(op_code, result, false);
 		result.push(");");
 	}
 	
@@ -77,21 +77,21 @@ BayLang.LangPHP.TranslatorPHPHtml = class extends use("Runtime.BaseObject")
 		const Vector = use("Runtime.Vector");
 		const Map = use("Runtime.Map");
 		let attrs = op_code.attrs;
-		let spread = new Vector();
+		let spread = Vector.create([]);
 		let result = new Map();
 		for (let i = 0; i < attrs.count(); i++)
 		{
 			let item = attrs.get(i);
 			if (item.is_spread)
 			{
-				let item_result = new Vector();
+				let item_result = Vector.create([]);
 				this.translator.expression.translate(item.expression, item_result);
 				spread.push(rs.join("", item_result));
 				continue;
 			}
 			let key = item.key;
 			if (rs.charAt(key, 0) == "@" && key != "@raw") continue;
-			let item_value = new Vector();
+			let item_value = Vector.create([]);
 			this.translator.expression.translate(item.expression, item_value);
 			let value = rs.join("", item_value);
 			if (result.has(key))
@@ -102,7 +102,7 @@ BayLang.LangPHP.TranslatorPHPHtml = class extends use("Runtime.BaseObject")
 			}
 			else
 			{
-				if (key == "class") value = new Vector(value);
+				if (key == "class") value = Vector.create([value]);
 				result.set(key, value);
 			}
 		}
@@ -121,7 +121,7 @@ BayLang.LangPHP.TranslatorPHPHtml = class extends use("Runtime.BaseObject")
 			}
 			return this.translator.toString(key) + String(" => ") + String(value);
 		});
-		return new Vector(new_attrs, spread);
+		return Vector.create([new_attrs, spread]);
 	}
 	
 	
@@ -135,17 +135,17 @@ BayLang.LangPHP.TranslatorPHPHtml = class extends use("Runtime.BaseObject")
 		const ParserBayHtml = use("BayLang.LangBay.ParserBayHtml");
 		if (tag_name instanceof BaseOpCode)
 		{
-			let item_result = new Vector();
+			let item_result = Vector.create([]);
 			this.translator.expression.translate(tag_name, item_result);
 			let value = rs.join("", item_result);
-			return new Vector(value, value);
+			return Vector.create([value, value]);
 		}
 		if (ParserBayHtml.isComponent(tag_name))
 		{
 			let module_name = this.translator.getUseModule(tag_name);
-			return new Vector(module_name, this.translator.toString(module_name));
+			return Vector.create([module_name, this.translator.toString(module_name)]);
 		}
-		return new Vector(tag_name, this.translator.toString(tag_name));
+		return Vector.create([tag_name, this.translator.toString(tag_name)]);
 	}
 	
 	
@@ -317,7 +317,7 @@ BayLang.LangPHP.TranslatorPHPHtml = class extends use("Runtime.BaseObject")
 		let old_var_inc = this.translator.var_inc;
 		this.translator.var_inc = 0;
 		let old_var_names = this.translator.html_var_names.slice();
-		this.translator.html_var_names = new Vector();
+		this.translator.html_var_names = Vector.create([]);
 		this.translator.html_var_names.push("$__v");
 		/* Translate HTML items */
 		if (op_code.items.count() == 1 && op_code.get(0) instanceof OpHtmlContent)
@@ -351,7 +351,7 @@ BayLang.LangPHP.TranslatorPHPHtml = class extends use("Runtime.BaseObject")
 	{
 		const Vector = use("Runtime.Vector");
 		let items = op_code.content.items.filter((item) => { const OpHtmlStyle = use("BayLang.OpCodes.OpHtmlStyle");return item instanceof OpHtmlStyle; });
-		let css_content = new Vector();
+		let css_content = Vector.create([]);
 		for (let i = 0; i < items.count(); i++)
 		{
 			let op_code_item = items.get(i);
@@ -371,7 +371,7 @@ BayLang.LangPHP.TranslatorPHPHtml = class extends use("Runtime.BaseObject")
 	{
 		const Vector = use("Runtime.Vector");
 		const OpUse = use("BayLang.OpCodes.OpUse");
-		let components = new Vector();
+		let components = Vector.create([]);
 		for (let i = 0; i < this.translator.current_module.items.count(); i++)
 		{
 			let op_code_item = this.translator.current_module.items.get(i);

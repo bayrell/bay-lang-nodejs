@@ -35,7 +35,7 @@ Runtime.RenderContainer = class extends use("Runtime.BaseObject")
 			"class_name": class_name,
 			"layout_name": layout_name,
 		}));
-		this.layout = rtl.newInstance(params.get("class_name"), new Vector(params));
+		this.layout = rtl.newInstance(params.get("class_name"), Vector.create([params]));
 		this.layout.name = layout_name;
 		/* Call create layout */
 		Runtime.rtl.getContext().hook(RuntimeHook.CREATE_LAYOUT, Map.create({

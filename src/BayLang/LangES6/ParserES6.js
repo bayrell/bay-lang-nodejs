@@ -27,12 +27,12 @@ BayLang.LangES6.ParserES6 = class extends use("BayLang.CoreParser")
 	isRegisteredVariable(name)
 	{
 		const Vector = use("Runtime.Vector");
-		let variables = new Vector(
+		let variables = Vector.create([
 			"console",
 			"document",
 			"window",
 			"String",
-		);
+		]);
 		if (variables.indexOf(name) == -1) return false;
 		return true;
 	}

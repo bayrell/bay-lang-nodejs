@@ -43,11 +43,11 @@ BayLang.OpCodes.OpTypeIdentifier = class extends use("BayLang.OpCodes.BaseOpCode
 		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
 		return new BayLang.OpCodes.OpTypeIdentifier(Map.create({
 			"entity_name": new OpEntityName(Map.create({
-				"items": new Vector(
+				"items": Vector.create([
 					new OpIdentifier(Map.create({
 						"value": name,
 					})),
-				),
+				]),
 			})),
 		}));
 	}

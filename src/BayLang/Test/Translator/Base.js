@@ -32,13 +32,13 @@ BayLang.Test.Translator.Base = class
 	{
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
-		let message = new Vector(
+		let message = Vector.create([
 			command,
 			"Missing:",
 			value1,
 			"Exists:",
 			value2,
-		);
+		]);
 		AssertHelper.equalValue(value1, value2, rs.join("\n", message));
 	}
 	
@@ -59,7 +59,7 @@ BayLang.Test.Translator.Base = class
 		/* Init function */
 		if (callback) callback(parser, translator);
 		/* Translate file */
-		let output = new Vector();
+		let output = Vector.create([]);
 		try
 		{
 			parser.setContent(src);
@@ -209,19 +209,25 @@ BayLang.Test.Translator.Base = class
 	static getMethodInfoByName(field_name)
 	{
 		const Vector = use("Runtime.Vector");
-		if (field_nane == "testNumber") return new Vector(
+		if (field_name == "testNumber") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testReal") return new Vector(
+		);
+		if (field_name == "testReal") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testString") return new Vector(
+		);
+		if (field_name == "testString") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testIdentifier") return new Vector(
+		);
+		if (field_name == "testIdentifier") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFn1") return new Vector(
+		);
+		if (field_name == "testFn1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFn2") return new Vector(
+		);
+		if (field_name == "testFn2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFn6") return new Vector(
+		);
+		if (field_name == "testFn6") return new Vector(
 			new Test(new Map())
 		);
 		return null;

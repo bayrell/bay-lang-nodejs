@@ -127,7 +127,7 @@ BayLang.LangBay.TranslatorBayExpression = class extends use("Runtime.BaseObject"
 			/* Preprocessor */
 			if (op_code_item instanceof OpPreprocessorIfDef)
 			{
-				let items = new Vector();
+				let items = Vector.create([]);
 				let condition = op_code_item.condition.value;
 				while (op_code_item != null && op_code_item instanceof OpPreprocessorIfDef && op_code_item.condition.value == condition)
 				{
@@ -208,7 +208,7 @@ BayLang.LangBay.TranslatorBayExpression = class extends use("Runtime.BaseObject"
 			/* Preprocessor */
 			if (op_code_item.condition != null)
 			{
-				let items = new Vector();
+				let items = Vector.create([]);
 				let condition = op_code_item.condition.value;
 				while (op_code_item != null && op_code_item.condition != null)
 				{
@@ -366,7 +366,7 @@ BayLang.LangBay.TranslatorBayExpression = class extends use("Runtime.BaseObject"
 	OpMath(op_code, result)
 	{
 		const Vector = use("Runtime.Vector");
-		let result1 = new Vector();
+		let result1 = Vector.create([]);
 		this.Expression(op_code.value1, result1);
 		let opcode_level1 = this.translator.opcode_level;
 		let op = "";
@@ -561,7 +561,7 @@ BayLang.LangBay.TranslatorBayExpression = class extends use("Runtime.BaseObject"
 				result.appendItems(result1);
 			}
 			result.push(" " + String(op) + String(" "));
-			let result2 = new Vector();
+			let result2 = Vector.create([]);
 			this.Expression(op_code.value2, result2);
 			let opcode_level2 = this.translator.opcode_level;
 			if (opcode_level2 < opcode_level)
@@ -585,7 +585,7 @@ BayLang.LangBay.TranslatorBayExpression = class extends use("Runtime.BaseObject"
 	OpTernary(op_code, result)
 	{
 		const Vector = use("Runtime.Vector");
-		let result1 = new Vector();
+		let result1 = Vector.create([]);
 		this.translate(op_code.condition, result1);
 		if (this.translator.opcode_level < 19)
 		{
@@ -597,7 +597,7 @@ BayLang.LangBay.TranslatorBayExpression = class extends use("Runtime.BaseObject"
 		{
 			result.appendItems(result1);
 		}
-		result1 = new Vector();
+		result1 = Vector.create([]);
 		result.push(" ? ");
 		this.translate(op_code.if_true, result1);
 		if (this.translator.opcode_level < 19)
@@ -610,7 +610,7 @@ BayLang.LangBay.TranslatorBayExpression = class extends use("Runtime.BaseObject"
 		{
 			result.appendItems(result1);
 		}
-		result1 = new Vector();
+		result1 = Vector.create([]);
 		result.push(" : ");
 		this.translate(op_code.if_false, result1);
 		if (this.translator.opcode_level < 19)

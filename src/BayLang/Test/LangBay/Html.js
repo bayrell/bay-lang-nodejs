@@ -66,7 +66,7 @@ BayLang.Test.LangBay.Html = class
 	{
 		const Vector = use("Runtime.Vector");
 		if (debug == undefined) debug = false;
-		let result = new Vector();
+		let result = Vector.create([]);
 		this.setContent(content);
 		/* Parse */
 		let res = this.parser.parser_program.readProgram(this.parser);
@@ -80,7 +80,7 @@ BayLang.Test.LangBay.Html = class
 			console.log(result);
 			console.log(rs.join("", result));
 		}
-		return new Vector(op_code, rs.join("", result));
+		return Vector.create([op_code, rs.join("", result)]);
 	}
 	
 	
@@ -89,10 +89,10 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -103,13 +103,13 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<use name=\"App.Test\" />",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -120,13 +120,13 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<use name=\"App.Test\" as=\"TestAlias\" />",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -137,14 +137,14 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<use name=\"Runtime.Web.Button\" component=\"true\" />",
 			"<use name=\"Runtime.Web.Text\" component=\"true\" />",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -155,14 +155,14 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<template>",
 			"</template>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -173,14 +173,14 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<template name=\"renderItem\">",
 			"</template>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -191,14 +191,14 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<template name=\"renderItem\" args=\"int a, int b\">",
 			"</template>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -209,7 +209,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<use name=\"Runtime.Web.Button\" />",
@@ -219,7 +219,7 @@ BayLang.Test.LangBay.Html = class
 			"</template>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -230,7 +230,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<use name=\"Runtime.Web.Button\" />",
@@ -242,7 +242,7 @@ BayLang.Test.LangBay.Html = class
 			"</template>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -253,7 +253,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<use name=\"Runtime.Web.Button\" />",
@@ -265,7 +265,7 @@ BayLang.Test.LangBay.Html = class
 			"</template>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -276,7 +276,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<use name=\"Runtime.Web.Button\" />",
@@ -286,7 +286,7 @@ BayLang.Test.LangBay.Html = class
 			"</template>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -297,7 +297,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<use name=\"Runtime.Web.Button\" />",
@@ -307,7 +307,7 @@ BayLang.Test.LangBay.Html = class
 			"</template>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -318,7 +318,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<template>",
@@ -326,7 +326,7 @@ BayLang.Test.LangBay.Html = class
 			"</template>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -337,7 +337,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<template>",
@@ -345,7 +345,7 @@ BayLang.Test.LangBay.Html = class
 			"</template>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -356,7 +356,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<template>",
@@ -364,7 +364,7 @@ BayLang.Test.LangBay.Html = class
 			"</template>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -375,7 +375,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<template>",
@@ -393,7 +393,7 @@ BayLang.Test.LangBay.Html = class
 			"</template>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -404,7 +404,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<use name=\"Runtime.Web.Button\" />",
@@ -419,7 +419,7 @@ BayLang.Test.LangBay.Html = class
 			"</script>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -430,7 +430,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<use name=\"Runtime.Widget.Button\" component=\"true\" />",
@@ -449,7 +449,7 @@ BayLang.Test.LangBay.Html = class
 			"</template>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -460,7 +460,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<use name=\"Runtime.Widget.Button\" component=\"true\" />",
@@ -479,7 +479,7 @@ BayLang.Test.LangBay.Html = class
 			"</template>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -490,7 +490,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<style>",
@@ -501,7 +501,7 @@ BayLang.Test.LangBay.Html = class
 			"</style>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -512,7 +512,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<style global=\"true\">",
@@ -523,7 +523,7 @@ BayLang.Test.LangBay.Html = class
 			"</style>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -534,7 +534,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<style global=\"true\">",
@@ -544,7 +544,7 @@ BayLang.Test.LangBay.Html = class
 			"</style>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -555,7 +555,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<style global=\"true\">",
@@ -564,7 +564,7 @@ BayLang.Test.LangBay.Html = class
 			"</style>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -575,7 +575,7 @@ BayLang.Test.LangBay.Html = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"<class name=\"App.Component\">",
 			"",
 			"<style global=\"true\">",
@@ -587,7 +587,7 @@ BayLang.Test.LangBay.Html = class
 			"</style>",
 			"",
 			"</class>",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -606,53 +606,76 @@ BayLang.Test.LangBay.Html = class
 	static getMethodInfoByName(field_name)
 	{
 		const Vector = use("Runtime.Vector");
-		if (field_nane == "test1") return new Vector(
+		if (field_name == "test1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "test2") return new Vector(
+		);
+		if (field_name == "test2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "test3") return new Vector(
+		);
+		if (field_name == "test3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "test4") return new Vector(
+		);
+		if (field_name == "test4") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testTemplate1") return new Vector(
+		);
+		if (field_name == "testTemplate1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testTemplate2") return new Vector(
+		);
+		if (field_name == "testTemplate2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testTemplate3") return new Vector(
+		);
+		if (field_name == "testTemplate3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testComponent1") return new Vector(
+		);
+		if (field_name == "testComponent1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testComponent2") return new Vector(
+		);
+		if (field_name == "testComponent2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testComponent3") return new Vector(
+		);
+		if (field_name == "testComponent3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testComponent4") return new Vector(
+		);
+		if (field_name == "testComponent4") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testComponent5") return new Vector(
+		);
+		if (field_name == "testComponent5") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testContent1") return new Vector(
+		);
+		if (field_name == "testContent1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testContent2") return new Vector(
+		);
+		if (field_name == "testContent2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testContent3") return new Vector(
+		);
+		if (field_name == "testContent3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testClick") return new Vector(
+		);
+		if (field_name == "testClick") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testScript1") return new Vector(
+		);
+		if (field_name == "testScript1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testSlot1") return new Vector(
+		);
+		if (field_name == "testSlot1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testSlot2") return new Vector(
+		);
+		if (field_name == "testSlot2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testStyle1") return new Vector(
+		);
+		if (field_name == "testStyle1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testStyle2") return new Vector(
+		);
+		if (field_name == "testStyle2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testStyle3") return new Vector(
+		);
+		if (field_name == "testStyle3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testStyle4") return new Vector(
+		);
+		if (field_name == "testStyle4") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testStyle5") return new Vector(
+		);
+		if (field_name == "testStyle5") return new Vector(
 			new Test(new Map())
 		);
 		return null;

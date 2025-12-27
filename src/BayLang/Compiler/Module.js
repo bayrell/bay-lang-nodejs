@@ -102,7 +102,7 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 	/**
 	 * Returns source folder path
 	 */
-	getSourceFolderPath(){ const fs = use("Runtime.fs");const Vector = use("Runtime.Vector");return this.src_path ? fs.join(new Vector(this.getPath(), this.src_path)) : null; }
+	getSourceFolderPath(){ const fs = use("Runtime.fs");const Vector = use("Runtime.Vector");return this.src_path ? fs.join(Vector.create([this.getPath(), this.src_path])) : null; }
 	
 	
 	/**
@@ -113,7 +113,7 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 		const fs = use("Runtime.fs");
 		const Vector = use("Runtime.Vector");
 		if (!this.dest_path.has(lang)) return "";
-		return fs.join(new Vector(this.getPath(), this.dest_path.get(lang)));
+		return fs.join(Vector.create([this.getPath(), this.dest_path.get(lang)]));
 	}
 	
 	
@@ -217,7 +217,7 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 	/**
 	 * Resolve source path
 	 */
-	resolveSourceFilePath(relative_src_file_path){ const fs = use("Runtime.fs");const Vector = use("Runtime.Vector");return fs.join(new Vector(this.getSourceFolderPath(), relative_src_file_path)); }
+	resolveSourceFilePath(relative_src_file_path){ const fs = use("Runtime.fs");const Vector = use("Runtime.Vector");return fs.join(Vector.create([this.getSourceFolderPath(), relative_src_file_path])); }
 	
 	
 	/**
@@ -231,7 +231,7 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 		let dest_folder_path = this.getDestFolderPath(lang);
 		if (dest_folder_path == "") return "";
 		/* Get dest file path */
-		let dest_file_path = fs.join(new Vector(dest_folder_path, relative_src_file_path));
+		let dest_file_path = fs.join(Vector.create([dest_folder_path, relative_src_file_path]));
 		/* Resolve extension */
 		if (lang == "php")
 		{
@@ -295,7 +295,7 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 		if (!this.checkFile(src_file_path)) return false;
 		if (this.checkExclude(relative_src_file_path)) return false;
 		/* Check extension */
-		let arr = new Vector("bay", "es6", "php", "py", "ui");
+		let arr = Vector.create(["bay", "es6", "php", "py", "ui"]);
 		let extension = rs.extname(src_file_path);
 		if (arr.indexOf(extension) == -1) return false;
 		/* Read file */

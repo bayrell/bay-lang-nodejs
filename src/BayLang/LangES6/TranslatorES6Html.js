@@ -78,14 +78,14 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 		const Map = use("Runtime.Map");
 		const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");
 		let attrs = op_code.attrs;
-		let spread = new Vector();
+		let spread = Vector.create([]);
 		let result = new Map();
 		for (let i = 0; i < attrs.count(); i++)
 		{
 			let item = attrs.get(i);
 			if (item.is_spread)
 			{
-				let item_result = new Vector();
+				let item_result = Vector.create([]);
 				this.translator.expression.translate(item.expression, item_result);
 				spread.push(rs.join("", item_result));
 				continue;
@@ -96,7 +96,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 			{
 				key = "on" + String(rs.upper(rs.charAt(key, 7))) + String(rs.substr(key, 8));
 			}
-			let item_value = new Vector();
+			let item_value = Vector.create([]);
 			let is_function = item.expression instanceof OpDeclareFunction;
 			if (is_function)
 			{
@@ -113,7 +113,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 			}
 			else
 			{
-				if (key == "class") value = new Vector(value);
+				if (key == "class") value = Vector.create([value]);
 				result.set(key, value);
 			}
 		}
@@ -132,7 +132,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 			}
 			return this.translator.toString(key) + String(": ") + String(value);
 		});
-		return new Vector(new_attrs, spread);
+		return Vector.create([new_attrs, spread]);
 	}
 	
 	
@@ -146,17 +146,17 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 		const ParserBayHtml = use("BayLang.LangBay.ParserBayHtml");
 		if (tag_name instanceof BaseOpCode)
 		{
-			let item_result = new Vector();
+			let item_result = Vector.create([]);
 			this.translator.expression.translate(tag_name, item_result);
 			let value = rs.join("", item_result);
-			return new Vector(value, value);
+			return Vector.create([value, value]);
 		}
 		if (ParserBayHtml.isComponent(tag_name))
 		{
 			let module_name = this.translator.getUseModule(tag_name);
-			return new Vector(module_name, this.translator.toString(module_name));
+			return Vector.create([module_name, this.translator.toString(module_name)]);
 		}
-		return new Vector(tag_name, this.translator.toString(tag_name));
+		return Vector.create([tag_name, this.translator.toString(tag_name)]);
 	}
 	
 	
@@ -166,7 +166,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 	OpHtmlTag(op_code, result)
 	{
 		const ParserBayHtml = use("BayLang.LangBay.ParserBayHtml");
-		const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");
+		const OpHtmlSlot = use("BayLang.OpCodes.OpHtmlSlot");
 		const Map = use("Runtime.Map");
 		let attrs_str = "";
 		let var_name = this.translator.html_var_names.last();
@@ -197,7 +197,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 			let is_slot = op_code.content.items.filter((item) => { const OpHtmlSlot = use("BayLang.OpCodes.OpHtmlSlot");return item instanceof OpHtmlSlot; }).count() == op_code.content.count();
 			if (ParserBayHtml.isComponent(op_code.tag_name) && !is_slot)
 			{
-				let op_code_item = new OpDeclareFunction(Map.create({
+				let op_code_item = new OpHtmlSlot(Map.create({
 					"is_html": true,
 					"content": op_code.content,
 				}));
@@ -329,7 +329,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 		/* Function flags */
 		if (op_code.flags)
 		{
-			let flags = new Vector();
+			let flags = Vector.create([]);
 			if (op_code.flags.isFlag("async")) flags.push("async");
 			result.push(rs.join(" ", flags));
 			if (flags.count() > 0) result.push(" ");
@@ -359,12 +359,12 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 		let old_var_inc = this.translator.var_inc;
 		this.translator.var_inc = 0;
 		let old_var_names = this.translator.html_var_names.slice();
-		this.translator.html_var_names = new Vector();
+		this.translator.html_var_names = Vector.create([]);
 		this.translator.html_var_names.push("__v");
 		/* Save modules */
 		let save_use_modules = this.translator.setUseModules();
 		/* Function content */
-		let item_result = new Vector();
+		let item_result = Vector.create([]);
 		let save_operator_block = this.translator.is_operator_block;
 		this.translator.is_operator_block = true;
 		/* Translate HTML items */
@@ -416,14 +416,14 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 		{
 			/* Check if static */
 			let is_static = op_code.flags != null && (op_code.flags.isFlag("static") || op_code.flags.isFlag("pure"));
-			let static_methods = new Vector(
+			let static_methods = Vector.create([
 				"beforeMount",
 				"mounted",
 				"beforeUpdate",
 				"updated",
 				"beforeUnmount",
 				"unmounted",
-			);
+			]);
 			if (static_methods.indexOf(op_code.name) >= 0) is_static = true;
 			if ((kind == "methods" || kind == "computed") && is_static || kind == "static" && !is_static)
 			{
@@ -496,7 +496,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 	{
 		const Vector = use("Runtime.Vector");
 		let items = op_code.content.items.filter((item) => { const OpHtmlStyle = use("BayLang.OpCodes.OpHtmlStyle");return item instanceof OpHtmlStyle; });
-		let css_content = new Vector();
+		let css_content = Vector.create([]);
 		for (let i = 0; i < items.count(); i++)
 		{
 			let op_code_item = items.get(i);
@@ -516,7 +516,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 	{
 		const Vector = use("Runtime.Vector");
 		const OpUse = use("BayLang.OpCodes.OpUse");
-		let components = new Vector();
+		let components = Vector.create([]);
 		for (let i = 0; i < this.translator.current_module.items.count(); i++)
 		{
 			let op_code_item = this.translator.current_module.items.get(i);
@@ -581,7 +581,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 	OpDeclareComponentData(op_code, result, is_props)
 	{
 		const Vector = use("Runtime.Vector");
-		let item_result = new Vector();
+		let item_result = Vector.create([]);
 		item_result.push(this.translator.newLine());
 		if (is_props) item_result.push("props: {");
 		else item_result.push("data: function()");
@@ -595,7 +595,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 		}
 		this.translator.levelInc();
 		this.translator.is_html_props = is_props;
-		let item_content = new Vector();
+		let item_content = Vector.create([]);
 		this.OpDeclareComponentDataItems(op_code.content, item_content);
 		item_result.appendItems(item_content);
 		this.translator.levelDec();
@@ -673,14 +673,14 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 		result.push(this.translator.newLine());
 		result.push("},");
 		/* Component computed */
-		let computed_result = new Vector();
+		let computed_result = Vector.create([]);
 		computed_result.push(this.translator.newLine());
 		computed_result.push("computed:");
 		computed_result.push(this.translator.newLine());
 		computed_result.push("{");
 		this.translator.levelInc();
 		/* Translate items */
-		let item_result = new Vector();
+		let item_result = Vector.create([]);
 		this.translator.html_kind = "computed";
 		this.translateComponentBody(op_code, item_result);
 		computed_result.appendItems(item_result);

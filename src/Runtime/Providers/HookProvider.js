@@ -138,12 +138,12 @@ Runtime.Providers.HookProvider = class extends use("Runtime.BaseProvider")
 			let f = async () =>
 			{
 				const Vector = use("Runtime.Vector");
-				await chain.apply(new Vector(params));
+				await chain.apply(Vector.create([params]));
 				return params;
 			};
 			return f();
 		}
-		chain.apply(new Vector(params));
+		chain.apply(Vector.create([params]));
 		return params;
 	}
 	
@@ -154,7 +154,7 @@ Runtime.Providers.HookProvider = class extends use("Runtime.BaseProvider")
 		super._init();
 		const Vector = use("Runtime.Vector");
 		const Map = use("Runtime.Map");
-		this.base_hooks = new Vector();
+		this.base_hooks = Vector.create([]);
 		this.chains = new Map();
 		this.async_hooks = new Map();
 	}

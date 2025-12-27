@@ -75,7 +75,7 @@ BayLang.LangES6.ParserES6Operator = class extends use("Runtime.BaseObject")
 		let caret_start = reader.start();
 		let if_true = null;
 		let if_false = null;
-		let if_else = new Vector();
+		let if_else = Vector.create([]);
 		/* Read condition */
 		reader.matchToken("if");
 		reader.matchToken("(");
@@ -84,7 +84,7 @@ BayLang.LangES6.ParserES6Operator = class extends use("Runtime.BaseObject")
 		/* Read content */
 		if_true = this.readContent(reader);
 		/* Read content */
-		let operations = new Vector("else", "elseif");
+		let operations = Vector.create(["else", "elseif"]);
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
 		{
 			let token = reader.readToken();
@@ -203,7 +203,7 @@ BayLang.LangES6.ParserES6Operator = class extends use("Runtime.BaseObject")
 		const OpFlags = use("BayLang.OpCodes.OpFlags");
 		if (pattern == undefined) pattern = null;
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		/* Read pattern */
 		if (pattern == null)
 		{
@@ -235,7 +235,7 @@ BayLang.LangES6.ParserES6Operator = class extends use("Runtime.BaseObject")
 			}));
 		}
 		/* Read items */
-		let operations = new Vector("=", "+=", "-=", "~=");
+		let operations = Vector.create(["=", "+=", "-=", "~="]);
 		let next_token = reader.nextToken();
 		if (operations.indexOf(next_token) == -1)
 		{
@@ -421,7 +421,7 @@ BayLang.LangES6.ParserES6Operator = class extends use("Runtime.BaseObject")
 		const OpItems = use("BayLang.OpCodes.OpItems");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		/* Read begin tag */
 		reader.matchToken("{");
 		/* Read operators */

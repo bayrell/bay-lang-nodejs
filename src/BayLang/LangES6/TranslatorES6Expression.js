@@ -154,9 +154,8 @@ BayLang.LangES6.TranslatorES6Expression = class extends use("Runtime.BaseObject"
 		const OpPreprocessorIfDef = use("BayLang.OpCodes.OpPreprocessorIfDef");
 		const OpPreprocessorSwitch = use("BayLang.OpCodes.OpPreprocessorSwitch");
 		let is_multiline = this.translator.allow_multiline && op_code.isMultiLine();
-		result.push("new ");
-		result.push(this.translator.getUseModule("Vector"));
-		result.push("(");
+		result.push(this.translator.getUseModule("Vector") + String(".create"));
+		result.push("([");
 		if (is_multiline)
 		{
 			this.translator.levelInc();
@@ -167,7 +166,7 @@ BayLang.LangES6.TranslatorES6Expression = class extends use("Runtime.BaseObject"
 		while (i < items_count)
 		{
 			let op_code_item = op_code.items.get(i);
-			let result1 = new Vector();
+			let result1 = Vector.create([]);
 			/* Preprocessor */
 			let is_result = false;
 			let is_preprocessor = true;
@@ -203,7 +202,7 @@ BayLang.LangES6.TranslatorES6Expression = class extends use("Runtime.BaseObject"
 			this.translator.levelDec();
 			result.push(this.translator.newLine());
 		}
-		result.push(")");
+		result.push("])");
 	}
 	
 	
@@ -273,6 +272,7 @@ BayLang.LangES6.TranslatorES6Expression = class extends use("Runtime.BaseObject"
 	{
 		const Vector = use("Runtime.Vector");
 		const OpAttr = use("BayLang.OpCodes.OpAttr");
+		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
 		let attrs = new Vector();
 		let op_code_first = op_code;
 		while (op_code_first instanceof OpAttr)
@@ -289,7 +289,15 @@ BayLang.LangES6.TranslatorES6Expression = class extends use("Runtime.BaseObject"
 			let item_attr = attrs.get(i);
 			if (item_attr.kind == OpAttr.KIND_ATTR || item_attr.kind == OpAttr.KIND_STATIC)
 			{
-				result.push(".");
+				let prev_attr = i > 0 ? attrs.get(i - 1) : op_code_first;
+				if (prev_attr instanceof OpIdentifier && item_attr.kind == OpAttr.KIND_STATIC)
+				{
+					result.push(".constructor.");
+				}
+				else
+				{
+					result.push(".");
+				}
 				result.push(item_attr.next.value);
 			}
 			else if (item_attr.kind == OpAttr.KIND_DYNAMIC)
@@ -407,7 +415,7 @@ BayLang.LangES6.TranslatorES6Expression = class extends use("Runtime.BaseObject"
 	OpMath(op_code, result)
 	{
 		const Vector = use("Runtime.Vector");
-		let result1 = new Vector();
+		let result1 = Vector.create([]);
 		this.Expression(op_code.value1, result1);
 		let opcode_level1 = this.translator.opcode_level;
 		let op = "";
@@ -598,7 +606,7 @@ BayLang.LangES6.TranslatorES6Expression = class extends use("Runtime.BaseObject"
 			}
 			if (op == "~") result.push(" + ");
 			else result.push(" " + String(op) + String(" "));
-			let result2 = new Vector();
+			let result2 = Vector.create([]);
 			this.Expression(op_code.value2, result2);
 			let opcode_level2 = this.translator.opcode_level;
 			if (opcode_level2 < opcode_level)
@@ -632,7 +640,7 @@ BayLang.LangES6.TranslatorES6Expression = class extends use("Runtime.BaseObject"
 	OpTernary(op_code, result)
 	{
 		const Vector = use("Runtime.Vector");
-		let result1 = new Vector();
+		let result1 = Vector.create([]);
 		this.translate(op_code.condition, result1);
 		if (this.translator.opcode_level < 9)
 		{
@@ -644,7 +652,7 @@ BayLang.LangES6.TranslatorES6Expression = class extends use("Runtime.BaseObject"
 		{
 			result.appendItems(result1);
 		}
-		result1 = new Vector();
+		result1 = Vector.create([]);
 		result.push(" ? ");
 		this.translate(op_code.if_true, result1);
 		if (this.translator.opcode_level < 9)
@@ -657,7 +665,7 @@ BayLang.LangES6.TranslatorES6Expression = class extends use("Runtime.BaseObject"
 		{
 			result.appendItems(result1);
 		}
-		result1 = new Vector();
+		result1 = Vector.create([]);
 		result.push(" : ");
 		this.translate(op_code.if_false, result1);
 		if (this.translator.opcode_level < 9)

@@ -147,7 +147,7 @@ Runtime.Unit.TestProvider = class extends use("Runtime.BaseProvider")
 		methods = methods.filter((method_name) =>
 		{
 			const Vector = use("Runtime.Vector");
-			let method_info = getMethodInfoByName.apply(new Vector(method_name));
+			let method_info = getMethodInfoByName.apply(Vector.create([method_name]));
 			return this.constructor.isTestMethod(method_info);
 		});
 		return methods;
@@ -229,7 +229,7 @@ Runtime.Unit.TestProvider = class extends use("Runtime.BaseProvider")
 	{
 		super._init();
 		const Vector = use("Runtime.Vector");
-		this.tests_list = new Vector();
+		this.tests_list = Vector.create([]);
 	}
 	static getClassName(){ return "Runtime.Unit.TestProvider"; }
 	static getMethodsList(){ return null; }

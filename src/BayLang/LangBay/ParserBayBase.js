@@ -241,7 +241,7 @@ BayLang.LangBay.ParserBayBase = class extends use("Runtime.BaseObject")
 		const OpEntityName = use("BayLang.OpCodes.OpEntityName");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		/* Read name */
 		items.push(this.readIdentifier(reader));
 		/* Read names */
@@ -274,7 +274,7 @@ BayLang.LangBay.ParserBayBase = class extends use("Runtime.BaseObject")
 		/* Find entity */
 		if (find_entity) this.parser.findEntity(entity_name);
 		/* Read generics */
-		let generics = new Vector();
+		let generics = Vector.create([]);
 		if (reader.nextToken() == "<" && read_generic)
 		{
 			reader.matchToken("<");
@@ -312,7 +312,7 @@ BayLang.LangBay.ParserBayBase = class extends use("Runtime.BaseObject")
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
 		reader.matchToken("[");
-		let items = new Vector();
+		let items = Vector.create([]);
 		while (!reader.eof() && reader.nextToken() != "]")
 		{
 			if (this.skipComment(reader))
@@ -358,7 +358,7 @@ BayLang.LangBay.ParserBayBase = class extends use("Runtime.BaseObject")
 		const OpDict = use("BayLang.OpCodes.OpDict");
 		let caret_start = reader.start();
 		reader.matchToken("{");
-		let items = new Vector();
+		let items = Vector.create([]);
 		while (!reader.eof() && reader.nextToken() != "}")
 		{
 			if (reader.nextToken() == "/")
@@ -417,11 +417,11 @@ BayLang.LangBay.ParserBayBase = class extends use("Runtime.BaseObject")
 		let caret_start = reader.start();
 		reader.matchToken("new");
 		let pattern = this.readTypeIdentifier(reader);
-		let args = new Vector();
+		let args = Vector.create([]);
 		if (reader.nextToken() == "{")
 		{
 			let item = this.readDict(reader);
-			args = new Vector(item);
+			args = Vector.create([item]);
 		}
 		else if (reader.nextToken() == "(")
 		{
@@ -506,7 +506,7 @@ BayLang.LangBay.ParserBayBase = class extends use("Runtime.BaseObject")
 		{
 			this.parser.findVariable(item);
 		}
-		let operations = new Vector(".", "::", "[", "(");
+		let operations = Vector.create([".", "::", "[", "("]);
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
 		{
 			let next_token = reader.nextToken();
@@ -514,15 +514,18 @@ BayLang.LangBay.ParserBayBase = class extends use("Runtime.BaseObject")
 			{
 				if (next_token == "::" && item instanceof OpIdentifier)
 				{
-					item = new OpTypeIdentifier(Map.create({
-						"entity_name": new OpEntityName(Map.create({
-							"items": new Vector(item),
+					if (!this.parser.vars.has(item.value))
+					{
+						item = new OpTypeIdentifier(Map.create({
+							"entity_name": new OpEntityName(Map.create({
+								"items": Vector.create([item]),
+								"caret_start": item.caret_start,
+								"caret_end": item.caret_end,
+							})),
 							"caret_start": item.caret_start,
 							"caret_end": item.caret_end,
-						})),
-						"caret_start": item.caret_start,
-						"caret_end": item.caret_end,
-					}));
+						}));
+					}
 				}
 				reader.matchToken(next_token);
 				let op_code_item = this.readIdentifier(reader);

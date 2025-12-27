@@ -254,7 +254,7 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 			let item = op_code.items.get(i);
 			if (item instanceof OpPreprocessorIfCode)
 			{
-				let result1 = new Vector();
+				let result1 = Vector.create([]);
 				if (this.OpPreprocessorIfCode(item, result1))
 				{
 					result.push(this.translator.newLine());
@@ -362,7 +362,7 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 			}
 		}
 		/* Function flags */
-		let flags = new Vector();
+		let flags = Vector.create([]);
 		if (op_code.flags)
 		{
 			if (!is_component && (op_code.flags.isFlag("static") || op_code.flags.isFlag("pure")))
@@ -420,7 +420,7 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 		/* Save modules */
 		let save_use_modules = this.translator.setUseModules();
 		/* Expression */
-		let result1 = new Vector();
+		let result1 = Vector.create([]);
 		let is_expression = !(op_code.content instanceof OpItems);
 		if (is_expression)
 		{
@@ -531,7 +531,7 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 		let next_new_line = true, prev_next_new_line = true, is_first = true;
 		for (let i = 0; i < op_code.content.count(); i++)
 		{
-			let item_result = new Vector();
+			let item_result = Vector.create([]);
 			let op_code_item = op_code.content.get(i);
 			if (op_code_item instanceof OpAssign && !op_code_item.isStatic() || op_code_item instanceof OpAnnotation || op_code_item instanceof OpComment)
 			{
@@ -618,7 +618,7 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 				result.push("super._init();");
 			}
 			let save_use_modules = this.translator.setUseModules();
-			let result1 = new Vector();
+			let result1 = Vector.create([]);
 			for (let i = 0; i < op_code.content.items.count(); i++)
 			{
 				let op_code_item = op_code.content.items.get(i);
@@ -645,7 +645,7 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 				result.push(this.translator.newLine());
 				result.push("{");
 				this.translator.levelInc();
-				let result1 = new Vector();
+				let result1 = Vector.create([]);
 				let save_use_modules = this.translator.setUseModules();
 				result1.push(this.translator.newLine());
 				this.OpAnnotation(op_code.annotations, result1);
@@ -658,7 +658,7 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 				result.push(this.translator.newLine());
 			}
 			/* Get methods with annotations */
-			let methods = new Vector();
+			let methods = Vector.create([]);
 			this.translator.helper.getMethodsWithAnnotations(op_code.content, methods);
 			/* Get methods list */
 			result.push("static getMethodsList()");
@@ -693,12 +693,12 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 				this.translator.levelInc();
 				result.push(this.translator.newLine());
 				result.push("const Vector = use(\"Runtime.Vector\");");
-				result.push(this.translator.newLine());
 				for (let i = 0; i < methods.count(); i++)
 				{
 					let op_code_item = methods.get(i);
 					let method_name = this.translator.toString(op_code_item.name);
-					result.push("if (field_nane == " + String(method_name) + String(") "));
+					result.push(this.translator.newLine());
+					result.push("if (field_name == " + String(method_name) + String(") "));
 					this.OpAnnotation(op_code_item.annotations, result);
 				}
 				result.push(this.translator.newLine());

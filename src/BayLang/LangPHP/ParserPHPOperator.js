@@ -75,7 +75,7 @@ BayLang.LangPHP.ParserPHPOperator = class extends use("Runtime.BaseObject")
 		let caret_start = reader.start();
 		let if_true = null;
 		let if_false = null;
-		let if_else = new Vector();
+		let if_else = Vector.create([]);
 		/* Read condition */
 		reader.matchToken("if");
 		reader.matchToken("(");
@@ -84,7 +84,7 @@ BayLang.LangPHP.ParserPHPOperator = class extends use("Runtime.BaseObject")
 		/* Read content */
 		if_true = this.readContent(reader);
 		/* Read content */
-		let operations = new Vector("else", "elseif");
+		let operations = Vector.create(["else", "elseif"]);
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
 		{
 			let token = reader.readToken();
@@ -204,7 +204,7 @@ BayLang.LangPHP.ParserPHPOperator = class extends use("Runtime.BaseObject")
 		const OpFlags = use("BayLang.OpCodes.OpFlags");
 		if (pattern == undefined) pattern = null;
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		/* Read pattern */
 		if (pattern == null)
 		{
@@ -283,11 +283,11 @@ BayLang.LangPHP.ParserPHPOperator = class extends use("Runtime.BaseObject")
 			{
 				pattern = new OpTypeIdentifier(Map.create({
 					"entity_name": new OpEntityName(Map.create({
-						"items": new Vector(
+						"items": Vector.create([
 							new OpIdentifier(Map.create({
 								"value": "var",
 							})),
-						),
+						]),
 					})),
 				}));
 				this.parser.addVariable(value, pattern);
@@ -440,7 +440,7 @@ BayLang.LangPHP.ParserPHPOperator = class extends use("Runtime.BaseObject")
 		const OpItems = use("BayLang.OpCodes.OpItems");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		/* Read begin tag */
 		reader.matchToken("{");
 		/* Read operators */

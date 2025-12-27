@@ -206,7 +206,7 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 		let res = Runtime.rtl.getContext().hook(RuntimeHook.COMPONENTS, Map.create({
 			"components": this.components.slice(),
 		}));
-		let result_components = new Vector();
+		let result_components = Vector.create([]);
 		let components = res.get("components");
 		for (let i = 0; i < components.count(); i++)
 		{
@@ -224,7 +224,7 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 	{
 		const Vector = use("Runtime.Vector");
 		const Method = use("Runtime.Method");
-		let content = new Vector();
+		let content = Vector.create([]);
 		let components = this.getComponents();
 		for (let i = 0; i < components.count(); i++)
 		{
@@ -244,7 +244,7 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 		const Vector = use("Runtime.Vector");
 		const Map = use("Runtime.Map");
 		this.storage = null;
-		this.components = new Vector();
+		this.components = Vector.create([]);
 		this.pages = new Map();
 		this.component = "Runtime.DefaultLayout";
 		this.current_page_model = "";

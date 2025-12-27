@@ -39,7 +39,7 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends use("Runtime.BaseObject"
 	{
 		const Vector = use("Runtime.Vector");
 		if (is_const == undefined) is_const = false;
-		let variables = new Vector("null", "static", "true", "false");
+		let variables = Vector.create(["null", "static", "true", "false"]);
 		if (op_code.value == "print") result.push("echo");
 		else if (op_code.value == "var_dump") result.push("var_dump");
 		else if (variables.indexOf(op_code.value) >= 0) result.push(op_code.value);
@@ -171,7 +171,7 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends use("Runtime.BaseObject"
 		while (i < items_count)
 		{
 			let op_code_item = op_code.items.get(i);
-			let result1 = new Vector();
+			let result1 = Vector.create([]);
 			/* Preprocessor */
 			let is_result = false;
 			let is_preprocessor = true;
@@ -411,7 +411,7 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends use("Runtime.BaseObject"
 	OpMath(op_code, result)
 	{
 		const Vector = use("Runtime.Vector");
-		let result1 = new Vector();
+		let result1 = Vector.create([]);
 		this.Expression(op_code.value1, result1);
 		let opcode_level1 = this.translator.opcode_level;
 		let op = "";
@@ -596,7 +596,7 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends use("Runtime.BaseObject"
 			}
 			if (op == "~") op = ".";
 			result.push(" " + String(op) + String(" "));
-			let result2 = new Vector();
+			let result2 = Vector.create([]);
 			this.Expression(op_code.value2, result2);
 			let opcode_level2 = this.translator.opcode_level;
 			if (opcode_level2 < opcode_level)
@@ -620,7 +620,7 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends use("Runtime.BaseObject"
 	OpTernary(op_code, result)
 	{
 		const Vector = use("Runtime.Vector");
-		let result1 = new Vector();
+		let result1 = Vector.create([]);
 		this.translate(op_code.condition, result1);
 		if (this.translator.opcode_level < 9)
 		{
@@ -632,7 +632,7 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends use("Runtime.BaseObject"
 		{
 			result.appendItems(result1);
 		}
-		result1 = new Vector();
+		result1 = Vector.create([]);
 		result.push(" ? ");
 		this.translate(op_code.if_true, result1);
 		if (this.translator.opcode_level < 9)
@@ -645,7 +645,7 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends use("Runtime.BaseObject"
 		{
 			result.appendItems(result1);
 		}
-		result1 = new Vector();
+		result1 = Vector.create([]);
 		result.push(" : ");
 		this.translate(op_code.if_false, result1);
 		if (this.translator.opcode_level < 9)

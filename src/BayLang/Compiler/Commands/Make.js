@@ -70,7 +70,7 @@ BayLang.Compiler.Commands.Make = class extends use("Runtime.Console.BaseCommand"
 		for (let i = 0; i < files.count(); i++)
 		{
 			let file_name = files[i];
-			let file_path = fs.join(new Vector(module_src_path, file_name));
+			let file_path = fs.join(Vector.create([module_src_path, file_name]));
 			/* Detect is file */
 			if (!await fs.isFile(file_path))
 			{

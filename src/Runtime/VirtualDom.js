@@ -70,7 +70,7 @@ Runtime.VirtualDom = class extends use("Runtime.BaseObject")
 	{
 		const Vector = use("Runtime.Vector");
 		if (attrs == undefined) attrs = null;
-		let item = this.constructor.newInstance(new Vector(this.component));
+		let item = this.constructor.newInstance(Vector.create([this.component]));
 		item.setName(name);
 		item.setAttrs(attrs);
 		if (name == "script" || name == "style") item.is_raw = true;
@@ -122,7 +122,7 @@ Runtime.VirtualDom = class extends use("Runtime.BaseObject")
 	{
 		const Vector = use("Runtime.Vector");
 		const RenderContent = use("Runtime.Providers.RenderContent");
-		let content = new Vector();
+		let content = Vector.create([]);
 		let provider = new RenderContent();
 		provider.components = Runtime.rtl.getContext().provider("render").components;
 		provider.render(this, content);
@@ -139,7 +139,7 @@ Runtime.VirtualDom = class extends use("Runtime.BaseObject")
 		this.component = null;
 		this.attrs = new Map();
 		this.slots = new Map();
-		this.items = new Vector();
+		this.items = Vector.create([]);
 		this.is_raw = false;
 		this.is_render = false;
 		this.is_component = false;

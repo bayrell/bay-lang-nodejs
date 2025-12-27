@@ -57,9 +57,9 @@ Runtime.Unit.ModuleDescription = class
 		const Vector = use("Runtime.Vector");
 		const Provider = use("Runtime.Entity.Provider");
 		const TestProvider = use("Runtime.Unit.TestProvider");
-		return new Vector(
+		return Vector.create([
 			new Provider("Runtime.Unit.TestProvider", new TestProvider()),
-		);
+		]);
 	}
 	
 	

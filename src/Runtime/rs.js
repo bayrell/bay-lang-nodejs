@@ -530,7 +530,7 @@ Runtime.rs = class
 		{
 			const Vector = use("Runtime.Vector");
 			let arr = this.split("=", item);
-			return new Vector(arr[1], arr[0]);
+			return Vector.create([arr[1], arr[0]]);
 		});
 		return Map.create({
 			"uri": uri,
@@ -697,7 +697,7 @@ Runtime.rs = class
 			global_hash.set("component_hash", component_hash);
 		}
 		if (component_hash.has(class_name)) return component_hash.get(class_name);
-		let result = new Vector();
+		let result = Vector.create([]);
 		let item_name = class_name;
 		while (item_name != "" && item_name != "Runtime.Component")
 		{

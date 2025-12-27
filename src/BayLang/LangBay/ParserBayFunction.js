@@ -39,7 +39,7 @@ BayLang.LangBay.ParserBayFunction = class extends use("Runtime.BaseObject")
 		const Vector = use("Runtime.Vector");
 		if (match_brackets == undefined) match_brackets = true;
 		if (match_brackets) reader.matchToken("(");
-		let args = new Vector();
+		let args = Vector.create([]);
 		while (!reader.eof() && reader.nextToken() != ")")
 		{
 			let expression = this.parser.parser_expression.readExpression(reader);
@@ -108,7 +108,7 @@ BayLang.LangBay.ParserBayFunction = class extends use("Runtime.BaseObject")
 		if (match_brackets == undefined) match_brackets = true;
 		if (end_tag == undefined) end_tag = "";
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		if (match_brackets) reader.matchToken("(");
 		while (!reader.eof() && reader.nextToken() != ")" && reader.nextToken() != end_tag)
 		{
@@ -152,8 +152,8 @@ BayLang.LangBay.ParserBayFunction = class extends use("Runtime.BaseObject")
 	readDeclareFunctionUse(reader)
 	{
 		const Vector = use("Runtime.Vector");
-		if (reader.nextToken() != "use") return new Vector();
-		let items = new Vector();
+		if (reader.nextToken() != "use") return Vector.create([]);
+		let items = Vector.create([]);
 		reader.matchToken("use");
 		reader.matchToken("(");
 		while (!reader.eof() && reader.nextToken() != ")")

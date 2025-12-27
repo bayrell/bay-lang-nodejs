@@ -543,9 +543,9 @@ Runtime.rtl = class
 		const Vector = use("Runtime.Vector");
 		const Provider = use("Runtime.Entity.Provider");
 		let params = Map.create({
-			"providers": new Vector(
+			"providers": Vector.create([
 				new Provider("app", app),
-			),
+			]),
 			"modules": modules,
 		});
 		let context = await this.createContext(params);

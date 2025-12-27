@@ -27,9 +27,9 @@ BayLang.LangPHP.ParserPHP = class extends use("BayLang.CoreParser")
 	isRegisteredVariable(name)
 	{
 		const Vector = use("Runtime.Vector");
-		let variables = new Vector(
+		let variables = Vector.create([
 			"echo",
-		);
+		]);
 		if (variables.indexOf(name) == -1) return false;
 		return true;
 	}

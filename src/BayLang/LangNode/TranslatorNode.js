@@ -97,7 +97,7 @@ BayLang.LangNode.TranslatorNode = class extends use("BayLang.LangES6.TranslatorE
 	translate(op_code)
 	{
 		const Vector = use("Runtime.Vector");
-		let result = new Vector();
+		let result = Vector.create([]);
 		result.push("\"use strict;\"");
 		result.push(this.newLine());
 		result.push("const use = require('bay-lang').use;");
@@ -106,7 +106,7 @@ BayLang.LangNode.TranslatorNode = class extends use("BayLang.LangES6.TranslatorE
 		result.push("const {rtl, rs} = use.rtl();");
 		*/
 		/* Translate program */
-		let result1 = new Vector();
+		let result1 = Vector.create([]);
 		result1.push(this.newLine());
 		this.program.translate(op_code, result1);
 		/* Add use */

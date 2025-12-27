@@ -388,7 +388,7 @@ BayLang.Caret = class extends use("Runtime.BaseObject")
 		/* Read char */
 		if (!this.isTokenChar(this.nextChar())) return this.readChar();
 		/* Read token */
-		let items = new Vector();
+		let items = Vector.create([]);
 		while (!this.eof() && this.isTokenChar(this.nextChar()))
 		{
 			items.push(this.readChar());

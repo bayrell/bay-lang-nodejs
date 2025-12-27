@@ -66,7 +66,7 @@ BayLang.Test.LangBay.Operator = class
 	{
 		const Vector = use("Runtime.Vector");
 		if (debug == undefined) debug = false;
-		let result = new Vector();
+		let result = Vector.create([]);
 		this.setContent(content);
 		/* Parse */
 		let res = this.parser.parser_operator.readOperators(this.parser);
@@ -80,7 +80,7 @@ BayLang.Test.LangBay.Operator = class
 			console.log(result);
 			console.log(rs.join("", result));
 		}
-		return new Vector(op_code, rs.join("", result));
+		return Vector.create([op_code, rs.join("", result)]);
 	}
 	
 	
@@ -89,11 +89,11 @@ BayLang.Test.LangBay.Operator = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\tint a;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -104,11 +104,11 @@ BayLang.Test.LangBay.Operator = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\tint a = 1;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -119,12 +119,12 @@ BayLang.Test.LangBay.Operator = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\tint a = 1;",
 			"\ta = 2;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -135,12 +135,12 @@ BayLang.Test.LangBay.Operator = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\tint a = 1, b = 2;",
 			"\ta = a + b;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -151,11 +151,11 @@ BayLang.Test.LangBay.Operator = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\tthis.a = 1;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -166,11 +166,11 @@ BayLang.Test.LangBay.Operator = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\tCollection<string> content = [];",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -182,11 +182,11 @@ BayLang.Test.LangBay.Operator = class
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("content");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\tstring content = rs::join(\"\\n\", content);",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -197,11 +197,11 @@ BayLang.Test.LangBay.Operator = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\tbreak;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -212,11 +212,11 @@ BayLang.Test.LangBay.Operator = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\tcontinue;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -227,11 +227,11 @@ BayLang.Test.LangBay.Operator = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\treturn;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -242,11 +242,11 @@ BayLang.Test.LangBay.Operator = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\treturn 1;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -257,11 +257,11 @@ BayLang.Test.LangBay.Operator = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\treturn true;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -272,11 +272,11 @@ BayLang.Test.LangBay.Operator = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\treturn this.result;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -288,11 +288,11 @@ BayLang.Test.LangBay.Operator = class
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("a");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\ta++;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -304,11 +304,11 @@ BayLang.Test.LangBay.Operator = class
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("a");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\t++a;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -320,11 +320,11 @@ BayLang.Test.LangBay.Operator = class
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("a");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\ta--;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -336,11 +336,11 @@ BayLang.Test.LangBay.Operator = class
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("a");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\t--a;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -352,14 +352,14 @@ BayLang.Test.LangBay.Operator = class
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("io");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\tfor (int i = 0; i < 10; i++)",
 			"\t{",
 			"\t\tio::print(i);",
 			"\t}",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -373,14 +373,14 @@ BayLang.Test.LangBay.Operator = class
 		this.addVar("a");
 		this.addVar("b");
 		this.addVar("io");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\tif (a > b)",
 			"\t{",
 			"\t\tio::print(\"Yes\");",
 			"\t}",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -394,7 +394,7 @@ BayLang.Test.LangBay.Operator = class
 		this.addVar("a");
 		this.addVar("b");
 		this.addVar("io");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\tif (a > b)",
 			"\t{",
@@ -405,7 +405,7 @@ BayLang.Test.LangBay.Operator = class
 			"\t\tio::print(\"No\");",
 			"\t}",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -418,7 +418,7 @@ BayLang.Test.LangBay.Operator = class
 		this.reset();
 		this.addVar("a");
 		this.addVar("io");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\tif (a == 1)",
 			"\t{",
@@ -437,7 +437,7 @@ BayLang.Test.LangBay.Operator = class
 			"\t\tio::print(\"No\");",
 			"\t}",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -449,11 +449,11 @@ BayLang.Test.LangBay.Operator = class
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("RuntimeException");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\tthrow new RuntimeException(\"Error\");",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -466,7 +466,7 @@ BayLang.Test.LangBay.Operator = class
 		this.reset();
 		this.addVar("io");
 		this.addVar("RuntimeException");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\ttry",
 			"\t{",
@@ -477,7 +477,7 @@ BayLang.Test.LangBay.Operator = class
 			"\t\tio::print_error(e.toString());",
 			"\t}",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -489,14 +489,14 @@ BayLang.Test.LangBay.Operator = class
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("i");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\twhile (i < 10)",
 			"\t{",
 			"\t\ti++;",
 			"\t}",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -508,12 +508,12 @@ BayLang.Test.LangBay.Operator = class
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("i");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\t/* Increment value */",
 			"\ti++;",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -532,55 +532,79 @@ BayLang.Test.LangBay.Operator = class
 	static getMethodInfoByName(field_name)
 	{
 		const Vector = use("Runtime.Vector");
-		if (field_nane == "testAssign1") return new Vector(
+		if (field_name == "testAssign1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAssign2") return new Vector(
+		);
+		if (field_name == "testAssign2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAssign3") return new Vector(
+		);
+		if (field_name == "testAssign3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAssign4") return new Vector(
+		);
+		if (field_name == "testAssign4") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAssign5") return new Vector(
+		);
+		if (field_name == "testAssign5") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAssign6") return new Vector(
+		);
+		if (field_name == "testAssign6") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAssign7") return new Vector(
+		);
+		if (field_name == "testAssign7") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testBreak") return new Vector(
+		);
+		if (field_name == "testBreak") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testContinue") return new Vector(
+		);
+		if (field_name == "testContinue") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testReturn1") return new Vector(
+		);
+		if (field_name == "testReturn1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testReturn2") return new Vector(
+		);
+		if (field_name == "testReturn2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testReturn3") return new Vector(
+		);
+		if (field_name == "testReturn3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testReturn4") return new Vector(
+		);
+		if (field_name == "testReturn4") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testInc1") return new Vector(
+		);
+		if (field_name == "testInc1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testInc2") return new Vector(
+		);
+		if (field_name == "testInc2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testDec1") return new Vector(
+		);
+		if (field_name == "testDec1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testDec2") return new Vector(
+		);
+		if (field_name == "testDec2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFor1") return new Vector(
+		);
+		if (field_name == "testFor1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testIf1") return new Vector(
+		);
+		if (field_name == "testIf1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testIf2") return new Vector(
+		);
+		if (field_name == "testIf2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testIf3") return new Vector(
+		);
+		if (field_name == "testIf3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testThrow1") return new Vector(
+		);
+		if (field_name == "testThrow1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testTry1") return new Vector(
+		);
+		if (field_name == "testTry1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testWhile1") return new Vector(
+		);
+		if (field_name == "testWhile1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testComment1") return new Vector(
+		);
+		if (field_name == "testComment1") return new Vector(
 			new Test(new Map())
 		);
 		return null;

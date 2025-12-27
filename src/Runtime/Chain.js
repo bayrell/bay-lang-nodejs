@@ -94,7 +94,7 @@ Runtime.Chain = class extends use("Runtime.Method")
 	{
 		super._init();
 		const Vector = use("Runtime.Vector");
-		this.chain = new Vector();
+		this.chain = Vector.create([]);
 	}
 	static getClassName(){ return "Runtime.Chain"; }
 	static getMethodsList(){ return null; }

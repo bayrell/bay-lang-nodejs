@@ -66,7 +66,7 @@ BayLang.Test.LangBay.Base = class
 	{
 		const Vector = use("Runtime.Vector");
 		if (debug == undefined) debug = false;
-		let result = new Vector();
+		let result = Vector.create([]);
 		this.setContent(content);
 		/* Parse */
 		let res = this.parser.parser_expression.readExpression(this.parser);
@@ -80,7 +80,7 @@ BayLang.Test.LangBay.Base = class
 			console.log(result);
 			console.log(rs.join("", result));
 		}
-		return new Vector(op_code, rs.join("", result));
+		return Vector.create([op_code, rs.join("", result)]);
 	}
 	
 	
@@ -247,13 +247,13 @@ BayLang.Test.LangBay.Base = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"[",
 			"\t\"a\",",
 			"\t\"b\",",
 			"\t\"c\",",
 			"]",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -274,11 +274,11 @@ BayLang.Test.LangBay.Base = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\t\"name\": \"test\",",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -289,12 +289,12 @@ BayLang.Test.LangBay.Base = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\t\"name\": \"test\",",
 			"\t\"value\": 10,",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -305,11 +305,11 @@ BayLang.Test.LangBay.Base = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\t\"obj\": {},",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -320,12 +320,12 @@ BayLang.Test.LangBay.Base = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\t\"obj\": {",
 			"\t},",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -336,12 +336,12 @@ BayLang.Test.LangBay.Base = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\t\"obj\": [",
 			"\t],",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -352,14 +352,14 @@ BayLang.Test.LangBay.Base = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\t\"obj\": {",
 			"\t\t\"name\": \"test\",",
 			"\t\t\"value\": 10,",
 			"\t},",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -370,11 +370,11 @@ BayLang.Test.LangBay.Base = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\t\"obj\": {\"name\": \"test\", \"value\": 10},",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -385,7 +385,7 @@ BayLang.Test.LangBay.Base = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"[",
 			"\t\"1\",",
 			"\t#ifdef BACKEND then",
@@ -394,7 +394,7 @@ BayLang.Test.LangBay.Base = class
 			"\t#endif",
 			"\t\"4\",",
 			"]",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -405,7 +405,7 @@ BayLang.Test.LangBay.Base = class
 		const Vector = use("Runtime.Vector");
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"{",
 			"\t\"name\": \"test\",",
 			"\t#ifdef BACKEND then",
@@ -413,7 +413,7 @@ BayLang.Test.LangBay.Base = class
 			"\t\"value2\": 2,",
 			"\t#endif",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -512,12 +512,12 @@ BayLang.Test.LangBay.Base = class
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("a");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"a{",
 			"\t\"name\": \"test\",",
 			"\t\"value\": 10,",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -551,12 +551,12 @@ BayLang.Test.LangBay.Base = class
 		const AssertHelper = use("Runtime.Unit.AssertHelper");
 		this.reset();
 		this.addVar("Test");
-		let content = rs.join("\n", new Vector(
+		let content = rs.join("\n", Vector.create([
 			"new Test{",
 			"\t\"name\": \"test\",",
 			"\t\"value\": 10,",
 			"}",
-		));
+		]));
 		let res = this.translate(content);
 		AssertHelper.equalValue(content, res.get(1), content);
 	}
@@ -596,85 +596,124 @@ BayLang.Test.LangBay.Base = class
 	static getMethodInfoByName(field_name)
 	{
 		const Vector = use("Runtime.Vector");
-		if (field_nane == "testNumber") return new Vector(
+		if (field_name == "testNumber") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testReal") return new Vector(
+		);
+		if (field_name == "testReal") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testString") return new Vector(
+		);
+		if (field_name == "testString") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testIdentifier") return new Vector(
+		);
+		if (field_name == "testIdentifier") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAttr1") return new Vector(
+		);
+		if (field_name == "testAttr1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAttr2") return new Vector(
+		);
+		if (field_name == "testAttr2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAttr3") return new Vector(
+		);
+		if (field_name == "testAttr3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAttr4") return new Vector(
+		);
+		if (field_name == "testAttr4") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAttr5") return new Vector(
+		);
+		if (field_name == "testAttr5") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAttr6") return new Vector(
+		);
+		if (field_name == "testAttr6") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testAttr7") return new Vector(
+		);
+		if (field_name == "testAttr7") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testCollection1") return new Vector(
+		);
+		if (field_name == "testCollection1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testCollection2") return new Vector(
+		);
+		if (field_name == "testCollection2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testCollection3") return new Vector(
+		);
+		if (field_name == "testCollection3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testCollection4") return new Vector(
+		);
+		if (field_name == "testCollection4") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testCollection5") return new Vector(
+		);
+		if (field_name == "testCollection5") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testDict1") return new Vector(
+		);
+		if (field_name == "testDict1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testDict2") return new Vector(
+		);
+		if (field_name == "testDict2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testDict3") return new Vector(
+		);
+		if (field_name == "testDict3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testDict4") return new Vector(
+		);
+		if (field_name == "testDict4") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testDict5") return new Vector(
+		);
+		if (field_name == "testDict5") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testDict6") return new Vector(
+		);
+		if (field_name == "testDict6") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testDict7") return new Vector(
+		);
+		if (field_name == "testDict7") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testDict8") return new Vector(
+		);
+		if (field_name == "testDict8") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testPreprocessor1") return new Vector(
+		);
+		if (field_name == "testPreprocessor1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testPreprocessor2") return new Vector(
+		);
+		if (field_name == "testPreprocessor2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFn1") return new Vector(
+		);
+		if (field_name == "testFn1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFn2") return new Vector(
+		);
+		if (field_name == "testFn2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFn3") return new Vector(
+		);
+		if (field_name == "testFn3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFn4") return new Vector(
+		);
+		if (field_name == "testFn4") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFn5") return new Vector(
+		);
+		if (field_name == "testFn5") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFn6") return new Vector(
+		);
+		if (field_name == "testFn6") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFn7") return new Vector(
+		);
+		if (field_name == "testFn7") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFn8") return new Vector(
+		);
+		if (field_name == "testFn8") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testFn9") return new Vector(
+		);
+		if (field_name == "testFn9") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testNew1") return new Vector(
+		);
+		if (field_name == "testNew1") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testNew2") return new Vector(
+		);
+		if (field_name == "testNew2") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testNew3") return new Vector(
+		);
+		if (field_name == "testNew3") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testNew4") return new Vector(
+		);
+		if (field_name == "testNew4") return new Vector(
 			new Test(new Map())
-		);if (field_nane == "testNew5") return new Vector(
+		);
+		if (field_name == "testNew5") return new Vector(
 			new Test(new Map())
 		);
 		return null;

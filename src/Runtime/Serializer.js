@@ -56,7 +56,7 @@ Runtime.Serializer = class extends use("Runtime.BaseObject")
 		if (value instanceof Map && value.has("__class_name__"))
 		{
 			let class_name = value.get("__class_name__");
-			new_value = create ? create.apply(new Vector(this, value)) : rtl.newInstance(class_name);
+			new_value = create ? create.apply(Vector.create([this, value])) : rtl.newInstance(class_name);
 			this.assign(new_value, value);
 		}
 		else if (value instanceof Vector || value instanceof Map)

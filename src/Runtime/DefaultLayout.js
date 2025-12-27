@@ -156,7 +156,7 @@ Runtime.DefaultLayout = {
 			const Vector = use("Runtime.Vector");
 			let d = Runtime.rtl.getContext().hook(name, Map.create({
 				"layout": this.layout,
-				"components": new Vector(),
+				"components": Vector.create([]),
 			}));
 			return d.get("components");
 		},

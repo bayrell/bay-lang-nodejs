@@ -46,12 +46,12 @@ Runtime.Hooks.RuntimeHook = class extends use("Runtime.Hooks.BaseHook")
 	{
 		const Vector = use("Runtime.Vector");
 		super.register_hooks();
-		this.provider.setAsync(new Vector(
+		this.provider.setAsync(Vector.create([
 			this.constructor.INIT,
 			this.constructor.START,
 			this.constructor.LAUNCHED,
 			this.constructor.RUN,
-		));
+		]));
 	}
 	
 	

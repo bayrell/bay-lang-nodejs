@@ -81,7 +81,7 @@ Runtime.Providers.RenderContent = class extends use("Runtime.BaseProvider")
 		}
 		else
 		{
-			let item_result = new Vector();
+			let item_result = Vector.create([]);
 			if (!vdom.attrs.has("@raw"))
 			{
 				for (let i = 0; i < vdom.items.count(); i++)
@@ -96,7 +96,7 @@ Runtime.Providers.RenderContent = class extends use("Runtime.BaseProvider")
 			}
 			if (vdom.name != "")
 			{
-				let attr_items = new Vector();
+				let attr_items = Vector.create([]);
 				if (vdom.attrs)
 				{
 					let keys = rtl.list(vdom.attrs.keys());
@@ -138,7 +138,7 @@ Runtime.Providers.RenderContent = class extends use("Runtime.BaseProvider")
 		super._init();
 		const Vector = use("Runtime.Vector");
 		const Map = use("Runtime.Map");
-		this.items = new Vector();
+		this.items = Vector.create([]);
 		this.components = new Map();
 	}
 	static getClassName(){ return "Runtime.Providers.RenderContent"; }

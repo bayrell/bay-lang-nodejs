@@ -48,7 +48,7 @@ BayLang.LangES6.ParserES6Program = class extends use("Runtime.BaseObject")
 		const Vector = use("Runtime.Vector");
 		const OpModule = use("BayLang.OpCodes.OpModule");
 		const Map = use("Runtime.Map");
-		let items = new Vector();
+		let items = Vector.create([]);
 		let caret_start = reader.start();
 		/* Read module */
 		while (!reader.eof() && reader.nextToken() != "")

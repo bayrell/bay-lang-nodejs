@@ -91,7 +91,7 @@ BayLang.LangBay.ParserBayOperator = class extends use("Runtime.BaseObject")
 		let caret_start = reader.start();
 		reader.matchToken("try");
 		let op_try = this.parse(reader);
-		let items = new Vector();
+		let items = Vector.create([]);
 		while (!reader.eof() && reader.nextToken() == "catch")
 		{
 			let caret_start = reader.start();
@@ -131,7 +131,7 @@ BayLang.LangBay.ParserBayOperator = class extends use("Runtime.BaseObject")
 		let caret_start = reader.start();
 		let if_true = null;
 		let if_false = null;
-		let if_else = new Vector();
+		let if_else = Vector.create([]);
 		/* Read condition */
 		reader.matchToken("if");
 		reader.matchToken("(");
@@ -142,7 +142,7 @@ BayLang.LangBay.ParserBayOperator = class extends use("Runtime.BaseObject")
 		this.parser.parser_base.skipComment(reader);
 		/* Read content */
 		let caret_last = null;
-		let operations = new Vector("else", "elseif");
+		let operations = Vector.create(["else", "elseif"]);
 		while (!reader.eof() && operations.indexOf(reader.nextToken()) >= 0)
 		{
 			let token = reader.readToken();
@@ -262,7 +262,7 @@ BayLang.LangBay.ParserBayOperator = class extends use("Runtime.BaseObject")
 		const OpAssign = use("BayLang.OpCodes.OpAssign");
 		const OpFlags = use("BayLang.OpCodes.OpFlags");
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		/* Read value */
 		let pattern = null;
 		let value = this.parser.parser_base.readDynamic(reader, false);
@@ -282,7 +282,7 @@ BayLang.LangBay.ParserBayOperator = class extends use("Runtime.BaseObject")
 			}));
 		}
 		/* Read items */
-		let operations = new Vector("=", "+=", "-=", "~=");
+		let operations = Vector.create(["=", "+=", "-=", "~="]);
 		let next_token = reader.nextToken();
 		if (operations.indexOf(next_token) == -1)
 		{
@@ -467,7 +467,7 @@ BayLang.LangBay.ParserBayOperator = class extends use("Runtime.BaseObject")
 		if (match_brackets == undefined) match_brackets = true;
 		if (end_tag == undefined) end_tag = "";
 		let caret_start = reader.start();
-		let items = new Vector();
+		let items = Vector.create([]);
 		/* Read begin tag */
 		if (match_brackets) reader.matchToken("{");
 		/* Save var */

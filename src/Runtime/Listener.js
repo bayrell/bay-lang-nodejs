@@ -67,7 +67,7 @@ Runtime.Listener = class extends use("Runtime.BaseObject")
 		{
 			message.src = this.object;
 		}
-		this.emitMessage(message.getClassName(), message);
+		this.emitMessage(message.constructor.getClassName(), message);
 		this.emitMessage(message.name, message);
 	}
 	
@@ -81,7 +81,7 @@ Runtime.Listener = class extends use("Runtime.BaseObject")
 		{
 			message.src = this.object;
 		}
-		let res1 = this.emitMessage(message.getClassName(), message);
+		let res1 = this.emitMessage(message.constructor.getClassName(), message);
 		let res2 = this.emitMessage(message.name, message);
 		if (res1 instanceof Promise) await res1;
 		if (res2 instanceof Promise) await res2;
@@ -96,7 +96,7 @@ Runtime.Listener = class extends use("Runtime.BaseObject")
 		const Vector = use("Runtime.Vector");
 		if (!this.listeners.has(message_name)) return;
 		let chain = this.listeners.get(message_name);
-		return chain.apply(new Vector(message));
+		return chain.apply(Vector.create([message]));
 	}
 	
 	

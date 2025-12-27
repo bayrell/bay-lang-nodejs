@@ -27,7 +27,7 @@ BayLang.LangBay.ParserBay = class extends use("BayLang.CoreParser")
 	isRegisteredVariable(name)
 	{
 		const Vector = use("Runtime.Vector");
-		let variables = new Vector(
+		let variables = Vector.create([
 			"print",
 			"var_dump",
 			"rs",
@@ -40,7 +40,7 @@ BayLang.LangBay.ParserBay = class extends use("BayLang.CoreParser")
 			"false",
 			"document",
 			"window",
-		);
+		]);
 		if (variables.indexOf(name) == -1) return false;
 		return true;
 	}
@@ -52,7 +52,7 @@ BayLang.LangBay.ParserBay = class extends use("BayLang.CoreParser")
 	isSystemType(name)
 	{
 		const Vector = use("Runtime.Vector");
-		let variables = new Vector(
+		let variables = Vector.create([
 			"var",
 			"void",
 			"bool",
@@ -75,7 +75,7 @@ BayLang.LangBay.ParserBay = class extends use("BayLang.CoreParser")
 			"Vector",
 			"Map",
 			"ArrayInterface",
-		);
+		]);
 		if (variables.indexOf(name) == -1) return false;
 		return true;
 	}
