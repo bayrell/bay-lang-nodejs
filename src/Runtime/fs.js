@@ -43,6 +43,7 @@ Runtime.fs = class
 	static join(arr)
 	{
 		const re = use("Runtime.re");
+		arr = arr.filter((s) => { return s != ""; });
 		let path = rs.join(this.DIRECTORY_SEPARATOR, arr);
 		path = re.replace("\\/+", "/", path);
 		path = re.replace("\\/\\.\\/", "/", path);

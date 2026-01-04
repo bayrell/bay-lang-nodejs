@@ -579,6 +579,23 @@ Runtime.rs = class
 	
 	
 	/**
+	 * Url get add
+	 */
+	static urlGetAdd(s, params)
+	{
+		let keys = rtl.list(params.keys());
+		for (let i = 0; i < keys.count(); i++)
+		{
+			let key = keys.get(i);
+			let value = params.get(key);
+			if (!value) continue;
+			s = this.url_get_add(s, key, value);
+		}
+		return s;
+	}
+	
+	
+	/**
 	 * Strip tags
 	 */
 	static strip_tags(content, allowed_tags)

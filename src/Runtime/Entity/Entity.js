@@ -26,6 +26,7 @@ Runtime.Entity.Entity = class extends use("Runtime.BaseObject")
 	 */
 	constructor(obj)
 	{
+		if (obj == undefined) obj = null;
 		super();
 		this._assign_values(obj);
 	}

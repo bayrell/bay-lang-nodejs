@@ -29,14 +29,17 @@ BayLang.OpCodes.OpPipe = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "is_async", data);
-		serializer.process(this, "is_monad", data);
-		serializer.process(this, "kind", data);
-		serializer.process(this, "obj", data);
-		serializer.process(this, "value", data);
+		const BooleanType = use("Runtime.Serializer.BooleanType");
+		const StringType = use("Runtime.Serializer.StringType");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("is_async", new BooleanType());
+		rules.addType("is_monad", new BooleanType());
+		rules.addType("kind", new StringType());
+		rules.addType("obj", new OpCodeType());
+		rules.addType("value", new OpCodeType());
 	}
 	
 	

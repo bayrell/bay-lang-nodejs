@@ -1,5 +1,6 @@
 "use strict;"
 const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
 /*!
  *  BayLang Technology
  *
@@ -28,11 +29,14 @@ Runtime.ChainAsync = class extends use("Runtime.Chain")
 		if (args == undefined) args = null;
 		let f = async () =>
 		{
+			const Method = use("Runtime.Method");
 			for (let i = 0; i < this.chain.count(); i++)
 			{
 				let item = this.chain.get(i);
 				let f = item.get("method");
-				let res = f.apply(args);
+				let res = null;
+				if (f instanceof Method) res = f.apply(args);
+				else res = rtl.apply(f, args);
 				if (res instanceof Promise) await res;
 			}
 		};

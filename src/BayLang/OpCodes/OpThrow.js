@@ -24,10 +24,11 @@ BayLang.OpCodes.OpThrow = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "expression", data);
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("expression", new OpCodeType());
 	}
 	
 	

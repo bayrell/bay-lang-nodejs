@@ -24,9 +24,9 @@ BayLang.OpCodes.OpHtmlSlot = class extends use("BayLang.OpCodes.OpDeclareFunctio
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
+		super.serialize(rules);
 	}
 	
 	

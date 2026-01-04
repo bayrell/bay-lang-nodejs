@@ -38,7 +38,7 @@ Runtime.Message = class extends use("Runtime.BaseObject")
 		super._init();
 		this.data = null;
 		this.name = "";
-		this.src = null;
+		this.model = null;
 	}
 	static getClassName(){ return "Runtime.Message"; }
 	static getMethodsList(){ return null; }

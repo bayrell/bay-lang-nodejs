@@ -24,11 +24,17 @@ BayLang.OpCodes.OpTryCatch = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "items", data);
-		serializer.process(this, "op_try", data);
+		const VectorType = use("Runtime.Serializer.VectorType");
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		const Map = use("Runtime.Map");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("items", new VectorType(new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpTryCatchItem",
+		}))));
+		rules.addType("op_try", new OpCodeType());
 	}
 	
 	

@@ -24,12 +24,14 @@ BayLang.OpCodes.OpMath = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "math", data);
-		serializer.process(this, "value1", data);
-		serializer.process(this, "value2", data);
+		const StringType = use("Runtime.Serializer.StringType");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("math", new StringType());
+		rules.addType("value1", new OpCodeType());
+		rules.addType("value2", new OpCodeType());
 	}
 	
 	

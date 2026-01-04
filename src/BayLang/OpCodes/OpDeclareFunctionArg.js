@@ -24,12 +24,14 @@ BayLang.OpCodes.OpDeclareFunctionArg = class extends use("BayLang.OpCodes.BaseOp
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "expression", data);
-		serializer.process(this, "name", data);
-		serializer.process(this, "pattern", data);
+		const StringType = use("Runtime.Serializer.StringType");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("name", new StringType());
+		rules.addType("expression", new OpCodeType());
+		rules.addType("pattern", new OpCodeType());
 	}
 	
 	
@@ -38,8 +40,8 @@ BayLang.OpCodes.OpDeclareFunctionArg = class extends use("BayLang.OpCodes.BaseOp
 	{
 		super._init();
 		this.op = "op_function_arg";
-		this.pattern = null;
 		this.name = "";
+		this.pattern = null;
 		this.expression = null;
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpDeclareFunctionArg"; }

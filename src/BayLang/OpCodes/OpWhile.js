@@ -24,11 +24,12 @@ BayLang.OpCodes.OpWhile = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "condition", data);
-		serializer.process(this, "content", data);
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("condition", new OpCodeType());
+		rules.addType("content", new OpCodeType());
 	}
 	
 	

@@ -24,11 +24,13 @@ BayLang.OpCodes.OpCurry = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "args", data);
-		serializer.process(this, "obj", data);
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		const VectorType = use("Runtime.Serializer.VectorType");
+		super.serialize(rules);
+		rules.addType("args", new OpCodeType());
+		rules.addType("obj", new VectorType(new OpCodeType()));
 	}
 	
 	

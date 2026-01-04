@@ -24,21 +24,37 @@ BayLang.OpCodes.OpDeclareFunction = class extends use("BayLang.OpCodes.BaseOpCod
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "annotations", data);
-		serializer.process(this, "args", data);
-		serializer.process(this, "comments", data);
-		serializer.process(this, "expression", data);
-		serializer.process(this, "flags", data);
-		serializer.process(this, "is_context", data);
-		serializer.process(this, "is_html", data);
-		serializer.process(this, "is_html_default_args", data);
-		serializer.process(this, "items", data);
-		serializer.process(this, "name", data);
-		serializer.process(this, "result_type", data);
-		serializer.process(this, "vars", data);
+		const VectorType = use("Runtime.Serializer.VectorType");
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		const Map = use("Runtime.Map");
+		const BooleanType = use("Runtime.Serializer.BooleanType");
+		const StringType = use("Runtime.Serializer.StringType");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("annotations", new VectorType(new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpAnnotation",
+		}))));
+		rules.addType("args", new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpItems",
+			"item": "BayLang.OpCodes.OpDeclareFunctionArg",
+		})));
+		rules.addType("comments", new VectorType(new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpComment",
+		}))));
+		rules.addType("flags", new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpFlags",
+		})));
+		rules.addType("is_context", new BooleanType());
+		rules.addType("is_html", new BooleanType());
+		rules.addType("is_html_default_args", new BooleanType());
+		rules.addType("name", new StringType());
+		rules.addType("content", new OpCodeType());
+		rules.addType("pattern", new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpTypeIdentifier",
+		})));
+		rules.addType("vars", new VectorType(new StringType()));
 	}
 	
 	

@@ -33,6 +33,27 @@ Runtime.Component = {
 	},
 	methods:
 	{
+		renderWidget: function(model, attrs)
+		{
+			const rs = use("Runtime.rs");
+			const componentHash = rs.getComponentHash(this.getClassName());
+			let __v = new Runtime.VirtualDom(this);
+			
+			const Map = use("Runtime.Map");
+			if (model)
+			{
+				let component = model.component;
+				if (!attrs)
+				{
+					attrs = new Map();
+				}
+				
+				/* Element component */
+				__v.element(component, new Runtime.Map({"model": model}).concat(attrs));
+			}
+			
+			return __v;
+		},
 		render: function()
 		{
 			const rs = use("Runtime.rs");
@@ -41,12 +62,21 @@ Runtime.Component = {
 			return __v;
 		},
 		/**
+		 * Returns true if slot is exists
+		 */
+		slot: function(name)
+		{
+			return this.$slots[name] != undefined;
+		},
+		/**
 		 * Render slot
 		 */
-		renderSlot: function(slot_name)
+		renderSlot: function(slot_name, args)
 		{
-			var f = this.$slots[slot_name];
-	return f ? f() : null;
+			if (args == undefined) args = null;
+			if (!args) args = [];
+	var f = this.$slots[slot_name];
+	return f ? f.apply(null, args) : null;
 		},
 		/**
 		 * Returns parent
@@ -69,6 +99,13 @@ Runtime.Component = {
 		{
 			message.src = this;
 	this.$emit(message.name, message);
+		},
+		/**
+		 * Next tick
+		 */
+		nextTick: function(f)
+		{
+			this.$nextTick(f);
 		},
 		hash: function(s, f){ if (f == undefined) f = null;return f; },
 		getClassName: function(){ return "Runtime.Component"; },

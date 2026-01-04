@@ -47,7 +47,8 @@ Runtime.BaseModel = class extends use("Runtime.BaseObject")
 	{
 		if (!params) return;
 		this.parent_widget = params.get("parent_widget");
-		this.layout = this.parent_widget ? this.parent_widget.layout : null;
+		if (params.has("layout")) this.layout = params.get("layout");
+		else this.layout = this.parent_widget ? this.parent_widget.layout : null;
 		/* Setup params */
 		this.component = params.has("component") ? params.get("component") : this.component;
 	}
@@ -64,9 +65,10 @@ Runtime.BaseModel = class extends use("Runtime.BaseObject")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		serializer.process(this, "component", data);
+		const StringType = use("Runtime.Serializer.StringType");
+		rules.addType("component", new StringType());
 	}
 	
 	
@@ -98,6 +100,16 @@ Runtime.BaseModel = class extends use("Runtime.BaseObject")
 		if (!params.has("parent_widget")) params.set("parent_widget", this);
 		let widget = rtl.newInstance(class_name, Vector.create([params]));
 		return widget;
+	}
+	
+	
+	/**
+	 * Add event listener
+	 */
+	addEventListener(event_name, f, priority)
+	{
+		if (priority == undefined) priority = 100;
+		this.listener.add(event_name, f, priority);
 	}
 	
 	

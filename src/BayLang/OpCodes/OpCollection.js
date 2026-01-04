@@ -24,10 +24,12 @@ BayLang.OpCodes.OpCollection = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "items", data);
+		const VectorType = use("Runtime.Serializer.VectorType");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("items", new VectorType(new OpCodeType()));
 	}
 	
 	

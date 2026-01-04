@@ -24,14 +24,24 @@ BayLang.OpCodes.OpHtmlTag = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "attrs", data);
-		serializer.process(this, "content", data);
-		serializer.process(this, "op_code_name", data);
-		serializer.process(this, "spreads", data);
-		serializer.process(this, "tag_name", data);
+		const VectorType = use("Runtime.Serializer.VectorType");
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		const Map = use("Runtime.Map");
+		const BooleanType = use("Runtime.Serializer.BooleanType");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		const StringType = use("Runtime.Serializer.StringType");
+		super.serialize(rules);
+		rules.addType("attrs", new VectorType(new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpHtmlAttribute",
+		}))));
+		rules.addType("content", new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpHtmlItems",
+		})));
+		rules.addType("is_component", new BooleanType());
+		rules.addType("op_code_name", new OpCodeType());
+		rules.addType("tag_name", new StringType());
 	}
 	
 	
@@ -44,7 +54,6 @@ BayLang.OpCodes.OpHtmlTag = class extends use("BayLang.OpCodes.BaseOpCode")
 		this.is_component = false;
 		this.op_code_name = null;
 		this.attrs = null;
-		this.spreads = null;
 		this.content = null;
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpHtmlTag"; }

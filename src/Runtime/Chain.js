@@ -79,12 +79,14 @@ Runtime.Chain = class extends use("Runtime.Method")
 	 */
 	apply(args)
 	{
+		const Method = use("Runtime.Method");
 		if (args == undefined) args = null;
 		for (let i = 0; i < this.chain.count(); i++)
 		{
 			let item = this.chain.get(i);
 			let f = item.get("method");
-			f.apply(args);
+			if (f instanceof Method) f.apply(args);
+			else rtl.apply(f, args);
 		}
 	}
 	

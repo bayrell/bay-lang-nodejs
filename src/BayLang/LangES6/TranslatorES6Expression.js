@@ -1,5 +1,6 @@
 "use strict;"
 const use = require('bay-lang').use;
+const rs = use("Runtime.rs");
 /*!
  *  BayLang Technology
  *
@@ -590,7 +591,7 @@ BayLang.LangES6.TranslatorES6Expression = class extends use("Runtime.BaseObject"
 		{
 			let class_name = op_code.value2;
 			let interface_name = this.translator.getFullName(class_name.entity_name.getName());
-			result.push(this.translator.useModule("rtl") + String(".isImplements(") + String(result1) + String(", ") + String(this.translator.toString(interface_name)) + String(")"));
+			result.push(this.translator.useModule("rtl") + String(".isImplements(") + String(rs.join("", result1)) + String(", ") + String(this.translator.toString(interface_name)) + String(")"));
 		}
 		else
 		{

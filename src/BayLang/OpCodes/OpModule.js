@@ -25,12 +25,17 @@ BayLang.OpCodes.OpModule = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "is_component", data);
-		serializer.process(this, "items", data);
-		serializer.process(this, "uses", data);
+		const BooleanType = use("Runtime.Serializer.BooleanType");
+		const VectorType = use("Runtime.Serializer.VectorType");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		const MapType = use("Runtime.Serializer.MapType");
+		const StringType = use("Runtime.Serializer.StringType");
+		super.serialize(rules);
+		rules.addType("is_component", new BooleanType());
+		rules.addType("items", new VectorType(new OpCodeType()));
+		rules.addType("uses", new MapType(new StringType()));
 	}
 	
 	
@@ -39,7 +44,6 @@ BayLang.OpCodes.OpModule = class extends use("BayLang.OpCodes.BaseOpCode")
 	 */
 	addModule(class_name, alias_name, is_component)
 	{
-		const lib = use("Runtime.lib");
 		const OpUse = use("BayLang.OpCodes.OpUse");
 		const Map = use("Runtime.Map");
 		if (alias_name == undefined) alias_name = "";
@@ -99,7 +103,7 @@ BayLang.OpCodes.OpModule = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Find class
 	 */
-	findClass(){ const lib = use("Runtime.lib");return this.items ? this.items.findItem(lib.isInstance("BayLang.OpCodes.OpDeclareClass")) : null; }
+	findClass(){ return this.items ? this.items.findItem(lib.isInstance("BayLang.OpCodes.OpDeclareClass")) : null; }
 	
 	
 	/**
@@ -121,6 +125,7 @@ BayLang.OpCodes.OpModule = class extends use("BayLang.OpCodes.BaseOpCode")
 	_init()
 	{
 		super._init();
+		this.op = "op_module";
 		this.uses = null;
 		this.items = null;
 		this.is_component = false;

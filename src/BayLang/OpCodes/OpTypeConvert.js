@@ -24,11 +24,14 @@ BayLang.OpCodes.OpTypeConvert = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "pattern", data);
-		serializer.process(this, "value", data);
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		const Map = use("Runtime.Map");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("pattern", new ObjectType(Map.create({"class_name": "BayLang.OpCodes.OpTypeIdentifier"})));
+		rules.addType("value", new OpCodeType());
 	}
 	
 	

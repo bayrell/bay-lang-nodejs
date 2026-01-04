@@ -24,12 +24,13 @@ BayLang.OpCodes.OpTernary = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "condition", data);
-		serializer.process(this, "if_false", data);
-		serializer.process(this, "if_true", data);
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("condition", new OpCodeType());
+		rules.addType("if_false", new OpCodeType());
+		rules.addType("if_true", new OpCodeType());
 	}
 	
 	

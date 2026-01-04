@@ -158,6 +158,16 @@ Runtime.Map = class extends Map
 	
 	
 	/**
+	 * Intersect
+	 */
+	intersect(fields)
+	{
+		const h = fields.transition((value, key) => [key, value]);
+		return this.filter((value, key) => h.has(key));
+	}
+	
+	
+	/**
 	 * Create map from Object
 	 */
 	static create(obj)

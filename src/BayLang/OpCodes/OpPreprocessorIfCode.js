@@ -24,11 +24,13 @@ BayLang.OpCodes.OpPreprocessorIfCode = class extends use("BayLang.OpCodes.BaseOp
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "condition", data);
-		serializer.process(this, "content", data);
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		const StringType = use("Runtime.Serializer.StringType");
+		super.serialize(rules);
+		rules.addType("condition", new OpCodeType());
+		rules.addType("content", new StringType());
 	}
 	
 	

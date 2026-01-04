@@ -25,45 +25,31 @@ Runtime.Entity.Factory = class extends use("Runtime.Entity.Entity")
 	/**
 	 * Create factory
 	 */
-	constructor(name, value, params)
+	constructor(name, params)
 	{
 		const Map = use("Runtime.Map");
-		if (value == undefined) value = null;
 		if (params == undefined) params = null;
 		super(Map.create({
 			"name": name,
-			"value": value,
 			"params": params,
 		}));
 	}
 	
 	
 	/**
+	 * Returns class name
+	 */
+	getName(){ return this.name; }
+	
+	
+	/**
 	 * Create new object
 	 */
-	createInstance(params)
+	createInstance()
 	{
-		const BaseObject = use("Runtime.BaseObject");
 		const Vector = use("Runtime.Vector");
-		if (params == undefined) params = null;
-		let instance = null;
-		let class_name = this.value;
-		let factory_params = this.params;
-		if (params)
-		{
-			if (factory_params) factory_params = factory_params.concat(params);
-			else factory_params = params;
-		}
-		if (class_name == null) class_name = this.name;
-		if (class_name instanceof BaseObject)
-		{
-			instance = class_name;
-		}
-		else if (rtl.isString(class_name))
-		{
-			instance = rtl.newInstance(class_name, Vector.create([factory_params]));
-		}
-		return instance;
+		let class_name = this.getName();
+		return rtl.newInstance(class_name, Vector.create([this.params]));
 	}
 	
 	
@@ -71,7 +57,6 @@ Runtime.Entity.Factory = class extends use("Runtime.Entity.Entity")
 	_init()
 	{
 		super._init();
-		this.value = null;
 		this.params = null;
 	}
 	static getClassName(){ return "Runtime.Entity.Factory"; }

@@ -24,12 +24,13 @@ BayLang.OpCodes.OpUse = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "alias", data);
-		serializer.process(this, "name", data);
-		serializer.process(this, "is_component", data);
+		const StringType = use("Runtime.Serializer.StringType");
+		super.serialize(rules);
+		rules.addType("alias", new StringType());
+		rules.addType("name", new StringType());
+		rules.addType("is_component", new StringType());
 	}
 	
 	

@@ -24,13 +24,14 @@ BayLang.OpCodes.OpFor = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "expr1", data);
-		serializer.process(this, "expr2", data);
-		serializer.process(this, "expr3", data);
-		serializer.process(this, "content", data);
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("expr1", new OpCodeType());
+		rules.addType("expr2", new OpCodeType());
+		rules.addType("expr3", new OpCodeType());
+		rules.addType("content", new OpCodeType());
 	}
 	
 	

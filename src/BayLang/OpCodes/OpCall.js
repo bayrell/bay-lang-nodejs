@@ -24,14 +24,16 @@ BayLang.OpCodes.OpCall = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "args", data);
-		serializer.process(this, "is_await", data);
-		serializer.process(this, "is_context", data);
-		serializer.process(this, "is_html", data);
-		serializer.process(this, "item", data);
+		const VectorType = use("Runtime.Serializer.VectorType");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		const BooleanType = use("Runtime.Serializer.BooleanType");
+		super.serialize(rules);
+		rules.addType("args", new VectorType(new OpCodeType()));
+		rules.addType("is_await", new BooleanType());
+		rules.addType("is_html", new BooleanType());
+		rules.addType("item", new OpCodeType());
 	}
 	
 	

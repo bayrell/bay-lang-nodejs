@@ -24,6 +24,15 @@ if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 BayLang.Compiler.Project = class extends use("Runtime.BaseObject")
 {
 	/**
+	 * Process project cache
+	 */
+	static serialize(rules)
+	{
+		super.serialize(rules);
+	}
+	
+	
+	/**
 	 * Constructor
 	 */
 	constructor()
@@ -71,17 +80,8 @@ BayLang.Compiler.Project = class extends use("Runtime.BaseObject")
 		const fs = use("Runtime.fs");
 		const Vector = use("Runtime.Vector");
 		let project_json_path = fs.join(Vector.create([this.path, "project.json"]));
-		let content = rtl.json_encode(this.info, rtl.JSON_PRETTY);
+		let content = rtl.jsonEncode(this.info, rtl.JSON_PRETTY);
 		await fs.saveFile(project_json_path, content);
-	}
-	
-	
-	/**
-	 * Process project cache
-	 */
-	serialize(serializer, data)
-	{
-		serializer.processItems(this, "modules", data, (serializer, module) => { const Module = use("BayLang.Compiler.Module");return new Module(this, module.get("path")); });
 	}
 	
 	
@@ -150,6 +150,21 @@ BayLang.Compiler.Project = class extends use("Runtime.BaseObject")
 	setType(project_type)
 	{
 		this.info.set("type", project_type);
+	}
+	
+	
+	/**
+	 * Returns version
+	 */
+	getVersion(){ return this.exists() ? this.info.get("version") : ""; }
+	
+	
+	/**
+	 * Set version
+	 */
+	setVersion(version)
+	{
+		this.info.set("version", version);
 	}
 	
 	

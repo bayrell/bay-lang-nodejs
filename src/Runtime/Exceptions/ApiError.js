@@ -24,8 +24,11 @@ Runtime.Exceptions.ApiError = class extends use("Runtime.Exceptions.RuntimeExcep
 {
 	constructor(prev)
 	{
+		const RuntimeException = use("Runtime.Exceptions.RuntimeException");
+		const ApiResult = use("Runtime.ApiResult");
 		if (prev == undefined) prev = null;
-		super(prev.getErrorMessage(), rtl.ERROR_API_ERROR, prev);
+		super(prev.getErrorMessage(), rtl.ERROR_API, prev instanceof RuntimeException ? prev : null);
+		if (prev instanceof ApiResult) this.result = prev;
 	}
 	
 	
@@ -78,6 +81,7 @@ Runtime.Exceptions.ApiError = class extends use("Runtime.Exceptions.RuntimeExcep
 	_init()
 	{
 		super._init();
+		this.result = null;
 	}
 	static getClassName(){ return "Runtime.Exceptions.ApiError"; }
 	static getMethodsList(){ return null; }

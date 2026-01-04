@@ -24,10 +24,11 @@ BayLang.OpCodes.OpCurryArg = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "pos", data);
+		const IntergerType = use("Runtime.Serializer.IntergerType");
+		super.serialize(rules);
+		rules.addType("pos", new IntergerType());
 	}
 	
 	
@@ -35,7 +36,7 @@ BayLang.OpCodes.OpCurryArg = class extends use("BayLang.OpCodes.BaseOpCode")
 	_init()
 	{
 		super._init();
-		this.op = "op_curry";
+		this.op = "op_curry_arg";
 		this.pos = 0;
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpCurryArg"; }

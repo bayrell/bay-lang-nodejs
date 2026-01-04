@@ -24,10 +24,15 @@ BayLang.OpCodes.OpPreprocessorSwitch = class extends use("BayLang.OpCodes.BaseOp
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "items", data);
+		const VectorType = use("Runtime.Serializer.VectorType");
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		const Map = use("Runtime.Map");
+		super.serialize(rules);
+		rules.addType("items", new VectorType(new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpPreprocessorIfCode",
+		}))));
 	}
 	
 	

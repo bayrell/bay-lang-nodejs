@@ -30,13 +30,14 @@ BayLang.OpCodes.OpAttr = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "attrs", data);
-		serializer.process(this, "kind", data);
-		serializer.process(this, "prev", data);
-		serializer.process(this, "next", data);
+		const StringType = use("Runtime.Serializer.StringType");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("kind", new StringType());
+		rules.addType("prev", new OpCodeType());
+		rules.addType("next", new OpCodeType());
 	}
 	
 	

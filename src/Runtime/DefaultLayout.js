@@ -37,12 +37,22 @@ Runtime.DefaultLayout = {
 			const componentHash = rs.getComponentHash(this.getClassName());
 			let __v = new Runtime.VirtualDom(this);
 			
-			let model = this.layout.getPageModel();
-			let class_name = model ? model.component : "";
-			if (class_name)
+			if (this.layout.current_component != "")
 			{
-				/* Element class_name */
-				__v.element(class_name, new Runtime.Map({"model": model}));
+				let component = this.layout.current_component;
+				
+				/* Element component */
+				__v.element(component, new Runtime.Map({}).concat(this.layout.component_props));
+			}
+			else
+			{
+				let model = this.layout.getPageModel();
+				let class_name = model ? model.component : "";
+				if (class_name)
+				{
+					/* Element class_name */
+					__v.element(class_name, new Runtime.Map({"model": model}));
+				}
 			}
 			
 			return __v;
@@ -106,11 +116,19 @@ Runtime.DefaultLayout = {
 			const RuntimeHook = use("Runtime.Hooks.RuntimeHook");
 			__v.push(this.renderComponents(this.getComponents(RuntimeHook.LAYOUT_FOOTER)));
 			
+			return __v;
+		},
+		renderMountApp: function()
+		{
+			const rs = use("Runtime.rs");
+			const componentHash = rs.getComponentHash(this.getClassName());
+			let __v = new Runtime.VirtualDom(this);
+			
 			/* Element script */
 			let __v0 = __v.element("script");
 			__v0.push("var app_data =");
 			__v0.push(rtl.jsonEncode(this.container.getData()));
-			__v0.push(";\n\t\tRuntime.rtl.mount(app_data, document.querySelector(\".root_container\"), function (result){\n\t\t\twindow[\"app\"] = result.get(\"app\");\n\t\t\twindow[\"app_layout\"] = result.get(\"layout\");\n\t\t});");
+			__v0.push(";\n\t\tdocument.addEventListener(\"DOMContentLoaded\", function(){\n\t\t\tRuntime.rtl.mount(app_data, document.querySelector(\".root_container\"), function (result){\n\t\t\t\twindow[\"app\"] = result.get(\"app\");\n\t\t\t\twindow[\"app_layout\"] = result.get(\"layout\");\n\t\t\t});\n\t\t});");
 			
 			return __v;
 		},
@@ -120,9 +138,10 @@ Runtime.DefaultLayout = {
 			const componentHash = rs.getComponentHash(this.getClassName());
 			let __v = new Runtime.VirtualDom(this);
 			
+			const BaseLayout = use("Runtime.BaseLayout");
 			/* Element style */
 			let __v0 = __v.element("style");
-			__v0.push(this.layout.getStyle());
+			__v0.push(BaseLayout.getStyle(this.layout.getComponents()));
 			
 			return __v;
 		},
@@ -147,6 +166,7 @@ Runtime.DefaultLayout = {
 			let __v3 = __v2.element("div", new Runtime.Map({"class": rs.className(["root_container", componentHash])}));
 			__v3.push(this.render());
 			__v2.push(this.renderFooter());
+			__v2.push(this.renderMountApp());
 			
 			return __v;
 		},

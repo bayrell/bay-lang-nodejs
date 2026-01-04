@@ -25,11 +25,38 @@ Runtime.Unit.AssertHelper = class
 	/**
 	 * Check equals of types
 	 */
-	static equalValueType(value1, value2, message)
+	static equalValueType(value1, value2)
 	{
+		let message = "Type mismatch \"" + String(value1) + String("\" and \"") + String(value2) + String("\"");
 		let type1 = rtl.getType(value1);
 		let type2 = rtl.getType(value2);
 		rtl.assert(type1 == type2, message);
+	}
+	
+	
+	/**
+	 * Check equals of types
+	 */
+	static equalType(value1, type1)
+	{
+		let type2 = rtl.getType(value1);
+		let message = "Type mismatch. Needs \"" + String(type1) + String("\". Exists \"") + String(type2) + String("\"");
+		rtl.assert(type1 == type2, message);
+	}
+	
+	
+	/**
+	 * Check class name
+	 */
+	static equalClass(value, class_name)
+	{
+		const BaseObject = use("Runtime.BaseObject");
+		const Map = use("Runtime.Map");
+		const Vector = use("Runtime.Vector");
+		let message = "Class \"" + String(class_name) + String("\" not found");
+		let is_object = value instanceof BaseObject || value instanceof Map || value instanceof Vector;
+		rtl.assert(is_object, message);
+		rtl.assert(value.constructor.getClassName() == class_name, message);
 	}
 	
 	
@@ -38,70 +65,69 @@ Runtime.Unit.AssertHelper = class
 	 */
 	static equalValue(value1, value2, message)
 	{
-		this.equalValueType(value1, value2, message);
-		let value_type1 = rtl.getType(value1);
-		let value_type2 = rtl.getType(value2);
-		rtl.assert(value_type1 == value_type2, message);
-		if (rtl.isScalarValue(value1))
+		const Vector = use("Runtime.Vector");
+		const Map = use("Runtime.Map");
+		if (message == undefined) message = "";
+		this.equalValueType(value1, value2);
+		if (value1 instanceof Vector)
 		{
-			rtl.assert(value1 === value2, message);
+			this.equalVector(value1, value2);
 			return;
 		}
-		if (value_type1 == "collection")
+		if (value1 instanceof Map)
 		{
-			this.equalCollection(value1, value2, message);
+			this.equalMap(value1, value2);
 			return;
 		}
-		if (value_type1 == "dict")
-		{
-			this.equalDict(value1, value2, message);
-			return;
-		}
-		rtl.assert(false, message);
+		if (message == "") message = "\"" + String(value1) + String("\" != \"") + String(value2) + String("\"");
+		rtl.assert(value1 === value2, message);
 	}
 	
 	
 	/**
-	 * Check equals of two collections
+	 * Check equals of two vectors
 	 */
-	static equalCollection(c1, c2, message)
+	static equalVector(c1, c2)
 	{
 		if (c1.count() != c2.count())
 		{
+			let message = "Vectors has different counts";
 			rtl.assert(false, message);
 		}
 		for (let i = 0; i < c1.count(); i++)
 		{
 			let value1 = c1.get(i);
 			let value2 = c2.get(i);
-			this.equalValue(value1, value2, message);
+			this.equalValue(value1, value2);
 		}
 	}
 	
 	
 	/**
-	 * Check equals of two dicts
+	 * Check equals of two maps
 	 */
-	static equalDict(d1, d2, message)
+	static equalMap(d1, d2)
 	{
-		let d1_keys = d1.keys();
-		let d2_keys = d2.keys();
+		let d1_keys = rtl.list(d1.keys());
+		let d2_keys = rtl.list(d2.keys());
 		for (let i = 0; i < d1_keys.count(); i++)
 		{
 			let key1 = d1_keys.get(i);
 			if (!d2.has(key1))
 			{
+				let message = "Map does not has key \"" + String(key1) + String("\"");
 				rtl.assert(false, message);
 			}
 			let value1 = d1.get(key1);
 			let value2 = d2.get(key1);
-			this.equalValue(value1, value2, message);
+			this.equalValue(value1, value2);
 		}
 		for (let i = 0; i < d2_keys.count(); i++)
 		{
 			let key2 = d2_keys.get(i);
 			if (!d1.has(key2))
 			{
+				let message = "Map does not has key \"" + String(key2) + String("\"");
 				rtl.assert(false, message);
 			}
 		}

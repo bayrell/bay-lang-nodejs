@@ -25,6 +25,27 @@ BayLang.OpCodes.BaseOpCode = class extends use("Runtime.BaseObject")
 	
 	
 	/**
+	 * Serialize object
+	 */
+	static serialize(rules)
+	{
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		const Map = use("Runtime.Map");
+		super.serialize(rules);
+		rules.addType("caret_start", new ObjectType(Map.create({"class_name": "BayLang.Caret"})));
+		rules.addType("caret_end", new ObjectType(Map.create({"class_name": "BayLang.Caret"})));
+	}
+	
+	
+	/**
+	 * Assign rules
+	 */
+	assignRules(rules)
+	{
+	}
+	
+	
+	/**
 	 * Constructor
 	 */
 	constructor(params)
@@ -32,16 +53,6 @@ BayLang.OpCodes.BaseOpCode = class extends use("Runtime.BaseObject")
 		if (params == undefined) params = null;
 		super();
 		this._assign_values(params);
-	}
-	
-	
-	/**
-	 * Serialize object
-	 */
-	serialize(serializer, data)
-	{
-		serializer.process(this, "caret_start", data);
-		serializer.process(this, "caret_end", data);
 	}
 	
 	

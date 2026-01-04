@@ -116,19 +116,15 @@ Runtime.Unit.TestProvider = class extends use("Runtime.BaseProvider")
 	/**
 	 * Returns true if TestMethod
 	 */
-	static isTestMethod(method_info)
+	static isTestMethod(annotations)
 	{
 		const Test = use("Runtime.Unit.Test");
-		let annotations = method_info["annotations"];
-		if (annotations)
+		for (let j = 0; j < annotations.count(); j++)
 		{
-			for (let j = 0; j < annotations.count(); j++)
+			let annotation = annotations.get(j);
+			if (annotation instanceof Test)
 			{
-				let annotation = annotations.get(j);
-				if (annotation instanceof Test)
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 		return false;
@@ -140,9 +136,9 @@ Runtime.Unit.TestProvider = class extends use("Runtime.BaseProvider")
 	 */
 	getTestMethods(class_name)
 	{
-		const Callback = use("Runtime.Callback");
-		let getMethodsList = new Callback(class_name, "getMethodsList");
-		let getMethodInfoByName = new Callback(class_name, "getMethodInfoByName");
+		const Method = use("Runtime.Method");
+		let getMethodsList = new Method(class_name, "getMethodsList");
+		let getMethodInfoByName = new Method(class_name, "getMethodInfoByName");
 		let methods = getMethodsList.apply();
 		methods = methods.filter((method_name) =>
 		{
@@ -184,21 +180,22 @@ Runtime.Unit.TestProvider = class extends use("Runtime.BaseProvider")
 	 */
 	async runTestMethod(class_name, method_name)
 	{
-		const Callback = use("Runtime.Callback");
+		const Method = use("Runtime.Method");
 		const ItemNotFound = use("Runtime.Exceptions.ItemNotFound");
 		const AssertException = use("Runtime.Exceptions.AssertException");
 		let error_code = 0;
 		try
 		{
-			let callback = new Callback(class_name, method_name);
+			let callback = new Method(class_name, method_name);
 			if (!callback.exists())
 			{
 				let obj = rtl.newInstance(class_name);
-				callback = new Callback(obj, method_name);
+				callback = new Method(obj, method_name);
 			}
 			if (callback.exists())
 			{
-				await rtl.apply(callback);
+				let res = callback.apply();
+				if (res instanceof Promise) await res;
 				error_code = 1;
 				rtl.print(class_name + String("::") + String(method_name) + String(" ") + String(rtl.color("green", "Ok")));
 			}

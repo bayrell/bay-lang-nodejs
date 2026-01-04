@@ -24,11 +24,14 @@ BayLang.OpCodes.OpAssignValue = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "value", data);
-		serializer.process(this, "expression", data);
+		const StringType = use("Runtime.Serializer.StringType");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("op", new StringType());
+		rules.addType("value", new OpCodeType());
+		rules.addType("expression", new OpCodeType());
 	}
 	
 	

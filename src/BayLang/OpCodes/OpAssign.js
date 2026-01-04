@@ -29,12 +29,17 @@ BayLang.OpCodes.OpAssign = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "flags", data);
-		serializer.process(this, "pattern", data);
-		serializer.process(this, "items", data);
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		const Map = use("Runtime.Map");
+		const VectorType = use("Runtime.Serializer.VectorType");
+		super.serialize(rules);
+		rules.addType("flags", new ObjectType(Map.create({"class_name": "BayLang.OpCodes.OpFlags"})));
+		rules.addType("pattern", new ObjectType(Map.create({"class_name": "BayLang.OpCodes.OpTypeIdentifier"})));
+		rules.addType("items", new VectorType(new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpAssignValue",
+		}))));
 	}
 	
 	
@@ -48,6 +53,7 @@ BayLang.OpCodes.OpAssign = class extends use("BayLang.OpCodes.BaseOpCode")
 	_init()
 	{
 		super._init();
+		this.op = "op_assign";
 		this.flags = null;
 		this.pattern = null;
 		this.items = null;

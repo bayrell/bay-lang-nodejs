@@ -24,9 +24,11 @@ BayLang.OpCodes.OpFlags = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(serializer)
 	{
-		serializer.process(this, "items", data);
+		const MapType = use("Runtime.Serializer.MapType");
+		const BooleanType = use("Runtime.Serializer.BooleanType");
+		serializer.addType("items", new MapType(new BooleanType()));
 	}
 	
 	
@@ -85,12 +87,13 @@ BayLang.OpCodes.OpFlags = class extends use("BayLang.OpCodes.BaseOpCode")
 	{
 		super._init();
 		const Vector = use("Runtime.Vector");
+		this.op = "op_flags";
 		this.items = Vector.create([]);
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpFlags"; }
 	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
-	static getInterfaces(){ return ["Runtime.SerializeInterface"]; }
+	static getInterfaces(){ return []; }
 };
 use.add(BayLang.OpCodes.OpFlags);
 module.exports = {

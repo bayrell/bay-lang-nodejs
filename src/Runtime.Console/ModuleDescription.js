@@ -56,10 +56,9 @@ Runtime.Console.ModuleDescription = class
 		const Vector = use("Runtime.Vector");
 		const ConsoleCommand = use("Runtime.Console.Annotations.ConsoleCommand");
 		const Provider = use("Runtime.Entity.Provider");
-		const CommandsList = use("Runtime.Console.CommandsList");
 		return Vector.create([
 			new ConsoleCommand("Runtime.Console.Commands.Help"),
-			new Provider("Runtime.Console.CommandsList", new CommandsList()),
+			new Provider("Runtime.Console.CommandsList"),
 		]);
 	}
 	

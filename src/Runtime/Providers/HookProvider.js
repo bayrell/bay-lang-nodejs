@@ -27,16 +27,13 @@ Runtime.Providers.HookProvider = class extends use("Runtime.BaseProvider")
 	async init()
 	{
 		const Vector = use("Runtime.Vector");
-		const Map = use("Runtime.Map");
 		let hooks = Runtime.rtl.getContext().getEntities("Runtime.Entity.Hook");
 		this.base_hooks = new Vector();
 		for (let i = 0; i < hooks.count(); i++)
 		{
 			let hook = hooks[i];
-			let base_hook = hook.createInstance(Map.create({
-				"hook": hook,
-				"provider": this,
-			}));
+			let base_hook = hook.createInstance();
+			base_hook.provider = this;
 			base_hook.register_hooks();
 			this.base_hooks.push(base_hook);
 		}

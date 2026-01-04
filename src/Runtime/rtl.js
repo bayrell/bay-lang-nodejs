@@ -111,8 +111,27 @@ Runtime.rtl = class
 	static parentClassName(class_name)
 	{
 		var obj = this.findClass(class_name);
+		if (obj && obj.extends && obj.extends.name) return obj.extends.name;
 		var parentObj = obj ? Object.getPrototypeOf(obj) : null;
 		return parentObj && parentObj.getClassName ? parentObj.getClassName() : "";
+	}
+	
+	
+	/**
+	 * Returns parents
+	 */
+	static getParents(class_name, last_name)
+	{
+		const Vector = use("Runtime.Vector");
+		if (last_name == undefined) last_name = "";
+		let result = Vector.create([]);
+		let parent_class_name = class_name;
+		while (parent_class_name != "" && parent_class_name != last_name)
+		{
+			result.push(parent_class_name);
+			parent_class_name = this.parentClassName(parent_class_name);
+		}
+		return result;
 	}
 	
 	
@@ -200,6 +219,28 @@ Runtime.rtl = class
 	
 	
 	/**
+	 * Apply method
+	 */
+	static apply(f, args)
+	{
+		const Method = use("Runtime.Method");
+		if (f instanceof Method) return f.apply(args);
+		if (!args) args = [];
+		return f.apply(null, args);
+	}
+	
+	
+	/**
+	 * Assert
+	 */
+	static assert(value, message)
+	{
+		const AssertException = use("Runtime.Exceptions.AssertException");
+		if (!value) throw new AssertException(message);
+	}
+	
+	
+	/**
 	 * Return attr value by name
 	 */
 	static attr(item, name, def_val)
@@ -226,6 +267,57 @@ Runtime.rtl = class
 	static exists(value)
 	{
 		return (value != null) && (value != undefined);
+	}
+	
+	
+	/**
+	 * Returns value type
+	 */
+	static getType(value)
+	{
+		const Vector = use("Runtime.Vector");
+		const Map = use("Runtime.Map");
+		if (value === null) return "null";
+		if (this.isString(value)) return "string";
+		if (this.isInteger(value)) return "integer";
+		if (this.isFloat(value)) return "float";
+		if (this.isBoolean(value)) return "boolean";
+		if (value instanceof Vector) return "vector";
+		if (value instanceof Map) return "map";
+		return "object";
+	}
+	
+	
+	/**
+	 * Returns true if value is boolean
+	 * @param var value
+	 * @return bool
+	 */
+	static isBoolean(value)
+	{
+		return value === true || value === false;
+	}
+	
+	
+	/**
+	 * Returns true if value is integer
+	 * @param var value
+	 * @return bool
+	 */
+	static isInteger(value)
+	{
+		if (typeof value == 'number') return true;
+		return false;
+	}
+	
+	
+	/**
+	 * Returns true if float
+	 */
+	static isFloat(value)
+	{
+		if (typeof value == 'number') return true;
+		return false;
 	}
 	
 	
@@ -266,6 +358,15 @@ Runtime.rtl = class
 	static isMap(value)
 	{
 		return value instanceof Map;
+	}
+	
+	
+	/**
+	 * Returns true if function
+	 */
+	static isFunction(value)
+	{
+		return value instanceof Function;
 	}
 	
 	
@@ -380,6 +481,30 @@ Runtime.rtl = class
 	
 	
 	/**
+	 * Assign object
+	 */
+	static assign(obj, data, errors)
+	{
+		const Vector = use("Runtime.Vector");
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		if (errors == undefined) errors = Vector.create([]);
+		let rules = new ObjectType();
+		return rules.filter(data, errors, obj);
+	}
+	
+	
+	/**
+	 * Serialize object
+	 */
+	static serialize(obj)
+	{
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		let rules = new ObjectType();
+		return rules.encode(obj);
+	}
+	
+	
+	/**
 	 * Json Decode
 	 */
 	static jsonDecode(obj)
@@ -403,9 +528,22 @@ Runtime.rtl = class
 	/**
 	 * Json encode
 	 */
-	static jsonEncode(obj)
+	static jsonEncode(obj, flags)
 	{
+		if (flags == undefined) flags = 0;
 		return JSON.stringify(obj);
+	}
+	
+	
+	/**
+	 * Copy object
+	 */
+	static copy(obj)
+	{
+		let data = this.serialize(obj);
+		let item = this.newInstance(obj.constructor.getClassName());
+		this.assign(item, data);
+		return item;
 	}
 	
 	
@@ -463,6 +601,54 @@ Runtime.rtl = class
 	
 	
 	/* ================================= Math Functions ================================== */
+	/**
+	 * Abs
+	 */
+	static abs(value)
+	{
+		return Math.abs(value);
+	}
+	
+	
+	/**
+	 * Returns max a and b
+	 */
+	static max(a, b){ return a > b ? a : b; }
+	
+	
+	/**
+	 * Returns min a and b
+	 */
+	static min(a, b){ return a < b ? a : b; }
+	
+	
+	/**
+	 * Ceil
+	 */
+	static ceil(value)
+	{
+		return Math.ceil(value);
+	}
+	
+	
+	/**
+	 * Floor
+	 */
+	static floor(value)
+	{
+		return Math.floor(value);
+	}
+	
+	
+	/**
+	 * Round
+	 */
+	static round(value)
+	{
+		return Math.round(value);
+	}
+	
+	
 	/**
 	 * Returns random value x, where 0 <= x < 1
 	 * @return double
@@ -583,8 +769,10 @@ Runtime.rtl = class
 		if (callback == undefined) callback = null;
 		app_data = this.fromNative(app_data);
 		/* Create context */
+		let environments = app_data.get("environments");
 		let modules = app_data.get("modules");
 		let context = await this.createContext(Map.create({
+			"environments": environments,
 			"modules": modules,
 		}));
 		/* Start context */
@@ -597,6 +785,12 @@ Runtime.rtl = class
 			callback(result);
 		}
 	}
+	
+	
+	/**
+	 * Render Virtual Dom
+	 */
+	static render(vdom){ return Runtime.rtl.getContext().provider("render").render(vdom); }
 	
 	
 	/* ================================= Other Functions ================================= */

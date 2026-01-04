@@ -24,12 +24,15 @@ BayLang.OpCodes.OpHtmlAttribute = class extends use("BayLang.OpCodes.BaseOpCode"
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "is_spread", data);
-		serializer.process(this, "key", data);
-		serializer.process(this, "value", data);
+		const BooleanType = use("Runtime.Serializer.BooleanType");
+		const StringType = use("Runtime.Serializer.StringType");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("is_spread", new BooleanType());
+		rules.addType("key", new StringType());
+		rules.addType("expression", new OpCodeType());
 	}
 	
 	
@@ -39,8 +42,8 @@ BayLang.OpCodes.OpHtmlAttribute = class extends use("BayLang.OpCodes.BaseOpCode"
 		super._init();
 		this.op = "op_html_attr";
 		this.key = "";
-		this.expression = null;
 		this.is_spread = false;
+		this.expression = null;
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpHtmlAttribute"; }
 	static getMethodsList(){ return null; }

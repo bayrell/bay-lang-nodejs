@@ -27,7 +27,7 @@ Runtime.Entity.Hook = class extends use("Runtime.Entity.Factory")
 	constructor(name, params)
 	{
 		if (params == undefined) params = null;
-		super(name, null, params);
+		super(name, params);
 	}
 	
 	

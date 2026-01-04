@@ -21,11 +21,26 @@ if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
 BayLang.OpCodes.OpHtmlCSS = class extends use("BayLang.OpCodes.BaseOpCode")
 {
+	/**
+	 * Serialize object
+	 */
+	static serialize(rules)
+	{
+		const StringType = use("Runtime.Serializer.StringType");
+		const VectorType = use("Runtime.Serializer.VectorType");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("selector", new StringType());
+		rules.addType("items", new VectorType(new OpCodeType()));
+	}
+	
+	
 	/* ========= Class init functions ========= */
 	_init()
 	{
 		super._init();
 		const Vector = use("Runtime.Vector");
+		this.op = "op_html_css";
 		this.selector = "";
 		this.items = Vector.create([]);
 	}

@@ -21,10 +21,29 @@ if (typeof Runtime == 'undefined') Runtime = {};
 if (typeof Runtime.Entity == 'undefined') Runtime.Entity = {};
 Runtime.Entity.Provider = class extends use("Runtime.Entity.Factory")
 {
+	/**
+	 * Create factory
+	 */
+	constructor(name, value, params)
+	{
+		if (value == undefined) value = "";
+		if (params == undefined) params = null;
+		super(name, params);
+		this.value = value;
+	}
+	
+	
+	/**
+	 * Returns class name
+	 */
+	getName(){ return this.value ? this.value : this.name; }
+	
+	
 	/* ========= Class init functions ========= */
 	_init()
 	{
 		super._init();
+		this.value = null;
 	}
 	static getClassName(){ return "Runtime.Entity.Provider"; }
 	static getMethodsList(){ return null; }

@@ -21,12 +21,17 @@ if (typeof Runtime == 'undefined') Runtime = {};
 Runtime.BaseStorage = class extends use("Runtime.BaseModel")
 {
 	/**
-	 * Serializer model
+	 * Returns object schema
 	 */
-	serialize(serializer, data)
+	static serialize(serializer)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "frontend_params", data);
+		const MapType = use("Runtime.Serializer.MapType");
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		const Map = use("Runtime.Map");
+		super.serialize(serializer);
+		serializer.addType("frontend", new MapType(new ObjectType(Map.create({
+			"autocreate": true,
+		}))));
 	}
 	
 	
@@ -35,7 +40,7 @@ Runtime.BaseStorage = class extends use("Runtime.BaseModel")
 	 */
 	set(key, value)
 	{
-		this.frontend_params.set(key, value);
+		this.frontend.set(key, value);
 	}
 	
 	
@@ -45,7 +50,7 @@ Runtime.BaseStorage = class extends use("Runtime.BaseModel")
 		super._init();
 		const Map = use("Runtime.Map");
 		this.widget_name = "storage";
-		this.frontend_params = new Map();
+		this.frontend = new Map();
 	}
 	static getClassName(){ return "Runtime.BaseStorage"; }
 	static getMethodsList(){ return null; }

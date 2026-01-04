@@ -24,11 +24,16 @@ BayLang.OpCodes.OpTypeIdentifier = class extends use("BayLang.OpCodes.BaseOpCode
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "entity_name", data);
-		serializer.process(this, "generics", data);
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		const Map = use("Runtime.Map");
+		const VectorType = use("Runtime.Serializer.VectorType");
+		super.serialize(rules);
+		rules.addType("entity_name", new ObjectType(Map.create({"class_name": "BayLang.OpCodes.OpEntityName"})));
+		rules.addType("generics", new VectorType(new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpTypeIdentifier",
+		}))));
 	}
 	
 	

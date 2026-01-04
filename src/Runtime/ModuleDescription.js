@@ -53,6 +53,7 @@ Runtime.ModuleDescription = class
 			new Provider("output", "Runtime.Providers.OutputProvider"),
 			new Provider("hook", "Runtime.Providers.HookProvider"),
 			new Provider("render", "Runtime.Providers.RenderContent"),
+			new Provider("api", "Runtime.BusHttp"),
 			new Provider("render", "Runtime.Providers.RenderProvider"),
 		]);
 	}

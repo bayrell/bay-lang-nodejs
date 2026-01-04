@@ -24,12 +24,15 @@ BayLang.OpCodes.OpDictPair = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "condition", data);
-		serializer.process(this, "key", data);
-		serializer.process(this, "value", data);
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		const Map = use("Runtime.Map");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		super.serialize(rules);
+		rules.addType("key", new ObjectType(Map.create({"class_name": "BayLang.OpCodes.OpString"})));
+		rules.addType("expression", new OpCodeType());
+		rules.addType("condition", new OpCodeType());
 	}
 	
 	
@@ -37,6 +40,7 @@ BayLang.OpCodes.OpDictPair = class extends use("BayLang.OpCodes.BaseOpCode")
 	_init()
 	{
 		super._init();
+		this.op = "op_dict_pair";
 		this.key = null;
 		this.expression = null;
 		this.condition = null;

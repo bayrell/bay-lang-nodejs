@@ -22,6 +22,27 @@ if (typeof BayLang == 'undefined') BayLang = {};
 BayLang.Caret = class extends use("Runtime.BaseObject")
 {
 	/**
+	 * Serialize object
+	 */
+	static serialize(serializer)
+	{
+		const IntegerType = use("Runtime.Serializer.IntegerType");
+		super.serialize(serializer);
+		serializer.addType("pos", new IntegerType());
+		serializer.addType("x", new IntegerType());
+		serializer.addType("y", new IntegerType());
+	}
+	
+	
+	/**
+	 * Assign rules
+	 */
+	assignRules(rules)
+	{
+	}
+	
+	
+	/**
 	 * Constructor
 	 */
 	constructor(items)
@@ -68,17 +89,6 @@ BayLang.Caret = class extends use("Runtime.BaseObject")
 	 * Copy caret
 	 */
 	copy(items){ if (items == undefined) items = null;return this.clone(items); }
-	
-	
-	/**
-	 * Serialize object
-	 */
-	serialize(serializer, data)
-	{
-		serializer.process(this, "pos", data);
-		serializer.process(this, "x", data);
-		serializer.process(this, "y", data);
-	}
 	
 	
 	/**

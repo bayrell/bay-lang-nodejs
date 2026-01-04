@@ -24,10 +24,11 @@ BayLang.OpCodes.OpNamespace = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "name", data);
+		const StringType = use("Runtime.Serializer.StringType");
+		super.serialize(rules);
+		rules.addType("name", new StringType());
 	}
 	
 	

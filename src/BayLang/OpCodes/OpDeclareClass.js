@@ -29,27 +29,46 @@ BayLang.OpCodes.OpDeclareClass = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "annotations", data);
-		serializer.process(this, "class_extends", data);
-		serializer.process(this, "class_implements", data);
-		serializer.process(this, "comments", data);
-		serializer.process(this, "extend_name", data);
-		serializer.process(this, "flags", data);
-		serializer.process(this, "fn_create", data);
-		serializer.process(this, "fn_destroy", data);
-		serializer.process(this, "functions", data);
-		serializer.process(this, "is_abstract", data);
-		serializer.process(this, "is_component", data);
-		serializer.process(this, "is_declare", data);
-		serializer.process(this, "is_model", data);
-		serializer.process(this, "items", data);
-		serializer.process(this, "kind", data);
-		serializer.process(this, "name", data);
-		serializer.process(this, "template", data);
-		serializer.process(this, "vars", data);
+		const VectorType = use("Runtime.Serializer.VectorType");
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		const Map = use("Runtime.Map");
+		const BooleanType = use("Runtime.Serializer.BooleanType");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		const StringType = use("Runtime.Serializer.StringType");
+		super.serialize(rules);
+		rules.addType("annotations", new VectorType(new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpAnnotation",
+		}))));
+		rules.addType("class_extends", new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpTypeIdentifier",
+		})));
+		rules.addType("class_implements", new VectorType(new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpTypeIdentifier",
+		}))));
+		rules.addType("comments", new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpComment",
+		})));
+		rules.addType("flags", new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpFlags",
+		})));
+		rules.addType("fn_create", new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpDeclareFunction",
+		})));
+		rules.addType("fn_destroy", new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpDeclareFunction",
+		})));
+		rules.addType("is_abstract", new BooleanType());
+		rules.addType("is_component", new BooleanType());
+		rules.addType("is_declare", new BooleanType());
+		rules.addType("is_model", new BooleanType());
+		rules.addType("content", new OpCodeType());
+		rules.addType("kind", new StringType());
+		rules.addType("name", new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpTypeIdentifier",
+		})));
+		rules.addType("template", new VectorType());
 	}
 	
 	

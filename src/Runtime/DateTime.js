@@ -117,7 +117,6 @@ Runtime.DateTime = class extends use("Runtime.BaseObject")
 	 */
 	toString()
 	{
-		const Math = use("Runtime.Math");
 		let m = this.m < 10 ? "0" + String(this.m) : "" + String(this.m);
 		let d = this.d < 10 ? "0" + String(this.d) : "" + String(this.d);
 		let h = this.h < 10 ? "0" + String(this.h) : "" + String(this.h);
@@ -125,7 +124,7 @@ Runtime.DateTime = class extends use("Runtime.BaseObject")
 		let s = this.s < 10 ? "0" + String(this.s) : "" + String(this.s);
 		/* Get offset */
 		let offset = this.o * 60;
-		let offset_h = Math.abs(Math.floor(offset / 60));
+		let offset_h = rtl.abs(rtl.floor(offset / 60));
 		let offset_m = offset % 60;
 		offset_h = offset_h < 10 ? "0" + String(offset_h) : "" + String(offset_h);
 		offset_m = offset_m < 10 ? "0" + String(offset_m) : "" + String(offset_m);
@@ -164,7 +163,7 @@ Runtime.DateTime = class extends use("Runtime.BaseObject")
 	/**
 	 * Returns date time string
 	 */
-	getDateTimeString()
+	format()
 	{
 		let m = this.m < 10 ? "0" + String(this.m) : "" + String(this.m);
 		let d = this.d < 10 ? "0" + String(this.d) : "" + String(this.d);
@@ -245,7 +244,7 @@ Runtime.DateTime = class extends use("Runtime.BaseObject")
 	toObject()
 	{
 		var dt = new Date(this.y, this.m - 1, this.d, this.h, this.i, this.s);
-		offset = dt.getTimezoneOffset() + this.o * 60;
+		var offset = dt.getTimezoneOffset() + this.o * 60;
 		dt = this.constructor.modify(dt, -offset * 60);
 		return dt;
 	}

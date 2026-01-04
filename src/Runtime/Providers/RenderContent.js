@@ -51,7 +51,7 @@ Runtime.Providers.RenderContent = class extends use("Runtime.BaseProvider")
 		const VirtualDom = use("Runtime.VirtualDom");
 		const Vector = use("Runtime.Vector");
 		if (parent_vdom == undefined) parent_vdom = null;
-		if (!vdom) return;
+		if (vdom === null) return;
 		if (!(vdom instanceof VirtualDom))
 		{
 			if (parent_vdom && parent_vdom.is_raw)

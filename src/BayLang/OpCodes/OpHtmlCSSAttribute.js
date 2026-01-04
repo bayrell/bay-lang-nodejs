@@ -21,10 +21,23 @@ if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
 BayLang.OpCodes.OpHtmlCSSAttribute = class extends use("BayLang.OpCodes.BaseOpCode")
 {
+	/**
+	 * Serialize object
+	 */
+	static serialize(rules)
+	{
+		const StringType = use("Runtime.Serializer.StringType");
+		super.serialize(rules);
+		rules.addType("key", new StringType());
+		rules.addType("value", new StringType());
+	}
+	
+	
 	/* ========= Class init functions ========= */
 	_init()
 	{
 		super._init();
+		this.op = "op_html_css_attr";
 		this.key = "";
 		this.value = "";
 	}

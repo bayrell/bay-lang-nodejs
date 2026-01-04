@@ -38,9 +38,6 @@ Runtime.Hooks.BaseHook = class extends use("Runtime.BaseObject")
 	 */
 	initParams(params)
 	{
-		if (params == null) return;
-		this.hook = params.get("hook");
-		this.provider = params.get("provider");
 	}
 	
 	
@@ -70,7 +67,6 @@ Runtime.Hooks.BaseHook = class extends use("Runtime.BaseObject")
 	_init()
 	{
 		super._init();
-		this.hook = null;
 		this.provider = null;
 	}
 	static getClassName(){ return "Runtime.Hooks.BaseHook"; }

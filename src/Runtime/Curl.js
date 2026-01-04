@@ -35,6 +35,12 @@ Runtime.Curl = class extends use("Runtime.BaseObject")
 	
 	
 	/**
+	 * Returns true if curl is success
+	 */
+	isSuccess(){ return this.code == 200; }
+	
+	
+	/**
 	 * Send
 	 */
 	async send()

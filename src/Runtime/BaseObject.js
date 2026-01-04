@@ -46,6 +46,15 @@ Runtime.BaseObject = class
 	
 	
 	/**
+	 * Serialize object
+	 */
+	static serialize(rules)
+	{
+		rules.setClassName(this.getClassName());
+	}
+	
+	
+	/**
 	 * Assign new values
 	 */
 	_assign_values(changes)

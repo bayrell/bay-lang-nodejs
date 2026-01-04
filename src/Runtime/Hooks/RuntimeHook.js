@@ -36,6 +36,7 @@ Runtime.Hooks.RuntimeHook = class extends use("Runtime.Hooks.BaseHook")
 	static CREATE_CONTAINER_DATA = "runtime::create_container_data";
 	static CREATE_LAYOUT = "runtime::create_layout";
 	static CHANGE_LAYOUT = "runtime::change_layout";
+	static SEND_API_BEFORE = "runtime::send_api_before";
 	static TITLE = "runtime::title";
 	
 	

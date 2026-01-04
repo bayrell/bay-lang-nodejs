@@ -24,11 +24,16 @@ BayLang.OpCodes.OpAnnotation = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "name", data);
-		serializer.process(this, "params", data);
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		const Map = use("Runtime.Map");
+		super.serialize(rules);
+		rules.addType("name", new OpCodeType());
+		rules.addType("params", new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpDict",
+		})));
 	}
 	
 	

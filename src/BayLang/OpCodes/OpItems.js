@@ -24,10 +24,11 @@ BayLang.OpCodes.OpItems = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "items", data);
+		const VectorType = use("Runtime.Serializer.VectorType");
+		super.serialize(rules);
+		rules.addType("items", new VectorType(rules.params.get("item")));
 	}
 	
 	

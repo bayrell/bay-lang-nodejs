@@ -1,6 +1,7 @@
 "use strict;"
 const use = require('bay-lang').use;
 const rs = use("Runtime.rs");
+const rtl = use("Runtime.rtl");
 /*!
  *  BayLang Technology
  *
@@ -54,27 +55,30 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		const Method = use("Runtime.Method");
-		super.serialize(serializer, data);
-		serializer.process(this, "components", data);
-		serializer.process(this, "current_page_model", data);
-		serializer.process(this, "lang", data);
-		serializer.process(this, "theme", data);
-		serializer.process(this, "title", data);
-		serializer.process(this, "pages", data, new Method(this, "serializePage"));
-		serializer.process(this, "storage", data);
-	}
-	
-	
-	/**
-	 * Serialize page
-	 */
-	serializePage(serializer, data)
-	{
-		let class_name = data.get("__class_name__");
-		return this.createWidget(class_name, data);
+		const StringType = use("Runtime.Serializer.StringType");
+		const VectorType = use("Runtime.Serializer.VectorType");
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		const Map = use("Runtime.Map");
+		const MapType = use("Runtime.Serializer.MapType");
+		super.serialize(rules);
+		rules.addType("component_props", new StringType());
+		rules.addType("components", new VectorType(new StringType()));
+		rules.addType("current_component", new StringType());
+		rules.addType("current_page_model", new StringType());
+		rules.addType("lang", new StringType());
+		rules.addType("theme", new StringType());
+		rules.addType("title", new StringType());
+		rules.addType("storage", new ObjectType(Map.create({"class_name": "Runtime.BaseStorage"})));
+		rules.addType("pages", new MapType(new ObjectType(Map.create({
+			"autocreate": true,
+			"extends": "Runtime.BaseModel",
+			"create": (layout, rules, data) =>
+			{
+				return layout.createWidget(rules.class_name, data);
+			},
+		}))));
 	}
 	
 	
@@ -105,11 +109,21 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 		let page = this.pages.get(class_name);
 		if (!page)
 		{
-			params.set("widget_name", class_name);
 			page = this.createWidget(class_name, params);
 			this.pages.set(class_name, page);
 		}
 		return page;
+	}
+	
+	
+	/**
+	 * Set current page
+	 */
+	setCurrentPage(component_name, props)
+	{
+		if (props == undefined) props = null;
+		this.current_component = component_name;
+		this.component_props = props;
 	}
 	
 	
@@ -134,7 +148,35 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 	/**
 	 * Returns object
 	 */
-	get(name){ return this.storage.frontend_params.get(name); }
+	get(name){ return this.storage.frontend.get(name); }
+	
+	
+	/**
+	 * Returns site name
+	 */
+	getSiteName(){ return ""; }
+	
+	
+	/**
+	 * Create url
+	 */
+	url(name, params)
+	{
+		if (params == undefined) params = null;
+		let router = this.get("router");
+		return router.url(name, params);
+	}
+	
+	
+	/**
+	 * Send api
+	 */
+	sendApi(params)
+	{
+		let api = Runtime.rtl.getContext().provider("api");
+		params.set("storage", this.storage.backend);
+		return api.send(params);
+	}
 	
 	
 	/**
@@ -176,7 +218,11 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 	{
 		const Method = use("Runtime.Method");
 		if (hash.has(component)) return;
-		hash.set(component, true);
+		let components = rtl.getParents(component, "Runtime.Component").filter((class_name) => { return !hash.has(class_name); });
+		components.each((class_name) =>
+		{
+			hash.set(class_name, true);
+		});
 		let f = new Method(component, "getRequiredComponents");
 		if (f.exists())
 		{
@@ -190,7 +236,7 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 				}
 			}
 		}
-		result.push(component);
+		result.appendItems(components);
 	}
 	
 	
@@ -220,12 +266,11 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 	/**
 	 * Returns style
 	 */
-	getStyle()
+	static getStyle(components)
 	{
 		const Vector = use("Runtime.Vector");
 		const Method = use("Runtime.Method");
 		let content = Vector.create([]);
-		let components = this.getComponents();
 		for (let i = 0; i < components.count(); i++)
 		{
 			let class_name = components.get(i);
@@ -246,7 +291,9 @@ Runtime.BaseLayout = class extends use("Runtime.BaseModel")
 		this.storage = null;
 		this.components = Vector.create([]);
 		this.pages = new Map();
+		this.component_props = new Map();
 		this.component = "Runtime.DefaultLayout";
+		this.current_component = "";
 		this.current_page_model = "";
 		this.name = "";
 		this.lang = "en";

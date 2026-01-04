@@ -24,12 +24,13 @@ BayLang.OpCodes.OpHtmlStyle = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "content", data);
-		serializer.process(this, "is_global", data);
-		serializer.process(this, "value", data);
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
+		const BooleanType = use("Runtime.Serializer.BooleanType");
+		super.serialize(rules);
+		rules.addType("content", new OpCodeType());
+		rules.addType("is_global", new BooleanType());
 	}
 	
 	

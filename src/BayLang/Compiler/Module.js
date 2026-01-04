@@ -24,6 +24,29 @@ if (typeof BayLang.Compiler == 'undefined') BayLang.Compiler = {};
 BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 {
 	/**
+	 * Process project cache
+	 */
+	static serialize(rules)
+	{
+		const BooleanType = use("Runtime.Serializer.BooleanType");
+		const VectorType = use("Runtime.Serializer.VectorType");
+		const StringType = use("Runtime.Serializer.StringType");
+		const MapType = use("Runtime.Serializer.MapType");
+		super.serialize(rules);
+		rules.addType("is_exists", new BooleanType());
+		rules.addType("assets", new VectorType(new StringType()));
+		rules.addType("groups", new VectorType(new StringType()));
+		rules.addType("name", new StringType());
+		rules.addType("path", new StringType());
+		rules.addType("routes", new VectorType(new MapType()));
+		rules.addType("dest_path", new MapType(new StringType()));
+		rules.addType("src_path", new StringType());
+		rules.addType("required_modules", new VectorType());
+		rules.addType("submodules", new MapType());
+	}
+	
+	
+	/**
 	 * Constructor
 	 */
 	constructor(project)
@@ -60,24 +83,6 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 		this.required_modules = module_info.get("require");
 		this.submodules = module_info.get("modules");
 		this.exclude = module_info.get("exclude");
-	}
-	
-	
-	/**
-	 * Process project cache
-	 */
-	serialize(serializer, data)
-	{
-		serializer.process(this, "is_exists", data);
-		serializer.process(this, "assets", data);
-		serializer.process(this, "groups", data);
-		serializer.process(this, "name", data);
-		serializer.process(this, "path", data);
-		serializer.process(this, "routes", data);
-		serializer.process(this, "dest_path", data);
-		serializer.process(this, "src_path", data);
-		serializer.process(this, "required_modules", data);
-		serializer.process(this, "submodules", data);
 	}
 	
 	
@@ -126,7 +131,7 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 		if (!source_path) return null;
 		let source_path_sz = rs.strlen(source_path);
 		if (rs.substr(file_path, 0, source_path_sz) != source_path) return null;
-		return rs.addFirstSlash(rs.substr(file_path, source_path_sz));
+		return rs.addFirstSlash(rs.removeFirstSlash(rs.substr(file_path, source_path_sz)));
 	}
 	
 	
@@ -142,7 +147,7 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 	checkAllow(file_name)
 	{
 		const re = use("Runtime.re");
-		if (!this.allow) return false;
+		if (!this.allow) return true;
 		let success = false;
 		for (let i = 0; i < this.allow.count(); i++)
 		{

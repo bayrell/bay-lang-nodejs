@@ -24,10 +24,11 @@ BayLang.OpCodes.OpNumber = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Serialize object
 	 */
-	serialize(serializer, data)
+	static serialize(rules)
 	{
-		super.serialize(serializer, data);
-		serializer.process(this, "value", data);
+		const IntegerType = use("Runtime.Serializer.IntegerType");
+		super.serialize(rules);
+		rules.addType("value", new IntegerType());
 	}
 	
 	

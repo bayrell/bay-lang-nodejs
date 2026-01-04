@@ -96,7 +96,7 @@ Runtime.RenderContainer = class extends use("Runtime.BaseObject")
 		if (page_model)
 		{
 			await page_model.loadData(this);
-			page_model.buildTitle(this);
+			if (page_model == this.layout.getPageModel()) page_model.buildTitle(this);
 		}
 	}
 	
@@ -115,15 +115,20 @@ Runtime.RenderContainer = class extends use("Runtime.BaseObject")
 	 */
 	getData()
 	{
-		const Serializer = use("Runtime.Serializer");
 		const Map = use("Runtime.Map");
 		const RuntimeHook = use("Runtime.Hooks.RuntimeHook");
-		let serializer = new Serializer();
-		let layout_data = serializer.encode(this.layout);
+		let layout_data = rtl.serialize(this.layout);
 		let data = Map.create({
 			"modules": Runtime.rtl.getContext().modules,
+			"class": this.layout.getClassName(),
 			"layout": layout_data,
-			"storage": new Map(),
+			"environments": Map.create({
+				"CLOUD_ENV": Runtime.rtl.getContext().env("CLOUD_ENV"),
+				"DEBUG": Runtime.rtl.getContext().env("DEBUG"),
+				"LOCALE": Runtime.rtl.getContext().env("LOCALE"),
+				"TZ": Runtime.rtl.getContext().env("TZ"),
+				"TZ_OFFSET": Runtime.rtl.getContext().env("TZ_OFFSET"),
+			}),
 		});
 		let res = Runtime.rtl.getContext().hook(RuntimeHook.CREATE_CONTAINER_DATA, Map.create({
 			"container": this,

@@ -89,6 +89,7 @@ Runtime.VirtualDom = class extends use("Runtime.BaseObject")
 			this.items.appendItems(content);
 			return;
 		}
+		if (rtl.isString(content) && content == "") return;
 		if (!(content instanceof Runtime.VirtualDom) && !rtl.isString(content))
 		{
 			content = rtl.toStr(content);
@@ -127,6 +128,31 @@ Runtime.VirtualDom = class extends use("Runtime.BaseObject")
 		provider.components = Runtime.rtl.getContext().provider("render").components;
 		provider.render(this, content);
 		return rs.join("", content);
+	}
+	
+	
+	/**
+	 * Raw string
+	 */
+	static raw(content)
+	{
+		let vdom = new Runtime.VirtualDom();
+		vdom.is_raw = true;
+		vdom.push(content);
+		return vdom;
+	}
+	
+	
+	/**
+	 * Render model
+	 */
+	static renderModel(model)
+	{
+		const Map = use("Runtime.Map");
+		let vdom = new Runtime.VirtualDom();
+		vdom.setName(model.component);
+		vdom.attrs = Map.create({"model": model, "layout": model.layout});
+		return vdom;
 	}
 	
 	

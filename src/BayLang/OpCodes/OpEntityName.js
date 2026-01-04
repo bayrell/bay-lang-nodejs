@@ -23,19 +23,24 @@ if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
 BayLang.OpCodes.OpEntityName = class extends use("BayLang.OpCodes.BaseOpCode")
 {
 	/**
-	 * Returns name
+	 * Serialize object
 	 */
-	getName(){ return rs.join(".", this.items.map((item) => { return item.value; })); }
+	static serialize(serializer)
+	{
+		const VectorType = use("Runtime.Serializer.VectorType");
+		const ObjectType = use("Runtime.Serializer.ObjectType");
+		const Map = use("Runtime.Map");
+		super.serialize(serializer);
+		serializer.addType("items", new VectorType(new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpIdentifier",
+		}))));
+	}
 	
 	
 	/**
-	 * Serialize object
+	 * Returns name
 	 */
-	serialize(serializer, data)
-	{
-		super.serialize(serializer, data);
-		serializer.process(this, "items", data);
-	}
+	getName(){ return rs.join(".", this.items.map((item) => { return item.value; })); }
 	
 	
 	/* ========= Class init functions ========= */

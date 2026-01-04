@@ -66,6 +66,16 @@ Runtime.Vector = class extends Array
 	
 	
 	/**
+	 * Remove item
+	 */
+	removeItem(item)
+	{
+		let pos = this.findIndex((elem) => { return elem == item; });
+		if (pos >=0) this.remove(pos);
+	}
+	
+	
+	/**
 	 * Flatten Array
 	 */
 	flatten()
@@ -125,6 +135,7 @@ Runtime.Vector = class extends Array
 		const map = new RuntimeMap();
 		for (let i=0; i<this.length; i++)
 		{
+			let res = null;
 			if (f) res = f(this[i], i, this);
 			else res = [this[i], i];
 			map.set(res[1], res[0]);
@@ -165,8 +176,17 @@ Runtime.Vector = class extends Array
 		return res;
 	}
 	
-	static create(arr){ return new Runtime.Vector(...arr); }
-	static from(arr){ return new Runtime.Vector(...arr); }
+	static create(arr)
+	{
+		if (arr.length == 1)
+		{
+			let value = new Runtime.Vector();
+			value.push(arr[0]);
+			return value;
+		}
+		return new Runtime.Vector(...arr);
+	}
+	static from(arr){ return this.create(arr); }
 	static getNamespace(){ return "Runtime"; }
 	static getClassName(){ return "Runtime.Vector"; }
 }

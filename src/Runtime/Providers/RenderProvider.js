@@ -28,12 +28,10 @@ Runtime.Providers.RenderProvider = class extends use("Runtime.BaseProvider")
 	 */
 	createLayout(app_data)
 	{
-		const Serializer = use("Runtime.Serializer");
+		let class_name = app_data.get("class");
 		let layout_data = app_data.get("layout");
-		let class_name = layout_data.get("__class_name__");
 		let layout = rtl.newInstance(class_name);
-		let serializer = new Serializer();
-		serializer.assign(layout, layout_data);
+		rtl.assign(layout, layout_data);
 		return window["Vue"].reactive(layout);
 	}
 	
@@ -110,6 +108,7 @@ Runtime.Providers.RenderProvider = class extends use("Runtime.BaseProvider")
 		{
 			let name = vdom.name;
 			if (this.components.has(name)) name = this.components.get(name);
+			if (name == "TransitionGroup") return Vue.TransitionGroup;
 			return rtl.findClass(name);
 		}
 		return vdom.name;
@@ -143,17 +142,16 @@ Runtime.Providers.RenderProvider = class extends use("Runtime.BaseProvider")
 		let children = content;
 		if (vdom.is_component)
 		{
-			let slots = vdom.slots.map((f) =>
-			{
-				return () =>
-				{
-					let vdom = f();
-					return this.render(vdom);
+			children = vdom.slots.map(function (f){
+				return (...args) => {
+					return Runtime.rtl.render(f.apply(null, args));
 				};
-			});
-			children = slots.toObject();
+			}).toObject();
 		}
-		if (children instanceof Vector) children = children.flatten();
+		if (children instanceof Vector)
+		{
+			children = children.flatten().filter((item) => { return item != null && item != ""; });
+		}
 		let attrs = vdom.attrs;
 		if (attrs instanceof Map)
 		{
