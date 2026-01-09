@@ -32,6 +32,7 @@ BayLang.LangPHP.TranslatorPHP = class extends use("BayLang.CoreTranslator")
 		this.uses.set("rs", "Runtime.rs");
 		this.uses.set("BaseObject", "Runtime.BaseObject");
 		this.uses.set("Map", "Runtime.Map");
+		this.uses.set("Method", "Runtime.Method");
 		this.uses.set("Vector", "Runtime.Vector");
 		this.preprocessor_flags.set("BACKEND", true);
 		this.preprocessor_flags.set("PHP", true);

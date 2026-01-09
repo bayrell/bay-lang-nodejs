@@ -663,27 +663,59 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends use("Runtime.BaseObject"
 	
 	
 	/**
+	 * Op await
+	 */
+	OpAwait(op_code, result)
+	{
+		const OpCall = use("BayLang.OpCodes.OpCall");
+		if (op_code.item instanceof OpCall)
+		{
+			this.translateItem(op_code.item, result);
+		}
+	}
+	
+	
+	/**
+	 * Op method
+	 */
+	OpMethod(op_code, result)
+	{
+		result.push("new \\Runtime\\Method(");
+		this.translateItem(op_code.value1, result);
+		result.push(", ");
+		result.push(this.translator.toString(op_code.value2));
+		result.push(")");
+	}
+	
+	
+	/**
 	 * Translate item
 	 */
 	translateItem(op_code, result)
 	{
+		const OpAwait = use("BayLang.OpCodes.OpAwait");
 		const OpNumber = use("BayLang.OpCodes.OpNumber");
 		const OpString = use("BayLang.OpCodes.OpString");
 		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
 		const OpAttr = use("BayLang.OpCodes.OpAttr");
+		const OpCall = use("BayLang.OpCodes.OpCall");
 		const OpClassOf = use("BayLang.OpCodes.OpClassOf");
 		const OpCollection = use("BayLang.OpCodes.OpCollection");
 		const OpDict = use("BayLang.OpCodes.OpDict");
 		const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");
-		const OpCall = use("BayLang.OpCodes.OpCall");
+		const OpMethod = use("BayLang.OpCodes.OpMethod");
 		const OpNew = use("BayLang.OpCodes.OpNew");
 		const OpTernary = use("BayLang.OpCodes.OpTernary");
 		const OpTypeIdentifier = use("BayLang.OpCodes.OpTypeIdentifier");
-		if (op_code instanceof OpNumber)
+		if (op_code instanceof OpAwait)
+		{
+			this.OpAwait(op_code, result);
+		}
+		else if (op_code instanceof OpNumber)
 		{
 			this.OpNumber(op_code, result);
 		}
-		if (op_code instanceof OpString)
+		else if (op_code instanceof OpString)
 		{
 			this.OpString(op_code, result);
 		}
@@ -694,6 +726,10 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends use("Runtime.BaseObject"
 		else if (op_code instanceof OpAttr)
 		{
 			this.OpAttr(op_code, result);
+		}
+		else if (op_code instanceof OpCall)
+		{
+			this.OpCall(op_code, result);
 		}
 		else if (op_code instanceof OpClassOf)
 		{
@@ -711,9 +747,9 @@ BayLang.LangPHP.TranslatorPHPExpression = class extends use("Runtime.BaseObject"
 		{
 			this.translator.program.OpDeclareFunction(op_code, result);
 		}
-		else if (op_code instanceof OpCall)
+		else if (op_code instanceof OpMethod)
 		{
-			this.OpCall(op_code, result);
+			this.OpMethod(op_code, result);
 		}
 		else if (op_code instanceof OpNew)
 		{

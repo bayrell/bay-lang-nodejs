@@ -47,10 +47,15 @@ BayLang.LangBay.ParserBayExpression = class extends use("Runtime.BaseObject")
 			reader.matchToken(")");
 			return op_code;
 		}
+		else if (reader.nextToken() == "await")
+		{
+			return this.readAwait(reader);
+		}
 		/* Read op_code */
 		let op_code = this.parser.parser_base.readDynamic(reader);
 		if (op_code instanceof OpIdentifier && this.parser.find_variable)
 		{
+			this.parser.useVariable(op_code);
 			this.parser.findVariable(op_code);
 		}
 		return op_code;
@@ -372,19 +377,75 @@ BayLang.LangBay.ParserBayExpression = class extends use("Runtime.BaseObject")
 	
 	
 	/**
+	 * Read await
+	 */
+	readAwait(reader)
+	{
+		const OpAwait = use("BayLang.OpCodes.OpAwait");
+		const Map = use("Runtime.Map");
+		let caret_start = reader.caret();
+		reader.matchToken("await");
+		let op_code = this.parser.parser_base.readDynamic(reader);
+		return new OpAwait(Map.create({
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+			"item": op_code,
+		}));
+	}
+	
+	
+	/**
+	 * Read method
+	 */
+	readMethod(reader)
+	{
+		const OpAttr = use("BayLang.OpCodes.OpAttr");
+		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
+		const OpMethod = use("BayLang.OpCodes.OpMethod");
+		const Map = use("Runtime.Map");
+		let caret_start = reader.caret();
+		reader.matchToken("method");
+		let op_code = this.parser.parser_base.readDynamic(reader);
+		if (!(op_code instanceof OpAttr))
+		{
+			throw reader.expected("Attribute");
+		}
+		if (!(op_code.next instanceof OpIdentifier))
+		{
+			throw reader.expected("Identifier");
+		}
+		let value1 = op_code.prev;
+		let value2 = op_code.next.value;
+		return new OpMethod(Map.create({
+			"caret_start": caret_start,
+			"caret_end": reader.caret(),
+			"value1": value1,
+			"value2": value2,
+		}));
+	}
+	
+	
+	/**
 	 * Read element
 	 */
 	readElement(reader)
 	{
-		/* Read collection */
+		/* Read vector */
 		if (reader.nextToken() == "[")
 		{
 			return this.parser.parser_base.readCollection(reader);
 		}
-		/* Read collection */
-		if (reader.nextToken() == "{")
+		else if (reader.nextToken() == "{")
 		{
 			return this.parser.parser_base.readDict(reader);
+		}
+		else if (reader.nextToken() == "<")
+		{
+			return this.parser.parser_html.readTemplate(reader);
+		}
+		else if (reader.nextToken() == "method")
+		{
+			return this.readMethod(reader);
 		}
 		/* Try to read function */
 		let op_code = this.parser.parser_function.tryReadFunction(reader, false);

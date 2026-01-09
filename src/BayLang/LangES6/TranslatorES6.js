@@ -32,6 +32,7 @@ BayLang.LangES6.TranslatorES6 = class extends use("BayLang.CoreTranslator")
 		this.uses.set("rs", "Runtime.rs");
 		this.uses.set("BaseObject", "Runtime.BaseObject");
 		this.uses.set("Map", "Runtime.Map");
+		this.uses.set("Method", "Runtime.Method");
 		this.uses.set("Vector", "Runtime.Vector");
 		this.preprocessor_flags.set("FRONTEND", true);
 		this.preprocessor_flags.set("ES6", true);

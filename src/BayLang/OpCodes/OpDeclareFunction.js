@@ -54,7 +54,9 @@ BayLang.OpCodes.OpDeclareFunction = class extends use("BayLang.OpCodes.BaseOpCod
 		rules.addType("pattern", new ObjectType(Map.create({
 			"class_name": "BayLang.OpCodes.OpTypeIdentifier",
 		})));
-		rules.addType("vars", new VectorType(new StringType()));
+		rules.addType("vars", new VectorType(new ObjectType(Map.create({
+			"class_name": "OpIdentifier",
+		}))));
 	}
 	
 	

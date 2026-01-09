@@ -31,7 +31,7 @@ BayLang.ModuleDescription = class
 	 * Returns module name
 	 * @return string
 	 */
-	static getModuleVersion(){ return "1.1"; }
+	static getModuleVersion(){ return "1.2"; }
 	
 	
 	/**

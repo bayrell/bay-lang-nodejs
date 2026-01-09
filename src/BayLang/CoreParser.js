@@ -41,8 +41,30 @@ BayLang.CoreParser = class extends use("Runtime.BaseObject")
 	 */
 	addVariable(op_code, pattern)
 	{
+		const Map = use("Runtime.Map");
 		let name = op_code.value;
-		this.vars.set(name, pattern);
+		this.vars.set(name, Map.create({
+			"pattern": pattern,
+			"function_level": this.function_level,
+		}));
+	}
+	
+	
+	/**
+	 * Use variable
+	 */
+	useVariable(op_code)
+	{
+		const Map = use("Runtime.Map");
+		let variable = this.vars.get(op_code.value);
+		if (!(variable instanceof Map) || variable.get("function_level") >= this.function_level)
+		{
+			return;
+		}
+		if (!this.vars_uses.has(op_code.value))
+		{
+			this.vars_uses.set(op_code.value, op_code);
+		}
 	}
 	
 	
@@ -93,8 +115,10 @@ BayLang.CoreParser = class extends use("Runtime.BaseObject")
 		this.content = "";
 		this.content_size = 0;
 		this.tab_size = 4;
+		this.function_level = 0;
 		this.find_variable = true;
 		this.vars = new Map();
+		this.vars_uses = new Map();
 		this.uses = new Map();
 		this.current_namespace = null;
 		this.current_class = null;

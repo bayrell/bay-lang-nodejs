@@ -125,13 +125,38 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends use("Runtime.BaseObject")
 	 */
 	OpFor(op_code, result)
 	{
-		result.push("for (");
-		this.translateItem(op_code.expr1, result);
-		result.push("; ");
-		this.translator.expression.translate(op_code.expr2, result);
-		result.push("; ");
-		this.translateItem(op_code.expr3, result);
-		result.push(")");
+		const OpAssign = use("BayLang.OpCodes.OpAssign");
+		const OpAttr = use("BayLang.OpCodes.OpAttr");
+		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
+		if (op_code.expr3 != null)
+		{
+			result.push("for (");
+			this.translateItem(op_code.expr1, result);
+			result.push("; ");
+			this.translator.expression.translate(op_code.expr2, result);
+			result.push("; ");
+			this.translateItem(op_code.expr3, result);
+			result.push(")");
+		}
+		else
+		{
+			result.push("foreach (");
+			this.translator.expression.translate(op_code.expr2, result);
+			result.push(" as ");
+			if (op_code.expr1 instanceof OpAssign && op_code.expr1.items.count() > 0)
+			{
+				let op_code_item = op_code.expr1.items.get(0);
+				if (op_code_item.value instanceof OpAttr)
+				{
+					this.translator.expression.OpAttr(op_code_item.value, result);
+				}
+				else if (op_code_item.value instanceof OpIdentifier)
+				{
+					this.translator.expression.OpIdentifier(op_code_item.value, result);
+				}
+			}
+			result.push(")");
+		}
 		this.translateItems(op_code.content, result);
 	}
 	
@@ -287,8 +312,9 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends use("Runtime.BaseObject")
 	translateItem(op_code, result)
 	{
 		const OpAssign = use("BayLang.OpCodes.OpAssign");
-		const OpBreak = use("BayLang.OpCodes.OpBreak");
+		const OpAwait = use("BayLang.OpCodes.OpAwait");
 		const OpCall = use("BayLang.OpCodes.OpCall");
+		const OpBreak = use("BayLang.OpCodes.OpBreak");
 		const OpContinue = use("BayLang.OpCodes.OpContinue");
 		const OpReturn = use("BayLang.OpCodes.OpReturn");
 		const OpInc = use("BayLang.OpCodes.OpInc");
@@ -304,6 +330,12 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends use("Runtime.BaseObject")
 		if (op_code instanceof OpAssign)
 		{
 			return this.OpAssign(op_code, result);
+		}
+		else if (op_code instanceof OpAwait)
+		{
+			this.translator.expression.OpAwait(op_code, result);
+			if (op_code.item instanceof OpCall) result.push(";");
+			else return false;
 		}
 		else if (op_code instanceof OpBreak)
 		{

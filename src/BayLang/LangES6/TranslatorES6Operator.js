@@ -129,11 +129,20 @@ BayLang.LangES6.TranslatorES6Operator = class extends use("Runtime.BaseObject")
 	OpFor(op_code, result)
 	{
 		result.push("for (");
-		this.translateItem(op_code.expr1, result);
-		result.push("; ");
-		this.translator.expression.translate(op_code.expr2, result);
-		result.push("; ");
-		this.translateItem(op_code.expr3, result);
+		if (op_code.expr3 != null)
+		{
+			this.translateItem(op_code.expr1, result);
+			result.push("; ");
+			this.translator.expression.translate(op_code.expr2, result);
+			result.push("; ");
+			this.translateItem(op_code.expr3, result);
+		}
+		else
+		{
+			this.translateItem(op_code.expr1, result);
+			result.push(" of ");
+			this.translator.expression.translate(op_code.expr2, result);
+		}
 		result.push(")");
 		this.translateItems(op_code.content, result);
 	}
@@ -323,6 +332,7 @@ BayLang.LangES6.TranslatorES6Operator = class extends use("Runtime.BaseObject")
 	translateItem(op_code, result)
 	{
 		const OpAssign = use("BayLang.OpCodes.OpAssign");
+		const OpAwait = use("BayLang.OpCodes.OpAwait");
 		const OpBreak = use("BayLang.OpCodes.OpBreak");
 		const OpCall = use("BayLang.OpCodes.OpCall");
 		const OpContinue = use("BayLang.OpCodes.OpContinue");
@@ -340,6 +350,11 @@ BayLang.LangES6.TranslatorES6Operator = class extends use("Runtime.BaseObject")
 		if (op_code instanceof OpAssign)
 		{
 			this.OpAssign(op_code, result);
+		}
+		else if (op_code instanceof OpAwait)
+		{
+			this.translator.expression.OpAwait(op_code, result);
+			result.push(";");
 		}
 		else if (op_code instanceof OpBreak)
 		{

@@ -36,6 +36,9 @@ BayLang.OpCodes.OpHtmlTag = class extends use("BayLang.OpCodes.BaseOpCode")
 		rules.addType("attrs", new VectorType(new ObjectType(Map.create({
 			"class_name": "BayLang.OpCodes.OpHtmlAttribute",
 		}))));
+		rules.addType("vars", new VectorType(new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpIdentifier",
+		}))));
 		rules.addType("content", new ObjectType(Map.create({
 			"class_name": "BayLang.OpCodes.OpHtmlItems",
 		})));
@@ -54,6 +57,7 @@ BayLang.OpCodes.OpHtmlTag = class extends use("BayLang.OpCodes.BaseOpCode")
 		this.is_component = false;
 		this.op_code_name = null;
 		this.attrs = null;
+		this.vars = null;
 		this.content = null;
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpHtmlTag"; }

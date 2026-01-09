@@ -201,6 +201,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 	readAttrs(reader, kind)
 	{
 		const Vector = use("Runtime.Vector");
+		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
 		const OpHtmlAttribute = use("BayLang.OpCodes.OpHtmlAttribute");
 		const Map = use("Runtime.Map");
 		if (kind == undefined) kind = "";
@@ -224,6 +225,11 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 				is_spread = true;
 				reader.matchToken("...");
 				expression = this.parser.parser_base.readDynamic(reader);
+				if (expression instanceof OpIdentifier)
+				{
+					this.parser.useVariable(expression);
+					this.parser.findVariable(expression);
+				}
 			}
 			else
 			{
@@ -273,8 +279,8 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		while (!caret.eof())
 		{
 			let ch = caret.readChar();
-			if (ch == ":" || ch == ";" || ch == "}") return false;
-			if (ch == "{" || ch == "(" || ch == "&" || ch == ".") return true;
+			if (ch == ";" || ch == "}") return false;
+			if (ch == "&" || ch == "{") return true;
 		}
 		return false;
 	}
@@ -517,9 +523,10 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 	 */
 	readHtmlTag(reader)
 	{
+		const Vector = use("Runtime.Vector");
+		const Map = use("Runtime.Map");
 		const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");
 		const OpHtmlSlot = use("BayLang.OpCodes.OpHtmlSlot");
-		const Map = use("Runtime.Map");
 		const OpHtmlTag = use("BayLang.OpCodes.OpHtmlTag");
 		let caret_start = reader.start();
 		reader.matchToken("<");
@@ -536,10 +543,22 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 			reader.matchToken("{");
 			tag_name = this.parser.parser_base.readDynamic(reader);
 			reader.matchToken("}");
+			this.parser.useVariable(tag_name);
 		}
 		else
 		{
 			tag_name = this.parser.parser_base.readIdentifier(reader);
+		}
+		/* Detect component */
+		let is_component = true;
+		if (!is_variable) is_component = this.constructor.isComponent(tag_name.value);
+		/* Save vars */
+		let vars = Vector.create([]);
+		let vars_uses = this.parser.vars_uses.copy();
+		if (tag_name.value == "slot" || is_component)
+		{
+			this.parser.function_level += 1;
+			this.parser.vars_uses = new Map();
 		}
 		let attrs = this.readAttrs(reader, (!is_variable && tag_name.value == "slot") ? "template" : "expression");
 		let content = null;
@@ -561,6 +580,14 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		{
 			reader.matchToken("/>");
 		}
+		/* Restore vars */
+		if (tag_name.value == "slot" || is_component)
+		{
+			this.parser.parser_function.extendVariables(vars);
+			this.parser.vars_uses = this.parser.vars_uses.concat(vars_uses);
+			/* Dec level */
+			this.parser.function_level -= 1;
+		}
 		if (tag_name.value == "slot")
 		{
 			let name = "";
@@ -574,15 +601,15 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 			return new OpHtmlSlot(Map.create({
 				"args": args,
 				"name": name,
+				"vars": vars,
 				"content": content,
 				"caret_start": caret_start,
 				"caret_end": reader.caret(),
 			}));
 		}
-		let is_component = true;
-		if (!is_variable) is_component = this.constructor.isComponent(tag_name.value);
 		return new OpHtmlTag(Map.create({
 			"attrs": attrs,
+			"vars": vars,
 			"content": content,
 			"is_component": is_component,
 			"tag_name": is_variable ? tag_name : tag_name.value,
@@ -618,12 +645,18 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		reader.matchToken("(");
 		/* Read assing */
 		let expr1 = this.parser.parser_operator.readAssign(reader);
-		reader.matchToken(";");
+		let is_foreach = reader.nextToken() == "in";
+		if (is_foreach)
+		{
+			reader.matchToken("in");
+		}
+		else reader.matchToken(";");
 		/* Read expression */
 		let expr2 = this.parser.parser_expression.readExpression(reader);
-		reader.matchToken(";");
+		if (!is_foreach) reader.matchToken(";");
 		/* Read operator */
-		let expr3 = this.parser.parser_operator.readInc(reader);
+		let expr3 = null;
+		if (!is_foreach) expr3 = this.parser.parser_operator.readInc(reader);
 		reader.matchToken(")");
 		/* Read content */
 		let content = this.readHtml(reader, true, "}");

@@ -196,12 +196,22 @@ BayLang.LangBay.ParserBayOperator = class extends use("Runtime.BaseObject")
 		reader.matchToken("(");
 		/* Read assing */
 		let expr1 = this.readAssign(reader);
-		reader.matchToken(";");
+		/* Read in */
+		let is_foreach = reader.nextToken() == "in";
+		if (is_foreach)
+		{
+			reader.matchToken("in");
+		}
+		else reader.matchToken(";");
 		/* Read expression */
 		let expr2 = this.parser.parser_expression.readExpression(reader);
-		reader.matchToken(";");
+		if (!is_foreach) reader.matchToken(";");
 		/* Read operator */
-		let expr3 = this.readInc(reader);
+		let expr3 = null;
+		if (!is_foreach)
+		{
+			expr3 = this.readInc(reader);
+		}
 		reader.matchToken(")");
 		/* Read content */
 		let content = this.readContent(reader);
@@ -328,6 +338,13 @@ BayLang.LangBay.ParserBayOperator = class extends use("Runtime.BaseObject")
 				"caret_end": reader.caret(),
 			})));
 		}
+		let expression = null;
+		for (let i = items.count() - 1; i >= 0; i--)
+		{
+			let item = items.get(i);
+			if (item.expression) expression = item.expression;
+			else item.expression = expression;
+		}
 		/* Returns op_code */
 		return new OpAssign(Map.create({
 			"flags": new OpFlags(),
@@ -384,6 +401,10 @@ BayLang.LangBay.ParserBayOperator = class extends use("Runtime.BaseObject")
 		else if (next_token == "#switch" || next_token == "#ifcode" || next_token == "#ifdef")
 		{
 			return this.parser.parser_preprocessor.readPreprocessor(reader, OpPreprocessorIfDef.KIND_OPERATOR);
+		}
+		else if (next_token == "await")
+		{
+			return this.parser.parser_expression.readAwait(reader);
 		}
 		else if (next_token == "break")
 		{

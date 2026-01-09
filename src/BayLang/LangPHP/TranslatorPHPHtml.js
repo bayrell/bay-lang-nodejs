@@ -189,6 +189,7 @@ BayLang.LangPHP.TranslatorPHPHtml = class extends use("Runtime.BaseObject")
 				let op_code_item = new OpDeclareFunction(Map.create({
 					"is_html": true,
 					"content": op_code.content,
+					"vars": op_code.vars,
 				}));
 				result.push(this.translator.newLine());
 				result.push(this.translator.newLine());

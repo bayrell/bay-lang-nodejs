@@ -504,6 +504,7 @@ BayLang.LangBay.ParserBayBase = class extends use("Runtime.BaseObject")
 		let item = this.readItem(reader);
 		if (reader.nextToken() == "." && item instanceof OpIdentifier)
 		{
+			this.parser.useVariable(item);
 			this.parser.findVariable(item);
 		}
 		let operations = Vector.create([".", "::", "[", "("]);

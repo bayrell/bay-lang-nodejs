@@ -19,19 +19,15 @@ const use = require('bay-lang').use;
  */
 if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
-BayLang.OpCodes.OpCall = class extends use("BayLang.OpCodes.BaseOpCode")
+BayLang.OpCodes.OpAwait = class extends use("BayLang.OpCodes.BaseOpCode")
 {
 	/**
 	 * Serialize object
 	 */
 	static serialize(rules)
 	{
-		const VectorType = use("Runtime.Serializer.VectorType");
 		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
-		const BooleanType = use("Runtime.Serializer.BooleanType");
 		super.serialize(rules);
-		rules.addType("args", new VectorType(new OpCodeType()));
-		rules.addType("is_html", new BooleanType());
 		rules.addType("item", new OpCodeType());
 	}
 	
@@ -40,17 +36,14 @@ BayLang.OpCodes.OpCall = class extends use("BayLang.OpCodes.BaseOpCode")
 	_init()
 	{
 		super._init();
-		this.op = "op_call";
 		this.item = null;
-		this.args = null;
-		this.is_html = false;
 	}
-	static getClassName(){ return "BayLang.OpCodes.OpCall"; }
+	static getClassName(){ return "BayLang.OpCodes.OpAwait"; }
 	static getMethodsList(){ return null; }
 	static getMethodInfoByName(field_name){ return null; }
 	static getInterfaces(){ return []; }
 };
-use.add(BayLang.OpCodes.OpCall);
+use.add(BayLang.OpCodes.OpAwait);
 module.exports = {
-	"OpCall": BayLang.OpCodes.OpCall,
+	"OpAwait": BayLang.OpCodes.OpAwait,
 };

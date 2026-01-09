@@ -1,5 +1,6 @@
 "use strict;"
 const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
 /*!
  *  BayLang Technology
  *
@@ -66,14 +67,8 @@ BayLang.LangBay.ParserBayFunction = class extends use("Runtime.BaseObject")
 		if (pattern == undefined) pattern = null;
 		let caret_start = reader.start();
 		/* Read identifier */
-		let is_await = false;
 		if (pattern == null)
 		{
-			if (reader.nextToken() == "await")
-			{
-				is_await = true;
-				reader.matchToken("await");
-			}
 			pattern = this.parser.parser_base.readDynamic(reader, false);
 		}
 		/* Next token should be bracket */
@@ -89,7 +84,6 @@ BayLang.LangBay.ParserBayFunction = class extends use("Runtime.BaseObject")
 		return new OpCall(Map.create({
 			"args": args,
 			"item": pattern,
-			"is_await": is_await,
 			"caret_start": caret_start,
 			"caret_end": reader.caret(),
 		}));
@@ -168,6 +162,39 @@ BayLang.LangBay.ParserBayFunction = class extends use("Runtime.BaseObject")
 	
 	
 	/**
+	 * Extend variables
+	 */
+	extendVariables(vars)
+	{
+		const Map = use("Runtime.Map");
+		let vars_hash = vars.transition((item) =>
+		{
+			const Vector = use("Runtime.Vector");
+			return Vector.create([
+				item,
+				item.value,
+			]);
+		});
+		let keys = rtl.list(this.parser.vars_uses.keys());
+		for (let i = 0; i < keys.count(); i++)
+		{
+			let var_name = keys.get(i);
+			let variable = this.parser.vars.get(var_name);
+			if (!(variable instanceof Map) || variable.get("function_level") >= this.parser.function_level)
+			{
+				continue;
+			}
+			let item = this.parser.vars_uses.get(var_name);
+			if (!vars_hash.has(var_name))
+			{
+				vars_hash.set(var_name, item);
+				vars.push(item);
+			}
+		}
+	}
+	
+	
+	/**
 	 * Read function
 	 */
 	readDeclareFunction(reader, read_name)
@@ -192,6 +219,13 @@ BayLang.LangBay.ParserBayFunction = class extends use("Runtime.BaseObject")
 			"caret_start": caret_start,
 			"caret_end": reader.caret(),
 		}));
+		/* Clear vars */
+		if (this.parser.current_class != null && this.parser.function_level == 0)
+		{
+			this.parser.vars = new Map();
+		}
+		/* Add new level */
+		this.parser.function_level += 1;
 		/* Read function name */
 		let name = "";
 		let content = null;
@@ -199,6 +233,9 @@ BayLang.LangBay.ParserBayFunction = class extends use("Runtime.BaseObject")
 		if (read_name) name = this.parser.parser_base.readIdentifier(reader).value;
 		let args = this.readDeclareFunctionArgs(reader);
 		let vars = this.readDeclareFunctionUse(reader);
+		/* Save vars */
+		let vars_uses = this.parser.vars_uses.copy();
+		this.parser.vars_uses = new Map();
 		/* Read content */
 		if (this.parser.current_class != null && this.parser.current_class.kind == OpDeclareClass.KIND_INTERFACE)
 		{
@@ -218,6 +255,11 @@ BayLang.LangBay.ParserBayFunction = class extends use("Runtime.BaseObject")
 			reader.matchToken("=>");
 			content = this.parser.parser_expression.readExpression(reader);
 		}
+		/* Restore vars */
+		this.extendVariables(vars);
+		this.parser.vars_uses = this.parser.vars_uses.concat(vars_uses);
+		/* Dec level */
+		this.parser.function_level -= 1;
 		return new OpDeclareFunction(Map.create({
 			"args": args,
 			"flags": flags,
