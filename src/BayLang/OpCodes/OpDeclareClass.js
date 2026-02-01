@@ -68,7 +68,9 @@ BayLang.OpCodes.OpDeclareClass = class extends use("BayLang.OpCodes.BaseOpCode")
 		rules.addType("name", new ObjectType(Map.create({
 			"class_name": "BayLang.OpCodes.OpTypeIdentifier",
 		})));
-		rules.addType("template", new VectorType());
+		rules.addType("template", new VectorType(new ObjectType(Map.create({
+			"class_name": "BayLang.OpCodes.OpTypeIdentifier",
+		}))));
 	}
 	
 	
@@ -92,7 +94,24 @@ BayLang.OpCodes.OpDeclareClass = class extends use("BayLang.OpCodes.BaseOpCode")
 	 */
 	findFunction(name)
 	{
-		return this.content.items.find((op_code) => { const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");return op_code instanceof OpDeclareFunction && op_code.name == name; });
+		return this.content ? this.content.items.find((op_code) => { const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");return op_code instanceof OpDeclareFunction && op_code.name == name; }) : null;
+	}
+	
+	
+	/**
+	 * Find variable
+	 */
+	findVariable(name)
+	{
+		const OpAssign = use("BayLang.OpCodes.OpAssign");
+		for (let i = 0; i < this.content.count(); i++)
+		{
+			let item = this.content.get(i);
+			if (!(item instanceof OpAssign)) continue;
+			let value = item.findVariable(name);
+			if (value) return value;
+		}
+		return null;
 	}
 	
 	

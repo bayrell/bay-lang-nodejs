@@ -71,6 +71,7 @@ BayLang.OpCodes.OpCodeType = class extends use("Runtime.Serializer.ObjectType")
 		if (name == "op_if") return "BayLang.OpCodes.OpIf";
 		if (name == "op_if_else") return "BayLang.OpCodes.OpIfElse";
 		if (name == "op_inc") return "BayLang.OpCodes.OpInc";
+		if (name == "op_items") return "BayLang.OpCodes.OpItems";
 		if (name == "op_math") return "BayLang.OpCodes.OpMath";
 		if (name == "op_method") return "BayLang.OpCodes.OpMethod";
 		if (name == "op_module") return "BayLang.OpCodes.OpModule";

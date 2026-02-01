@@ -105,24 +105,26 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 			result.push(op_code_attr.key);
 			result.push("=");
 			/* Value */
-			if (op_code_attr.value instanceof OpString)
+			if (op_code_attr.expression instanceof OpString)
 			{
-				this.translator.expression.translate(op_code_attr.value, result);
+				this.translator.expression.translate(op_code_attr.expression, result);
 			}
-			else if (op_code_attr.value instanceof OpDeclareFunction)
+			else if (op_code_attr.expression instanceof OpDeclareFunction)
 			{
-				result.push("{{");
-				this.translator.levelInc();
-				result.push(this.translator.newLine());
-				this.translator.expression.translate(op_code_attr.value, result);
-				this.translator.levelDec();
-				result.push(this.translator.newLine());
-				result.push("}}");
+				result.push("\"");
+				let op_code = op_code_attr.expression;
+				for (let i = 0; i < op_code.content.count(); i++)
+				{
+					let item = op_code.content.get(i);
+					this.translator.operator.translateItem(item, result);
+					if (i < op_code.content.count() - 1) result.push(";");
+				}
+				result.push("\"");
 			}
 			else
 			{
 				result.push("{{ ");
-				this.translator.expression.translate(op_code_attr.value, result);
+				this.translator.expression.translate(op_code_attr.expression, result);
 				result.push(" }}");
 			}
 			if (i < attrs_count - 1 && !is_multiline) result.push(" ");
@@ -174,7 +176,7 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 		this.OpHtmlAttrs(op_code.attrs, args_content, is_multiline_attrs);
 		let args = rs.join("", args_content);
 		if (args != "" && !is_multiline_attrs) args = " " + String(args);
-		if (op_code.items == null)
+		if (op_code.content == null)
 		{
 			result.push("<" + String(op_code.tag_name) + String(args) + String(" />"));
 		}
@@ -184,7 +186,7 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 			result.push("<" + String(op_code.tag_name) + String(args) + String(">"));
 			if (is_multiline) this.translator.levelInc();
 			/* Items */
-			this.OpHtmlItems(op_code.items, result, is_multiline);
+			this.OpHtmlItems(op_code.content, result, is_multiline);
 			/* End tag */
 			if (is_multiline)
 			{
@@ -243,6 +245,52 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 	
 	
 	/**
+	 * OpFor
+	 */
+	OpFor(op_code, result)
+	{
+		result.push("%for (");
+		this.translateItem(op_code.expr1, result);
+		result.push("; ");
+		this.translator.expression.translate(op_code.expr2, result);
+		result.push("; ");
+		this.translateItem(op_code.expr3, result);
+		result.push(")");
+		this.translateItems(op_code);
+	}
+	
+	
+	/**
+	 * OpIf
+	 */
+	OpIf(op_code, result)
+	{
+		result.push("%if (");
+		this.translator.expression.translate(op_code.condition, result);
+		result.push(")");
+		this.translateItems(op_code.if_true, result);
+		if (op_code.if_else && op_code.if_else.count() > 0)
+		{
+			for (let i = 0; i < op_code.if_else.count(); i++)
+			{
+				let op_code_item = op_code.if_else.get(i);
+				result.push(this.translator.newLine());
+				result.push("%else if (");
+				this.translator.expression.translate(op_code_item.condition, result);
+				result.push(")");
+				this.translateItems(op_code_item.content, result);
+			}
+		}
+		if (op_code.if_false)
+		{
+			result.push(this.translator.newLine());
+			result.push("%else");
+			this.translateItems(op_code.if_false, result);
+		}
+	}
+	
+	
+	/**
 	 * Translate html item
 	 */
 	OpHtmlItem(op_code, result)
@@ -253,6 +301,8 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 		const OpHtmlSlot = use("BayLang.OpCodes.OpHtmlSlot");
 		const OpCall = use("BayLang.OpCodes.OpCall");
 		const OpHtmlValue = use("BayLang.OpCodes.OpHtmlValue");
+		const OpIf = use("BayLang.OpCodes.OpIf");
+		const OpFor = use("BayLang.OpCodes.OpFor");
 		if (op_code instanceof OpAssign)
 		{
 			this.OpAssign(op_code, result);
@@ -290,6 +340,14 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 				result.push(" }}");
 			}
 		}
+		else if (op_code instanceof OpIf)
+		{
+			this.OpIf(op_code, result);
+		}
+		else if (op_code instanceof OpFor)
+		{
+			this.OpFor(op_code, result);
+		}
 		else
 		{
 			result.push("{{ ");
@@ -305,12 +363,27 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 	OpHtmlItems(op_code, result, is_multiline)
 	{
 		if (is_multiline == undefined) is_multiline = true;
-		let items_count = op_code.items.count();
+		let items_count = op_code.count();
 		for (let i = 0; i < items_count; i++)
 		{
 			if (is_multiline) result.push(this.translator.newLine());
-			this.OpHtmlItem(op_code.items.get(i), result);
+			this.OpHtmlItem(op_code.get(i), result);
 		}
+	}
+	
+	
+	/**
+	 * Translate items
+	 */
+	translateItems(op_code, result)
+	{
+		result.push(this.translator.newLine());
+		result.push("{");
+		this.translator.levelInc();
+		this.OpHtmlItems(op_code, result);
+		this.translator.levelDec();
+		result.push(this.translator.newLine());
+		result.push("}");
 	}
 	
 	
@@ -339,7 +412,7 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 		}
 		/* Items */
 		this.translator.levelInc();
-		this.OpHtmlItems(op_code.expression, result);
+		this.OpHtmlItems(op_code.content, result);
 		this.translator.levelDec();
 		/* End template */
 		result.push(this.translator.newLine());
@@ -362,6 +435,44 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 	
 	
 	/**
+	 * Translate style item
+	 */
+	translateStyleItem(op_code, result)
+	{
+		const OpHtmlCSS = use("BayLang.OpCodes.OpHtmlCSS");
+		const OpHtmlCSSAttribute = use("BayLang.OpCodes.OpHtmlCSSAttribute");
+		if (op_code instanceof OpHtmlCSS)
+		{
+			result.push(this.translator.newLine());
+			result.push(op_code.selector + String("{"));
+			this.translator.levelInc();
+			this.translateStyleItems(op_code.items, result);
+			this.translator.levelDec();
+			result.push(this.translator.newLine());
+			result.push("}");
+		}
+		else if (op_code instanceof OpHtmlCSSAttribute)
+		{
+			result.push(this.translator.newLine());
+			result.push(op_code.key + String(": ") + String(op_code.value) + String(";"));
+		}
+	}
+	
+	
+	/**
+	 * Translate style items
+	 */
+	translateStyleItems(op_code, result)
+	{
+		for (let i = 0; i < op_code.count(); i++)
+		{
+			let item = op_code.get(i);
+			this.translateStyleItem(item, result);
+		}
+	}
+	
+	
+	/**
 	 * Translate style
 	 */
 	translateStyle(op_code, result)
@@ -374,10 +485,9 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 		{
 			result.push("<style>");
 		}
-		result.push(this.translator.newLine());
 		if (op_code.content)
 		{
-			result.push(op_code.content);
+			this.translateStyleItems(op_code.content, result);
 			result.push(this.translator.newLine());
 		}
 		result.push("</style>");
@@ -390,9 +500,12 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 	 */
 	translateClassBody(op_code, result)
 	{
-		if (op_code.items.count() == 0) return;
+		const OpAssign = use("BayLang.OpCodes.OpAssign");
+		if (op_code.content.count() == 0) return;
+		/* Set current class */
+		this.translator.current_class = op_code;
 		/* Get styles */
-		let styles = op_code.items.filter((op_code) => { const OpHtmlStyle = use("BayLang.OpCodes.OpHtmlStyle");return op_code instanceof OpHtmlStyle; });
+		let styles = op_code.content.items.filter((op_code) => { const OpHtmlStyle = use("BayLang.OpCodes.OpHtmlStyle");return op_code instanceof OpHtmlStyle; });
 		/* Translate styles */
 		for (let i = 0; i < styles.count(); i++)
 		{
@@ -401,7 +514,7 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 			this.translateStyle(op_code_item, result);
 		}
 		/* Get templates */
-		let templates = op_code.items.filter((op_code) => { const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");return op_code instanceof OpDeclareFunction && op_code.is_html; });
+		let templates = op_code.content.items.filter((op_code) => { const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");return op_code instanceof OpDeclareFunction && op_code.is_html; });
 		/* Translate template */
 		for (let i = 0; i < templates.count(); i++)
 		{
@@ -410,27 +523,32 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 			this.translateClassItem(op_code_item, result);
 		}
 		/* Get scripts */
-		let scripts = op_code.items.filter((op_code) =>
+		let scripts = op_code.content.items.filter((op_code) =>
 		{
 			const OpAnnotation = use("BayLang.OpCodes.OpAnnotation");
 			const OpAssign = use("BayLang.OpCodes.OpAssign");
 			const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");
-			return op_code instanceof OpAnnotation || op_code instanceof OpAssign || op_code instanceof OpDeclareFunction && !op_code.is_html && !op_code.name == "components";
+			return op_code instanceof OpAnnotation || op_code instanceof OpAssign || op_code instanceof OpDeclareFunction && !op_code.is_html;
 		});
 		/* Translate scripts */
 		if (scripts.count() > 0)
 		{
 			result.push(this.translator.newLine());
 			result.push("<script>");
-			result.push(this.translator.newLine());
-			result.push(this.translator.newLine());
+			let prev_op_code = null;
 			for (let i = 0; i < scripts.count(); i++)
 			{
 				let op_code_item = scripts.get(i);
-				this.translator.program.translateClassItem(op_code_item, result);
+				if (prev_op_code == null || !(prev_op_code instanceof OpAssign && op_code_item instanceof OpAssign))
+				{
+					result.push(this.translator.newLine());
+					result.push(this.translator.newLine());
+				}
 				result.push(this.translator.newLine());
+				this.translator.program.translateClassItem(op_code_item, result);
+				prev_op_code = op_code_item;
 			}
-			result.push(this.translator.newLine());
+			result.push(this.translator.newLine(2));
 			result.push("</script>");
 			result.push(this.translator.newLine());
 		}
@@ -442,16 +560,15 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 	 */
 	translate(op_code, result)
 	{
-		const lib = use("Runtime.lib");
 		const Vector = use("Runtime.Vector");
-		let space = op_code.items.findItem(lib.isInstance("BayLang.OpCodes.OpNamespace"));
-		let component = op_code.items.findItem(lib.isInstance("BayLang.OpCodes.OpDeclareClass"));
-		let uses = op_code.items.filter(lib.isInstance("BayLang.OpCodes.OpUse"));
+		let space = op_code.items.find((item) => { const OpNamespace = use("BayLang.OpCodes.OpNamespace");return item instanceof OpNamespace; });
+		let component = op_code.items.find((item) => { const OpDeclareClass = use("BayLang.OpCodes.OpDeclareClass");return item instanceof OpDeclareClass; });
+		let uses = op_code.items.filter((item) => { const OpUse = use("BayLang.OpCodes.OpUse");return item instanceof OpUse; });
 		if (!component) return;
 		/* Get component name */
 		let component_names = Vector.create([]);
 		if (space) component_names.push(space.name);
-		component_names.push(component.name);
+		component_names.push(component.name.entity_name.getName());
 		let component_name = rs.join(".", component_names);
 		result.push("<class name=\"" + String(component_name) + String("\">"));
 		result.push(this.translator.newLine());
@@ -468,7 +585,7 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 		}
 		/* Declare class */
 		this.translateClassBody(component, result);
-		if (component.items.count() > 0 || uses.count() > 0)
+		if (component.content.count() > 0 || uses.count() > 0)
 		{
 			result.push(this.translator.newLine());
 		}

@@ -133,11 +133,10 @@ BayLang.LangBay.TranslatorBayProgram = class extends use("Runtime.BaseObject")
 	 */
 	OpDeclareFunction(op_code, result)
 	{
-		const OpTypeIdentifier = use("BayLang.OpCodes.OpTypeIdentifier");
 		const Vector = use("Runtime.Vector");
 		const OpDeclareClass = use("BayLang.OpCodes.OpDeclareClass");
 		const OpItems = use("BayLang.OpCodes.OpItems");
-		if (!(op_code.pattern instanceof OpTypeIdentifier)) return;
+		/*if (not (op_code.pattern instanceof OpTypeIdentifier)) return;*/
 		/* Comments */
 		if (op_code.comments)
 		{
@@ -149,12 +148,13 @@ BayLang.LangBay.TranslatorBayProgram = class extends use("Runtime.BaseObject")
 			}
 		}
 		/* Function flags */
-		let flags = Vector.create(["async", "static", "pure"]);
+		let flags = Vector.create(["async", "static", "pure", "computed"]);
 		flags = flags.filter((flag_name) => { return op_code.flags ? op_code.flags.isFlag(flag_name) : false; });
 		result.push(rs.join(" ", flags));
 		if (flags.count() > 0) result.push(" ");
 		/* Function result type */
-		this.translator.expression.OpTypeIdentifier(op_code.pattern, result);
+		if (op_code.pattern) this.translator.expression.OpTypeIdentifier(op_code.pattern, result);
+		else result.push("void");
 		/* Function name */
 		result.push(" ");
 		result.push(op_code.name);

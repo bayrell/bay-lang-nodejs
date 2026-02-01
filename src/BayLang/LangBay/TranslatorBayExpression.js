@@ -672,7 +672,18 @@ BayLang.LangBay.TranslatorBayExpression = class extends use("Runtime.BaseObject"
 		}
 		else if (op_code instanceof OpDeclareFunction)
 		{
-			this.translator.program.OpDeclareFunction(op_code, result);
+			if (op_code.is_html)
+			{
+				this.translator.levelInc();
+				result.push(this.translator.indent + String("<template>"));
+				this.translator.levelInc();
+				this.translator.html.OpHtmlItems(op_code.content, result);
+				this.translator.levelDec();
+				result.push(this.translator.newLine());
+				result.push("</template>");
+				this.translator.levelDec();
+			}
+			else this.translator.program.OpDeclareFunction(op_code, result);
 		}
 		else if (op_code instanceof OpCall)
 		{

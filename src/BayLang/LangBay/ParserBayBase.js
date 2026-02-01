@@ -494,13 +494,6 @@ BayLang.LangBay.ParserBayBase = class extends use("Runtime.BaseObject")
 		const OpAttr = use("BayLang.OpCodes.OpAttr");
 		if (read_function == undefined) read_function = true;
 		let caret_start = reader.start();
-		/* Read await */
-		let is_await = false;
-		if (reader.nextToken() == "await")
-		{
-			is_await = true;
-			reader.matchToken("await");
-		}
 		let item = this.readItem(reader);
 		if (reader.nextToken() == "." && item instanceof OpIdentifier)
 		{
@@ -543,7 +536,6 @@ BayLang.LangBay.ParserBayBase = class extends use("Runtime.BaseObject")
 				if (read_function)
 				{
 					item = this.parser.parser_function.readCallFunction(reader, item);
-					item.is_await = is_await;
 					item.caret_start = caret_start;
 				}
 				else

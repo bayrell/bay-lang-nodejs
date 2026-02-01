@@ -28,6 +28,7 @@ BayLang.OpCodes.OpFlags = class extends use("BayLang.OpCodes.BaseOpCode")
 	{
 		const MapType = use("Runtime.Serializer.MapType");
 		const BooleanType = use("Runtime.Serializer.BooleanType");
+		super.serialize(serializer);
 		serializer.addType("items", new MapType(new BooleanType()));
 	}
 	
@@ -38,7 +39,7 @@ BayLang.OpCodes.OpFlags = class extends use("BayLang.OpCodes.BaseOpCode")
 	isFlag(name)
 	{
 		if (!BayLang.OpCodes.OpFlags.hasFlag(name)) return false;
-		return this.items.get(name);
+		return this.items ? this.items.get(name) : false;
 	}
 	
 	

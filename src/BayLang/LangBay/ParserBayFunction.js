@@ -256,8 +256,11 @@ BayLang.LangBay.ParserBayFunction = class extends use("Runtime.BaseObject")
 			content = this.parser.parser_expression.readExpression(reader);
 		}
 		/* Restore vars */
-		this.extendVariables(vars);
-		this.parser.vars_uses = this.parser.vars_uses.concat(vars_uses);
+		if (this.parser.function_level > 1)
+		{
+			this.extendVariables(vars);
+			this.parser.vars_uses = this.parser.vars_uses.concat(vars_uses);
+		}
 		/* Dec level */
 		this.parser.function_level -= 1;
 		return new OpDeclareFunction(Map.create({

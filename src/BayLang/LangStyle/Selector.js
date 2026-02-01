@@ -101,6 +101,7 @@ BayLang.LangStyle.Selector = class extends use("Runtime.BaseObject")
 					let prefix = rs.substr(selector_item, 0, index);
 					let postfix = rs.substr(selector_item, index + 1);
 					let css_hash = ".h-" + String(this.css_hash);
+					last_item = rs.trim(last_items.get(i));
 					if (rs.indexOf(last_item, css_hash) >= 0)
 					{
 						last_item = rs.replace(css_hash, "", last_item);

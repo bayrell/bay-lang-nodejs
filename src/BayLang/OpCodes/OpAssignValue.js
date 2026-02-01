@@ -39,7 +39,7 @@ BayLang.OpCodes.OpAssignValue = class extends use("BayLang.OpCodes.BaseOpCode")
 	_init()
 	{
 		super._init();
-		this.op = "";
+		this.op = "=";
 		this.value = null;
 		this.expression = null;
 	}

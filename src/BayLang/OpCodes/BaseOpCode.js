@@ -29,9 +29,11 @@ BayLang.OpCodes.BaseOpCode = class extends use("Runtime.BaseObject")
 	 */
 	static serialize(rules)
 	{
+		const StringType = use("Runtime.Serializer.StringType");
 		const ObjectType = use("Runtime.Serializer.ObjectType");
 		const Map = use("Runtime.Map");
 		super.serialize(rules);
+		rules.addType("op", new StringType());
 		rules.addType("caret_start", new ObjectType(Map.create({"class_name": "BayLang.Caret"})));
 		rules.addType("caret_end", new ObjectType(Map.create({"class_name": "BayLang.Caret"})));
 	}

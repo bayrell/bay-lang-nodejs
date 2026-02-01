@@ -499,11 +499,13 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 	/**
 	 * Read html render
 	 */
-	reaHtmlRender(reader)
+	readHtmlRender(reader)
 	{
+		const OpCall = use("BayLang.OpCodes.OpCall");
 		reader.matchToken("%render");
 		let expression = this.parser.parser_expression.readExpression(reader);
 		reader.matchToken(";");
+		if (expression instanceof OpCall) expression.is_html = true;
 		return expression;
 	}
 	
@@ -744,7 +746,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		let next_token = reader.nextToken();
 		if (next_token == "<") return this.readHtmlTag(reader);
 		else if (next_token == "{{") return this.readHtmlExpression(reader);
-		else if (next_token == "%render") return this.reaHtmlRender(reader);
+		else if (next_token == "%render") return this.readHtmlRender(reader);
 		else if (next_token == "%set" || next_token == "%var") return this.readHtmlAssign(reader);
 		else if (next_token == "%for") return this.readHtmlFor(reader);
 		else if (next_token == "%if") return this.readHtmlIf(reader);
@@ -836,6 +838,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 	 */
 	readTemplate(reader)
 	{
+		const Vector = use("Runtime.Vector");
 		const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");
 		const Map = use("Runtime.Map");
 		let caret_start = reader.start();
@@ -843,7 +846,21 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		reader.matchToken("template");
 		let attrs = this.readAttrs(reader, "template");
 		reader.matchToken(">");
+		/* Add new level */
+		this.parser.function_level += 1;
+		/* Save vars */
+		let vars_uses = this.parser.vars_uses.copy();
+		let vars = Vector.create([]);
+		/* Read html */
 		let content = this.readHtml(reader);
+		/* Restore vars */
+		if (this.parser.function_level > 1)
+		{
+			this.parser.parser_function.extendVariables(vars);
+			this.parser.vars_uses = this.parser.vars_uses.concat(vars_uses);
+		}
+		/* Dec level */
+		this.parser.function_level -= 1;
 		reader.matchToken("</");
 		reader.matchToken("template");
 		reader.matchToken(">");
@@ -858,6 +875,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		return new OpDeclareFunction(Map.create({
 			"name": name ? name : "render",
 			"args": args ? args : null,
+			"vars": vars,
 			"is_html": true,
 			"content": content,
 			"caret_start": caret_start,
@@ -980,6 +998,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		})));
 		return new OpModule(Map.create({
 			"items": items,
+			"is_component": true,
 			"caret_start": caret_start,
 			"caret_end": reader.caret(),
 		}));

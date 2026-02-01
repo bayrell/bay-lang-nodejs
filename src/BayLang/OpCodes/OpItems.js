@@ -27,8 +27,9 @@ BayLang.OpCodes.OpItems = class extends use("BayLang.OpCodes.BaseOpCode")
 	static serialize(rules)
 	{
 		const VectorType = use("Runtime.Serializer.VectorType");
+		const OpCodeType = use("BayLang.OpCodes.OpCodeType");
 		super.serialize(rules);
-		rules.addType("items", new VectorType(rules.params.get("item")));
+		rules.addType("items", new VectorType(new OpCodeType()));
 	}
 	
 	

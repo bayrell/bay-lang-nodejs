@@ -103,7 +103,10 @@ BayLang.OpCodes.OpModule = class extends use("BayLang.OpCodes.BaseOpCode")
 	/**
 	 * Find class
 	 */
-	findClass(){ return this.items ? this.items.findItem(lib.isInstance("BayLang.OpCodes.OpDeclareClass")) : null; }
+	findClass()
+	{
+		return this.items ? this.items.find((item) => { const OpDeclareClass = use("BayLang.OpCodes.OpDeclareClass");return item instanceof OpDeclareClass; }) : null;
+	}
 	
 	
 	/**
@@ -111,7 +114,7 @@ BayLang.OpCodes.OpModule = class extends use("BayLang.OpCodes.BaseOpCode")
 	 */
 	findClassByName(name)
 	{
-		return this.items.findItem((item) =>
+		return this.items.find((item) =>
 		{
 			const OpDeclareClass = use("BayLang.OpCodes.OpDeclareClass");
 			if (!(item instanceof OpDeclareClass)) return false;

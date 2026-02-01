@@ -21,16 +21,6 @@ if (typeof BayLang == 'undefined') BayLang = {};
 if (typeof BayLang.OpCodes == 'undefined') BayLang.OpCodes = {};
 BayLang.OpCodes.OpHtmlItems = class extends use("BayLang.OpCodes.OpItems")
 {
-	/**
-	 * Serialize object
-	 */
-	static serialize(rules)
-	{
-		rules.params.set("item", "BayLang.OpCodes.OpHtmlTag");
-		super.serialize(rules);
-	}
-	
-	
 	/* ========= Class init functions ========= */
 	_init()
 	{

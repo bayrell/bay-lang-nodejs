@@ -49,6 +49,15 @@ BayLang.OpCodes.OpAssign = class extends use("BayLang.OpCodes.BaseOpCode")
 	isStatic(){ return this.flags && (this.flags.isFlag("static") || this.flags.isFlag("const")); }
 	
 	
+	/**
+	 * Find variable
+	 */
+	findVariable(name)
+	{
+		return this.items.find((item) => { const OpIdentifier = use("BayLang.OpCodes.OpIdentifier");return item.value instanceof OpIdentifier && item.value.value == name; });
+	}
+	
+	
 	/* ========= Class init functions ========= */
 	_init()
 	{
