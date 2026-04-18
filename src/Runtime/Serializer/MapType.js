@@ -27,7 +27,6 @@ Runtime.Serializer.MapType = class extends use("Runtime.BaseObject")
 	 */
 	constructor(params)
 	{
-		const rtl = use("rtl");
 		const Vector = use("Runtime.Vector");
 		const Map = use("Runtime.Map");
 		if (params == undefined) params = null;
@@ -79,7 +78,6 @@ Runtime.Serializer.MapType = class extends use("Runtime.BaseObject")
 	walk(value, errors, f)
 	{
 		const Map = use("Runtime.Map");
-		const rtl = use("rtl");
 		const Vector = use("Runtime.Vector");
 		const TypeError = use("Runtime.Serializer.TypeError");
 		let new_value = new Map();

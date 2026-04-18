@@ -71,7 +71,7 @@ BayLang.LangES6.ParserES6Function = class extends use("Runtime.BaseObject")
 		/* Read identifier */
 		if (pattern == null)
 		{
-			if (!this.parser.parser_base.isIdentifier(reader.nextToken())) return null;
+			if (!this.parser.parser_base.constructor.isIdentifier(reader.nextToken())) return null;
 			pattern = this.parser.parser_base.readEntityName(reader);
 		}
 		/* Next token should be bracket */

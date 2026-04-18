@@ -134,7 +134,6 @@ Runtime.Serializer.ObjectType = class extends use("Runtime.Serializer.MapType")
 	 */
 	filter(value, errors, old_value, prev)
 	{
-		const rtl = use("rtl");
 		const Vector = use("Runtime.Vector");
 		if (old_value == undefined) old_value = null;
 		if (prev == undefined) prev = null;
@@ -169,7 +168,6 @@ Runtime.Serializer.ObjectType = class extends use("Runtime.Serializer.MapType")
 	 */
 	encode(value)
 	{
-		const rtl = use("rtl");
 		const Vector = use("Runtime.Vector");
 		if (value === null) return null;
 		if (!(rtl.isImplements(value, "Runtime.SerializeInterface"))) return null;

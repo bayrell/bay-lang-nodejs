@@ -145,7 +145,6 @@ Runtime.ApiResult = class extends use("Runtime.BaseObject")
 	 */
 	exception(e)
 	{
-		const rtl = use("rtl");
 		this.code = e.getErrorCode();
 		this.message = e.getErrorMessage();
 		this.error_name = e.constructor.getClassName();
@@ -168,7 +167,6 @@ Runtime.ApiResult = class extends use("Runtime.BaseObject")
 	fail(data)
 	{
 		const RuntimeException = use("Runtime.Exceptions.RuntimeException");
-		const rtl = use("rtl");
 		const Map = use("Runtime.Map");
 		if (data == undefined) data = null;
 		this.code = rtl.ERROR_UNKNOWN;

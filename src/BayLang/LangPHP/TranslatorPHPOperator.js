@@ -235,6 +235,12 @@ BayLang.LangPHP.TranslatorPHPOperator = class extends use("Runtime.BaseObject")
 			result.push(this.translator.newLine());
 			result.push("catch (Exception $e) { throw e; }");
 		}
+		if (op_code.op_finally)
+		{
+			result.push(this.translator.newLine());
+			result.push("finally");
+			this.translateItems(op_code.op_finally, result);
+		}
 	}
 	
 	

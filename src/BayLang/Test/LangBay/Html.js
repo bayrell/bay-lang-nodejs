@@ -33,7 +33,7 @@ BayLang.Test.LangBay.Html = class
 		const ParserBay = use("BayLang.LangBay.ParserBay");
 		const TranslatorBay = use("BayLang.LangBay.TranslatorBay");
 		this.parser = new ParserBay();
-		this.parser = this.parser.reset(this.parser);
+		this.parser = this.parser.constructor.reset(this.parser);
 		this.translator = new TranslatorBay();
 		this.translator.reset();
 	}
@@ -69,7 +69,7 @@ BayLang.Test.LangBay.Html = class
 		let result = Vector.create([]);
 		this.setContent(content);
 		/* Parse */
-		let res = this.parser.parser_program.readProgram(this.parser);
+		let res = this.parser.parser_program.constructor.readProgram(this.parser);
 		let op_code = res.get(1);
 		/* Translate */
 		this.translator.html.translate(op_code, result);

@@ -208,7 +208,14 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 				}
 				else if (current_block == OpPreprocessorIfDef.KIND_CLASS_INIT)
 				{
-					this.translator.html.OpDeclareComponentDataItems(op_code.content, result);
+					if (!this.translator.current_class.is_component || !this.translator.enable_vue)
+					{
+						this.translateClassInitItems(op_code.content, result);
+					}
+					else
+					{
+						this.translator.html.OpDeclareComponentDataItems(op_code.content, result);
+					}
 				}
 				else if (current_block == OpPreprocessorIfDef.KIND_COMPONENT_BODY)
 				{
@@ -344,7 +351,7 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 		/*if (not (op_code.pattern instanceof OpTypeIdentifier)) return;*/
 		if (op_code.is_html)
 		{
-			this.html.OpDeclareFunction(op_code, result);
+			this.translator.html.OpDeclareFunction(op_code, result);
 			return;
 		}
 		let is_component = this.translator.current_class.is_component;
@@ -372,7 +379,7 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 			if (op_code.flags.isFlag("async")) flags.push("async");
 		}
 		/* Add flags if class is not component */
-		if (!is_component)
+		if (!is_component || !this.translator.enable_vue)
 		{
 			result.push(rs.join(" ", flags));
 			if (flags.count() > 0) result.push(" ");
@@ -380,7 +387,7 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 		/* Function name */
 		if (old_function == null) result.push(op_code.name);
 		/* Add flags if class is component */
-		if (is_component)
+		if (is_component && this.translator.enable_vue)
 		{
 			if (old_function == null)
 			{
@@ -484,8 +491,7 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 		else if (op_code instanceof OpDeclareFunction)
 		{
 			this.translator.class_function = op_code;
-			if (op_code.is_html) this.translator.html.OpDeclareFunction(op_code, result);
-			else this.OpDeclareFunction(op_code, result);
+			this.OpDeclareFunction(op_code, result);
 			this.translator.class_function = null;
 		}
 		else if (op_code instanceof OpPreprocessorIfCode)
@@ -579,6 +585,8 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 	translateClassInitItem(op_code, result)
 	{
 		const OpAssign = use("BayLang.OpCodes.OpAssign");
+		const OpPreprocessorIfDef = use("BayLang.OpCodes.OpPreprocessorIfDef");
+		const OpPreprocessorSwitch = use("BayLang.OpCodes.OpPreprocessorSwitch");
 		if (op_code instanceof OpAssign && !op_code.isStatic())
 		{
 			for (let j = 0; j < op_code.items.count(); j++)
@@ -593,6 +601,27 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 				}
 			}
 		}
+		else if (op_code instanceof OpPreprocessorIfDef)
+		{
+			return this.OpPreprocessorIfDef(op_code, result, OpPreprocessorIfDef.KIND_CLASS_INIT);
+		}
+		else if (op_code instanceof OpPreprocessorSwitch)
+		{
+			return this.OpPreprocessorSwitch(op_code, result, OpPreprocessorIfDef.KIND_CLASS_INIT);
+		}
+	}
+	
+	
+	/**
+	 * Translate class init items
+	 */
+	translateClassInitItems(items, result)
+	{
+		for (let i = 0; i < items.count(); i++)
+		{
+			let op_code_item = items.get(i);
+			this.translateClassInitItem(op_code_item, result);
+		}
 	}
 	
 	
@@ -603,7 +632,7 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 	{
 		const Vector = use("Runtime.Vector");
 		if (newline == undefined) newline = true;
-		if (!op_code.is_component)
+		if (!op_code.is_component || !this.translator.enable_vue)
 		{
 			result.push(this.translator.newLine((newline && op_code.content.count() > 0) ? 3 : 1));
 			result.push("/* ========= Class init functions ========= */");
@@ -630,16 +659,13 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 			this.translator.levelDec();
 			result.push(this.translator.newLine());
 			result.push("}");
-		}
-		if (!op_code.is_component)
-		{
-			result.push(this.translator.newLine());
 			/* Get class name */
+			result.push(this.translator.newLine());
 			result.push("static getClassName(){ ");
 			result.push("return \"" + String(this.translator.current_class_name) + String("\"; }"));
 			result.push(this.translator.newLine());
 			/* Get class annotations */
-			if (op_code.annotations.count() > 0)
+			if (op_code.annotations && op_code.annotations.count() > 0)
 			{
 				result.push("static getClassInfo()");
 				result.push(this.translator.newLine());
@@ -708,6 +734,15 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 				result.push("}");
 			}
 			else result.push("{ return null; }");
+			/* Is component */
+			if (op_code.is_component)
+			{
+				let computed = op_code.content.items.filter((op_code) => { const OpDeclareFunction = use("BayLang.OpCodes.OpDeclareFunction");return op_code instanceof OpDeclareFunction && op_code.flags && op_code.flags.isFlag("computed"); }).map((op_code) => { return this.translator.toString(op_code.name); });
+				result.push(this.translator.newLine());
+				result.push("static getComputed(){ return [" + String(rs.join(", ", computed)) + String("]; }"));
+				this.translator.html.translateComponentStyle(op_code, result);
+				this.translator.html.translateModuleComponents(op_code, result);
+			}
 			/* Implements */
 			if (op_code.class_implements)
 			{
@@ -737,7 +772,10 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 	{
 		const OpDeclareClass = use("BayLang.OpCodes.OpDeclareClass");
 		if (op_code.kind == OpDeclareClass.KIND_INTERFACE) return false;
-		if (op_code.is_component) return this.translator.html.translateComponent(op_code, result);
+		if (op_code.is_component && this.translator.enable_vue)
+		{
+			return this.translator.html.translateComponent(op_code, result);
+		}
 		/* Class name */
 		let class_name = op_code.name.entity_name.items.last().value;
 		this.translator.parent_class_name = "";
@@ -759,6 +797,11 @@ BayLang.LangES6.TranslatorES6Program = class extends use("Runtime.BaseObject")
 			result.push(" extends ");
 			this.translator.parent_class_name = this.translator.getFullName(op_code.class_extends.entity_name.getName());
 			result.push(this.translateClassName(this.translator.parent_class_name));
+		}
+		else if (op_code.is_component)
+		{
+			this.translator.parent_class_name = this.translator.getFullName(this.translator.current_class_name != "Runtime.Component" ? "Runtime.Component" : "Runtime.BaseObject");
+			result.push(" extends " + String(this.translateClassName(this.translator.parent_class_name)));
 		}
 		result.push(this.translator.newLine());
 		this.translateClassBody(op_code, result);

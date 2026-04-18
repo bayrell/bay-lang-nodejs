@@ -134,6 +134,7 @@ BayLang.LangNode.TranslatorNode = class extends use("BayLang.LangES6.TranslatorE
 		});
 		this.use_module_name = true;
 		this.use_window = false;
+		this.enable_vue = false;
 	}
 	static getClassName(){ return "BayLang.LangNode.TranslatorNode"; }
 	static getMethodsList(){ return null; }

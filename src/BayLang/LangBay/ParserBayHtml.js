@@ -970,12 +970,22 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		let class_name = attrs.find((attr) => { return attr.key == "name"; });
 		let extend_name = attrs.find((attr) => { return attr.key == "extends"; });
 		reader.matchToken(">");
+		/* Generated */
+		let is_generated = false;
+		let is_generated_attr = attrs.find((attr) => { return attr.key == "generated"; });
+		if (is_generated_attr)
+		{
+			let value = is_generated_attr.expression.entity_name.getName();
+			is_generated = value == "true";
+		}
 		/* Read component content */
 		let class_content = this.readContent(reader);
 		/*string class_name_value = class_name.entity_name.items.last();*/
 		let namespace_name = rs.join(".", class_name.expression.entity_name.items.slice(0, class_name.expression.entity_name.items.count() - 1).map((item) => { return item.value; }));
 		/* Change class name */
-		class_name.expression.entity_name.items = Vector.create([class_name.expression.entity_name.items.last()]);
+		class_name.expression.entity_name.items = Vector.create([
+			class_name.expression.entity_name.items.last(),
+		]);
 		/* Add namespace */
 		items.push(new OpNamespace(Map.create({
 			"name": namespace_name,
@@ -999,6 +1009,7 @@ BayLang.LangBay.ParserBayHtml = class extends use("Runtime.BaseObject")
 		return new OpModule(Map.create({
 			"items": items,
 			"is_component": true,
+			"is_generated": is_generated,
 			"caret_start": caret_start,
 			"caret_end": reader.caret(),
 		}));

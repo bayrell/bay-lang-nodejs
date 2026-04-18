@@ -291,7 +291,7 @@ BayLang.LangES6.TranslatorES6Expression = class extends use("Runtime.BaseObject"
 			if (item_attr.kind == OpAttr.KIND_ATTR || item_attr.kind == OpAttr.KIND_STATIC)
 			{
 				let prev_attr = i > 0 ? attrs.get(i - 1) : op_code_first;
-				if (prev_attr instanceof OpIdentifier && item_attr.kind == OpAttr.KIND_STATIC)
+				if ((prev_attr instanceof OpIdentifier || prev_attr instanceof OpAttr) && item_attr.kind == OpAttr.KIND_STATIC)
 				{
 					result.push(".constructor.");
 				}
@@ -591,7 +591,7 @@ BayLang.LangES6.TranslatorES6Expression = class extends use("Runtime.BaseObject"
 		{
 			let class_name = op_code.value2;
 			let interface_name = this.translator.getFullName(class_name.entity_name.getName());
-			result.push(this.translator.useModule("rtl") + String(".isImplements(") + String(rs.join("", result1)) + String(", ") + String(this.translator.toString(interface_name)) + String(")"));
+			result.push(this.translator.getUseModule("rtl") + String(".isImplements(") + String(rs.join("", result1)) + String(", ") + String(this.translator.toString(interface_name)) + String(")"));
 		}
 		else
 		{

@@ -59,7 +59,7 @@ BayLang.Test.LangBay.Style = class
 		this.setContent(content + String("}"));
 		/* Parse */
 		let items = Vector.create([]);
-		let res = this.parser.parser_html.readCssBodyItems(this.parser, items, Vector.create([]));
+		let res = this.parser.parser_html.constructor.readCssBodyItems(this.parser, items, Vector.create([]));
 		let op_code = res.get(1);
 		/* Get items */
 		items = items.map((op_code) => { return op_code.value; });

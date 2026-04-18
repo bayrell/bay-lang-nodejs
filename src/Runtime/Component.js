@@ -19,114 +19,132 @@ const use = require('bay-lang').use;
  *
 */
 if (typeof Runtime == 'undefined') Runtime = {};
-Runtime.Component = {
-	name: "Runtime.Component",
-	props: {
-		model: {default: null},
-		class: {default: ""},
-	},
-	data: function()
+Runtime.Component = class extends use("Runtime.BaseObject")
+{
+	renderWidget(model, attrs)
 	{
-		return {
-			parent_component: null,
-		};
-	},
-	methods:
-	{
-		renderWidget: function(model, attrs)
+		const rs = use("Runtime.rs");
+		const componentHash = rs.getComponentHash(this.constructor.getClassName());
+		let __v = new Runtime.VirtualDom(this);
+		
+		const Map = use("Runtime.Map");
+		if (model)
 		{
-			const rs = use("Runtime.rs");
-			const componentHash = rs.getComponentHash(this.getClassName());
-			let __v = new Runtime.VirtualDom(this);
-			
-			const Map = use("Runtime.Map");
-			if (model)
+			let component = model.component;
+			if (!attrs)
 			{
-				let component = model.component;
-				if (!attrs)
-				{
-					attrs = new Map();
-				}
-				
-				/* Element component */
-				__v.element(component, new Runtime.Map({"model": model}).concat(attrs));
+				attrs = new Map();
 			}
 			
-			return __v;
-		},
-		render: function()
-		{
-			const rs = use("Runtime.rs");
-			const componentHash = rs.getComponentHash(this.getClassName());
-			let __v = new Runtime.VirtualDom(this);
-			return __v;
-		},
-		/**
-		 * Returns true if slot is exists
-		 */
-		slot: function(name)
-		{
-			return this.$slots[name] != undefined;
-		},
-		/**
-		 * Render slot
-		 */
-		renderSlot: function(slot_name, args)
-		{
-			if (args == undefined) args = null;
-			if (!args) args = [];
+			/* Element component */
+			__v.element(component, new Runtime.Map({"model": model}).concat(attrs));
+		}
+		
+		return __v;
+	}
+	
+	
+	render()
+	{
+		const rs = use("Runtime.rs");
+		const componentHash = rs.getComponentHash(this.constructor.getClassName());
+		let __v = new Runtime.VirtualDom(this);
+		return __v;
+	}
+	
+	
+	/**
+	 * Returns layout
+	 */
+	layout()
+	{
+		return this.$layout;
+	}
+	
+	
+	/**
+	 * Returns true if slot is exists
+	 */
+	slot(name)
+	{
+		return this.$slots[name] != undefined;
+	}
+	
+	
+	/**
+	 * Render slot
+	 */
+	renderSlot(slot_name, args)
+	{
+		if (args == undefined) args = null;
+		if (!args) args = [];
 	var f = this.$slots[slot_name];
 	return f ? f.apply(null, args) : null;
-		},
-		/**
-		 * Returns parent
-		 */
-		getParent: function()
-		{
-			return this.$parent;
-		},
-		/**
-		 * Returns ref
-		 */
-		getRef: function(name)
-		{
-			return this.$refs[name];
-		},
-		/**
-		 * Emit message
-		 */
-		emit: function(message)
-		{
-			message.src = this;
-	this.$emit(message.name, message);
-		},
-		/**
-		 * Next tick
-		 */
-		nextTick: function(f)
-		{
-			this.$nextTick(f);
-		},
-		hash: function(s, f){ if (f == undefined) f = null;return f; },
-		getClassName: function(){ return "Runtime.Component"; },
-	},
-	computed:
+	}
+	
+	
+	/**
+	 * Returns parent
+	 */
+	getParent()
 	{
-		/**
-		 * Returns layout
-		 */
-		layout: function()
-		{
-			return this.$layout;
-		},
-	},
-	render: function()
+		return this.$parent;
+	}
+	
+	
+	/**
+	 * Returns ref
+	 */
+	getRef(name)
+	{
+		return this.$refs[name];
+	}
+	
+	
+	/**
+	 * Emit message
+	 */
+	emit(message)
+	{
+		message.src = this;
+	this.$emit(message.name, message);
+	}
+	
+	
+	/**
+	 * Next tick
+	 */
+	nextTick(f)
+	{
+		this.$nextTick(f);
+	}
+	
+	
+	
+	hash(s, f){ if (f == undefined) f = null;return f; }
+	
+	
+	render()
 	{
 		let vdom = this.render();
 		return Runtime.rtl.getContext().provider("render").render(vdom);
-	},
-	getComponentStyle: function(){ return ""; },
-	getRequiredComponents: function(){ return new Runtime.Vector(); },
+	}
+	
+	
+	/* ========= Class init functions ========= */
+	_init()
+	{
+		super._init();
+		this.model = null;
+		this.class = "";
+		this.parent_component = null;
+	}
+	static getClassName(){ return "Runtime.Component"; }
+	static getMethodsList(){ return null; }
+	static getMethodInfoByName(field_name){ return null; }
+	static getComputed(){ return ["layout"]; }
+	static getComponentStyle(){ return ""; }
+	static getRequiredComponents(){ return new Runtime.Vector(); }
 };
 use.add(Runtime.Component);
 module.exports = {

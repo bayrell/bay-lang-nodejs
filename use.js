@@ -1,7 +1,7 @@
 /*!
  *  Bayrell Language
  *
- *  (c) Copyright 2016-2023 "Ildar Bikmamatov" <support@bayrell.org>
+ *  (c) Copyright 2016-2026 "Ildar Bikmamatov" <support@bayrell.org>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,38 +16,38 @@
  *  limitations under the License.
  */
 
-let classes = {};
-let packages = {};
+const path = require("path");
 
-function get_package_name(module_name)
+let modules = {};
+let classes = {};
+
+function load_class_name(class_name)
 {
-	module_name = module_name.replace(".", "-").toLowerCase();
-	if (module_name.substr(0, 7) == "runtime") module_name = "bayrell-" + module_name;
-	return module_name;
-}
-function load_package(package_name)
-{
-	if (packages[package_name] != undefined)
+	for (const module_name in modules)
 	{
-		return ;
+		const module_path = modules[module_name];
+		if (!class_name.startsWith(module_name + ".")) continue;
+		
+		let file_path = class_name.substring(module_name.length + 1);
+		file_path = path.join(module_path, file_path.replaceAll(".", path.sep) + ".js");
+		
+		let exists = false;
+		try
+		{
+			exists = require.resolve(file_path);
+		}
+		catch (e)
+		{
+		}
+		
+		if (exists)
+		{
+			require(file_path);
+			return;
+		}
 	}
 	
-	let package_path = null;
-	packages[package_name] = 0;
-	
-	try
-	{
-		package_path = require.resolve(package_name);
-	}
-	catch(e)
-	{
-	}
-	
-	if (package_path != null)
-	{
-		require(package_path);
-		packages[package_name] = 1;
-	}
+	if (classes[class_name] == undefined) classes[class_name] = null;
 }
 
 module.exports = function (class_name)
@@ -57,21 +57,18 @@ module.exports = function (class_name)
 		return classes[class_name];
 	}
 	
-	let class_name_arr = class_name.split(".");
-	for (var i=class_name_arr.length-1; i>0; i--)
-	{
-		let package_name = class_name_arr.slice(0, i).join(".");
-		package_name = get_package_name(package_name);
-		
-		load_package(package_name);
-		
-		if (classes[class_name] != undefined)
-		{
-			return classes[class_name];
-		}
-	}
+	load_class_name(class_name);
 	
-	return null;
+	return classes[class_name];
+}
+module.exports.include = function(module_name)
+{
+	let data = require(module_name);
+	if (data && data.MODULE_NAME)
+	{
+		const module_path = path.dirname(module_name);
+		modules[data.MODULE_NAME] = module_path;
+	}
 }
 module.exports.add = function (cls)
 {
@@ -88,4 +85,8 @@ module.exports.add = function (cls)
 module.exports.get_classes = function ()
 {
 	return Object.assign({}, classes);
+}
+module.exports.get_modules = function ()
+{
+	return Object.assign({}, modules);
 }

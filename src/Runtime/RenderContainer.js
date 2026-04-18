@@ -120,7 +120,7 @@ Runtime.RenderContainer = class extends use("Runtime.BaseObject")
 		let layout_data = rtl.serialize(this.layout);
 		let data = Map.create({
 			"modules": Runtime.rtl.getContext().modules,
-			"class": this.layout.getClassName(),
+			"class": this.layout.constructor.getClassName(),
 			"layout": layout_data,
 			"environments": Map.create({
 				"CLOUD_ENV": Runtime.rtl.getContext().env("CLOUD_ENV"),

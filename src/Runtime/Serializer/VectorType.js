@@ -1,5 +1,6 @@
 "use strict;"
 const use = require('bay-lang').use;
+const rtl = use("Runtime.rtl");
 /*!
  *  BayLang Technology
  *
@@ -26,7 +27,6 @@ Runtime.Serializer.VectorType = class extends use("Runtime.BaseObject")
 	 */
 	constructor(fields)
 	{
-		const rtl = use("rtl");
 		const Vector = use("Runtime.Vector");
 		super();
 		if (rtl.isImplements(fields, "Runtime.Serializer.BaseType")) this.fields = Vector.create([fields]);
@@ -40,7 +40,6 @@ Runtime.Serializer.VectorType = class extends use("Runtime.BaseObject")
 	walk(value, errors, f)
 	{
 		const Vector = use("Runtime.Vector");
-		const rtl = use("rtl");
 		const TypeError = use("Runtime.Serializer.TypeError");
 		let new_value = Vector.create([]);
 		for (let i = 0; i < value.count(); i++)

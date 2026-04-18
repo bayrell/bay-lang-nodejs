@@ -95,6 +95,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 			else if (rs.substr(key, 0, 7) == "@event:")
 			{
 				key = "on" + String(rs.upper(rs.charAt(key, 7))) + String(rs.substr(key, 8));
+				if (!this.translator.enable_vue) continue;
 			}
 			let item_value = Vector.create([]);
 			let is_function = item.expression instanceof OpDeclareFunction;
@@ -153,7 +154,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 		}
 		if (ParserBayHtml.isComponent(tag_name))
 		{
-			let module_name = this.translator.getUseModule(tag_name);
+			let module_name = this.translator.uses.has(tag_name) ? this.translator.uses.get(tag_name) : tag_name;
 			return Vector.create([module_name, this.translator.toString(module_name)]);
 		}
 		return Vector.create([tag_name, this.translator.toString(tag_name)]);
@@ -324,7 +325,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 		if (old_function == null)
 		{
 			result.push(op_code.name);
-			result.push(": ");
+			if (this.translator.enable_vue) result.push(": ");
 		}
 		/* Function flags */
 		if (op_code.flags)
@@ -334,7 +335,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 			result.push(rs.join(" ", flags));
 			if (flags.count() > 0) result.push(" ");
 		}
-		if (old_function == null) result.push("function");
+		if (old_function == null && this.translator.enable_vue) result.push("function");
 		result.push("(");
 		this.translator.program.OpDeclareFunctionArgs(op_code, result);
 		result.push(")");
@@ -350,7 +351,14 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 		result.push(this.translator.newLine());
 		result.push("const rs = use(\"Runtime.rs\");");
 		result.push(this.translator.newLine());
-		result.push("const componentHash = rs.getComponentHash(this.getClassName());");
+		if (this.translator.enable_vue)
+		{
+			result.push("const componentHash = rs.getComponentHash(this.getClassName());");
+		}
+		else
+		{
+			result.push("const componentHash = rs.getComponentHash(this.constructor.getClassName());");
+		}
 		/* Create Virtual Dom */
 		result.push(this.translator.newLine());
 		result.push("let __v = new Runtime.VirtualDom(this);");
@@ -439,7 +447,7 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 				else if (!op_code.flags.isFlag("computed")) return false;
 			}
 			/* Check if html function */
-			if (!op_code.is_html)
+			if (!op_code.is_html && this.translator.enable_vue)
 			{
 				result.push(this.translator.newLine());
 				this.translator.class_function = op_code;
@@ -503,9 +511,10 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 			this.translator.style.OpHtmlStyle(op_code_item, css_content);
 		}
 		result.push(this.translator.newLine());
-		result.push("getComponentStyle: function(){ ");
+		if (this.translator.enable_vue) result.push("getComponentStyle: function(){ ");
+		else result.push("static getComponentStyle(){ ");
 		result.push("return " + String(this.translator.toString(rs.join("", css_content))) + String("; "));
-		result.push("},");
+		result.push(this.translator.enable_vue ? "}," : "}");
 	}
 	
 	
@@ -527,9 +536,10 @@ BayLang.LangES6.TranslatorES6Html = class extends use("Runtime.BaseObject")
 		}
 		components = components.map((name) => { return this.translator.toString(name); });
 		result.push(this.translator.newLine());
-		result.push("getRequiredComponents: function(){ ");
+		if (this.translator.enable_vue) result.push("getRequiredComponents: function(){ ");
+		else result.push("static getRequiredComponents(){ ");
 		result.push("return new Runtime.Vector(" + String(rs.join(", ", components)) + String("); "));
-		result.push("},");
+		result.push(this.translator.enable_vue ? "}," : "}");
 	}
 	
 	

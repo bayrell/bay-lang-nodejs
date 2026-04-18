@@ -35,6 +35,7 @@ BayLang.OpCodes.OpTryCatch = class extends use("BayLang.OpCodes.BaseOpCode")
 			"class_name": "BayLang.OpCodes.OpTryCatchItem",
 		}))));
 		rules.addType("op_try", new OpCodeType());
+		rules.addType("op_finally", new OpCodeType());
 	}
 	
 	
@@ -44,6 +45,7 @@ BayLang.OpCodes.OpTryCatch = class extends use("BayLang.OpCodes.BaseOpCode")
 		super._init();
 		this.op = "op_try_catch";
 		this.op_try = null;
+		this.op_finally = null;
 		this.items = null;
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpTryCatch"; }

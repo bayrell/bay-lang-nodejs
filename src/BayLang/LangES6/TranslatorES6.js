@@ -128,6 +128,7 @@ BayLang.LangES6.TranslatorES6 = class extends use("BayLang.CoreTranslator")
 		this.helper = new TranslatorHelper(this);
 		this.use_module_name = false;
 		this.use_window = true;
+		this.enable_vue = true;
 	}
 	static getClassName(){ return "BayLang.LangES6.TranslatorES6"; }
 	static getMethodsList(){ return null; }

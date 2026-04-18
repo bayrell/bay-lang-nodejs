@@ -71,7 +71,6 @@ Runtime.Context = class extends use("Runtime.BaseObject")
 	 */
 	factory(name, params)
 	{
-		const rtl = use("rtl");
 		const ItemNotFound = use("Runtime.Exceptions.ItemNotFound");
 		if (params == undefined) params = null;
 		let item = this.entities.find((entity) => { return entity.name == name; });

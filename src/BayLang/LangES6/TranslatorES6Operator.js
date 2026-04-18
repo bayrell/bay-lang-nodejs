@@ -255,6 +255,12 @@ BayLang.LangES6.TranslatorES6Operator = class extends use("Runtime.BaseObject")
 		this.translator.levelDec();
 		result.push(this.translator.newLine());
 		result.push("}");
+		if (op_code.op_finally)
+		{
+			result.push(this.translator.newLine());
+			result.push("finally");
+			this.translateItems(op_code.op_finally, result);
+		}
 	}
 	
 	

@@ -51,6 +51,7 @@ Runtime.BaseStorage = class extends use("Runtime.BaseModel")
 		const Map = use("Runtime.Map");
 		this.widget_name = "storage";
 		this.frontend = new Map();
+		this.backend = new Map();
 	}
 	static getClassName(){ return "Runtime.BaseStorage"; }
 	static getMethodsList(){ return null; }

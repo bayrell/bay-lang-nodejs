@@ -91,6 +91,7 @@ BayLang.LangBay.ParserBayOperator = class extends use("Runtime.BaseObject")
 		let caret_start = reader.start();
 		reader.matchToken("try");
 		let op_try = this.parse(reader);
+		let op_finally = null;
 		let items = Vector.create([]);
 		while (!reader.eof() && reader.nextToken() == "catch")
 		{
@@ -110,9 +111,15 @@ BayLang.LangBay.ParserBayOperator = class extends use("Runtime.BaseObject")
 				"caret_end": reader.caret(),
 			})));
 		}
+		if (reader.nextToken() == "finally")
+		{
+			reader.matchToken("finally");
+			op_finally = this.parse(reader);
+		}
 		return new OpTryCatch(Map.create({
 			"items": items,
 			"op_try": op_try,
+			"op_finally": op_finally,
 			"caret_start": caret_start,
 			"caret_end": reader.caret(),
 		}));

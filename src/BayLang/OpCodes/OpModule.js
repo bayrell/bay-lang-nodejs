@@ -34,6 +34,7 @@ BayLang.OpCodes.OpModule = class extends use("BayLang.OpCodes.BaseOpCode")
 		const StringType = use("Runtime.Serializer.StringType");
 		super.serialize(rules);
 		rules.addType("is_component", new BooleanType());
+		rules.addType("is_generated", new BooleanType());
 		rules.addType("items", new VectorType(new OpCodeType()));
 		rules.addType("uses", new MapType(new StringType()));
 	}
@@ -132,6 +133,7 @@ BayLang.OpCodes.OpModule = class extends use("BayLang.OpCodes.BaseOpCode")
 		this.uses = null;
 		this.items = null;
 		this.is_component = false;
+		this.is_generated = false;
 	}
 	static getClassName(){ return "BayLang.OpCodes.OpModule"; }
 	static getMethodsList(){ return null; }

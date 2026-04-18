@@ -300,7 +300,7 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 		if (!this.checkFile(src_file_path)) return false;
 		if (this.checkExclude(relative_src_file_path)) return false;
 		/* Check extension */
-		let arr = Vector.create(["bay", "es6", "php", "py", "ui"]);
+		let arr = Vector.create(["bay", "es6", "php", "py", "ui", "js"]);
 		let extension = rs.extname(src_file_path);
 		if (arr.indexOf(extension) == -1) return false;
 		/* Read file */
@@ -315,6 +315,7 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 			file_op_code = parser.parse();
 			if (!file_op_code) return false;
 		}
+		else if (extension == "js") lang = Vector.create(["es6", "nodejs"]);
 		else
 		{
 			lang = extension;
@@ -330,15 +331,16 @@ BayLang.Compiler.Module = class extends use("Runtime.BaseObject")
 	 */
 	async translateLanguages(relative_src_file_path, op_code, dest_lang)
 	{
+		const Vector = use("Runtime.Vector");
 		if (dest_lang == undefined) dest_lang = "";
 		/* Translate to destination language */
-		if (dest_lang != "")
+		if (dest_lang != "" && !(dest_lang instanceof Vector))
 		{
 			await this.translate(relative_src_file_path, op_code, dest_lang);
 		}
 		else
 		{
-			let languages = this.project.getLanguages();
+			let languages = dest_lang != "" ? dest_lang : this.project.getLanguages();
 			for (let i = 0; i < languages.count(); i++)
 			{
 				let lang = languages.get(i);

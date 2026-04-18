@@ -156,7 +156,7 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 					return true;
 				}
 			}
-			if (op_code_attr.value instanceof OpDeclareFunction) return true;
+			if (op_code_attr.expression instanceof OpDeclareFunction) return true;
 		}
 		if (attrs_count > 3) return true;
 		return false;
@@ -570,7 +570,10 @@ BayLang.LangBay.TranslatorBayHtml = class extends use("Runtime.BaseObject")
 		if (space) component_names.push(space.name);
 		component_names.push(component.name.entity_name.getName());
 		let component_name = rs.join(".", component_names);
-		result.push("<class name=\"" + String(component_name) + String("\">"));
+		let attrs = Vector.create([]);
+		attrs.push("name=\"" + String(component_name) + String("\""));
+		if (op_code.is_generated) attrs.push("generated=\"true\"");
+		result.push("<class " + String(rs.join(" ", attrs)) + String(">"));
 		result.push(this.translator.newLine());
 		/* Add uses */
 		if (uses.count() > 0)
